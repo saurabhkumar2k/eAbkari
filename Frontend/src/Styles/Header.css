@@ -1,0 +1,235 @@
+/* ===== HEADER ===== */
+.header {
+  width: 100%;
+  font-family: "Segoe UI", sans-serif;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-bottom: 1px solid #eee;
+}
+.header-title {
+  color: #FDD132;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 20px;        /* 🔥 increase as needed */
+  font-weight: 700;
+
+  margin: 0;
+}
+
+
+/* ✨ Glow Animation */
+.glow-text {
+  text-shadow: 0 0 5px rgba(253, 209, 50, 0.6),
+               0 0 10px rgba(253, 209, 50, 0.5),
+               0 0 15px rgba(253, 209, 50, 0.4);
+
+  animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+/* 🔁 Animation */
+@keyframes glowPulse {
+  from {
+    text-shadow: 0 0 5px rgba(253, 209, 50, 0.6),
+                 0 0 10px rgba(253, 209, 50, 0.5),
+                 0 0 15px rgba(253, 209, 50, 0.4);
+  }
+  to {
+    text-shadow: 0 0 10px rgba(253, 209, 50, 0.9),
+                 0 0 20px rgba(253, 209, 50, 0.8),
+                 0 0 30px rgba(253, 209, 50, 0.7);
+  }
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, #0b3d91, #1456b8);
+  color: #fff;
+  position: relative;
+}
+
+/* ===== LOGO ===== */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-section img {
+  height: 42px;
+}
+
+.logo-section h1 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.logo-section p {
+  font-size: 12px;
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* ===== CENTER IMAGE ===== */
+.title-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.header-center-img {
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ===== RIGHT SECTION ===== */
+.top-bar-right {
+  position: relative;
+}
+
+/* ===== LOGIN BUTTON ===== */
+.login-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background: #fff;
+  color: #0b3d91;
+}
+
+/* ===== LOGIN DROPDOWN ===== */
+.login-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: #fff;
+  display: none;
+  flex-direction: column;
+  min-width: 180px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 999;
+}
+
+.login-dropdown.show {
+  display: flex;
+}
+
+.login-dropdown a {
+  padding: 10px;
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+}
+
+.login-dropdown a:hover {
+  background: #f0f0f0;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  gap: 25px;
+  padding: 8px 30px;
+  background: #ffffff;
+  border-top: 1px solid #eee;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-item span {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  transition: 0.2s;
+}
+
+.nav-item span:hover {
+  color: #0b3d91;
+}
+
+/* ===== MEGA MENU ===== */
+.mega-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.25s ease;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.nav-item:hover .mega-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.mega-menu a {
+  padding: 10px;
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+}
+
+.mega-menu a:hover {
+  background: #eee;
+}
+
+/* ===== MOBILE ===== */
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    display: none;
+  }
+
+  .navbar.open {
+    display: flex;
+  }
+
+  .menu-btn {
+    display: block;
+  }
+}

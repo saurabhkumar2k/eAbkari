@@ -1,0 +1,84 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\ReactNewlatest\\Backend\\CoreApi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B7BA850E-02F9-4318-AA9D-360F5D9586D7}|..\\CoreApi\\CoreAPI.csproj|e:\\reactnewlatest\\backend\\CoreApi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7BA850E-02F9-4318-AA9D-360F5D9586D7}|..\\CoreApi\\CoreAPI.csproj|e:\\reactnewlatest\\backend\\CoreApi\\coreapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7BA850E-02F9-4318-AA9D-360F5D9586D7}|..\\CoreApi\\CoreAPI.csproj|e:\\reactnewlatest\\backend\\CoreApi\\coreapi.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7BA850E-02F9-4318-AA9D-360F5D9586D7}|..\\CoreApi\\CoreAPI.csproj|e:\\reactnewlatest\\backend\\CoreApi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CoreAPI",
+              "DocumentMoniker": "E:\\ReactNewlatest\\Backend\\CoreApi\\CoreAPI.csproj",
+              "RelativeDocumentMoniker": "..\\CoreApi\\CoreAPI.csproj",
+              "ToolTip": "E:\\ReactNewlatest\\Backend\\CoreApi\\CoreAPI.csproj",
+              "RelativeToolTip": "..\\CoreApi\\CoreAPI.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAABUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-21T05:24:07.364Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\ReactNewlatest\\Backend\\CoreApi\\appsettings.json",
+              "RelativeDocumentMoniker": "..\\CoreApi\\appsettings.json",
+              "ToolTip": "E:\\ReactNewlatest\\Backend\\CoreApi\\appsettings.json",
+              "RelativeToolTip": "..\\CoreApi\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-21T05:24:02.007Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CoreAPI.http",
+              "DocumentMoniker": "E:\\ReactNewlatest\\Backend\\CoreApi\\CoreAPI.http",
+              "RelativeDocumentMoniker": "..\\CoreApi\\CoreAPI.http",
+              "ToolTip": "E:\\ReactNewlatest\\Backend\\CoreApi\\CoreAPI.http",
+              "RelativeToolTip": "..\\CoreApi\\CoreAPI.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-04-21T05:24:00.882Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\ReactNewlatest\\Backend\\CoreApi\\Program.cs",
+              "RelativeDocumentMoniker": "..\\CoreApi\\Program.cs",
+              "ToolTip": "E:\\ReactNewlatest\\Backend\\CoreApi\\Program.cs",
+              "RelativeToolTip": "..\\CoreApi\\Program.cs",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-21T05:23:04.846Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
