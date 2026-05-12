@@ -1,0 +1,179 @@
+import React from 'react';
+import { 
+  UserSvg, 
+  LockSvg, 
+  ShieldSvg, 
+  HeadphonesSvg, 
+  GlobeSvg,
+  ChevronDownSvg,
+  EyeSvg
+} from '../../Style/images/Icons';
+
+const Login = ({ onNavigateToRegister }) => {
+  return (
+    <div className="login-page-wrapper">
+      <div className="login-container">
+        {/* Left Side: Branding & Info */}
+        <div className="login-info-panel">
+          <div className="login-info-content">
+            <div className="login-dept-header">
+               <div className="login-dept-box">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
+                    alt="Emblem" 
+                    className="login-emblem" 
+                  />
+                  <div>
+                    <h2 className="login-dept-title">Department of Excise</h2>
+                    <p className="login-dept-subtitle">Government of NCT of Delhi</p>
+                  </div>
+               </div>
+            </div>
+
+            <div className="welcome-section">
+               <h1 className="welcome-title">Welcome Back!</h1>
+               <p className="welcome-subtitle">
+                 Sign in to access your account and manage your services seamlessly.
+               </p>
+               <div className="welcome-line" />
+            </div>
+
+            <div className="info-feature-list">
+               <div className="info-feature-item">
+                  <div className="info-feature-icon">
+                    <ShieldSvg className="icon-md" />
+                  </div>
+                  <div>
+                    <h3 className="feature-title-white">Secure & Reliable</h3>
+                    <p className="feature-desc-white">Your data is safe with highest security standards</p>
+                  </div>
+               </div>
+               <div className="info-feature-item">
+                  <div className="info-feature-icon">
+                    <UserSvg className="icon-md" />
+                  </div>
+                  <div>
+                    <h3 className="feature-title-white">Citizen Friendly</h3>
+                    <p className="feature-desc-white">Simple and easy access to government services</p>
+                  </div>
+               </div>
+               <div className="info-feature-item">
+                  <div className="info-feature-icon">
+                    <HeadphonesSvg className="icon-md" />
+                  </div>
+                  <div>
+                    <h3 className="feature-title-white">24/7 Support</h3>
+                    <p className="feature-desc-white">We're here to help you anytime, anywhere</p>
+                  </div>
+               </div>
+            </div>
+          </div>
+          
+          <div className="login-info-footer">
+             <p className="login-footer-text">© 2024 Department of Excise, Government of NCT of Delhi. All rights reserved.</p>
+          </div>
+          
+          {/* Decorative Background Image */}
+          <img 
+            src="https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=1000" 
+            alt="" 
+            className="login-panel-bg" 
+          />
+          <div className="login-panel-overlay" />
+        </div>
+
+        {/* Right Side: Form */}
+        <div className="login-form-panel">
+          <div className="language-selector-top">
+            <button className="lang-btn">
+              <GlobeSvg className="icon-xs" />
+              <span>English</span>
+              <ChevronDownSvg className="icon-xs" />
+            </button>
+          </div>
+
+          <div className="login-form-container">
+            <div className="login-form-box">
+              <div className="form-header-icon-circle">
+                <UserSvg className="icon-lg login-color-primary" />
+              </div>
+              
+              <h1 className="login-form-title">Login</h1>
+              <p className="login-form-subtitle">Enter your credentials to continue</p>
+
+              <form className="login-form-fields">
+                <div className="form-field">
+                  <label className="reg-label-block">User ID / Email</label>
+                  <div className="login-input-group">
+                    <div className="login-input-icon"><UserSvg className="icon-sm" /></div>
+                    <input type="text" placeholder="Enter User ID or Email" className="login-input-field" />
+                  </div>
+                </div>
+
+                <div className="form-field">
+                  <label className="reg-label-block">Password</label>
+                  <div className="login-input-group">
+                    <div className="login-input-icon"><LockSvg className="icon-sm" /></div>
+                    <input type="password" placeholder="Enter Password" className="login-input-field padding-right-large" />
+                    <button type="button" className="password-toggle-btn">
+                      <EyeSvg className="icon-sm" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="login-options-row">
+                  <label className="checkbox-flex-label">
+                    <input type="checkbox" className="reg-checkbox-small" />
+                    <span className="checkbox-text">Remember me</span>
+                  </label>
+                  <button type="button" className="forgot-password-link">
+                    Forgot Password?
+                  </button>
+                </div>
+
+                <button 
+                  type="button" 
+                  className="login-btn-submit"
+                  onClick={onNavigateToRegister}
+                >
+                  <LockSvg className="icon-xs margin-right-small" />
+                  Login
+                </button>
+
+                <div className="divider-container">
+                  <div className="divider-line-box">
+                    <div className="divider-line"></div>
+                  </div>
+                  <div className="divider-text-box">
+                    <span className="divider-text">OR</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="button" 
+                  className="login-btn-new-account"
+                  onClick={onNavigateToRegister}
+                >
+                  <UserSvg className="icon-xs margin-right-small" />
+                  Create New Account
+                </button>
+              </form>
+            </div>
+
+            <div className="gov-seal-footer">
+               <div className="gov-seal-box">
+                  <ShieldSvg className="icon-sm login-color-primary" />
+                  <div>
+                    <h4 className="gov-footer-title">Official Government Portal</h4>
+                    <p className="gov-footer-desc">This is a secure platform for Department of Excise services.</p>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
