@@ -1,87 +1,68 @@
-import React, { Component } from "react";
-import { ogddr2 } from "../Images/Images";
-class Footer extends Component {
-  render() {
-    const projectDate = "03/10/2024";
-    const lastUpdated = "04/10/2024";
-    const visitorCount = 123456;
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-    return (
-      <footer className="footer">
-        <div className="footer-container">
+import React from 'react';
+import { DownloadSvg, ArrowUpRightSvg } from '../Style/images/Icons';
 
-          {/* Links */}
-          <div className="footer-links">
-            <a href="/CommonUser/Portal_New_Website_Term_Policy.aspx?type=1">
-              Terms of Use
+const Footer = () => {
+  return (
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-layout-grid">
+          <div>
+            <h4 className="footer-heading">Quick Links</h4>
+            <ul className="footer-link-list">
+              {['About Us', 'Facts & Figures', 'Acts, Rules & Orders', 'RTI', 'Feedback', 'Track & Trace', 'User Manuals'].map(l => (
+                <li key={l} className="footer-link-item"><a href="#" className="footer-link">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className="footer-heading">Important Links</h4>
+            <ul className="footer-link-list">
+              {['Government of NCT of Delhi', 'Delhi Govt. Portal', 'Transparency Portal', 'e-District Delhi', 'India.gov.in'].map(l => (
+                <li key={l} className="footer-link-item"><a href="#" className="footer-link">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className="footer-heading">Help & Support</h4>
+            <ul className="footer-link-list">
+              {['FAQs', 'Contact Us', 'Grievance Redressal', 'Website Policies', 'Sitemap'].map(l => (
+                <li key={l} className="footer-link-item"><a href="#" className="footer-link">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className="footer-heading">Download Mobile App</h4>
+            <a href="#" className="app-store-button">
+              <div className="app-store-icon"><DownloadSvg className="icon-md" /></div>
+              <div>
+                <div className="app-label-small">Get it on</div>
+                <div className="app-label-main">Google Play</div>
+              </div>
             </a>
-            <a href="/CommonUser/Portal_New_Website_Term_Policy.aspx?type=2">
-              Copyright Policy
-            </a>
-            <a href="/CommonUser/Portal_New_Website_Term_Policy.aspx?type=3">
-              Privacy Policy
-            </a>
-            <a href="/CommonUser/Portal_New_Website_Term_Policy.aspx?type=4">
-              Linking Policy
-            </a>
-            <a href="/Common/Portal_New_legalDisclaimer.aspx">
-              Legal Disclaimer
+            <a href="#" className="app-store-button">
+              <div className="app-store-icon"><ArrowUpRightSvg className="icon-md" /></div>
+              <div>
+                <div className="app-label-small">Download on the</div>
+                <div className="app-label-main">App Store</div>
+              </div>
             </a>
           </div>
-
-          {/* Content */}
-          <div className="footer-grid">
-
-            <div className="footer-text">
-              <p>Project Commissioned – e-Abkari Version 1.0 : {projectDate}</p>
-              <p>Soft Launch of e-Abkari Version 1.0 : {projectDate}</p>
-              <p>Soft Launch of Website : {projectDate}</p>
-              <p>
-                <strong>Visitor Count :</strong> {visitorCount}
-              </p>
-              <p>Last Updated : {lastUpdated}</p>
-            </div>
-
-            <div className="footer-text">
-              <p>
-                Contents on this website are owned, updated,
-                <br />
-                and managed by the <strong>Department of Excise</strong>
-              </p>
-              <p className="footer-margin-top">
-                Site Designed &amp; Hosted by{" "}
-                <a
-                  href="https://www.nic.in"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="footer-link-highlight"
-                >
-                  National Informatics Centre (NIC)
-                </a>
-              </p>
-              <p className="footer-margin-top">
-                Best viewed in Internet Explorer 10 / 11 or later
-              </p>
-            </div>
-
-            <div className="footer-logo">
-              <img
-                src={ogddr2}
-                alt="Open Government Data Platform India"
-              />
-            </div>
-
-          </div>
-
-          {/* Bottom */}
-          <div className="footer-bottom">
-            © {new Date().getFullYear()} Department of Excise, Government of NCT of Delhi
-          </div>
-
         </div>
-      </footer>
-    );
-  }
+
+        <div className="footer-bottom-info">
+          <p className="copyright-text-main">© 2025 Department of Excise, Government of NCT of Delhi. All Rights Reserved.</p>
+          <div className="last-updated-tag">
+            Last Updated: 20 May 2025
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
 
 export default Footer;

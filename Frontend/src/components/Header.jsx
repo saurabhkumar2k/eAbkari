@@ -1,147 +1,178 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Menu, X, User } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import "../Styles/Header.css";
-import { Ashok, hdrimage } from "../Images/Images";
+import React, { useState } from 'react';
+import { 
+  ChevronDownSvg, 
+  UserSvg, 
+  UsersSvg,
+  BarChart2Svg, 
+  GavelSvg, 
+  MessageSquareSvg, 
+  MapPinSvg, 
+  BookOpenSvg, 
+  InfoSvg, 
+  FileTextSvg, 
+  MenuSvg, 
+  XCircleSvg as XSvg 
+} from '../Style/images/Icons';
 
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
+const Header = ({ onSelectView, currentView }) => {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const loginRef = useRef(null);
-  const location = useLocation();
+  const isAuthPage = currentView === 'APPLICANT_REGISTRATION';
 
-  const stickyPages = ["/", "/about", "/acts", "/rti", "/manuals"];
-  const isSticky = stickyPages.includes(location.pathname);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (loginRef.current && !loginRef.current.contains(e.target)) {
-        setLoginOpen(false);
-      }
-    };
+  const navLinks = [
+    { label: 'About Us', icon: <UsersSvg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'Facts & Figures', icon: <BarChart2Svg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'Acts, Rules & Orders', icon: <GavelSvg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'Right to Information', icon: <InfoSvg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'Feedback', icon: <MessageSquareSvg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'Track & Trace', icon: <MapPinSvg className="nav-icon-main" />, view: 'HOME' },
+    { label: 'User Manuals', icon: <BookOpenSvg className="nav-icon-main" />, view: 'HOME' }
+  ];
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleLoginOptionClick = (item) => {
+    if (item === 'Applicant') {
+      onSelectView('APPLICANT_LOGIN');
+    } else {
+      onSelectView('HOME');
+    }
+    setIsLoginOpen(false);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
-    <header className={`header ${isSticky ? "sticky" : ""}`}>
-      
-      {/* ===== TOP BAR ===== */}
-      <div className="topbar">
-
-        {/* LEFT LOGO */}
-        <div className="logo-section">
-          <img src={Ashok} alt="Ashok Stambh" />
-          <div>
-            <h1>Department of Excise</h1>
-            <p>Government of NCT of Delhi</p>
+    <header className="header">
+      {/* Top Brand Area */}
+      <div className="container header-top-area">
+        <div className="header-brand-box pointer-cursor" onClick={() => onSelectView('HOME')}>
+          <img 
+            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
+            alt="Emblem of India"
+            className="brand-logo-img"
+          />
+          <div className="header-brand-info">
+            <div>
+              <h1 className="header-title">Department of Excise</h1>
+              <p className="header-subtitle">Government of NCT of Delhi</p>
+            </div>
           </div>
         </div>
 
-        {/* CENTER IMAGE */}
-        <div className="title-center">
-          {/* <img src={hdrimage} alt="header" className="header-center-img" /> */}
-          <h1 className="header-title glow-text">  eAbkari-The Digital Alcohol Regulation Platform</h1>
-        </div>
+        <div className="header-actions">
+          {!isAuthPage && (
+            <div className="pos-relative desktop-only">
+              <button 
+                onClick={() => setIsLoginOpen(!isLoginOpen)}
+                className="btn-login"
+              >
+                <UserSvg className="icon-xs" />
+                <span>LOGIN</span>
+                <ChevronDownSvg className={`icon-xs transition-icon ${isLoginOpen ? 'is-rotated' : ''}`} />
+              </button>
+              
+              {isLoginOpen && (
+                <div className="login-dropdown animate-dropdown">
+                  {['Applicant', 'Department', 'Licensee', 'Lab Testing'].map((item) => (
+                    <button 
+                      key={item} 
+                      className={`login-option ${currentView === 'APPLICANT_REGISTRATION' && item === 'Applicant' ? 'active' : ''}`}
+                      onClick={() => handleLoginOptionClick(item)}
+                    >
+                      <UserSvg className="icon-xs" />
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-        {/* RIGHT SECTION */}
-        <div className="top-bar-right" ref={loginRef}>
-          <button
-            className="login-btn"
-            onClick={() => setLoginOpen(!loginOpen)}
-          >
-            <User size={18} /> Login
-          </button>
-
-          <div className={`login-dropdown ${loginOpen ? "show" : ""}`}>
-            <Link to="/login">Applicant</Link>
-            <Link to="/department-login">Department</Link>
-            <Link to="/licensee-login">Licensee</Link>
-            <a
-              href="https://eabkari.delhi.gov.in/labtesting/"
-              target="_blank"
-              rel="noreferrer"
+          {!isAuthPage && (
+            <button 
+              className="mobile-menu-toggle"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              Lab Testing
-            </a>
-          </div>
+              {isMobileMenuOpen ? <XSvg /> : <MenuSvg />}
+            </button>
+          )}
         </div>
-
-        {/* MOBILE BUTTON */}
-        <button
-          className="menu-btn"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X /> : <Menu />}
-        </button>
       </div>
 
-      {/* ===== NAVBAR ===== */}
-      <nav className={`navbar ${menuOpen ? "open" : ""}`}>
+      {/* Main Navigation - Desktop */}
+      {!isAuthPage && (
+        <nav className="navbar-main desktop-only">
+          <div className="container nav-container-flex">
+            {navLinks.map((link, index) => (
+              <React.Fragment key={link.label}>
+                <a 
+                  href="#" 
+                  className="nav-link-refined"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSelectView(link.view);
+                  }}
+                >
+                  <div className="nav-item-content">
+                    {link.icon}
+                    <span className="nav-label-text">{link.label}</span>
+                    <ChevronDownSvg className="icon-tiny ml-1 opacity-70" />
+                  </div>
+                </a>
+                {index < navLinks.length - 1 && <div className="nav-divider"></div>}
+              </React.Fragment>
+            ))}
+          </div>
+        </nav>
+      )}
 
-        <div className="nav-item">
-          <span>About Us</span>
-          <div className="mega-menu">
-            <Link to="/about/department">Department</Link>
-            <Link to="/about/policies">Policies</Link>
-            <Link to="/about/org-structure">Organisation</Link>
-            <Link to="/about/functions">Functions</Link>
-            <Link to="/about/staff">Staff</Link>
-            <Link to="/about/key-people">Heads</Link>
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="mobile-menu animate-fade">
+          <div className="mobile-menu-content">
+            <button 
+              onClick={() => setIsLoginOpen(!isLoginOpen)}
+              className="mobile-login-btn"
+            >
+              <UserSvg className="icon-xs" />
+              <span className="flex-1 text-left ml-2">LOGIN</span>
+              <ChevronDownSvg className={`icon-xs transition-icon ${isLoginOpen ? 'is-rotated' : ''}`} />
+            </button>
+
+            {isLoginOpen && (
+              <div className="mobile-login-options">
+                {['Applicant', 'Department', 'Licensee', 'Lab Testing'].map((item) => (
+                  <button 
+                    key={item} 
+                    className="mobile-login-option"
+                    onClick={() => handleLoginOptionClick(item)}
+                  >
+                    <UserSvg className="mobile-login-icon" />
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {navLinks.map((link) => (
+              <a 
+                key={link.label} 
+                href="#" 
+                className="mobile-nav-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectView(link.view);
+                }}
+              >
+                {link.icon}
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
-
-        <div className="nav-item">
-          <span>Facts & Figures</span>
-          <div className="mega-menu">
-            <a href="#">Licenses Administered</a>
-            <a href="#">Registered Brands</a>
-          </div>
-        </div>
-
-        <div className="nav-item">
-          <span>Acts & Rules</span>
-          <div className="mega-menu">
-            <a href="#">Acts</a>
-            <a href="#">Rules</a>
-            <a href="#">Circulars</a>
-          </div>
-        </div>
-
-        <div className="nav-item">
-          <span>RTI</span>
-          <div className="mega-menu">
-            <a href="#">RTI Act 2005</a>
-          </div>
-        </div>
-
-        <div className="nav-item">
-          <span>Feedback</span>
-          <div className="mega-menu">
-            <a href="#">Feedback Form</a>
-          </div>
-        </div>
-
-        <div className="nav-item">
-          <span>Track & Trace</span>
-          <div className="mega-menu">
-            <a href="#">Track Liquor</a>
-          </div>
-        </div>
-
-        <div className="nav-item">
-          <span>User Manuals</span>
-          <div className="mega-menu">
-            <a href="#">User Manual</a>
-          </div>
-        </div>
-
-      </nav>
+      )}
     </header>
   );
-};
+}
 
 export default Header;
