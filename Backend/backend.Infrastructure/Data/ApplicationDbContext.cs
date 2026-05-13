@@ -11,25 +11,16 @@ namespace backend.Infrastructure.Data
         }
 
         public DbSet<MstState> MstStates { get; set; }
-
         public DbSet<MstSubDivision> MstSubDivisions { get; set; }
-
+        public DbSet<MstPoliceStation> MstPoliceStations { get; set; }
         public DbSet<MstDistrict> MstDistrict { get; set; }
-
         public DbSet<MM_US_MT> MM_US_MTs { get; set; }
-
-     public DbSet<MstLiquorKind> MstLiquorKind { get; set; }
+        public DbSet<MstLiquorKind> MstLiquorKind { get; set; }
         public DbSet<MstLiquorCategory> MstLiquorCategory { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
         public DbSet<MstLicenseeCategory> MstLicenseeCategory { get; set; }
-        
         public DbSet<MstLiquorMeasure> MstLiquorMeasure { get; set; }
-
-         public DbSet<MstLiquorType> MstLiquorType { get; set; }
-
-
-
-
+        public DbSet<MstLiquorType> MstLiquorType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,14 +35,14 @@ namespace backend.Infrastructure.Data
                     .HasKey(x => x.DVID);
 
 
-  modelBuilder.Entity<MstDistrict>().ToTable("MstDistrict");
+                modelBuilder.Entity<MstDistrict>().ToTable("MstDistrict");
 
                  modelBuilder.Entity<MstDistrict>()
                     .HasKey(x => x.DID);
 
 
 
-modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
+                modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
 
                  modelBuilder.Entity<MstLiquorKind>()
                     .HasKey(x => x.LiquorCatCode);
@@ -90,9 +81,10 @@ modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
                     .HasKey(x => x.User_Id);
 
 
+             modelBuilder.Entity<MstPoliceStation>().ToTable("MstPoliceStation");
 
-
-
+                modelBuilder.Entity<MstPoliceStation>()
+                .HasKey(x => new { x.DistrictCode, x.PsCode });
 
 
             base.OnModelCreating(modelBuilder);

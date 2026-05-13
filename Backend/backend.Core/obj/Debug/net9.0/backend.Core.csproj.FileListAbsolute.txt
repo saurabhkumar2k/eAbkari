@@ -32,3 +32,15 @@ C:\Users\Acer\Desktop\eAbkariLatest120526\eAbkari\backend\backend.Core\obj\Debug
 C:\Users\Acer\Desktop\eAbkariLatest120526\eAbkari\backend\backend.Core\obj\Debug\net9.0\refint\backend.Core.dll
 C:\Users\Acer\Desktop\eAbkariLatest120526\eAbkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.pdb
 C:\Users\Acer\Desktop\eAbkariLatest120526\eAbkari\backend\backend.Core\obj\Debug\net9.0\ref\backend.Core.dll
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\bin\Debug\net9.0\backend.Core.deps.json
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\bin\Debug\net9.0\backend.Core.dll
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\bin\Debug\net9.0\backend.Core.pdb
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.AssemblyInfoInputs.cache
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.AssemblyInfo.cs
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.csproj.CoreCompileInputs.cache
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.sourcelink.json
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.dll
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\refint\backend.Core.dll
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.pdb
+D:\Mahboob\eAbkariCoreNReact120526\eAbkari\Backend\backend.Core\obj\Debug\net9.0\ref\backend.Core.dll

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Application\\backend.Application.csproj": {}
+    "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Application\\backend.Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Application\\backend.Application.csproj": {
+    "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Application\\backend.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Application\\backend.Application.csproj",
+        "projectUniqueName": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Application\\backend.Application.csproj",
         "projectName": "backend.Application",
-        "projectPath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Application\\backend.Application.csproj",
+        "projectPath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Application\\backend.Application.csproj",
         "packagesPath": "C:\\Users\\Acer\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Application\\obj\\",
+        "outputPath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,8 +33,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\backend.Core.csproj": {
-                "projectPath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\backend.Core.csproj"
+              "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\backend.Core.csproj": {
+                "projectPath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\backend.Core.csproj"
               }
             }
           }
@@ -74,14 +74,14 @@
         }
       }
     },
-    "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\backend.Core.csproj": {
+    "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\backend.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\backend.Core.csproj",
+        "projectUniqueName": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\backend.Core.csproj",
         "projectName": "backend.Core",
-        "projectPath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\backend.Core.csproj",
+        "projectPath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\backend.Core.csproj",
         "packagesPath": "C:\\Users\\Acer\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Core\\obj\\",
+        "outputPath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

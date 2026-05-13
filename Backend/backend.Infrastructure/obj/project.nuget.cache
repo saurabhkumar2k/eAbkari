@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5n+gVjElnUM=",
+  "dgSpecHash": "LfSwau4nc9U=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Acer\\Desktop\\eAbkariLatest120526\\eAbkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
+  "projectFilePath": "D:\\Mahboob\\eAbkariCoreNReact120526\\eabkari\\Backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Acer\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Acer\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

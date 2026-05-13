@@ -60,7 +60,7 @@ public class MstLiquorType
 
    public class MstLiquorBottler
 {    
-    public string? Liquor_Bottler_Origin { get; set; } = string.Empty;
+    public string? LiquorBottlerOrigin { get; set; } = string.Empty;
     public string LiquorBottlerCode { get; set; } = string.Empty;
   
     public string? LiquorBottlerCountry { get; set; } = string.Empty;
@@ -90,7 +90,7 @@ public class MstLicenseeCategory
     public string? DeleteStatus { get; set; } = "N";
     public string? OfficerPosted { get; set; } = string.Empty;
     public string? RelationFlag { get; set; } = string.Empty;
-    public string? Retailer_Flag { get; set; } = string.Empty;
+    public string? RetailerFlag { get; set; } = string.Empty;
     public string? RenewalPaymentMode { get; set; } = string.Empty;
     public string? VisibilityStatus { get; set; } = string.Empty;
     public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;

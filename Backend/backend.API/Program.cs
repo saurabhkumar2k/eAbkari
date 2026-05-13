@@ -41,6 +41,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IStateRepository, StateRepository>();
 builder.Services.AddScoped<ISubDivisionRepository, SubDivisionRepository>();
 builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
+builder.Services.AddScoped<IPoliceStationRepository, PoliceStationRepository>();
 builder.Services.AddScoped<ILiquorMasterRepository, LiquorMasterRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
