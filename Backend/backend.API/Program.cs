@@ -38,26 +38,42 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dependency Injection
-builder.Services.AddScoped<IStateRepository, StateRepository>();
-builder.Services.AddScoped<ISubDivisionRepository, SubDivisionRepository>();
-builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
+// builder.Services.AddScoped<IStateRepository, StateRepository>();
+// builder.Services.AddScoped<ISubDivisionRepository, SubDivisionRepository>();
+// builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
 builder.Services.AddScoped<ILiquorMasterRepository, LiquorMasterRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+builder.Services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
+builder.Services.AddScoped<ILGDiretoryRepository, LGDiretoryRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
+builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy
+             .WithOrigins(
+                "http://localhost:3000",
+                "http://localhost:3001"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-// Configure HTTP Request Pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowReactApp");
+// 👇 MUST be here
+app.UseCors("AllowReactApp");
 
 app.UseAuthorization();
 

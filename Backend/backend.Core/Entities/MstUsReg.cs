@@ -21,6 +21,8 @@ public class MstUsReg
     public string? Fax { get; set; }
     public string? Email { get; set; }
     public int? SecretQuestionId { get; set; }
+
+   
     public string? SecretAnswer { get; set; }
     public string? RegBy { get; set; }
     public string? RegIP { get; set; }

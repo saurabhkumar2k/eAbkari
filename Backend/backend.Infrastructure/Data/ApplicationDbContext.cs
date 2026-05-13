@@ -30,6 +30,8 @@ namespace backend.Infrastructure.Data
 
         public DbSet<MstUsReg> MstUsReg { get; set; }
 
+         public DbSet<MstUserSQ> MstUserSQ { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,6 +96,11 @@ modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
     modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
                  modelBuilder.Entity<MstUsReg>()
                     .HasKey(x => x.RegId);
+
+
+                        modelBuilder.Entity<MstUserSQ>().ToTable("MstUserSQ");
+                 modelBuilder.Entity<MstUserSQ>()
+                    .HasKey(x => x.SecretQuestionId);
 
 
 

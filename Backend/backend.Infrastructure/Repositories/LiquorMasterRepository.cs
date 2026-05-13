@@ -61,6 +61,16 @@ namespace backend.Infrastructure.Repositories
         }
 
 
+public async Task<IEnumerable<MstUserSQ>> GetUserSQAsync()
+        {
+           return await _context.MstUserSQ
+              .OrderBy(x => x.SecretQuestionId)
+                .ToListAsync();
+
+        }
+
+
+
 
     }
     

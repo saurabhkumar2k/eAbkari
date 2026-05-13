@@ -24,5 +24,19 @@ namespace backend.Infrastructure.Repositories
             return await _context.MM_US_MTs
                 .FirstOrDefaultAsync(u => u.User_Id == userId && u.User_Pass == password);
         }
+
+
+   public async Task SaveTokenAsync(string userId, string token)
+        {
+            var user = await _context.MM_US_MTs.FirstOrDefaultAsync(u => u.User_Id == userId);
+            if (user is null)
+            {
+                return;
+            }
+
+            user.Token = token;
+            user.Token_Generated_At = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
     }
 }

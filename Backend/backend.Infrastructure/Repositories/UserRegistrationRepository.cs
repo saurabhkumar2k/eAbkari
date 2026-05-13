@@ -15,14 +15,19 @@ public class UserRegistrationRepository : IUserRegistrationRepository
         _context = context;
     }
 
-    public async Task<long> CreateAsync(MstUsReg model)
+ public async Task<long> CreateAsync(MstUsReg model)
+{
+    try
     {
         _context.MstUsReg.Add(model);
         await _context.SaveChangesAsync();
-
-        // Auto-generated primary 
         return model.RegId;
     }
+    catch (Exception ex)
+    {
+        throw new Exception(ex.InnerException?.Message ?? ex.Message);
+    }
+}
 }
 
 }

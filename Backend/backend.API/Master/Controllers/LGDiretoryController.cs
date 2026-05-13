@@ -9,18 +9,26 @@ namespace backend.API.Controllers
     [ApiController]
     public class LGDiretoryController : ControllerBase
     {
-        private readonly ISubDivisionRepository   _SubDivisionRepository;
+        // private readonly ISubDivisionRepository   _SubDivisionRepository;
 
-        private readonly IDistrictRepository   _DistrictRepository;
+        // private readonly IDistrictRepository   _DistrictRepository;
 
-        private readonly IStateRepository _stateRepository;
+        // private readonly IStateRepository _stateRepository;
 
-public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistrictRepository districtRepository,IStateRepository stateRepository)
+
+        // private readonly IUserQuesRepository _userQuestionRepository;
+
+
+private readonly ILGDiretoryRepository _LiquorMasterRepository;
+
+
+
+public LGDiretoryController(ILGDiretoryRepository  lGDiretoryRepository)
 {
-    _SubDivisionRepository = subDivisionRepository;
-    _DistrictRepository = districtRepository;
-     _stateRepository = stateRepository;
+    _LiquorMasterRepository = lGDiretoryRepository;
 }
+
+
         // [HttpGet("getState")]
         // public async Task<IActionResult> GetState()
         // {
@@ -32,7 +40,7 @@ public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistri
   public async Task<IActionResult> GetState()
   {
     
-        var data = await _stateRepository.GetStateAsync();
+        var data = await _LiquorMasterRepository.GetStateAsync();
 
         if (data == null || !data.Any())
         {
@@ -46,7 +54,7 @@ public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistri
         [HttpGet("getSubDivision")]
         public async Task<IActionResult> GetSubDivision(string districtCode)
         { 
-       var data = await _SubDivisionRepository.GetSubDivisionAsync(districtCode);
+       var data = await _LiquorMasterRepository.GetSubDivisionAsync(districtCode);
 
         if (data == null || !data.Any())
         {
@@ -60,7 +68,7 @@ public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistri
            [HttpGet("GetDistrict")]
         public async Task<IActionResult> GetDistrict(string  Statecode)
         {
-            var data = await _DistrictRepository.GetDistrictAsync(Statecode);
+            var data = await _LiquorMasterRepository.GetDistrictAsync(Statecode);
 
             if (data == null || !data.Any())
         {
@@ -69,10 +77,16 @@ public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistri
             return Ok(data);
         }
 
-
-
-
-
+        [HttpGet("Question")]
+        public async Task<IActionResult> GetQuestions()
+        {
+            var data = await _LiquorMasterRepository.GetQuestionsAsync();
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No Questions found" });
+            }
+            return Ok(data);
+        }
 
     }
 }

@@ -1,80 +1,185 @@
-import React, { useState } from 'react';
 
-
-import axios from 'axios';
-
-
-import { 
-  UserSvg, 
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+ import { 
+   UserSvg, 
   CalendarSvg, 
   BriefcaseSvg, 
-  MapPinSvg, 
+   MapPinSvg, 
   PhoneSvg, 
-  MailSvg, 
+ MailSvg, 
   ShieldCheckSvg, 
-  LockSvg, 
-  CloudUploadSvg, 
-  SendSvg, 
+ LockSvg, 
+   CloudUploadSvg, 
+   SendSvg, 
   InfoSvg, 
-  ShieldSvg, 
+   ShieldSvg, 
   TimerSvg, 
   RefreshCwSvg, 
-  HeadphonesSvg, 
+   HeadphonesSvg, 
   ChevronDownSvg 
 } from '../../Style/images/Icons';
+export default function Registration({ onNavigateToLogin }) {
 
-const Registration = ({ onNavigateToLogin }) => {
-  // ===== Add Form State Here =====
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+const [districts, setDistricts] = useState([]);
+const [questions, setQuestions] = useState([]);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    fatherHusbandName: '',
-    dateOfBirth: '',
-    gender: '',
-    occupation: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    district: '',
-    pinCode: '',
-    mobileNumber: '',
-    emailAddress: '',
-    secretQuestion: '',
-    secretAnswer: '',
-    pursuableOffence: false
+    FirstName: '',
+   LastName: '',
+   FatherHusbandName: '',
+    DateOfBirth: '',
+    Gender: '',
+    Occupation: '',
+    AddressLine1: '',
+    AddressLine2: '',
+    City: '',
+    StateUT: '',
+    District: '',
+    PIN: '',
+    Mobile: '',
+    Email: '',
+    SecretQuestionId: '',
+    SecretAnswer: '',
+    IsPunishableOffence: false
   });
 
-  // ===== Add Change Handler =====
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  useEffect(() => {
+    fetchStates();
+  }, []);
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
+  useEffect(() => {
+    fetchQuestion();
+  }, []);
 
-  // ===== Add Submit Handler =====
-  const handleSubmit = async (e) => {
-    debugger;
-    e.preventDefault();
 
+useEffect(() => {
+  if (formData.StateUT) {
+    fetchDistricts(formData.StateUT);
+  }
+}, [formData.StateUT]);
+
+
+  const fetchStates = async () => {
     try {
-      const response = await axios.post(
-        'https://localhost:5001/api/UserRegistration/register',
-        formData
+      const response = await axios.get(
+        "http://localhost:5214/api/LGDiretory/getState"
       );
-
-      alert(`Registration successful! Reg ID: ${response.data.regId}`);
+      setStates(response.data);
     } catch (error) {
-      console.error(error.response?.data || error.message);
-      alert('Registration failed.');
+      console.log(error);
     }
   };
 
- return (
-    <div className="registration-view">
+
+  const fetchQuestion = async () => {
+    debugger;
+    try {
+      const response = await axios.get(
+        "http://localhost:5214/api/LGDiretory/Question"
+      );
+      setQuestions(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+
+
+
+const fetchDistricts = async (stateCode) => {
+  try {
+    const res = await axios.get(
+      "http://localhost:5214/api/LGDiretory/GetDistrict",
+      {
+        params: { Statecode: stateCode }
+      }
+    );
+
+    setDistricts(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: type === "checkbox" ? checked : value
+  }));
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await axios.post(
+      "http://localhost:5214/api/UserRegistration/register",
+      formData
+    );
+
+    alert(`Registration successful! Reg ID: ${response.data.regId}`);
+
+    // Reset all fields to blank/default values
+    setFormData({
+      FirstName: "",
+      LastName: "",
+      FatherHusbandName: "",
+      DateOfBirth: "",
+      Gender: "",
+      Occupation: "",
+      AddressLine1: "",
+      AddressLine2: "",
+      City: "",
+      StateUT: "",
+      District: "",
+      PIN: "",
+      Mobile: "",
+      Email: "",
+      SecretQuestionId: "",
+      SecretAnswer: "",
+      IsPunishableOffence: false
+    });
+
+    // Optional: clear dependent dropdown data if you use them
+    setDistricts([]);
+    // setSubDivisions([]);
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.response?.data ||
+      "";
+
+    if (
+      typeof message === "string" &&
+      (
+        message.includes("UX_MM_US_REG_Mobile") ||
+        message.includes("duplicate key") ||
+        message.includes("Mobile")
+      )
+    ) {
+      alert("This mobile number is already registered.");
+      return;
+    }
+
+    alert(message || "Registration failed.");
+    console.error("Registration error:", error.response?.data || error.message);
+  }
+};
+
+  return (
+
+
+ <div className="registration-view">
       {/* Registration Banner */}
       <section className="reg-banner">
         <div className="reg-banner-overlay" />
@@ -106,13 +211,17 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">First Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text"
-  name="firstName"
-  value={formData.firstName}
+<input
+  type="text"
+  name="FirstName"
+  value={formData.FirstName}
   onChange={handleChange}
   placeholder="Enter first name"
   className="reg-input"
 />
+
+
+
               </div>
             </div>
 
@@ -120,7 +229,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Last Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" name="lastName"value={formData.lastName} onChange={handleChange} placeholder="Enter last name" className="reg-input"/>
+                <input type="text" name="LastName"value={formData.LastName} onChange={handleChange} placeholder="Enter last name" className="reg-input"/>
               </div>
             </div>
 
@@ -128,14 +237,22 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Father / Husband Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter father / husband name" className="reg-input" />
+                <input type="text" name="FatherHusbandName" value={formData.FatherHusbandName} onChange={handleChange} placeholder="Enter father / husband name" className="reg-input" />
               </div>
             </div>
 
             <div className="reg-field">
               <label className="reg-label">Date of Birth <span className="reg-required">*</span></label>
               <div className="reg-input-group">
-                <input type="text" placeholder="DD/MM/YYYY" className="reg-input" />
+                {/* <input type="text" placeholder="DD/MM/YYYY" className="reg-input" /> */}
+
+                <input
+  type="date"
+  name="DateOfBirth"
+  value={formData.DateOfBirth}
+  onChange={handleChange}
+  className="reg-input"
+/>
                 <div className="reg-input-icon-right"><CalendarSvg className="icon-xs" /></div>
               </div>
             </div>
@@ -144,13 +261,13 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Gender <span className="reg-required">*</span></label>
               <div className="reg-radio-group">
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" value="Male" checked={formData.gender === 'Male'} onChange={handleChange}/>Male
+                  <input type="radio" name="Gender" value="M" checked={formData.Gender === 'M'} onChange={handleChange}/>Male
                 </label>
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" value="Female" checked={formData.gender === 'Female'} onChange={handleChange}/> Female
+                  <input type="radio" name="Gender" value="F" checked={formData.Gender === 'F'} onChange={handleChange}/> Female
                 </label>
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" value="Other" checked={formData.gender === 'Other'} onChange={handleChange}/> Other
+                  <input type="radio" name="Gender" value="O" checked={formData.Gender === 'O'} onChange={handleChange}/> Other
                 </label>
               </div>
             </div>
@@ -163,9 +280,10 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Occupation <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><BriefcaseSvg className="icon-xs" /></div>
-                <select className="reg-select">
+                {/* <select className="reg-select">
                   <option>Select occupation</option>
-                </select>
+                </select> */}
+                <input type="text" name="Occupation" value={formData.Occupation} onChange={handleChange} placeholder="Enter occupation" className="reg-input" />
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
               </div>
             </div>
@@ -174,7 +292,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Address Line 1 <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter address line 1" className="reg-input" />
+                <input type="text" name="AddressLine1" value={formData.AddressLine1} onChange={handleChange} placeholder="Enter address line 1" className="reg-input" />
               </div>
             </div>
 
@@ -182,7 +300,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Address Line 2 (Optional)</label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter address line 2" className="reg-input" />
+                <input type="text" name="AddressLine2" value={formData.AddressLine2} onChange={handleChange} placeholder="Enter address line 2" className="reg-input" />
               </div>
             </div>
 
@@ -190,7 +308,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">City <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter city" className="reg-input" />
+                <input type="text" name="City" value={formData.City} onChange={handleChange} placeholder="Enter city" className="reg-input" />
               </div>
             </div>
 
@@ -198,9 +316,23 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">State <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <select className="reg-select">
+                {/* <select className="reg-select">
                   <option>Select state</option>
-                </select>
+                </select> */}
+
+
+      <select className="reg-select" value={formData.StateUT}
+        onChange={(e) => setFormData({...formData, StateUT: e.target.value})}
+      >
+        <option value="">Select State</option>
+
+        {states.map((item) => (
+          <option key={item.stateCode} value={item.stateCode}>
+            {item.stateName}
+          </option>
+        ))}
+      </select>
+
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
               </div>
             </div>
@@ -209,9 +341,26 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">District <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <select className="reg-select">
+                {/* <select className="reg-select">
                   <option>Select district</option>
-                </select>
+                </select> */}
+
+
+<select className="reg-select"
+  name="District"
+  value={formData.District}
+  onChange={handleChange}
+>
+  <option value="">Select District</option>
+
+  {districts.map((item) => (
+    <option key={item.districtCode} value={item.districtCode}>
+      {item.districtName}
+    </option>
+  ))}
+</select>
+
+
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
               </div>
             </div>
@@ -220,7 +369,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">PIN Code <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter PIN code" className="reg-input" />
+                <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" />
               </div>
             </div>
 
@@ -228,7 +377,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Mobile Number <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><PhoneSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter mobile number" className="reg-input" />
+                <input type="text" name="Mobile" value={formData.Mobile} onChange={handleChange} placeholder="Enter mobile number" className="reg-input" />
               </div>
             </div>
 
@@ -236,7 +385,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Email Address <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MailSvg className="icon-xs" /></div>
-                <input type="email"name="emailAddress" value={formData.emailAddress} onChange={handleChange}placeholder="Enter email address" className="reg-input"
+                <input type="email"name="Email" value={formData.Email} onChange={handleChange}placeholder="Enter email address" className="reg-input"
 />
               </div>
             </div>
@@ -247,9 +396,34 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Secret Question <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><ShieldCheckSvg className="icon-xs" /></div>
-                <select className="reg-select">
+                {/* <select className="reg-select">
                   <option>Select secret question</option>
-                </select>
+                </select> */}
+
+<select
+  className="reg-select"
+  value={formData.SecretQuestionId}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      SecretQuestionId: e.target.value
+    })
+  }
+>
+  <option value="">Select Secret Question</option>
+
+  {questions.map((item) => (
+    <option
+      key={item.secretQuestionId}
+      value={item.secretQuestionId}
+    >
+      {item.secretQuestion}
+    </option>
+  ))}
+</select>
+
+
+
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
               </div>
             </div>
@@ -258,7 +432,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Secret Answer <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><LockSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter secret answer" className="reg-input" />
+                <input type="text" value={formData.SecretAnswer} onChange={handleChange} name="SecretAnswer" placeholder="Enter secret answer" className="reg-input" />
               </div>
             </div>
 
@@ -273,13 +447,26 @@ const Registration = ({ onNavigateToLogin }) => {
                   </div>
                </div>
 
-               <div className="checkbox-field margin-top-medium">
-                  <label className="reg-checkbox-label">
-                     <input type="checkbox" className="reg-checkbox" />
-                     <span>Pursuable Offence</span>
-                     <button type="button" className="info-trigger"><InfoSvg className="icon-xs" /></button>
-                  </label>
-               </div>
+            <div className="checkbox-field margin-top-medium">
+  <label className="reg-checkbox-label">
+    <input
+      type="checkbox"
+      name="IsPunishableOffence"
+      checked={formData.IsPunishableOffence}
+      onChange={handleChange}
+      className="reg-checkbox"
+    />
+    <span>Pursuable Offence</span>
+
+    <button
+      type="button"
+      className="info-trigger"
+      title="Information about Pursuable Offence"
+    >
+      <InfoSvg className="icon-xs" />
+    </button>
+  </label>
+</div>
             </div>
 
             {/* Form Actions */}
@@ -350,9 +537,15 @@ const Registration = ({ onNavigateToLogin }) => {
          </div>
       </section>
     </div>
+
+
+
+
+
+
+
+
   );
-};
+}
 
- 
 
-export default Registration;
