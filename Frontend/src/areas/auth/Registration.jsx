@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+
+
+import axios from 'axios';
+
+
 import { 
   UserSvg, 
   CalendarSvg, 
@@ -19,7 +24,56 @@ import {
 } from '../../Style/images/Icons';
 
 const Registration = ({ onNavigateToLogin }) => {
-  return (
+  // ===== Add Form State Here =====
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    fatherHusbandName: '',
+    dateOfBirth: '',
+    gender: '',
+    occupation: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    district: '',
+    pinCode: '',
+    mobileNumber: '',
+    emailAddress: '',
+    secretQuestion: '',
+    secretAnswer: '',
+    pursuableOffence: false
+  });
+
+  // ===== Add Change Handler =====
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  // ===== Add Submit Handler =====
+  const handleSubmit = async (e) => {
+    debugger;
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        'https://localhost:5001/api/UserRegistration/register',
+        formData
+      );
+
+      alert(`Registration successful! Reg ID: ${response.data.regId}`);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      alert('Registration failed.');
+    }
+  };
+
+ return (
     <div className="registration-view">
       {/* Registration Banner */}
       <section className="reg-banner">
@@ -46,13 +100,19 @@ const Registration = ({ onNavigateToLogin }) => {
       {/* Registration Form Card */}
       <section className="container reg-form-section">
         <div className="reg-card">
-          <form className="reg-grid">
+          <form className="reg-grid" onSubmit={handleSubmit}>
             {/* Personal Info */}
             <div className="reg-field reg-field-full">
               <label className="reg-label">First Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter first name" className="reg-input" />
+                <input type="text"
+  name="firstName"
+  value={formData.firstName}
+  onChange={handleChange}
+  placeholder="Enter first name"
+  className="reg-input"
+/>
               </div>
             </div>
 
@@ -60,7 +120,7 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Last Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" placeholder="Enter last name" className="reg-input" />
+                <input type="text" name="lastName"value={formData.lastName} onChange={handleChange} placeholder="Enter last name" className="reg-input"/>
               </div>
             </div>
 
@@ -84,16 +144,20 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Gender <span className="reg-required">*</span></label>
               <div className="reg-radio-group">
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" className="reg-radio" /> Male
+                  <input type="radio" name="gender" value="Male" checked={formData.gender === 'Male'} onChange={handleChange}/>Male
                 </label>
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" className="reg-radio" /> Female
+                  <input type="radio" name="gender" value="Female" checked={formData.gender === 'Female'} onChange={handleChange}/> Female
                 </label>
                 <label className="reg-radio-label">
-                  <input type="radio" name="gender" className="reg-radio" /> Other
+                  <input type="radio" name="gender" value="Other" checked={formData.gender === 'Other'} onChange={handleChange}/> Other
                 </label>
               </div>
             </div>
+
+
+
+
 
             <div className="reg-field">
               <label className="reg-label">Occupation <span className="reg-required">*</span></label>
@@ -172,9 +236,12 @@ const Registration = ({ onNavigateToLogin }) => {
               <label className="reg-label">Email Address <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MailSvg className="icon-xs" /></div>
-                <input type="email" placeholder="Enter email address" className="reg-input" />
+                <input type="email"name="emailAddress" value={formData.emailAddress} onChange={handleChange}placeholder="Enter email address" className="reg-input"
+/>
               </div>
             </div>
+
+
 
             <div className="reg-field">
               <label className="reg-label">Secret Question <span className="reg-required">*</span></label>
@@ -285,5 +352,7 @@ const Registration = ({ onNavigateToLogin }) => {
     </div>
   );
 };
+
+ 
 
 export default Registration;

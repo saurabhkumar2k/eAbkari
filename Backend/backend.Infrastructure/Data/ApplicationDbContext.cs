@@ -28,7 +28,7 @@ namespace backend.Infrastructure.Data
          public DbSet<MstLiquorType> MstLiquorType { get; set; }
 
 
-
+        public DbSet<MstUsReg> MstUsReg { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,7 +91,9 @@ modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
 
 
 
-
+    modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
+                 modelBuilder.Entity<MstUsReg>()
+                    .HasKey(x => x.RegId);
 
 
 
