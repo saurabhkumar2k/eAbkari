@@ -110,6 +110,7 @@ const fetchDistricts = async (stateCode) => {
 
 
 const handleChange = (e) => {
+  debugger;
   const { name, value, type, checked } = e.target;
 
   setFormData((prev) => ({
