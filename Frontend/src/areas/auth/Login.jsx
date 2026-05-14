@@ -9,8 +9,56 @@ import {
   EyeSvg
 } from '../../Style/images/Icons';
 
-const Login = ({ onNavigateToRegister }) => {
-  return (
+const LOGIN_API_URL = '/api/Login/Login';
+
+const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setErrorMessage('');
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(LOGIN_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: userId.trim(),
+          password: password.trim()
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        setErrorMessage(
+          errorText || `Login failed with status ${response.status}`
+        );
+        return;
+      }
+      
+
+      const data = await response.json().catch(() => null);
+      if (data && data.success === false) {
+        setErrorMessage(data.message || 'Invalid credentials');
+        return;
+      }
+
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+    } catch (error) {
+      setErrorMessage(error.message || 'Unable to connect to login service');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };  return (
     <div className="login-page-wrapper">
       <div className="login-container">
         {/* Left Side: Branding & Info */}
