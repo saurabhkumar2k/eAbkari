@@ -42,7 +42,7 @@ namespace backend.API.Controllers
             // Save token to database
             await _LoginRepository.SaveTokenAsync(user.User_Id, token);
 
-            return Ok(new { Success = true, Message = "Login successful", Token = token, UserId = user.User_Id });
+            return Ok(new { Success = true, Message = "Login successful", Token = token, UserId = user.User_Id, RedirectUrl = "/index.html" });
         }
     }
 
