@@ -15,11 +15,14 @@ namespace backend.API.Controllers
 
         private readonly IStateRepository _stateRepository;
 
-public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistrictRepository districtRepository,IStateRepository stateRepository)
+         private readonly IPoliceStationRepository _policeStationRepository;
+
+public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistrictRepository districtRepository,IStateRepository stateRepository, IPoliceStationRepository policeStationRepository)
 {
     _SubDivisionRepository = subDivisionRepository;
     _DistrictRepository = districtRepository;
      _stateRepository = stateRepository;
+        _policeStationRepository = policeStationRepository;
 }
         // [HttpGet("getState")]
         // public async Task<IActionResult> GetState()
@@ -70,6 +73,28 @@ public LGDiretoryController(ISubDivisionRepository subDivisionRepository,IDistri
         }
 
 
+         [HttpGet("getPoliceStation")]
+     public async Task<IActionResult> GetPoliceStation(string districtCode)
+     {            
+         if (string.IsNullOrWhiteSpace(districtCode))
+         {
+             return BadRequest(new 
+             { 
+                 message = "District code is required." 
+             });
+         }
+         var data = await _policeStationRepository
+             .GetPoliceStationAsync(districtCode);
+ 
+        if (data == null || !data.Any())
+         {
+             return NotFound(new 
+             { 
+                 message = "No police stations found for given district code." 
+             });
+         }            
+        return Ok(data);
+     }
 
 
 
