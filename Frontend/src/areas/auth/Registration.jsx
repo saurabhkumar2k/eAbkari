@@ -26,6 +26,8 @@ export default function Registration({ onNavigateToLogin }) {
   const [selectedState, setSelectedState] = useState("");
 const [districts, setDistricts] = useState([]);
 const [questions, setQuestions] = useState([]);
+  const [photo, setPhoto] = useState(null);
+  const [preview, setPreview] = useState("");
   const [formData, setFormData] = useState({
     FirstName: '',
    LastName: '',
@@ -38,7 +40,7 @@ const [questions, setQuestions] = useState([]);
     City: '',
     StateUT: '',
     District: '',
-    PinCode: '',
+    PIN: '',
     Mobile: '',
     Email: '',
     SecretQuestionId: '',
@@ -106,7 +108,17 @@ const fetchDistricts = async (stateCode) => {
 };
 
 
+const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
 
+    if (file) {
+      setPhoto(file);
+
+      // Preview image immediately
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl);
+    }
+  };
 
 
 const handleChange = (e) => {
@@ -227,6 +239,7 @@ const handleSubmit = async (e) => {
               </div>
             </div>
 
+
             <div className="reg-field">
               <label className="reg-label">Last Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
@@ -258,6 +271,13 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon-right"><CalendarSvg className="icon-xs" /></div>
               </div>
             </div>
+
+
+
+
+
+
+
 
             <div className="reg-field">
               <label className="reg-label">Gender <span className="reg-required">*</span></label>
@@ -371,7 +391,7 @@ const handleSubmit = async (e) => {
               <label className="reg-label">PIN Code <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" name="PinCode" value={formData.PinCode} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" />
+                <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" />
               </div>
             </div>
 
@@ -438,25 +458,51 @@ const handleSubmit = async (e) => {
               </div>
             </div>
 
-            <div className="reg-field-row reg-field-full">
-               <div className="photo-upload-box">
-                  <div className="upload-placeholder">
-                    <CloudUploadSvg className="icon-md reg-color-primary" />
-                    <div>
-                       <div className="upload-link">Upload Photo</div>
-                       <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
-                    </div>
-                  </div>
-               </div>
+      <div className="reg-field-row reg-field-full">
+  <div>
+    {/* Preview above the upload control */}
+  {preview && (
+  <div style={{ marginBottom: "10px" }}>
+    <img
+      src={preview}
+      alt="Preview"
+      style={{
+        width: "150px",
+        height: "120px",
+        objectFit: "contain",
+        border: "1px solid #d1d5db",
+        borderRadius: "4px",
+        backgroundColor: "#fff"
+      }}
+    />
+  </div>
+)}
 
-               <div className="checkbox-field margin-top-medium">
-                  <label className="reg-checkbox-label">
-                     <input type="checkbox" className="reg-checkbox" />
-                     <span>Pursuable Offence</span>
-                     <button type="button" className="info-trigger"><InfoSvg className="icon-xs" /></button>
-                  </label>
-               </div>
-            </div>
+    {/* Upload control */}
+    <div className="upload-placeholder">
+      <CloudUploadSvg className="icon-md reg-color-primary" />
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+          className="photo-input"
+        />
+        <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
+      </div>
+    </div>
+  </div>
+
+  <div className="checkbox-field margin-top-medium">
+    <label className="reg-checkbox-label">
+      <input type="checkbox" className="reg-checkbox" />
+      <span>Pursuable Offence</span>
+      <button type="button" className="info-trigger">
+        <InfoSvg className="icon-xs" />
+      </button>
+    </label>
+  </div>
+</div>
 
             {/* Form Actions */}
             <div className="reg-actions-row col-span-full">

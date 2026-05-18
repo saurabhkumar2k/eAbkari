@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\eAbkari_Latest\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj",
+      "projectUniqueName": "E:\\eAbkari_new14052026\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj",
       "projectName": "backend.Core",
-      "projectPath": "E:\\eAbkari_Latest\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj",
+      "projectPath": "E:\\eAbkari_new14052026\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "E:\\eAbkari_Latest\\eAbkari\\Backend\\backend.Core\\obj\\",
+      "outputPath": "E:\\eAbkari_new14052026\\eAbkari\\Backend\\backend.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

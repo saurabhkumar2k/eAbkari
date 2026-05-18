@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "j/v+F5DnU7o=",
+  "dgSpecHash": "bHmtwYMsU48=",
   "success": true,
-  "projectFilePath": "E:\\eAbkari_Latest\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
+  "projectFilePath": "E:\\eAbkari_new14052026\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HP\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
