@@ -36,5 +36,25 @@ namespace backend.Infrastructure.Repositories
             user.Token_Generated_At = DateTime.UtcNow;
             await _context.SaveChangesAsync();
         }
+        public async Task SaveTokenPairAsync(string userId, string accessToken, string refreshToken, DateTime refreshTokenExpiry)
+        {
+            var user = await _context.MM_US_MTs.FirstOrDefaultAsync(u => u.User_Id == userId);
+            if (user is null)
+            {
+                return;
+            }
+
+            user.Token = accessToken;
+            user.Token_Generated_At = DateTime.UtcNow;
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = refreshTokenExpiry;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<MM_US_MT?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _context.MM_US_MTs
+                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
+        }
     }
 }

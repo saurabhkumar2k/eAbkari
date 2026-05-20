@@ -17,11 +17,13 @@ namespace backend.API.Controllers
     {
         private readonly ILoginRepository _LoginRepository;
         private readonly IJwtService _jwtService;
+        private readonly IConfiguration _configuration;
         //private readonly ApplicationDbContext _context;
-        public LoginController(ILoginRepository LoginRepository, IJwtService jwtService)
+        public LoginController(ILoginRepository LoginRepository, IJwtService jwtService, IConfiguration configuration)
         {
             _LoginRepository = LoginRepository;
             _jwtService = jwtService;
+            _configuration = configuration;
         }
 
         [HttpPost("Login")]
@@ -38,11 +40,25 @@ namespace backend.API.Controllers
                 return Unauthorized(new { Success = false, Message = "Invalid username or password" });
             }
 
+            var tokenPair = _jwtService.GenerateTokenPair(user.User_Id);
+            var refreshTokenExpiryDays = int.Parse(_configuration.GetSection("JwtSettings")["RefreshTokenExpiryDays"] ?? "7");
+            var refreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
             var token = _jwtService.GenerateToken(user.User_Id);
             // Save token to database
             await _LoginRepository.SaveTokenAsync(user.User_Id, token);
 
-            return Ok(new { Success = true, Message = "Login successful", Token = token, UserId = user.User_Id, RedirectUrl = "/index.html" });
+            await _LoginRepository.SaveTokenPairAsync(user.User_Id, tokenPair.AccessToken, tokenPair.RefreshToken, refreshTokenExpiry);
+            return Ok(new
+            {
+                Success = true,
+                Message = "Login successful",
+                AccessToken = tokenPair.AccessToken,
+                RefreshToken = tokenPair.RefreshToken,
+                ExpiresAt = tokenPair.ExpiresAt,
+                UserId = user.User_Id,
+                RedirectUrl = "/index.html"
+            });
+            //return Ok(new { Success = true, Message = "Login successful", Token = token, UserId = user.User_Id, RedirectUrl = "/index.html" });
         }
     }
 

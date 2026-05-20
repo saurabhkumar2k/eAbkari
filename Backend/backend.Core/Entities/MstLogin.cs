@@ -8,5 +8,7 @@ namespace backend.Core.Entities
         public string? Hash_Pass { get; set; }
         public string? Token { get; set; }
         public DateTime? Token_Generated_At { get; set; }
+         public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiry { get; set; }
     }
 }
