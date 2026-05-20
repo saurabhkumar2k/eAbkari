@@ -28,6 +28,7 @@ const [districts, setDistricts] = useState([]);
 const [questions, setQuestions] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState("");
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     FirstName: '',
    LastName: '',
@@ -43,9 +44,10 @@ const [questions, setQuestions] = useState([]);
     PIN: '',
     Mobile: '',
     Email: '',
+    photo: '',
     SecretQuestionId: '',
     SecretAnswer: '',
-    PursuableOffence: false
+    IsPunishableOffence: false
   });
 
   useEffect(() => {
@@ -77,7 +79,7 @@ useEffect(() => {
 
 
   const fetchQuestion = async () => {
-    debugger;
+    
     try {
       const response = await axios.get(
         "http://localhost:5214/api/LGDiretory/Question"
@@ -114,7 +116,7 @@ const handlePhotoChange = (e) => {
     if (file) {
       setPhoto(file);
 
-      // Preview image immediately
+      
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
     }
@@ -122,22 +124,35 @@ const handlePhotoChange = (e) => {
 
 
 const handleChange = (e) => {
-  debugger;
   const { name, value, type, checked } = e.target;
 
   setFormData((prev) => ({
     ...prev,
     [name]: type === "checkbox" ? checked : value
   }));
+
+  // 🔥 clear error on typing
+  setErrors((prev) => ({
+    ...prev,
+    [name]: ""
+  }));
 };
 
 const handleSubmit = async (e) => {
+  debugger;
   e.preventDefault();
+
+  const formDataToSend = new FormData(e.target);
+
+// Check all values being sent
+for (const [key, value] of formDataToSend.entries()) {
+  console.log(key, value);
+}
 
   try {
     const response = await axios.post(
       "http://localhost:5214/api/UserRegistration/register",
-      formData
+      formDataToSend
     );
 
     alert(`Registration successful! Reg ID: ${response.data.regId}`);
@@ -155,40 +170,52 @@ const handleSubmit = async (e) => {
       City: "",
       StateUT: "",
       District: "",
-      PinCode: "",
-      MobileNumber: "",
-      EmailAddress: "",
+      PIN: "",
+      Mobile: "",
+      Email: "",
+      Photo:"",
       SecretQuestionId: "",
       SecretAnswer: "",
-      PursuableOffence: false
+      IsPunishableOffence: false
     });
 
     // Optional: clear dependent dropdown data if you use them
     setDistricts([]);
+     setPreview(null); 
     // setSubDivisions([]);
   } catch (error) {
-    const message =
-      error.response?.data?.message ||
-      error.response?.data?.error ||
-      error.response?.data ||
-      "";
-
-    if (
-      typeof message === "string" &&
-      (
-        message.includes("UX_MM_US_REG_Mobile") ||
-        message.includes("duplicate key") ||
-        message.includes("Mobile")
-      )
-    ) {
-      alert("This mobile number is already registered.");
-      return;
-    }
-
-    alert(message || "Registration failed.");
-    console.error("Registration error:", error.response?.data || error.message);
+  // ASP.NET Core model validation errors
+  if (error.response?.data?.errors) {
+    setErrors(error.response.data.errors);
+    return;
   }
+
+  const message =
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    error.response?.data ||
+    "";
+
+  // Duplicate mobile validation
+  if (
+    typeof message === "string" &&
+    (
+      message.includes("UX_MM_US_REG_Mobile") ||
+      message.includes("duplicate key") ||
+      message.includes("Mobile")
+    )
+  ) {
+    alert("This mobile number is already registered.");
+    return;
+  }
+
+  alert(message || "Registration failed.");
+  console.error("Registration error:", error.response?.data || error.message);
+}
 };
+
+
+
 
   return (
 
@@ -225,6 +252,8 @@ const handleSubmit = async (e) => {
               <label className="reg-label">First Name <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
+
+
 <input
   type="text"
   name="FirstName"
@@ -237,6 +266,8 @@ const handleSubmit = async (e) => {
 
 
               </div>
+              {errors.FirstName && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.FirstName} </span>)}
             </div>
 
 
@@ -246,6 +277,8 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
                 <input type="text" name="LastName"value={formData.LastName} onChange={handleChange} placeholder="Enter last name" className="reg-input"/>
               </div>
+                         {errors.LastName && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.LastName[0]} </span>)}
             </div>
 
             <div className="reg-field">
@@ -254,6 +287,8 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
                 <input type="text" name="FatherHusbandName" value={formData.FatherHusbandName} onChange={handleChange} placeholder="Enter father / husband name" className="reg-input" />
               </div>
+                          {errors.FatherHusbandName && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.FatherHusbandName[0]} </span>)}
             </div>
 
             <div className="reg-field">
@@ -270,6 +305,8 @@ const handleSubmit = async (e) => {
 />
                 <div className="reg-input-icon-right"><CalendarSvg className="icon-xs" /></div>
               </div>
+              {errors.DateOfBirth && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.DateOfBirth[0]} </span>)}
             </div>
 
 
@@ -292,6 +329,8 @@ const handleSubmit = async (e) => {
                   <input type="radio" name="Gender" value="O" checked={formData.Gender === 'O'} onChange={handleChange}/> Other
                 </label>
               </div>
+              {errors.Gender && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Gender[0]} </span>)}
             </div>
 
 
@@ -307,7 +346,10 @@ const handleSubmit = async (e) => {
                 </select> */}
                 <input type="text" name="Occupation" value={formData.Occupation} onChange={handleChange} placeholder="Enter occupation" className="reg-input" />
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-              </div>
+                 </div>
+                {errors.Occupation && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Occupation[0]} </span>)}
+             
             </div>
 
             <div className="reg-field reg-field-full">
@@ -316,6 +358,8 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
                 <input type="text" name="AddressLine1" value={formData.AddressLine1} onChange={handleChange} placeholder="Enter address line 1" className="reg-input" />
               </div>
+              {errors.AddressLine1 && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.AddressLine1[0]} </span>)}
             </div>
 
             <div className="reg-field reg-field-full">
@@ -332,6 +376,8 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
                 <input type="text" name="City" value={formData.City} onChange={handleChange} placeholder="Enter city" className="reg-input" />
               </div>
+              {errors.City && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.City[0]} </span>)}
             </div>
 
             <div className="reg-field">
@@ -343,20 +389,31 @@ const handleSubmit = async (e) => {
                 </select> */}
 
 
-      <select className="reg-select" value={formData.StateUT}
-        onChange={(e) => setFormData({...formData, StateUT: e.target.value})}
-      >
-        <option value="">Select State</option>
+   <select
+  name="StateUT"
+  className="reg-select"
+  value={formData.StateUT}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      StateUT: e.target.value
+    })
+  }
+>
+  <option value="">Select State</option>
 
-        {states.map((item) => (
-          <option key={item.stateCode} value={item.stateCode}>
-            {item.stateName}
-          </option>
-        ))}
-      </select>
+  {states.map((item) => (
+    <option key={item.stateCode} value={item.stateCode}>
+      {item.stateName}
+    </option>
+  ))}
+</select>
 
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-              </div>
+                </div>
+                {errors.StateUT && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.StateUT[0]} </span>)}
+              
             </div>
 
             <div className="reg-field">
@@ -384,7 +441,10 @@ const handleSubmit = async (e) => {
 
 
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-              </div>
+                </div>
+                {errors.District && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.District[0]} </span>)}
+              
             </div>
 
             <div className="reg-field">
@@ -393,14 +453,18 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
                 <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" />
               </div>
+              {errors.PIN && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.PIN[0]} </span>)}
             </div>
 
             <div className="reg-field">
               <label className="reg-label">Mobile Number <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><PhoneSvg className="icon-xs" /></div>
-                <input type="text" name="Mobile" value={formData.Mobile} onChange={handleChange} placeholder="Enter mobile number" className="reg-input" />
+                <input type="tel" name="Mobile" value={formData.Mobile} onChange={handleChange} placeholder="Enter mobile number" maxLength={10} className="reg-input" pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number" />
               </div>
+              {errors.Mobile && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Mobile[0]} </span>)}
             </div>
 
             <div className="reg-field">
@@ -410,6 +474,8 @@ const handleSubmit = async (e) => {
                 <input type="email"name="Email" value={formData.Email} onChange={handleChange}placeholder="Enter email address" className="reg-input"
 />
               </div>
+              {errors.Email && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Email} </span>)}
             </div>
 
 
@@ -423,6 +489,7 @@ const handleSubmit = async (e) => {
                 </select> */}
 
 <select
+  name="SecretQuestionId"
   className="reg-select"
   value={formData.SecretQuestionId}
   onChange={(e) =>
@@ -447,6 +514,8 @@ const handleSubmit = async (e) => {
 
 
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
+                {errors.SecretQuestionId && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.SecretQuestionId[0]} </span>)}
               </div>
             </div>
 
@@ -456,6 +525,8 @@ const handleSubmit = async (e) => {
                 <div className="reg-input-icon"><LockSvg className="icon-xs" /></div>
                 <input type="text" value={formData.SecretAnswer} onChange={handleChange} name="SecretAnswer" placeholder="Enter secret answer" className="reg-input" />
               </div>
+              {errors.SecretAnswer && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.SecretAnswer[0]} </span>)}
             </div>
 
       <div className="reg-field-row reg-field-full">
@@ -482,27 +553,36 @@ const handleSubmit = async (e) => {
     <div className="upload-placeholder">
       <CloudUploadSvg className="icon-md reg-color-primary" />
       <div>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handlePhotoChange}
-          className="photo-input"
-        />
+   <input
+  type="file"
+  name="photo"
+  accept="image/*"
+  onChange={handlePhotoChange}
+  className="photo-input"
+/>
         <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
+
       </div>
     </div>
   </div>
 
-  <div className="checkbox-field margin-top-medium">
-    <label className="reg-checkbox-label">
-      <input type="checkbox" className="reg-checkbox" />
-      <span>Pursuable Offence</span>
-      <button type="button" className="info-trigger">
-        <InfoSvg className="icon-xs" />
-      </button>
-    </label>
-  </div>
+<input
+  type="checkbox"
+  name="IsPunishableOffence"
+  className="reg-checkbox"
+  checked={formData.IsPunishableOffence}
+  value="true"
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      IsPunishableOffence: e.target.checked
+    })
+  }
+/>
+<span>Pursuable Offence</span>
+
 </div>
+
 
             {/* Form Actions */}
             <div className="reg-actions-row col-span-full">
