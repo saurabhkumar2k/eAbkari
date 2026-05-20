@@ -18,50 +18,84 @@ public class UserRegistrationController : ControllerBase
         _repository = repository;
     }
 
-    // [HttpPost("register")]
-    // public async Task<IActionResult> Register([FromBody] MstUsReg model)
-    // {
-    //     var regId = await _repository.CreateAsync(model);
 
-    //     return Ok(new
-    //     {
-    //         Success = true,
-    //         Message = "User registered successfully",
-    //         RegId = regId
-    //     });
-    // }
+
+// [HttpPost("register")]
+// public async Task<IActionResult> Register([FromBody] MstUsReg model)
+// {
+//     try
+//     {
+//         if (model == null)
+//         {
+//             return BadRequest("Model is null");
+//         }
+
+//         var regId = await _repository.CreateAsync(model);
+
+//         return Ok(new
+//         {
+           
+//         });
+//     }
+//     catch (Exception ex)
+//     {
+//         // Log error (important)
+//         Console.WriteLine("ERROR: " + ex.Message);
+
+//         return StatusCode(500, new
+//         {
+//             Success = false,
+//             Message = ex.Message
+//         });
+//     }
+// }
+
 
 [HttpPost("register")]
-public async Task<IActionResult> Register([FromBody] MstUsReg model)
+[Consumes("multipart/form-data")]
+public async Task<IActionResult> Register(
+    [FromForm] MstUsReg model,
+    IFormFile? photo)
 {
-    try
+    if (photo != null && photo.Length > 0)
     {
-        if (model == null)
+        string folder = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Documents",
+            "Registration");
+
+        if (!Directory.Exists(folder))
         {
-            return BadRequest("Model is null");
+            Directory.CreateDirectory(folder);
         }
 
-        var regId = await _repository.CreateAsync(model);
+      
+string extension = Path.GetExtension(photo.FileName);
 
-        return Ok(new
-        {
-            Success = true,
-            Message = "User registered successfully",
-            RegId = regId
-        });
-    }
-    catch (Exception ex)
-    {
-        // Log error (important)
-        Console.WriteLine("ERROR: " + ex.Message);
+string fileName = $"{model.UserId}_{model.Mobile}{extension}";
 
-        return StatusCode(500, new
-        {
-            Success = false,
-            Message = ex.Message
-        });
-    }
+string filePath = Path.Combine(folder, fileName);
+
+using (var stream = new FileStream(filePath, FileMode.Create))
+{
+    await photo.CopyToAsync(stream);
 }
+
+// Save relative path in database
+model.Photo = Path.Combine("Photo_", fileName);
+
+    }
+
+    var regId = await _repository.CreateAsync(model);
+
+    return Ok(new
+    {
+        Success = true,
+        RegId = regId,
+        PhotoPath = model.Photo
+    });
+}
+
 
 
 

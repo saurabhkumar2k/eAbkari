@@ -1,24 +1,44 @@
 
 
-
+using System.ComponentModel.DataAnnotations;
 
 public class MstUsReg
 {
     public long RegId { get; set; }
+    [Required]
     public string? FirstName { get; set; }
+    [Required]
     public string? LastName { get; set; }
+    [Required]
     public string? FatherHusbandName { get; set; }
+    [Required]
     public DateTime? DateOfBirth { get; set; }
+    [Required]
     public string? Gender { get; set; }
+    [Required]
     public string? Occupation { get; set; }
+    [Required]
     public string? AddressLine1 { get; set; }
+   
     public string? AddressLine2 { get; set; }
+    [Required]
     public string? City { get; set; }
+    [Required]
     public string? StateUT { get; set; }
+    [Required]
     public string? District { get; set; }
+    [Required]
+    [StringLength(6, MinimumLength = 6, ErrorMessage = "PIN must be 6 digits")]
     public string? PIN { get; set; }
+    [Required]
+    [Phone]
+    [StringLength(10, MinimumLength = 10, ErrorMessage = "Mobile number must be 10 digits")]
     public string? Mobile { get; set; }
     public string? Fax { get; set; }
+
+    [Required]
+    [EmailAddress]
+    [StringLength(256, ErrorMessage = "Email address is too long")]
     public string? Email { get; set; }
     public int? SecretQuestionId { get; set; }
 

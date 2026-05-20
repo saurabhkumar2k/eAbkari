@@ -19,6 +19,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
+    debugger;
     event.preventDefault();
     setErrorMessage('');
     setIsSubmitting(true);
@@ -154,6 +155,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
                   <label className="reg-label-block">User ID / Email</label>
                   <div className="login-input-group">
                     <div className="login-input-icon"><UserSvg className="icon-sm" /></div>
+                    {/* <input type="text"  placeholder="Enter User ID or Email" className="login-input-field" /> */}
                     <input
                       type="text"
                       placeholder="Enter User ID or Email"
