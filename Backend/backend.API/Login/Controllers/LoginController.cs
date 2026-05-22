@@ -42,7 +42,7 @@ namespace backend.API.Controllers
 
          if (licUser != null)
           {
-    var tokenPair = _jwtService.GenerateTokenPair(licUser.User_Id);
+    var tokenPair = _jwtService.GenerateTokenPair(licUser.UserId);
 
     var refreshTokenExpiryDays = int.Parse(
         _configuration.GetSection("JwtSettings")["RefreshTokenExpiryDays"] ?? "7"
@@ -51,12 +51,12 @@ namespace backend.API.Controllers
     var refreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
 
     await _LoginRepository.SaveTokenAsync(
-        licUser.User_Id,
+        licUser.UserId,
         tokenPair.AccessToken
     );
 
     await _LoginRepository.SaveTokenPairAsync(
-        licUser.User_Id,
+        licUser.UserId,
         tokenPair.AccessToken,
         tokenPair.RefreshToken,
         refreshTokenExpiry
@@ -69,7 +69,7 @@ namespace backend.API.Controllers
         AccessToken = tokenPair.AccessToken,
         RefreshToken = tokenPair.RefreshToken,
         ExpiresAt = tokenPair.ExpiresAt,
-        UserId = licUser.User_Id,
+        UserId = licUser.UserId,
         UserType = "LIC",
         RedirectUrl = "/welcome.html"
     });
