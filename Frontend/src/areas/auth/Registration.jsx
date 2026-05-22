@@ -1,6 +1,7 @@
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState,useRef, useEffect } from "react";
+
 import axios from "axios";
  import { 
    UserSvg, 
@@ -29,6 +30,8 @@ const [questions, setQuestions] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState("");
   const [errors, setErrors] = useState({});
+ 
+  const fileRef = useRef(null);
   const [formData, setFormData] = useState({
     FirstName: '',
    LastName: '',
@@ -49,6 +52,9 @@ const [questions, setQuestions] = useState([]);
     SecretAnswer: '',
     IsPunishableOffence: false
   });
+
+
+
 
   useEffect(() => {
     fetchStates();
@@ -182,6 +188,11 @@ for (const [key, value] of formDataToSend.entries()) {
     // Optional: clear dependent dropdown data if you use them
     setDistricts([]);
      setPreview(null); 
+ if (fileRef.current) {
+    fileRef.current.value = "";
+  }
+
+
     // setSubDivisions([]);
   } catch (error) {
   // ASP.NET Core model validation errors
@@ -558,6 +569,7 @@ for (const [key, value] of formDataToSend.entries()) {
   name="photo"
   accept="image/*"
   onChange={handlePhotoChange}
+   ref={fileRef}
   className="photo-input"
 />
         <div className="upload-hint">JPG, PNG (Max. 2MB)</div>

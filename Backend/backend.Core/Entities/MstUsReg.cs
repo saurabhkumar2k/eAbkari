@@ -59,6 +59,6 @@ public class MstUsReg
      public DateTime? RefreshTokenExpiry { get; set; }
 public string? Password { get; set; }
 
-    public string? IsPunishableOffence { get; set; }
+    public bool? IsPunishableOffence { get; set; }
 }
 
