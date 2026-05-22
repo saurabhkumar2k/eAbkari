@@ -411,8 +411,8 @@ for (const [key, value] of formDataToSend.entries()) {
 
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
                 </div>
-                {errors.StateUT && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.StateUT[0]} </span>)}
+                {/* {errors.StateUT && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.StateUT[0]} </span>)} */}
               
             </div>
 
