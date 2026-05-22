@@ -47,12 +47,16 @@ public class MstUsReg
     public string? RegBy { get; set; }
     public string? RegIP { get; set; }
 
-    public string? UserId { get; set; }
+    public string? UserId { get; set; }= string.Empty;
 
     // public byte[]? Photo { get; set; }
 
      public string? Photo { get; set; }
 
+     public string? Token { get; set; }
+     public DateTime? Token_Generated_At { get; set; }
+     public string? RefreshToken { get; set; }
+     public DateTime? RefreshTokenExpiry { get; set; }
 public string? Password { get; set; }
 
     public string? IsPunishableOffence { get; set; }

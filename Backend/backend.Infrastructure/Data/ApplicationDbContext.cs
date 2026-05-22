@@ -14,7 +14,7 @@ namespace backend.Infrastructure.Data
         public DbSet<MstSubDivision> MstSubDivisions { get; set; }
         // public DbSet<MstPoliceStation> MstPoliceStations { get; set; }
         public DbSet<MstDistrict> MstDistrict { get; set; }
-        public DbSet<MM_US_MT> MM_US_MTs { get; set; }
+        //public DbSet<MM_US_MT> MM_US_MTs { get; set; }
         public DbSet<MstLiquorKind> MstLiquorKind { get; set; }
         public DbSet<MstLiquorCategory> MstLiquorCategory { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
@@ -77,10 +77,10 @@ namespace backend.Infrastructure.Data
                     .HasKey(x => x.LiquorCatCode);
 
 
-                modelBuilder.Entity<MM_US_MT>().ToTable("MM_US_MT");
+                modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
 
-                modelBuilder.Entity<MM_US_MT>()
-                    .HasKey(x => x.User_Id);
+                modelBuilder.Entity<MstUsReg>()
+                    .HasKey(x => x.UserId);
 
 
     modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
