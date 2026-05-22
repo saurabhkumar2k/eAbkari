@@ -4,6 +4,7 @@ import Footer from './src/components/Footer';
 import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
+
 import { 
   ChevronDownSvg, 
   FileEditSvg, 
