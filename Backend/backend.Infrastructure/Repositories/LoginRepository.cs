@@ -22,8 +22,16 @@ namespace backend.Infrastructure.Repositories
         public async Task<MM_US_MT?> AuthenticateAsync(string userId, string password)
         {
             return await _context.MM_US_MTs
-                .FirstOrDefaultAsync(u => u.User_Id == userId && u.User_Pass == password);
+                .FirstOrDefaultAsync(u => u.User_Id == userId && u.Hash_Pass == password);
         }
+
+          public async Task<MstUsReg?> LoginAuthenticateAsync(string userId, string password)
+        {
+            return await _context.MstUsReg
+                .FirstOrDefaultAsync(u => u.UserId == userId && u.Password == password);
+        }
+
+
          public async Task SaveTokenAsync(string userId, string token)
         {
             var user = await _context.MM_US_MTs.FirstOrDefaultAsync(u => u.User_Id == userId);

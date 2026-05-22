@@ -9,7 +9,7 @@ import {
   EyeSvg
 } from '../../Style/images/Icons';
 
-const LOGIN_API_URL = '/api/Login/Login';
+const LOGIN_API_URL = 'http://localhost:5214/api/Login/Login';
 
 const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
   const [userId, setUserId] = useState('');
@@ -17,48 +17,56 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+ const [successMessage, setSuccessMessage] = useState("");
   const handleSubmit = async (event) => {
     debugger;
     event.preventDefault();
     setErrorMessage('');
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch(LOGIN_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: userId.trim(),
-          password: password.trim()
-        })
-      });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        setErrorMessage(
-          errorText || `Login failed with status ${response.status}`
-        );
-        return;
-      }
-      
+    
 
-      const data = await response.json().catch(() => null);
-      if (data && data.success === false) {
-        setErrorMessage(data.message || 'Invalid credentials');
-        return;
-      }
+  try {
+  const response = await fetch(LOGIN_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: userId.trim(),
+      password: password.trim()
+    })
+  });
 
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
-    } catch (error) {
-      setErrorMessage(error.message || 'Unable to connect to login service');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const data = await response.json();
+
+  console.log("API Response:", data);
+
+  if (!response.ok) {
+    setErrorMessage(data.message || "Login failed");
+    return;
+  }
+setSuccessMessage("Login Successful");
+window.location.href = data.redirectUrl;
+  if (data.success === false) {
+    setErrorMessage(data.message || "Invalid credentials");
+    return;
+  }
+
+ alert("Login Successful");
+
+ if (onLoginSuccess) {
+
+  onLoginSuccess(data);
+}
+
+} catch (error) {
+  console.error(error);
+  setErrorMessage(error.message || "Unable to connect");
+} finally {
+  setIsSubmitting(false);
+}
   };  return (
     <div className="login-page-wrapper">
       <div className="login-container">

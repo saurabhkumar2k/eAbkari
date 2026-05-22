@@ -55,6 +55,6 @@ public class MstUsReg
 
 public string? Password { get; set; }
 
-    public bool? IsPunishableOffence { get; set; }
+    public string? IsPunishableOffence { get; set; }
 }
 
