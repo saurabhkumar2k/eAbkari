@@ -4,6 +4,7 @@ import Footer from './src/components/Footer';
 import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
+import ApplicantDashboard from './src/area/applicant/applicantdashboard.jsx';
 
 import { 
   ChevronDownSvg, 
@@ -310,7 +311,13 @@ export default function App() {
               <Registration onNavigateToLogin={() => setCurrentView('APPLICANT_LOGIN')} />
             ) : (
               renderHomeContent()
-            )}
+            )
+            }:currentView === 'APPLICANT_DASHBOARD' ? (
+        <ApplicantDashboard 
+          onLogout={() => setCurrentView('HOME')}
+          onNavigateToHome={() => setCurrentView('HOME')}
+        />
+      )          
           </main>
           <Footer />
         </>
