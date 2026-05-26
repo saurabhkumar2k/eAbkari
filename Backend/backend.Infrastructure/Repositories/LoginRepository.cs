@@ -21,11 +21,13 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<MstUsReg?> AuthenticateAsync(string userId, string password)
         {
-            return await _context.MstUsReg
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.Password == password);
+        
+                return await _context.MstUsReg
+                    .FirstOrDefaultAsync(u => u.UserId == userId && u.Password == password);
+        
         }
 
-          public async Task<MstUsReg?> LoginAuthenticateAsync(string userId, string password)
+         public async Task<MstUsReg?> LoginAuthenticateAsync(string userId, string password)
         {
             return await _context.MstUsReg
                 .FirstOrDefaultAsync(u => u.UserId == userId && u.Password == password);

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { 
   UserSvg, 
   LockSvg, 
@@ -18,6 +19,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
  const [successMessage, setSuccessMessage] = useState("");
+ const navigate = useNavigate();
   const handleSubmit = async (event) => {
     debugger;
     event.preventDefault();
@@ -48,7 +50,8 @@ const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
     return;
   }
 setSuccessMessage("Login Successful");
-window.location.href = data.redirectUrl;
+// window.location.href = data.redirectUrl;
+navigate("/applicantdashboard");
   if (data.success === false) {
     setErrorMessage(data.message || "Invalid credentials");
     return;

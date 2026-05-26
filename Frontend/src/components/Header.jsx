@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { 
   ChevronDownSvg, 
   UserSvg, 
@@ -17,6 +18,7 @@ import {
 const Header = ({ onSelectView, currentView }) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const isAuthPage = currentView === 'APPLICANT_REGISTRATION';
 
@@ -31,21 +33,35 @@ const Header = ({ onSelectView, currentView }) => {
     { label: 'User Manuals', icon: <BookOpenSvg className="nav-icon-main" />, view: 'HOME' }
   ];
 
-  const handleLoginOptionClick = (item) => {
-    if (item === 'Applicant') {
-      onSelectView('APPLICANT_LOGIN');
-    } else {
-      onSelectView('HOME');
-    }
-    setIsLoginOpen(false);
-    setIsMobileMenuOpen(false);
-  };
+  // const handleLoginOptionClick = (item) => {
+  //   if (item === 'Applicant') {
+  //     onSelectView('APPLICANT_LOGIN');
+  //   } else {
+  //     onSelectView('HOME');
+  //   }
+  //   setIsLoginOpen(false);
+  //   setIsMobileMenuOpen(false);
+  // };
+const handleLoginOptionClick = (item) => {
 
+  if (item === 'Applicant') {
+
+    navigate("/login");
+
+  } else {
+
+    navigate("/");
+
+  }
+
+  setIsLoginOpen(false);
+  setIsMobileMenuOpen(false);
+};
   return (
     <header className="header">
       {/* Top Brand Area */}
       <div className="container header-top-area">
-        <div className="header-brand-box pointer-cursor" onClick={() => onSelectView('HOME')}>
+        <div className="header-brand-box pointer-cursor" onClick={() => navigate("/")}>
           <img 
             src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
             alt="Emblem of India"
@@ -110,7 +126,7 @@ const Header = ({ onSelectView, currentView }) => {
                   className="nav-link-refined"
                   onClick={(e) => {
                     e.preventDefault();
-                    onSelectView(link.view);
+                    navigate("/");
                   }}
                 >
                   <div className="nav-item-content">
@@ -159,10 +175,10 @@ const Header = ({ onSelectView, currentView }) => {
                 key={link.label} 
                 href="#" 
                 className="mobile-nav-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectView(link.view);
-                }}
+               onClick={(e) => {
+                e.preventDefault();
+                navigate("/");
+              }}
               >
                 {link.icon}
                 {link.label}

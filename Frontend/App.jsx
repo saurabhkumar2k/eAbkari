@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom';
 import Header from './src/components/Header';
 import Footer from './src/components/Footer';
 import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
-import ApplicantDashboard from './src/area/applicant/applicantdashboard.jsx';
+import ApplicantDashboard from './src/areas/applicant/applicantdashboard.jsx';
+
+
 
 import { 
   ChevronDownSvg, 
@@ -23,7 +31,7 @@ import {
 } from './src/Style/images/Icons';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('HOME');
+
 
   const renderHomeContent = () => (
     <>
@@ -299,29 +307,77 @@ export default function App() {
     </>
   );
 
-  return (
-    <div className="app-main-layout">
-      {currentView === 'APPLICANT_LOGIN' ? (
-        <Login onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} />
-      ) : (
-        <>
-          <Header onSelectView={setCurrentView} currentView={currentView} />
-          <main>
-            {currentView === 'APPLICANT_REGISTRATION' ? (
-              <Registration onNavigateToLogin={() => setCurrentView('APPLICANT_LOGIN')} />
-            ) : (
-              renderHomeContent()
-            )
-            }:currentView === 'APPLICANT_DASHBOARD' ? (
-        <ApplicantDashboard 
-          onLogout={() => setCurrentView('HOME')}
-          onNavigateToHome={() => setCurrentView('HOME')}
-        />
-      )          
-          </main>
-          <Footer />
-        </>
-      )}
-    </div>
-  );
+  // return (
+  //   <div className="app-main-layout">
+  //     {currentView === 'APPLICANT_LOGIN' ? (
+  //       <Login onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} />
+  //     ) : (
+  //       <>
+  //         <Header onSelectView={setCurrentView} currentView={currentView} />
+  //         <main>
+  //           {currentView === 'APPLICANT_REGISTRATION' ? (
+  //             <Registration onNavigateToLogin={() => setCurrentView('APPLICANT_LOGIN')} />
+  //           ) : (
+  //             renderHomeContent()
+  //           )
+  //           }:currentView === 'APPLICANT_DASHBOARD' ? (
+  //       <ApplicantDashboard 
+  //         onLogout={() => setCurrentView('HOME')}
+  //         onNavigateToHome={() => setCurrentView('HOME')}
+  //       />
+  //     )          
+  //         </main>
+  //         <Footer />
+  //       </>
+  //     )}
+  //   </div>
+  // );
+ return (
+  <BrowserRouter>
+
+    <Routes>
+
+      {/* Home Page */}
+      <Route
+        path="/"
+        element={
+          <>
+            <Header />
+
+            <main>
+              {renderHomeContent()}
+            </main>
+
+            <Footer />
+          </>
+        }
+      />
+
+      {/* Login Page */}
+      <Route
+        path="/login"
+        element={<Login />}
+      />
+
+      {/* Registration Page */}
+      <Route
+        path="/registration"
+        element={<Registration />}
+      />
+
+      {/* Dashboard Page */}
+      <Route
+        path="/applicantdashboard"
+        element={
+          <ApplicantDashboard
+            onLogout={() => window.location.href = "/"}
+            onNavigateToHome={() => window.location.href = "/"}
+          />
+        }
+      />
+
+    </Routes>
+
+  </BrowserRouter>
+);
 }
