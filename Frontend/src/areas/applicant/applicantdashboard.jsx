@@ -1,447 +1,619 @@
-import React, { useState } from 'react';
-import { 
-  User, 
-  Briefcase, 
-  MapPin, 
-  Building, 
-  Check, 
-  ShieldCheck,
-  FileCheck,
-  Power,
+import React, { useState } from "react";
+import {
   Home,
   Award,
-  Store,
   FlaskConical,
+  Store,
   Settings,
+  User,
+  Bell,
+  FileCheck,
+  Building,
+  ShieldCheck,
   Search,
-  Plus,
   ChevronRight,
   ChevronDown,
-  Info,
-  ExternalLink,
-  FileText,
-  AlertCircle,
+  ArrowLeft,
+  LogOut,
   Calendar,
-  Lock,
-  ArrowRight,
-  Trash2,
-  Phone
-} from 'lucide-react';
+  FileText,
+  Upload,
+  RefreshCw,
+  Plus,
+  Compass,
+  CheckCircle2,
+  Info,
+  ShieldAlert
+} from "lucide-react";
+// NewLicenseApplicationWizard deleted, inline wizard built directly into ApplicantDashboard to prevent import errors.
 
-export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
-  // Real-time toast alert state
-  const [saveMessage, setSaveMessage] = useState('');
+/* =========================
+   REUSABLE DATA
+========================= */
 
-  // Selected tab state
-  const [activeTab, setActiveTab] = useState('Home');
+const menuItems = [
+  { id: "Home", label: "Home", icon: Home },
+  { id: "License", label: "License", icon: Award },
+  { id: "MTP", label: "M&TP", icon: FlaskConical },
+  { id: "Dealer", label: "Dealer", icon: Store },
+  { id: "Premise", label: "Premise", icon: Building },
+  { id: "Profile", label: "Profile & Settings", icon: Settings },
+];
 
-  // Profile Form state
-  const [profile, setProfile] = useState({
-    firstName: 'Demo',
-    lastName: 'User',
-    fatherHusbandName: 'Demo User',
-    occupation: 'Business Owner',
-    panNo: 'ABCDE1234F',
-    dob: '1990-01-01',
-    gender: 'Male',
-    address1: '123, Demo Street, Model Town',
-    address2: 'Near Metro Station',
-    stateUt: 'Delhi',
-    district: 'North Delhi',
-    subDivision: 'Civil Lines',
-    pinCode: '110054',
-    mobileNo: '9876543210',
-    landLine: '011-12345678',
-    emailId: 'demo.user@email.com'
-  });
+const statsData = [
+  {
+    title: "Applications",
+    value: "12",
+    icon: FileCheck,
+    color: "bg-blue-100 text-blue-600",
+  },
+  {
+    title: "Licenses",
+    value: "02",
+    icon: ShieldCheck,
+    color: "bg-emerald-100 text-emerald-600",
+  },
+  {
+    title: "Premises",
+    value: "03",
+    icon: Building,
+    color: "bg-amber-100 text-amber-600",
+  },
+  {
+    title: "Alerts",
+    value: "05",
+    icon: Bell,
+    color: "bg-purple-100 text-purple-600",
+  },
+];
 
-  // Dynamic state arrays for interactive button features
-  const [licenses, setLicenses] = useState([
-    { id: 'ND-25-L10023', type: 'L-1 (Wholesale Foreign Liquor)', status: 'Approved', issued: '12 Jan 2025', expiry: '11 Jan 2026', premises: 'Model Town Warehouse A' },
-    { id: 'ND-25-L15004', type: 'L-15 (Hotel Tavern License)', status: 'Approved', issued: '01 Feb 2025', expiry: '31 Jan 2026', premises: 'Ansal Plaza Suite 4' },
-    { id: 'ND-25-L22099', type: 'L-22 (Club Bar License)', status: 'Under Review', issued: 'Pending Decision', expiry: 'Pending', premises: 'Connaught Place Annex' }
-  ]);
+const licenses = [
+  {
+    id: "ND-25-L10023",
+    type: "Wholesale Foreign Liquor",
+    status: "Approved",
+    location: "Model Town Warehouse",
+  },
+  {
+    id: "ND-25-L22099",
+    type: "Club Bar License",
+    status: "Under Review",
+    location: "Connaught Place",
+  },
+];
 
-  const [premises, setPremises] = useState([
-    { id: 'PR-9981', address: '123, Model Town, Phase II', subDivision: 'Civil Lines', policeClearance: 'Verified', fireNoc: 'Approved', status: 'Registered' },
-    { id: 'PR-4392', address: 'B-4, Ansal Plaza Shopping Arcade', subDivision: 'Defence Colony', policeClearance: 'Verified', fireNoc: 'Approved', status: 'Registered' },
-    { id: 'PR-1087', address: 'Flat 12A, Connaught Place Block E', subDivision: 'Chanakyapuri', policeClearance: 'In Progress', fireNoc: 'Under Inspection', status: 'Pending Verification' }
-  ]);
+/* =========================
+   REUSABLE COMPONENTS
+========================= */
 
-  const [dealers, setDealers] = useState([
-    { id: 'DL-7730', name: 'Delhi Wholesalers & Spirit Supply Corp.', location: 'Okhla Industrial Area Phase III', contact: '011-26383920', licenseRef: 'L-1-WH-887', status: 'Active' },
-    { id: 'DL-5122', name: 'Indraprastha Retail Vends Association', location: 'Mayapuri Phase I', contact: '011-28114050', licenseRef: 'L-2-RT-041', status: 'Active' },
-    { id: 'DL-3049', name: 'NCT Golden Bond Bottling & Logistics', location: 'Narela Industrial Zone', contact: '011-27781030', licenseRef: 'L-1-WH-219', status: 'Active' }
-  ]);
+const SectionTitle = ({ title, subtitle }) => {
+  return (
+    <div>
+      <h2 className="section-title">
+        {title}
+      </h2>
 
-  const [mtpPermits, setMtpPermits] = useState([
-    { id: 'MTP-25-001', prepName: 'Sura (Ayurvedic Medicinal Prep)', spiritType: 'Rectified Spirit 95%', quotaRequested: '5000 L', status: 'Approved', balance: '2450 L' },
-    { id: 'MTP-25-002', prepName: 'Eucalyptus Hand Disinfectant Formulation', spiritType: 'Absolute Alcohol 99%', quotaRequested: '12000 L', status: 'Approved', balance: '8100 L' },
-    { id: 'MTP-25-003', prepName: 'Homeopathic Ashwagandha Tincture', spiritType: 'Extra Neutral Alcohol (ENA)', quotaRequested: '3000 L', status: 'Under Review', balance: '0 L' }
-  ]);
+      {subtitle && (
+        <p className="section-subtitle">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+};
 
-  // Search filter query states
-  const [licenseSearch, setLicenseSearch] = useState('');
-  const [premiseSearch, setPremiseSearch] = useState('');
-  const [dealerSearch, setDealerSearch] = useState('');
-  const [mtpSearch, setMtpSearch] = useState('');
+const StatCard = ({ item }) => {
+  const Icon = item.icon;
 
-  // License category/sub-tab selection state
-  const [licenseSubTab, setLicenseSubTab] = useState('New Licenses');
+  return (
+    <div className="dashboard-card stat-card">
+      <div className="stat-top">
+        <div
+          className={`stat-icon ${item.color}`}
+        >
+          <Icon className="w-6 h-6" />
+        </div>
+
+        <span className="view-btn">
+          View →
+        </span>
+      </div>
+
+      <div>
+        <p className="stat-title">
+          {item.title}
+        </p>
+
+        <h3 className="stat-value">
+          {item.value}
+        </h3>
+      </div>
+    </div>
+  );
+};
+
+const LicenseCard = ({ license }) => {
+  return (
+    <div className="license-card">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="license-badge badge-blue">
+              {license.id}
+            </span>
+
+            <span
+              className={`license-badge ${
+                license.status === "Approved"
+                  ? "badge-green"
+                  : "badge-amber"
+              }`}
+            >
+              {license.status}
+            </span>
+          </div>
+
+          <h3 className="text-lg font-semibold text-slate-800" style={{ marginTop: "12px" }}>
+            {license.type}
+          </h3>
+
+          <p className="text-sm text-slate-500">
+            {license.location}
+          </p>
+        </div>
+
+        <button className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition border-none cursor-pointer">
+          View Details
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
   const [licenseDropdownOpen, setLicenseDropdownOpen] = useState(false);
-
-  // M&TP dropdown and sub-tab states
-  const [mtpDropdownOpen, setMtpDropdownOpen] = useState(false);
-  const [mtpSubTab, setMtpSubTab] = useState('New M&TP');
-
-  // Dealer dropdown and sub-tab states
-  const [dealerDropdownOpen, setDealerDropdownOpen] = useState(false);
-  const [dealerSubTab, setDealerSubTab] = useState('Dealer Registration');
-
-  // Profile dropdown and sub-tab states
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [profileSubTab, setProfileSubTab] = useState('Profile Detail');
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const [mtpDropdownOpen, setMtpDropdownOpen] = useState(false);
+  const [dealerDropdownOpen, setDealerDropdownOpen] = useState(false);
+  const [premiseDropdownOpen, setPremiseDropdownOpen] = useState(false);
 
-  // Secondary sub-tab states
-  const [renewals, setRenewals] = useState([
-    { id: 'REN-25-0941', licenseId: 'ND-25-L10023', status: 'Pending Approval', requestedOn: '18 May 2026', duration: '1 Year' }
-  ]);
-  const [transfers, setTransfers] = useState([
-    { id: 'TRF-25-1092', licenseId: 'ND-25-L15004', fromPremises: 'Model Town Warehouse A', toPremises: 'Ansal Plaza Suite 4', status: 'Approved', requestDate: '10 Apr 2026' }
-  ]);
-  const [documents, setDocuments] = useState([
-    { id: 'DOC-01', name: 'Identity Proof / Aadhaar Copy', status: 'Verified', lastUploaded: '2026-01-10' },
-    { id: 'DOC-02', name: 'NCT Police Clearance Certificate (PCC)', status: 'Verified', lastUploaded: '2026-01-14' },
-    { id: 'DOC-03', name: 'Municipal Fire NOC Copy', status: 'Re-upload Requested', lastUploaded: '2026-01-15' },
-    { id: 'DOC-04', name: 'Registered Lease Agreement / Ownership Deed', status: 'Verified', lastUploaded: '2026-01-18' }
-  ]);
+  const isLicenseActive = activeTab === "License" || [
+    "New License",
+    "Applied License",
+    "Renewal License",
+    "License Transfer",
+    "Document Revalidate"
+  ].includes(activeTab);
 
-  // --- RESTORED FORM CREATION STATES ---
-  const [newLicenseForm, setNewLicenseForm] = useState({ type: 'L-1 Wholesale FL', premises: '123, Model Town, Phase II', duration: '1 Year' });
-  const [newRenewalForm, setNewRenewalForm] = useState({ licenseId: 'ND-25-L10023', duration: '1 Year', remarks: '' });
-  const [newTransferForm, setNewTransferForm] = useState({ licenseId: 'ND-25-L10023', targetPremises: 'B-4, Ansal Plaza Shopping Arcade', reason: '' });
-  const [newDocRevalForm, setNewDocRevalForm] = useState({ docId: 'DOC-03', fileName: '' });
-  const [trackApplicantId, setTrackApplicantId] = useState('');
+  const isProfileActive = activeTab === "Profile" || [
+    "UserProfile",
+    "ChangePassword"
+  ].includes(activeTab);
 
-  const [newPremiseForm, setNewPremiseForm] = useState({ address: '', subDivision: 'Civil Lines' });
-  const [newDealerForm, setNewDealerForm] = useState({ dealerId: 'DL-7730', quota: '500' });
-  const [newMtpForm, setNewMtpForm] = useState({ prepName: '', spiritType: 'Rectified Spirit 95%', quota: '' });
+  const isMtpActive = activeTab === "MTP" || [
+    "New M&TP",
+    "Applied M&TP"
+  ].includes(activeTab);
 
-  const handleInputChange = (field, value) => {
-    setProfile(prev => ({ ...prev, [field]: value }));
-  };
+  const isDealerActive = activeTab === "Dealer" || [
+    "Dealer Registration",
+    "Applied Dealers"
+  ].includes(activeTab);
 
-  const triggerToast = (msg) => {
-    setSaveMessage(msg);
-    setTimeout(() => {
-      setSaveMessage('');
-    }, 4000);
-  };
+  const isPremiseActive = activeTab === "Premise" || [
+    "Register Premise",
+    "Applied Premise",
+    "New Permit",
+    "Applied Permit"
+  ].includes(activeTab);
 
-  // --- MENU ITEMS DEFINITION ---
-  const menuItems = [
-    { id: 'Home', label: 'Home', icon: Home },
-    { id: 'License', label: 'License', icon: Award },
-    { id: 'MTP', label: 'M&TP', icon: FlaskConical },
-    { id: 'Dealer', label: 'Dealer', icon: Store },
-    { id: 'Profile', label: 'Profile & Settings', icon: Settings }
+  const licenseSubItems = [
+    "New License",
+    "Applied License",
+    "Renewal License",
+    "License Transfer",
+    "Document Revalidate"
   ];
 
   return (
-    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-slate-50 relative flex flex-col font-sans antialiased text-slate-800 text-left">
-      
-      {/* Premium Backdrop Glow Effects */}
-      <div className="absolute top-[20%] left-[-10%] w-[45rem] h-[45rem] rounded-full bg-gradient-to-r from-blue-300/10 to-[#ffd700]/5 blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-[50%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-gradient-to-r from-[#012a52]/5 to-indigo-300/5 blur-3xl pointer-events-none -z-10" />
-      
-      {/* Sticky Delhi Excise High-Fidelity Header Bar */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200/60 shadow-xs transition-all flex flex-col">
-        <div className="max-w-[1300px] w-full mx-auto px-6 py-4 flex items-center justify-between">
-          
-          {/* Delhi National Emblem Logo & Brand Container */}
-          <div className="flex items-center gap-4 cursor-pointer hover:opacity-95 transition-all text-left" onClick={onNavigateToHome}>
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-6 py-4 shadow-sm">
+      <div className="max-w-7xl mx-auto flex flex-col gap-4">
+        
+
+        {/* Tier 1: Brand & Back Navigation */}
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100 flex-wrap gap-4">
+          <div className="flex items-center gap-4 py-1">
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
               alt="Emblem of India"
-              className="h-12 sm:h-14 w-auto object-contain mr-1 filter transition-all duration-300 hover:scale-[1.03]"
+              className="h-12 sm:h-14 w-auto object-contain"
+              referrerPolicy="no-referrer"
             />
-
-            <div className="flex flex-col items-start justify-center text-left">
-              <h1 className="text-base sm:text-lg md:text-xl font-black text-[#0f2a52] tracking-tight leading-tight select-none">Department of Excise</h1>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 tracking-wide mt-0.5 select-none font-sans">Government of NCT of Delhi</p>
+            <div className="h-10 sm:h-12 w-[1px] bg-slate-200"></div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Department of Excise
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 font-semibold tracking-wide">
+                Government of NCT of Delhi
+              </p>
             </div>
           </div>
 
-          {/* Minimal Top Header Actions */}
-          <div className="flex items-center gap-3">
-            {/* Logout button (Circle Power and Log Out Label) */}
-            <button 
-              type="button" 
-              onClick={onLogout}
-              className="flex items-center gap-2 group cursor-pointer"
-            >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-[#0f2a52] flex items-center justify-center text-[#0f2a52] group-hover:bg-[#0f2a52] group-hover:text-white transition-all duration-300 shadow-xs flex-shrink-0">
-                <Power className="w-3.5 h-3.5 stroke-[2.2]" />
-              </div>
-              <span className="text-xs font-black text-[#0f2a52] hover:text-amber-600 transition-colors uppercase hidden sm:inline">
-                Log Out
-              </span>
-            </button>
-          </div>
+          <button
+            onClick={onNavigateToHome}
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 uppercase tracking-widest py-1.5 px-3 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg cursor-pointer transition select-none"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Portal</span>
+          </button>
         </div>
 
-        {/* Dynamic Horizontal Menu Bar at the top of the page under header */}
-        <div className="bg-white border-b border-slate-200/55 text-[#0f2a52] select-none shadow-xs py-4">
-          <div className="max-w-[1300px] mx-auto px-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 w-full h-auto">
+        {/* Tier 2: Beautiful Centered Horizontal Navigation with exact button size */}
+        <div className="w-full py-1">
+          <div className="flex items-center justify-center gap-3 mx-auto" style={{ width: "max-content", minWidth: "100%" }}>
+            <div className="flex items-center gap-3 justify-center w-full">
               {menuItems.map((item) => {
                 const Icon = item.icon;
-                const isSelected = activeTab === item.id;
-                
-                if (item.id === 'License') {
+                const isActive = item.id === "License" 
+                  ? isLicenseActive 
+                  : item.id === "Profile"
+                    ? isProfileActive
+                    : item.id === "MTP"
+                      ? isMtpActive
+                      : item.id === "Dealer"
+                        ? isDealerActive
+                        : item.id === "Premise"
+                          ? isPremiseActive
+                          : activeTab === item.id;
+
+                if (item.id === "License") {
                   return (
-                    <div
-                      key={item.id}
-                      className="relative w-full group"
+                    <div 
+                      key={item.id} 
+                      className="relative block"
                       onMouseEnter={() => setLicenseDropdownOpen(true)}
                       onMouseLeave={() => setLicenseDropdownOpen(false)}
                     >
                       <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab('License');
-                          setLicenseDropdownOpen(!licenseDropdownOpen);
-                        }}
-                        className={`w-full px-2 sm:px-4 py-4 rounded-xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer ${
-                          isSelected 
-                            ? 'bg-[#ff7e01] text-white shadow-sm font-black' 
-                            : 'hover:bg-slate-50 text-[#0f2a52]/85 hover:text-[#0f2a52] border border-slate-100/50 hover:border-slate-200/70'
-                        }`}
+                        onClick={() => setLicenseDropdownOpen(!licenseDropdownOpen)}
+                        className={`sidebar-btn ${isActive ? "active" : ""}`}
+                        style={{ width: "190px", flexShrink: 0 }}
                       >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        </div>
+
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${licenseDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
-                      <div 
-                        className={`absolute left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 mt-1 min-w-[220px] sm:min-w-[265px] max-w-[calc(100vw-32px)] bg-white text-slate-800 rounded-2xl shadow-xl py-2.5 border border-slate-200/85 z-50 text-left ${
-                          licenseDropdownOpen ? 'block' : 'hidden group-hover:block group-focus-within:block'
-                        }`}
-                      >
-                        {[
-                          { id: 'New Licenses', label: 'New Licenses' },
-                          { id: 'Applied Licenses', label: 'Applied Licenses' },
-                          { id: 'Renewal Licenses', label: 'Renewal Licenses' },
-                          { id: 'License Transfer', label: 'License Transfer' },
-                          { id: 'Document Revalidation', label: 'Document Revalidation' },
-                        ].map((sub) => (
-                          <button
-                            key={sub.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTab('License');
-                              setLicenseSubTab(sub.id);
-                              setLicenseDropdownOpen(false);
-                            }}
-                            className={`w-full px-5 py-3.5 text-[15px] font-bold uppercase tracking-wider text-left transition-colors flex items-center justify-between ${
-                              activeTab === 'License' && licenseSubTab === sub.id
-                                ? 'bg-emerald-50 text-[#0f2a52] font-black'
-                                : 'text-slate-700 hover:bg-slate-50 hover:text-[#0f2a52]'
-                            }`}
-                          >
-                            <span>{sub.label}</span>
-                            {activeTab === 'License' && licenseSubTab === sub.id && (
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#ff7e01]" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
+                      {licenseDropdownOpen && (
+                        <div className="license-dropdown">
+                          <div className="dropdown-header">
+                            <div className="dropdown-header-icon">
+                              <ShieldCheck className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="dropdown-text-group">
+                              <h4 className="dropdown-header-title">Excise Licensing Services</h4>
+                              <p className="dropdown-header-subtitle">Apply, renew, transfer, or revalidate</p>
+                            </div>
+                          </div>
+
+                          <div className="dropdown-menu-list">
+                            {[
+                              { id: "New License", label: "New License", desc: "File a new privilege permit", num: "01" },
+                              { id: "Applied License", label: "Applied License", desc: "Track status of pending filings", num: "02" },
+                              { id: "Renewal License", label: "Renewal License", desc: "Extend tenure and clear fee dues", num: "03" },
+                              { id: "License Transfer", label: "License Transfer", desc: "Transfer authority or relocate shop", num: "04" },
+                              { id: "Document Revalidate", label: "Document Revalidate", desc: "Validate expiring NOC documents", num: "05" }
+                            ].map((subOption) => {
+                              const isSubActive = activeTab === subOption.id;
+                              return (
+                                <button
+                                  key={subOption.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveTab(subOption.id);
+                                    setLicenseDropdownOpen(false);
+                                  }}
+                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
+                                >
+                                  <div className="dropdown-item-left">
+                                    <div className="dropdown-item-badge">
+                                      {subOption.num}
+                                    </div>
+                                    <div className="dropdown-text-group">
+                                      <span className="dropdown-label">{subOption.label}</span>
+                                      <span className="dropdown-description">{subOption.desc}</span>
+                                    </div>
+                                  </div>
+                                  <ChevronRight className="dropdown-arrow" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 }
 
-                if (item.id === 'Profile') {
+                if (item.id === "MTP") {
                   return (
-                    <div
-                      key={item.id}
-                      className="relative w-full group"
-                      onMouseEnter={() => setProfileDropdownOpen(true)}
-                      onMouseLeave={() => setProfileDropdownOpen(false)}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab('Profile');
-                          setProfileDropdownOpen(!profileDropdownOpen);
-                        }}
-                        className={`w-full px-2 sm:px-4 py-4 rounded-xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer ${
-                          isSelected 
-                            ? 'bg-[#ff7e01] text-white shadow-sm font-black' 
-                            : 'hover:bg-slate-50 text-[#0f2a52]/85 hover:text-[#0f2a52] border border-slate-100/50 hover:border-slate-200/70'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                      </button>
-
-                      <div 
-                        className={`absolute left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 mt-1 min-w-[200px] bg-white text-slate-800 rounded-2xl shadow-xl py-2.5 border border-slate-200/85 z-50 text-left ${
-                          profileDropdownOpen ? 'block' : 'hidden group-hover:block group-focus-within:block'
-                        }`}
-                      >
-                        {[
-                          { id: 'Profile Detail', label: 'Profile' },
-                          { id: 'Change Password', label: 'Change Password' },
-                        ].map((sub) => (
-                          <button
-                            key={sub.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTab('Profile');
-                              setProfileSubTab(sub.id);
-                              setProfileDropdownOpen(false);
-                            }}
-                            className={`w-full px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-left transition-colors flex items-center justify-between ${
-                              activeTab === 'Profile' && profileSubTab === sub.id
-                                ? 'bg-amber-50 text-[#0f2a52] font-black'
-                                : 'text-slate-700 hover:bg-slate-50 hover:text-[#0f2a52]'
-                            }`}
-                          >
-                            <span>{sub.label}</span>
-                            {activeTab === 'Profile' && profileSubTab === sub.id && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#ff7e01]" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
-                if (item.id === 'MTP') {
-                  return (
-                    <div
-                      key={item.id}
-                      className="relative w-full group"
+                    <div 
+                      key={item.id} 
+                      className="relative block"
                       onMouseEnter={() => setMtpDropdownOpen(true)}
                       onMouseLeave={() => setMtpDropdownOpen(false)}
                     >
                       <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab('MTP');
-                          setMtpDropdownOpen(!mtpDropdownOpen);
-                        }}
-                        className={`w-full px-2 sm:px-4 py-4 rounded-xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer ${
-                          isSelected 
-                            ? 'bg-[#ff7e01] text-white shadow-sm font-black' 
-                            : 'hover:bg-slate-50 text-[#0f2a52]/85 hover:text-[#0f2a52] border border-slate-100/50 hover:border-slate-200/70'
-                        }`}
+                        onClick={() => setMtpDropdownOpen(!mtpDropdownOpen)}
+                        className={`sidebar-btn ${isActive ? "active" : ""}`}
+                        style={{ width: "190px", flexShrink: 0 }}
                       >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        </div>
+
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${mtpDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
-                      <div 
-                        className={`absolute left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 mt-1 min-w-[200px] bg-white text-slate-800 rounded-2xl shadow-xl py-2.5 border border-slate-200/85 z-50 text-left ${
-                          mtpDropdownOpen ? 'block' : 'hidden group-hover:block group-focus-within:block'
-                        }`}
-                      >
-                        {[
-                          { id: 'New M&TP', label: 'New M&TP' },
-                          { id: 'Applied M&TP', label: 'Applied M&TP' },
-                        ].map((sub) => (
-                          <button
-                            key={sub.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTab('MTP');
-                              setMtpSubTab(sub.id);
-                              setMtpDropdownOpen(false);
-                            }}
-                            className={`w-full px-5 py-3.5 text-[15px] font-bold uppercase tracking-wider text-left transition-colors flex items-center justify-between ${
-                              activeTab === 'MTP' && mtpSubTab === sub.id
-                                ? 'bg-[#ebf3fc] text-[#0f2a52] font-black'
-                                : 'text-slate-700 hover:bg-slate-50 hover:text-[#0f2a52]'
-                            }`}
-                          >
-                            <span>{sub.label}</span>
-                            {activeTab === 'MTP' && mtpSubTab === sub.id && (
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#ff7e01]" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
+                      {mtpDropdownOpen && (
+                        <div className="license-dropdown" style={{ left: "-85px" }}>
+                          <div className="dropdown-header">
+                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)" }}>
+                              <FlaskConical className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="dropdown-text-group">
+                              <h4 className="dropdown-header-title">M&TP Services</h4>
+                              <p className="dropdown-header-subtitle">Medicinal & Toilet Preparations</p>
+                            </div>
+                          </div>
+
+                          <div className="dropdown-menu-list">
+                            {[
+                              { id: "New M&TP", label: "New M&TP", desc: "Apply for a new M&TP unit license", num: "01" },
+                              { id: "Applied M&TP", label: "Applied M&TP", desc: "Track medical unit formulation and filings", num: "02" }
+                            ].map((subOption) => {
+                              const isSubActive = activeTab === subOption.id;
+                              return (
+                                <button
+                                  key={subOption.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveTab(subOption.id);
+                                    setMtpDropdownOpen(false);
+                                  }}
+                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
+                                >
+                                  <div className="dropdown-item-left">
+                                    <div className="dropdown-item-badge">
+                                      {subOption.num}
+                                    </div>
+                                    <div className="dropdown-text-group">
+                                      <span className="dropdown-label">{subOption.label}</span>
+                                      <span className="dropdown-description">{subOption.desc}</span>
+                                    </div>
+                                  </div>
+                                  <ChevronRight className="dropdown-arrow" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 }
 
-                if (item.id === 'Dealer') {
+                if (item.id === "Dealer") {
                   return (
-                    <div
-                      key={item.id}
-                      className="relative w-full group"
+                    <div 
+                      key={item.id} 
+                      className="relative block"
                       onMouseEnter={() => setDealerDropdownOpen(true)}
                       onMouseLeave={() => setDealerDropdownOpen(false)}
                     >
                       <button
-                        type="button"
-                        onClick={() => {
-                          setActiveTab('Dealer');
-                          setDealerDropdownOpen(!dealerDropdownOpen);
-                        }}
-                        className={`w-full px-2 sm:px-4 py-4 rounded-xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer ${
-                          isSelected 
-                            ? 'bg-[#ff7e01] text-white shadow-sm font-black' 
-                            : 'hover:bg-slate-50 text-[#0f2a52]/85 hover:text-[#0f2a52] border border-slate-100/50 hover:border-slate-200/70'
-                        }`}
+                        onClick={() => setDealerDropdownOpen(!dealerDropdownOpen)}
+                        className={`sidebar-btn ${isActive ? "active" : ""}`}
+                        style={{ width: "190px", flexShrink: 0 }}
                       >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                        <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        </div>
+
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${dealerDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
-                      <div 
-                        className={`absolute left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 mt-1 min-w-[200px] bg-white text-slate-800 rounded-2xl shadow-xl py-2.5 border border-slate-200/85 z-50 text-left ${
-                          dealerDropdownOpen ? 'block' : 'hidden group-hover:block group-focus-within:block'
-                        }`}
+                      {dealerDropdownOpen && (
+                        <div className="license-dropdown" style={{ left: "-40px" }}>
+                          <div className="dropdown-header">
+                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #4f46e5, #4338ca)" }}>
+                              <Store className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="dropdown-text-group">
+                              <h4 className="dropdown-header-title">Dealer Services</h4>
+                              <p className="dropdown-header-subtitle">Excise registration & status</p>
+                            </div>
+                          </div>
+
+                          <div className="dropdown-menu-list">
+                            {[
+                              { id: "Dealer Registration", label: "Dealer Registration", desc: "Register a new excise trade dealer account", num: "01" },
+                              { id: "Applied Dealers", label: "Applied Dealers", desc: "Track status of pending trade dealer applications", num: "02" }
+                            ].map((subOption) => {
+                              const isSubActive = activeTab === subOption.id;
+                              return (
+                                <button
+                                  key={subOption.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveTab(subOption.id);
+                                    setDealerDropdownOpen(false);
+                                  }}
+                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
+                                >
+                                  <div className="dropdown-item-left">
+                                    <div className="dropdown-item-badge">
+                                      {subOption.num}
+                                    </div>
+                                    <div className="dropdown-text-group">
+                                      <span className="dropdown-label">{subOption.label}</span>
+                                      <span className="dropdown-description">{subOption.desc}</span>
+                                    </div>
+                                  </div>
+                                  <ChevronRight className="dropdown-arrow" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                if (item.id === "Premise") {
+                  return (
+                    <div 
+                      key={item.id} 
+                      className="relative block"
+                      onMouseEnter={() => setPremiseDropdownOpen(true)}
+                      onMouseLeave={() => setPremiseDropdownOpen(false)}
+                    >
+                      <button
+                        onClick={() => setPremiseDropdownOpen(!premiseDropdownOpen)}
+                        className={`sidebar-btn ${isActive ? "active" : ""}`}
+                        style={{ width: "190px", flexShrink: 0 }}
                       >
-                        {[
-                          { id: 'Dealer Registration', label: 'Dealer Registration' },
-                          { id: 'Applied Dealers', label: 'Applied Dealers' },
-                        ].map((sub) => (
-                          <button
-                            key={sub.id}
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTab('Dealer');
-                              setDealerSubTab(sub.id);
-                              setDealerDropdownOpen(false);
-                            }}
-                            className={`w-full px-5 py-3.5 text-[15px] font-bold uppercase tracking-wider text-left transition-colors flex items-center justify-between ${
-                              activeTab === 'Dealer' && dealerSubTab === sub.id
-                                ? 'bg-[#ebf3fc] text-[#0f2a52] font-black'
-                                : 'text-slate-700 hover:bg-slate-50 hover:text-[#0f2a52]'
-                            }`}
-                          >
-                            <span>{sub.label}</span>
-                            {activeTab === 'Dealer' && dealerSubTab === sub.id && (
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#ff7e01]" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        </div>
+
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${premiseDropdownOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {premiseDropdownOpen && (
+                        <div className="license-dropdown" style={{ left: "-50px" }}>
+                          <div className="dropdown-header">
+                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #d97706, #b45309)" }}>
+                              <Building className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="dropdown-text-group">
+                              <h4 className="dropdown-header-title">Premise & Permits</h4>
+                              <p className="dropdown-header-subtitle">Manage premises and local trade permits</p>
+                            </div>
+                          </div>
+
+                          <div className="dropdown-menu-list">
+                            {[
+                              { id: "Register Premise", label: "Register Premise", desc: "Register a physical store, depot or warehouse", num: "01" },
+                              { id: "Applied Premise", label: "Applied Premise", desc: "Track pending premise verification status", num: "02" },
+                              { id: "New Permit", label: "New Permit", desc: "Apply for shipping, transport, or event permits", num: "03" },
+                              { id: "Applied Permit", label: "Applied Permit", desc: "View approved transport pass permits", num: "04" }
+                            ].map((subOption) => {
+                              const isSubActive = activeTab === subOption.id;
+                              return (
+                                <button
+                                  key={subOption.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveTab(subOption.id);
+                                    setPremiseDropdownOpen(false);
+                                  }}
+                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
+                                >
+                                  <div className="dropdown-item-left">
+                                    <div className="dropdown-item-badge">
+                                      {subOption.num}
+                                    </div>
+                                    <div className="dropdown-text-group">
+                                      <span className="dropdown-label">{subOption.label}</span>
+                                      <span className="dropdown-description">{subOption.desc}</span>
+                                    </div>
+                                  </div>
+                                  <ChevronRight className="dropdown-arrow" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                if (item.id === "Profile") {
+                  return (
+                    <div 
+                      key={item.id} 
+                      className="relative block"
+                      onMouseEnter={() => setProfileDropdownOpen(true)}
+                      onMouseLeave={() => setProfileDropdownOpen(false)}
+                    >
+                      <button
+                        onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                        className={`sidebar-btn ${isActive ? "active" : ""}`}
+                        style={{ width: "190px", flexShrink: 0 }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        </div>
+
+                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${profileDropdownOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {profileDropdownOpen && (
+                        <div className="license-dropdown" style={{ left: "auto", right: 0 }}>
+                          <div className="dropdown-header">
+                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #1e293b, #0f172a)" }}>
+                              <User className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="dropdown-text-group">
+                              <h4 className="dropdown-header-title">Profile & Settings</h4>
+                              <p className="dropdown-header-subtitle">Manage account & password</p>
+                            </div>
+                          </div>
+
+                          <div className="dropdown-menu-list">
+                            {[
+                              { id: "UserProfile", label: "Profile", desc: "View & edit your profile details", num: "01" },
+                              { id: "ChangePassword", label: "Change Password", desc: "Update account access password", num: "02" }
+                            ].map((subOption) => {
+                              const isSubActive = activeTab === subOption.id;
+                              return (
+                                <button
+                                  key={subOption.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveTab(subOption.id);
+                                    setProfileDropdownOpen(false);
+                                  }}
+                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
+                                >
+                                  <div className="dropdown-item-left">
+                                    <div className="dropdown-item-badge">
+                                      {subOption.num}
+                                    </div>
+                                    <div className="dropdown-text-group">
+                                      <span className="dropdown-label">{subOption.label}</span>
+                                      <span className="dropdown-description">{subOption.desc}</span>
+                                    </div>
+                                  </div>
+                                  <ChevronRight className="dropdown-arrow" />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 }
@@ -449,1438 +621,2171 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full px-2 sm:px-4 py-4 rounded-xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all duration-150 cursor-pointer ${
-                      isSelected 
-                        ? 'bg-[#ff7e01] text-white shadow-sm font-black' 
-                        : 'hover:bg-slate-50 text-[#0f2a52]/85 hover:text-[#0f2a52] border border-slate-100/50 hover:border-slate-200/70'
-                    }`}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setLicenseDropdownOpen(false);
+                    }}
+                    className={`sidebar-btn ${isActive ? "active" : ""}`}
+                    style={{ width: "190px", flexShrink: 0 }}
                   >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{item.label}</span>
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span className="text-[15px] font-semibold">{item.label}</span>
+                    </div>
+
+                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
                   </button>
                 );
               })}
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Container Workspace */}
-      <main className="flex-1 max-w-[1300px] w-full mx-auto px-6 py-6 md:py-8 flex flex-col justify-start items-stretch space-y-6 overflow-y-auto">
+      </div>
+    </header>
+  );
+};
 
-        {/* Toast Save Alert Indicator */}
-        {saveMessage && (
-          <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-800 shadow-sm animate-fade-in flex-shrink-0">
-            <div className="p-1.5 rounded-lg bg-emerald-500 text-white flex-shrink-0">
-              <Check className="w-4 h-4" />
-            </div>
-            <span className="text-xs font-black uppercase tracking-wide">{saveMessage}</span>
-          </div>
-        )}
+/* =========================
+   MAIN COMPONENT
+========================= */
 
-        {/* CONDITIONAL RENDER BY TABS */}
-        
-        {/* TAB 1: HOME */}
-        {activeTab === 'Home' && (
-          <div className="space-y-6 animate-fade-in text-left">
-            
-            {/* 1. HIGH-FIDELITY APPLICANT PROFILE WELCOME BANNER */}
-            <div className="relative bg-[#ebf3fc] rounded-3xl p-6 sm:p-8 md:pb-12 text-slate-800 overflow-hidden shadow-xs border border-blue-100/50 min-h-[160px] md:min-h-[190px] flex flex-col justify-center">
+export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
+  const [activeTab, setActiveTab] = useState("Home");
+  const [search, setSearch] = useState("");
+  const [toastMessage, setToastMessage] = useState(null);
+
+  // States for sub-level views
+  const [renewedList, setRenewedList] = useState({});
+  const [docs, setDocs] = useState({
+    fireNoc: { name: "Fire Safety Certificate (NOC)", status: "Expired on 15 May 2026", type: "expired" },
+    mcdLicense: { name: "MCD Trade License Renewed Copy", status: "Clarification Requested", type: "flagged" },
+    leaseDeed: { name: "Registered Property Lease Deed", status: "Verified", type: "verified" },
+  });
+  const [transferSuccess, setTransferSuccess] = useState(false);
+  const [transferForm, setTransferForm] = useState({
+    lic: "ND-25-L10023",
+    type: "Ownership",
+    transferee: "",
+    remarks: ""
+  });
+
+  // Inline "New License" Wizard States
+  const [newLicStep, setNewLicStep] = useState(1);
+  const [newLicData, setNewLicData] = useState({
+    entityType: "Private Limited",
+    licenseType: "L-1 Wholesale Vend of Indian Liquor",
+    applicantName: "Delhi Retail & Distribution Corp",
+    tradeName: "Okhla Spirits & Beverages",
+    pincode: "110020",
+    premiseAddress: "Plot 104, Okhla Industrial Area Phase-III, New Delhi",
+    hasFireNoc: false,
+    hasTaxCompliance: false,
+    declarationsChecked: false,
+    mcdTradeLicenseNum: "MCD-99120-DEL"
+  });
+  const [appSubmissionCompleted, setAppSubmissionCompleted] = useState(false);
+
+  // M&TP states
+  const [mtpApplications, setMtpApplications] = useState([
+    {
+      id: "MTP-2026-0811",
+      unitName: "Bio-Herbal Pharmaceuticals Ltd",
+      formulation: "Ayurvedic Restorative Elixir (Asava/Arishta)",
+      alcoholStrength: "11% v/v (Self-generated Alcohol)",
+      status: "Approved",
+      submittedDate: "10/05/2026",
+      remarks: "Ready for spirit allotment quota release"
+    },
+    {
+      id: "MTP-2026-4409",
+      unitName: "Apex Homoeo Laboratories",
+      formulation: "Diluted Alcohol Medication Formulations",
+      alcoholStrength: "90% v/v (Industrial Rectified Spirit)",
+      status: "Under Technical Review",
+      submittedDate: "21/05/2026",
+      remarks: "Awaiting chemical analysis report clearance"
+    }
+  ]);
+
+  const [newMtpData, setNewMtpData] = useState({
+    unitName: "Delhi Pharmaceutical Formulation Works",
+    formulationName: "Rectified Medicated Cough Syrup Base",
+    formulationType: "Ayurvedic medicine (with self-generated alcohol)",
+    spiritType: "Rectified Spirit (95% v/v)",
+    annualRequirement: "5000 Litres",
+    drugLicenseNum: "DL-MED-9921-2026",
+    declarationsChecked: false
+  });
+  
+  const [mtpSubmissionCompleted, setMtpSubmissionCompleted] = useState(false);
+
+  // Dealer states
+  const [dealerApplications, setDealerApplications] = useState([
+    {
+      id: "DLR-2026-9022",
+      firmName: "Saraswati Wholesale Wine Merchants",
+      licenseType: "L-15 Wholesale custom bond ware-house",
+      panNum: "AAACS0811K",
+      status: "Approved",
+      submittedDate: "12/04/2026",
+      remarks: "Trade account active, security earnest money deposited"
+    },
+    {
+      id: "DLR-2026-6130",
+      firmName: "Northern India Spirits Retailers",
+      licenseType: "L-2 Retail Vend of Beer & Wine",
+      panNum: "AABCP1130M",
+      status: "Under Assessment",
+      submittedDate: "18/05/2026",
+      remarks: "Physical stockroom verification in progress"
+    }
+  ]);
+
+  const [newDealerData, setNewDealerData] = useState({
+    firmName: "Vedic Craft Beverages LLP",
+    ownerName: "Sumit Sharma",
+    licenseType: "L-13 Wholesale import bond storage",
+    panNum: "AAPCS9912C",
+    gstinNum: "07AAPCS9912C1ZP",
+    warehouseAddress: "Plot 24, Kirti Nagar Industrial Area, New Delhi - 110015",
+    declarationsChecked: false
+  });
+
+  const [dealerSubmissionCompleted, setDealerSubmissionCompleted] = useState(false);
+
+  // Premise states
+  const [premiseApplications, setPremiseApplications] = useState([
+    {
+      id: "PM-2026-6182",
+      premiseName: "Central Delhi Logistics Hub",
+      address: "Plot 104, Okhla Industrial Area Phase-III, New Delhi - 110020",
+      premiseType: "Bonded Warehouse Store",
+      dimensions: "4,500 Sq. Ft.",
+      status: "Approved",
+      submittedDate: "15/04/2026",
+      remarks: "CCTV feed integrated & fire clearance obtained"
+    },
+    {
+      id: "PM-2026-4401",
+      premiseName: "South Delhi Retail Suite A",
+      address: "Shop No. 12, Ground Floor, Saket District Centre, New Delhi - 110017",
+      premiseType: "Retail Vend Shop",
+      dimensions: "450 Sq. Ft.",
+      status: "Under Physical Inspection",
+      submittedDate: "20/05/2026",
+      remarks: "Physical safety layout and locker vault verification in progress"
+    }
+  ]);
+
+  const [newPremiseData, setNewPremiseData] = useState({
+    premiseName: "West Delhi Distributing Depot",
+    ownerName: "Sumit Sharma",
+    address: "B-42, Mayapuri Industrial Area Phase-I, New Delhi - 110064",
+    premiseType: "Bonded Warehouse Store",
+    dimensions: "3,000 Sq. Ft.",
+    fireNocNumber: "DFS/NOC/2026/8839",
+    securityDepositReceipt: "SD-EXE-99381-2026",
+    declarationsChecked: false
+  });
+
+  const [premiseSubmissionCompleted, setPremiseSubmissionCompleted] = useState(false);
+
+  // Permit states
+  const [permitApplications, setPermitApplications] = useState([
+    {
+      id: "PRM-2026-0034",
+      permitType: "Local Transport Permit (Bulk Movement)",
+      sourcePremise: "Central Delhi Logistics Hub (Okhla)",
+      destPremise: "North Delhi Retail Depot (Rohini)",
+      consignmentDetails: "50 Cases of Premium Indian Spirits (IMFL)",
+      carrierLicense: "DL-1LM-8842",
+      status: "Approved",
+      submittedDate: "10/05/2026",
+      remarks: "Valid transport gate pass generated"
+    },
+    {
+      id: "PRM-2026-5381",
+      permitType: "Special Event Temporary Permit",
+      sourcePremise: "L-13 wholesale import bond storage",
+      destPremise: "Vedic Craft Banquet Hall, Chanakyapuri",
+      consignmentDetails: "Occasional hospitality service package",
+      carrierLicense: "DL-1N-9931",
+      status: "Approved",
+      submittedDate: "25/05/2026",
+      remarks: "Event gate pass valid till 28/05/2026"
+    }
+  ]);
+
+  const [newPermitData, setNewPermitData] = useState({
+    permitType: "Local Transport Permit (Bulk Movement)",
+    sourcePremise: "Central Delhi Logistics Hub (Okhla)",
+    destPremise: "West Delhi Distributing Depot (Mayapuri)",
+    consignmentDetails: "120 Cases of Beer & Light Wines",
+    carrierLicense: "DL-1LM-9902",
+    declarationsChecked: false
+  });
+
+  const [permitSubmissionCompleted, setPermitSubmissionCompleted] = useState(false);
+
+  const showToast = (msg, type = "success") => {
+    setToastMessage({ msg, type });
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
+
+  const handleRenew = (id) => {
+    setRenewedList(prev => ({ ...prev, [id]: true }));
+    showToast(`Renewal initiated for ${id}! License duty receipt generated and extended successfully.`);
+  };
+
+  const handleUpload = (key) => {
+    setDocs(prev => ({
+      ...prev,
+      [key]: { ...prev[key], status: "Uploading & Authenticating with System...", type: "uploading" }
+    }));
+    
+    setTimeout(() => {
+      setDocs(prev => ({
+        ...prev,
+        [key]: { ...prev[key], status: "Verified & System Approved", type: "verified" }
+      }));
+      showToast(`${key === "fireNoc" ? "Fire NOC" : "MCD License"} has been processed and successfully validated!`);
+    }, 1500);
+  };
+
+  const handleSubmitTransfer = (e) => {
+    e.preventDefault();
+    if (!transferForm.transferee) {
+      showToast("Please enter transferee/address details", "error");
+      return;
+    }
+    setTransferSuccess(true);
+    showToast("License Transfer request submitted for departmental review!");
+  };
+
+  const filteredLicenses = licenses.filter(
+    (item) =>
+      item.type.toLowerCase().includes(search.toLowerCase()) ||
+      item.id.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50/50 flex flex-col relative">
+
+      {/* HEADER WITH CENTERED HORIZONTAL MENU */}
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onLogout={onLogout}
+        onNavigateToHome={onNavigateToHome}
+      />
+
+      {/* TOAST SYSTEM */}
+      {toastMessage && (
+        <div 
+          className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 px-5 py-3.5 rounded-2xl shadow-xl border ${
+            toastMessage.type === "success" 
+              ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
+              : "bg-red-50 border-red-100 text-red-800"
+          } transition-all transform scale-100 animate-fade-in`}
+        >
+          {toastMessage.type === "success" ? (
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+          ) : (
+            <ShieldAlert className="w-5 h-5 text-red-600 shrink-0" />
+          )}
+          <span className="text-xs font-bold font-sans">{toastMessage.msg}</span>
+        </div>
+      )}
+
+      {/* PAGE CONTENT */}
+      {activeTab === "New License" ? (
+        <div className="flex-grow w-full py-6">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6">
+            <div className="bg-white rounded-3xl border border-slate-200/60 overflow-hidden shadow-md p-6 sm:p-8">
               
-              {/* High-Fidelity India Gate Heritage Image Overlay across entire banner */}
-              <div className="absolute inset-0 w-full opacity-35 pointer-events-none mix-blend-multiply flex items-end justify-end select-none">
-                <img 
-                  src="https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=800" 
-                  alt="India Gate Delhi"
-                  className="w-full h-full object-cover object-right rounded-3xl brightness-75 contrast-110"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              {/* Core Content Layout of Welcome Banner */}
-              <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 text-left">
-                
-                {/* Left Profile Icon in Teal color frame */}
-                <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-3xl bg-[#0d9488] flex items-center justify-center text-white shadow-sm flex-shrink-0">
-                  <User className="w-10 h-10 sm:w-12 sm:h-12" />
-                </div>
-
-                {/* Mid Section: Headings */}
-                <div className="flex-1 text-center sm:text-left space-y-1">
-                  <h2 className="text-xl sm:text-2xl font-black text-[#0f2a52] tracking-tight">
-                    Welcome, {profile.firstName} {profile.lastName}! <span className="inline-block animate-bounce">👋</span>
-                  </h2>
-                  <p className="text-xs sm:text-xs text-slate-500 font-bold max-w-xl">
-                    Manage your profile, licenses, premises and applications seamlessly.
-                  </p>
+              {appSubmissionCompleted ? (
+                /* SUCCESS SCREEN */
+                <div className="text-center py-8 px-4 space-y-6 animate-fade-in">
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                    <CheckCircle2 className="w-10 h-10" />
+                  </div>
                   
-                  {/* Real-time Subtitles */}
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 pt-1.5 text-[11px] text-slate-400 font-bold">
-                    <span className="flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5 text-slate-400" /> {profile.occupation}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" /> {profile.district}, {profile.stateUt}
-                    </span>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                      Application Submitted Successfully
+                    </h2>
+                    <p className="text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
+                      Your application for a new excise privilege license has been logged. The Department of Excise, Government of NCT of Delhi will process the inspection shortly.
+                    </p>
                   </div>
-                </div>
-              </div>
 
-              {/* Row of quotes and status badges aligned on bottom */}
-              <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 mt-6">
-                {/* Mantra Card on bottom-left */}
-                <div className="bg-white/90 border border-blue-200/50 rounded-2xl p-3 max-w-sm shadow-xs flex flex-col text-left">
-                  <p className="text-[10px] font-extrabold text-blue-600 italic">
-                    " Accurate information today, Seamless services tomorrow. "
-                  </p>
-                  <span className="text-[8px] font-black uppercase text-blue-500/80 tracking-widest mt-1">
-                    Excise Citizen Portal Mantra
-                  </span>
-                </div>
-              </div>
+                  {/* Receipt box */}
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 sm:p-6 max-w-md mx-auto text-left space-y-3.5 shadow-sm">
+                    <div className="flex justify-between items-center text-xs border-b border-slate-200/60 pb-2.5">
+                      <span className="font-bold text-slate-400 uppercase tracking-wider">Transaction Status</span>
+                      <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold">PAID & FILED</span>
+                    </div>
 
-            </div>
-
-            {/* 2. PREMIUM STATISTIC METRICS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
-              
-              {/* Card 1: My Applications */}
-              <div 
-                className="bg-white border border-slate-200/50 rounded-3xl p-5 shadow-xs flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FileCheck className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">My Applications</span>
-                    <h3 className="text-3xl font-black text-[#0f2a52] leading-none mt-1">{licenses.length + 9}</h3>
-                    <span className="text-[10px] text-slate-400 font-bold mt-1 block">Total Active Filings</span>
-                  </div>
-                </div>
-              </div>
- 
-              {/* Card 2: Active Licenses */}
-              <div 
-                className="bg-white border border-slate-200/50 rounded-3xl p-5 shadow-xs flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Active Licenses</span>
-                    <h3 className="text-3xl font-black text-[#0f2a52] leading-none mt-1 font-mono">
-                      0{licenses.filter(l => l.status === 'Approved').length}
-                    </h3>
-                    <span className="text-[10px] text-slate-400 font-bold mt-1 block">Excise Permits Valid</span>
-                  </div>
-                </div>
-              </div>
- 
-              {/* Card 3: Premises */}
-              <div 
-                className="bg-white border border-[#012a52]/10 rounded-3xl p-5 shadow-xs flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <Building className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold text-[#012a52]/60 uppercase tracking-wider block">Premises</span>
-                    <h3 className="text-3xl font-black text-[#0f2a52] leading-none mt-1 font-mono">
-                      0{premises.length}
-                    </h3>
-                    <span className="text-[10px] text-slate-400 font-bold mt-1 block">Registered Sites</span>
-                  </div>
-                </div>
-              </div>
- 
-              {/* Card 4: M&TP Permits */}
-              <div 
-                className="bg-white border border-[#012a52]/10 rounded-3xl p-5 shadow-xs flex items-center justify-between"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <FlaskConical className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold text-[#012a52]/60 uppercase tracking-wider block">M&TP Permits</span>
-                    <h3 className="text-3xl font-black text-[#0f2a52] leading-none mt-1 font-mono">
-                      0{mtpPermits.length}
-                    </h3>
-                    <span className="text-[10px] text-slate-400 font-bold mt-1 block">Alcohol Quotas</span>
-                  </div>
-                </div>
-              </div>
- 
-            </div>
-
-            {/* Home Portal Directives Box */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col md:flex-row gap-6">
-              <div className="flex-1 space-y-4">
-                <div className="flex items-center gap-2.5 text-blue-900">
-                  <Info className="w-5 h-5" />
-                  <h3 className="text-sm font-black uppercase tracking-wider">Citizen Advisory Panel</h3>
-                </div>
-              </div>
-              <div className="md:w-80 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* TAB 2: LICENSE */}
-        {activeTab === 'License' && (
-          <div className="space-y-6 animate-fade-in text-left">
-
-            <div className="flex flex-col lg:flex-row gap-6">
-              
-              {/* Left Column: Contextual Dynamic Registry Directory */}
-              <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                
-                {/* Mode header rendering */}
-                {licenseSubTab === 'New Licenses' && (
-                  <>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div className="grid grid-cols-2 gap-y-3.5 gap-x-2 text-xs">
                       <div>
-                        <h4 className="text-sm font-black text-[#012a52] uppercase tracking-wider">My Active Approved Licenses</h4>
-                        <p className="text-xs text-slate-400 font-bold mt-0.2">Officially issued and operating excise certificates.</p>
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">Application Ref</span>
+                        <span className="font-mono font-extrabold text-slate-800 text-sm">AP-2026-88021</span>
                       </div>
-                      
-                      <div className="relative">
-                        <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-                        <input 
-                          type="text"
-                          placeholder="Search active..."
-                          value={licenseSearch}
-                          onChange={(e) => setLicenseSearch(e.target.value)}
-                          className="pl-9 pr-4 py-1.5 bg-slate-50 rounded-xl text-xs font-bold border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-56"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {licenses
-                        .filter(l => l.status === 'Approved')
-                        .filter(l => l.type.toLowerCase().includes(licenseSearch.toLowerCase()) || l.id.toLowerCase().includes(licenseSearch.toLowerCase()))
-                        .map((lic) => (
-                          <div key={lic.id} className="p-4 border border-slate-100 bg-slate-50/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="space-y-1 text-left">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="px-2.5 py-0.5 rounded bg-[#ebf3fc] text-[#0f2a52] text-[10px] font-black uppercase tracking-widest">{lic.id}</span>
-                                <span className="text-xs font-black text-slate-800">{lic.type}</span>
-                              </div>
-                              <p className="text-[11px] text-slate-400 font-bold flex items-center gap-1.5 font-sans">
-                                <MapPin className="w-3.5 h-3.5 text-slate-400" /> registered unit: {lic.premises}
-                              </p>
-                              <p className="text-[10px] text-slate-400 font-bold flex items-center gap-1.5 font-sans">
-                                <Calendar className="w-3.5 h-3.5 text-slate-400" /> validity span: {lic.issued} to {lic.expiry}
-                              </p>
-                            </div>
-
-                            <div className="flex items-center gap-3 self-end sm:self-auto">
-                              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-250">
-                                {lic.status}
-                              </span>
-                              <button
-                                onClick={() => triggerToast(`Downloading secure PDF receipt for ${lic.id}...`)}
-                                className="p-1 px-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-[10px] font-black rounded-lg uppercase tracking-wider flex items-center gap-1 cursor-pointer"
-                              >
-                                <FileText className="w-3.5 h-3.5" /> PDF
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-
-                      {licenses.filter(l => l.status === 'Approved').length === 0 && (
-                        <p className="text-xs text-slate-400 text-center py-6 font-bold">No active approved licenses matching criteria.</p>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {licenseSubTab === 'Applied Licenses' && (
-                  <>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                       <div>
-                        <h4 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Application Filings Under Review</h4>
-                        <p className="text-xs text-slate-400 font-bold mt-0.2">In-progress proposals currently being inspected by local commissioners.</p>
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">License Category</span>
+                        <span className="font-bold text-slate-805">{newLicData.licenseType.split(" ")[0]}</span>
                       </div>
-                      
-                      <div className="relative">
-                        <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-                        <input 
-                          type="text"
-                          placeholder="Search filings..."
-                          value={licenseSearch}
-                          onChange={(e) => setLicenseSearch(e.target.value)}
-                          className="pl-9 pr-4 py-1.5 bg-slate-50 rounded-xl text-xs font-bold border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-56"
-                        />
+                      <div className="col-span-2">
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">Applicant Entity</span>
+                        <span className="font-bold text-slate-800">{newLicData.applicantName || "Delhi Retail & Distribution Corp"}</span>
                       </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {licenses
-                        .filter(l => l.status === 'Under Review')
-                        .filter(l => l.type.toLowerCase().includes(licenseSearch.toLowerCase()) || l.id.toLowerCase().includes(licenseSearch.toLowerCase()))
-                        .map((lic) => (
-                          <div key={lic.id} className="p-4 border border-blue-105 bg-blue-50/15 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="space-y-1 text-left">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="px-2.5 py-0.5 rounded bg-blue-100 text-[#012a52] text-[10px] font-black uppercase tracking-widest">{lic.id}</span>
-                                <span className="text-xs font-black text-slate-800">{lic.type}</span>
-                              </div>
-                              <p className="text-[11px] text-slate-400 font-bold flex items-center gap-1.5">
-                                <MapPin className="w-3.5 h-3.5 text-slate-400" /> site premises: {lic.premises}
-                              </p>
-                              <span className="text-[10px] text-orange-600 font-black tracking-wide block uppercase">
-                                Action Required: Verification Pending Inspection
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-3 self-end sm:self-auto">
-                              <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-205 animate-pulse">
-                                {lic.status}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-
-                      {licenses.filter(l => l.status === 'Under Review').length === 0 && (
-                        <p className="text-xs text-slate-400 text-center py-6 font-bold">No active pending filings found.</p>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {licenseSubTab === 'Renewal Licenses' && (
-                  <>
-                    <div className="border-b border-slate-100 pb-4">
-                      <h4 className="text-sm font-black text-[#012a52] uppercase tracking-wider">License Renewal Petitions</h4>
-                      <p className="text-xs text-slate-400 font-bold mt-0.2">Historic and active validation extension dockets filed with Delhi State.</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      {renewals.map((ren) => (
-                        <div key={ren.id} className="p-4 border border-slate-100 bg-slate-50/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                          <div className="space-y-1 text-left">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="px-2.5 py-0.5 rounded bg-blue-50 text-[#012a52] text-[10px] font-black uppercase tracking-widest">{ren.id}</span>
-                              <span className="text-xs font-black text-slate-800">Renewal requested for: {ren.licenseId}</span>
-                            </div>
-                            <p className="text-[11px] text-slate-400 font-bold flex items-center gap-1.5">
-                              Requested On: {ren.requestedOn} | Duration requested: {ren.duration}
-                            </p>
-                          </div>
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
-                            {ren.status}
-                          </span>
-                        </div>
-                      ))}
-
-                      {renewals.length === 0 && (
-                        <p className="text-xs text-slate-400 text-center py-6 font-bold">No renewal requests registered currently.</p>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {licenseSubTab === 'License Transfer' && (
-                  <>
-                    <div className="border-b border-slate-100 pb-4">
-                      <h4 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Ownership & Premise Relocation Logs</h4>
-                      <p className="text-xs text-slate-400 font-bold mt-0.2">Registered history of transfer mandates for active establishments.</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      {transfers.map((trf) => (
-                        <div key={trf.id} className="p-4 border border-slate-100 bg-slate-50/50 rounded-2xl space-y-3">
-                          <div className="flex items-center justify-between gap-2 border-b border-slate-100/50 pb-2 flex-wrap">
-                            <div className="flex items-center gap-2">
-                              <span className="px-2.5 py-0.5 rounded bg-[#ebf3fc] text-[#0f2a52] text-[10px] font-black uppercase tracking-widest">{trf.id}</span>
-                              <span className="text-xs font-black text-slate-800">License: {trf.licenseId}</span>
-                            </div>
-                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-250">
-                              {trf.status}
-                            </span>
-                          </div>
-                          
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-semibold">
-                            <div className="bg-slate-100/40 p-2.5 rounded-xl">
-                              <span className="text-[10px] text-slate-400 font-extrabold uppercase block font-sans">Transferred From:</span>
-                              <p className="text-slate-800 truncate font-sans">{trf.fromPremises}</p>
-                            </div>
-                            <div className="bg-slate-100/40 p-2.5 rounded-xl">
-                              <span className="text-[10px] text-slate-400 font-extrabold uppercase block font-sans">Transferred To Target:</span>
-                              <p className="text-[#0f2a52] truncate font-sans">{trf.toPremises}</p>
-                            </div>
-                          </div>
-                          <p className="text-[10px] text-slate-400 font-bold italic font-sans text-right">Filed on {trf.requestDate}</p>
-                        </div>
-                      ))}
-
-                      {transfers.length === 0 && (
-                        <p className="text-xs text-slate-400 text-center py-6 font-bold">No relocation/transfer records logged yet.</p>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {licenseSubTab === 'Document Revalidation' && (
-                  <>
-                    <div className="border-b border-slate-100 pb-4">
-                      <h4 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Required Compliance Dossiers Checklist</h4>
-                      <p className="text-xs text-slate-400 font-bold mt-0.2">Mandatory proofs filed with the Department of Excise inspectors.</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      {documents.map((doc) => (
-                        <div key={doc.id} className="p-4 border border-slate-100 bg-slate-50/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                          <div className="space-y-1 text-left">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="px-2.5 py-0.5 rounded bg-blue-50 text-[#012a52] text-[10px] font-black uppercase tracking-widest">{doc.id}</span>
-                              <span className="text-xs font-black text-slate-800">{doc.name}</span>
-                            </div>
-                            <p className="text-[11px] text-slate-400 font-bold">Last modified physical scanning date: {doc.lastUploaded}</p>
-                          </div>
-                          
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
-                            doc.status.includes('Verified') 
-                              ? 'bg-emerald-100 text-emerald-800 border-emerald-250' 
-                              : doc.status.includes('Requested') 
-                                ? 'bg-red-50 text-red-700 border-red-200 animate-pulse'
-                                : 'bg-amber-100 text-amber-800 border-amber-250'
-                          }`}>
-                            {doc.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-              </div>
-
-              {/* Right Column: Contextually Swapped Action forms */}
-              <div className="w-full lg:w-96 bg-white border border-slate-200 rounded-3xl p-6 flex flex-col h-fit">
-                
-                {licenseSubTab === 'New Licenses' && (
-                  <form onSubmit={handleApplyLicense} className="space-y-5 text-left">
-                    <div className="border-b border-slate-100 pb-3">
-                      <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Excise Application</h3>
-                      <p className="text-[11px] text-slate-400 font-bold">Request a new commercial/wholesale liquor license.</p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">License Category</label>
-                      <select
-                        value={newLicenseForm.type}
-                        onChange={(e) => setNewLicenseForm({ ...newLicenseForm, type: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      >
-                        <option value="L-1 Wholesale FL">L-1 (Wholesale of Foreign Liquor)</option>
-                        <option value="L-2 Retail Vend">L-2 (Retail Store Vend)</option>
-                        <option value="L-15 Hotel Tavern">L-15 (Hotel Tavern & Lounge Bar)</option>
-                        <option value="L-22 Special Club">L-22 (Authorized Member Club Permit)</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Proposed Registered Location</label>
-                      <select
-                        value={newLicenseForm.premises}
-                        onChange={(e) => setNewLicenseForm({ ...newLicenseForm, premises: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      >
-                        {premises.map(p => (
-                          <option key={p.id} value={p.address}>{p.address.substring(0, 30)}... ({p.id})</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">License Duration Mode</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['1 Year', '3 Years', '5 Years'].map((dir) => (
-                          <button
-                            key={dir}
-                            type="button"
-                            onClick={() => setNewLicenseForm({ ...newLicenseForm, duration: dir })}
-                            className={`p-2 border rounded-xl text-[10px] font-extrabold uppercase tracking-wide cursor-pointer ${
-                              newLicenseForm.duration === dir 
-                                ? 'bg-[#0f2a52] text-white border-transparent' 
-                                : 'border-slate-250 bg-white text-slate-700 hover:bg-slate-50'
-                            }`}
-                          >
-                            {dir}
-                          </button>
-                        ))}
+                      <div className="col-span-2">
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">Premises Address</span>
+                        <span className="font-semibold text-slate-700 leading-tight block">{newLicData.premiseAddress}</span>
+                      </div>
+                      <div>
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">Fee Remitted</span>
+                        <span className="font-extrabold text-blue-600">₹ 2,50,000</span>
+                      </div>
+                      <div>
+                        <span className="block text-[11px] text-slate-400 font-semibold uppercase">Date Submitted</span>
+                        <span className="font-bold text-slate-700">27/05/2026</span>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="p-3 bg-blue-50/50 rounded-2xl text-[10px] text-blue-900 border border-blue-500/10 flex gap-2">
-                      <Lock className="w-3.5 h-3.5 text-blue-800 flex-shrink-0 mt-0.5" />
-                      <span className="font-bold">Applications incur structural NCT application fees. Digital crypto signature stamp will be verification checked on dispatch.</span>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-3 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2 mt-2"
-                    >
-                      <Plus className="w-4 h-4" /> Submit License Application
-                    </button>
-                  </form>
-                )}
-
-                {licenseSubTab === 'Applied Licenses' && (
-                  <div className="space-y-5 text-left">
-                    <div className="border-b border-slate-100 pb-3">
-                      <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Fast-Track Status Tracker</h3>
-                      <p className="text-[11px] text-slate-400 font-bold">Query excise filing benchmarks using the unique registration sequence reference.</p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Application Filings Reference</label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. ND-25-L22099"
-                        value={trackApplicantId}
-                        onChange={(e) => setTrackApplicantId(e.target.value)}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 uppercase"
-                      />
-                    </div>
-
-                    {/* Step layout display */}
-                    <div className="bg-slate-50 p-4 rounded-2xl space-y-4 border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Procedural Status Steps</p>
-                      
-                      <div className="space-y-3 font-sans">
-                        <div className="flex items-start gap-2.5 text-xs text-slate-700">
-                          <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-black mt-0.5 flex-shrink-0">✓</div>
-                          <div className="font-bold">
-                            <p className="text-[#012a52]">Licensing File Compiled</p>
-                            <span className="text-[9px] text-slate-400 font-medium">Stage 1 - Citizen portal upload</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5 text-xs text-slate-700">
-                          <div className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px] font-black mt-0.5 flex-shrink-0">✓</div>
-                          <div className="font-bold">
-                            <p className="text-[#012a52]">Challan Receipts Reconstructed</p>
-                            <span className="text-[9px] text-slate-400 font-medium">Stage 2 - Verification of treasury records</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5 text-xs text-slate-700">
-                          <div className="w-4 h-4 rounded-full bg-orange-500 text-white flex items-center justify-center text-[8px] font-black mt-0.5 flex-shrink-0">•</div>
-                          <div className="font-bold">
-                            <p className="text-[#012a52] animate-pulse">Physical Site Inspection</p>
-                            <span className="text-[9px] text-orange-600 font-black">Stage 3 - In Progress (By Sub-division Inspector)</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5 text-xs text-slate-350 font-bold">
-                          <div className="w-4 h-4 rounded-full border border-slate-200 text-white flex items-center justify-center text-[8px] mt-0.5 flex-shrink-0">4</div>
-                          <div>
-                            <p className="text-slate-400">Excise Stamp Dispatched</p>
-                            <span className="text-[9px] text-slate-300 font-normal">Stage 4 - Certificate ready</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-4">
+                    <button 
                       onClick={() => {
-                        triggerToast(`Checking real-time database state for ID: ${trackApplicantId || 'ND-25-L22099'}`);
+                        setAppSubmissionCompleted(false);
+                        setNewLicStep(1);
+                        setActiveTab("Applied License");
                       }}
-                      className="w-full py-2.5 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider text-center"
+                      className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition flex items-center justify-center gap-2 shadow-sm"
                     >
-                      Connect with Excise Registry
+                      <span>Track Application Status</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                    
+                    <button 
+                      onClick={() => {
+                        setAppSubmissionCompleted(false);
+                        setNewLicStep(1);
+                        setNewLicData({
+                          entityType: "Private Limited",
+                          licenseType: "L-1 Wholesale Vend of Indian Liquor",
+                          applicantName: "",
+                          tradeName: "",
+                          pincode: "",
+                          premiseAddress: "",
+                          hasFireNoc: false,
+                          hasTaxCompliance: false,
+                          declarationsChecked: false,
+                          mcdTradeLicenseNum: ""
+                        });
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 cursor-pointer transition"
+                    >
+                      Apply for Another License
                     </button>
                   </div>
-                )}
+                </div>
+              ) : (
+                /* IN-PROGRESS STEPS FORM */
+                <div className="space-y-6">
+                  
+                  {/* Step Bubble Indicator */}
+                  <div className="flex items-center justify-between pb-6 border-b border-slate-100">
+                    {[
+                      { step: 1, name: "Brand & Entity" },
+                      { step: 2, name: "Premises Info" },
+                      { step: 3, name: "Certifications" }
+                    ].map((st, idx) => (
+                      <React.Fragment key={st.step}>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                            newLicStep === st.step 
+                              ? "bg-blue-600 text-white ring-4 ring-blue-50" 
+                              : newLicStep > st.step 
+                                ? "bg-emerald-500 text-white" 
+                                : "bg-slate-100 text-slate-400"
+                          }`}>
+                            {newLicStep > st.step ? "✓" : st.step}
+                          </div>
+                          <span className={`text-xs font-bold hidden sm:inline ${
+                            newLicStep === st.step ? "text-slate-800" : "text-slate-400 font-semibold"
+                          }`}>
+                            {st.name}
+                          </span>
+                        </div>
+                        {idx < 2 && (
+                          <div className={`flex-grow h-[2px] mx-2 max-w-[80px] sm:max-w-[120px] ${
+                            newLicStep > st.step ? "bg-emerald-400" : "bg-slate-100"
+                          }`} />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
 
-                {licenseSubTab === 'Renewal Licenses' && (
-                  <form onSubmit={handleApplyRenewal} className="space-y-5 text-left font-sans">
-                    <div className="border-b border-slate-100 pb-3">
-                      <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">License Renewal Docket</h3>
-                      <p className="text-[11px] text-slate-400 font-bold">Extend the validity period of your active excise clearance.</p>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-800 leading-tight">
+                      {newLicStep === 1 && "Entity & Licensing Selection"}
+                      {newLicStep === 2 && "Premises & Location Specifics"}
+                      {newLicStep === 3 && "Compliance Clearance & Final Declarations"}
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      Please enter official verified details to secure the correct evaluation process under the NCT Excise bylaws.
+                    </p>
+                  </div>
+
+                  {/* STEP 1: Entity & Licensing Selection */}
+                  {newLicStep === 1 && (
+                    <div className="space-y-4 pt-2">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Applicant Entity Type</label>
+                          <select 
+                            value={newLicData.entityType}
+                            onChange={(e) => setNewLicData({ ...newLicData, entityType: e.target.value })}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                          >
+                            <option value="Private Limited">Private Limited Company</option>
+                            <option value="Partnership">Partnership Firm</option>
+                            <option value="Proprietorship">Individual Proprietor</option>
+                            <option value="Public Limited">Public Limited Company</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">excise License privilege Category</label>
+                          <select 
+                            value={newLicData.licenseType}
+                            onChange={(e) => setNewLicData({ ...newLicData, licenseType: e.target.value })}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                          >
+                            <option value="L-1 Wholesale Vend of Indian Liquor">L-1 Wholesale Vend of Indian Liquor</option>
+                            <option value="L-15 Hotel Bar License (Star Classified)">L-15 Hotel Bar License (Star Classified)</option>
+                            <option value="L-22 Club Bar License (Registered Clubs)">L-22 Club Bar License (Registered Clubs)</option>
+                            <option value="L-10 Retail Departmental Store License">L-10 Retail Departmental Store License</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Applicant Registered Entity Name</label>
+                        <input 
+                          type="text"
+                          placeholder="E.g., Delhi Retail & Distribution Corp"
+                          value={newLicData.applicantName}
+                          onChange={(e) => setNewLicData({ ...newLicData, applicantName: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Brand / Proposed Trade Shop Name</label>
+                        <input 
+                          type="text"
+                          placeholder="E.g., Okhla Spirits & Beverages"
+                          value={newLicData.tradeName}
+                          onChange={(e) => setNewLicData({ ...newLicData, tradeName: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                        />
+                      </div>
                     </div>
+                  )}
 
-                    <div className="space-y-1 font-sans">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Select Expiring License</label>
-                      <select
-                        value={newRenewalForm.licenseId}
-                        onChange={(e) => setNewRenewalForm({ ...newRenewalForm, licenseId: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                      >
-                        {licenses.filter(l => l.status === 'Approved').map(l => (
-                          <option key={l.id} value={l.id}>{l.id} - {l.type.substring(0, 18)}...</option>
-                        ))}
-                      </select>
+                  {/* STEP 2: Premises & Location Specifics */}
+                  {newLicStep === 2 && (
+                    <div className="space-y-4 pt-2">
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div className="sm:col-span-2 space-y-1.5">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">MCD Trade License Reference Number</label>
+                          <input 
+                            type="text"
+                            placeholder="MCD-99120-DEL"
+                            value={newLicData.mcdTradeLicenseNum}
+                            onChange={(e) => setNewLicData({ ...newLicData, mcdTradeLicenseNum: e.target.value })}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Postal PIN Code</label>
+                          <input 
+                            type="text"
+                            maxLength="6"
+                            placeholder="E.g., 110020"
+                            value={newLicData.pincode}
+                            onChange={(e) => setNewLicData({ ...newLicData, pincode: e.target.value })}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Full Physical Address of Proposed Premise Layout</label>
+                        <textarea 
+                          rows="3"
+                          placeholder="Enter complete building number, lane registration details, and floor level..."
+                          value={newLicData.premiseAddress}
+                          onChange={(e) => setNewLicData({ ...newLicData, premiseAddress: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:bg-white text-slate-700 font-medium transition resize-none"
+                        />
+                      </div>
                     </div>
+                  )}
 
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Renewal Mode Span</label>
-                      <select
-                        value={newRenewalForm.duration}
-                        onChange={(e) => setNewRenewalForm({ ...newRenewalForm, duration: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                      >
-                        <option value="1 Year">Extend by 1 Year (Standard Mode)</option>
-                        <option value="3 Years">Extend by 3 Years (Premium Multi-Year)</option>
-                        <option value="5 Years">Extend by 5 Years (Maximum Span)</option>
-                      </select>
+                  {/* STEP 3: Compliance Clearance & Final Declarations */}
+                  {newLicStep === 3 && (
+                    <div className="space-y-5 pt-2">
+                      
+                      {/* Checkbox clearances */}
+                      <div className="space-y-3.5 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
+                        <span className="block text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Required Clearances Status</span>
+                        
+                        <label className="flex items-start gap-3 cursor-pointer select-none">
+                          <input 
+                            type="checkbox"
+                            checked={newLicData.hasFireNoc}
+                            onChange={(e) => setNewLicData({ ...newLicData, hasFireNoc: e.target.checked })}
+                            className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"
+                          />
+                          <div className="text-xs">
+                            <span className="block font-bold text-slate-800">Has Fire Safety Certificate (NOC)</span>
+                            <span className="text-slate-400 block mt-0.5">Applicant confirms possession of valid and up-to-date Fire Brigade NOC.</span>
+                          </div>
+                        </label>
+
+                        <div className="h-[1px] bg-slate-200/60 my-2"></div>
+
+                        <label className="flex items-start gap-3 cursor-pointer select-none">
+                          <input 
+                            type="checkbox"
+                            checked={newLicData.hasTaxCompliance}
+                            onChange={(e) => setNewLicData({ ...newLicData, hasTaxCompliance: e.target.checked })}
+                            className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"
+                          />
+                          <div className="text-xs">
+                            <span className="block font-bold text-slate-800">No Outstanding VAT / Tax Liabilities Statement</span>
+                            <span className="text-slate-400 block mt-0.5">Certify no direct tax dues exist under GNCT excise code.</span>
+                          </div>
+                        </label>
+                      </div>
+
+                      {/* Declaration Checkbox */}
+                      <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl">
+                        <label className="flex items-start gap-3 cursor-pointer select-none">
+                          <input 
+                            type="checkbox"
+                            checked={newLicData.declarationsChecked}
+                            onChange={(e) => setNewLicData({ ...newLicData, declarationsChecked: e.target.checked })}
+                            className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"
+                          />
+                          <p className="text-xs text-blue-900 font-semibold leading-relaxed">
+                            I hereby solemnly declare and verify that the proposed premises are fully compliant with structural and zoning restrictions of NCT Masterplan guidelines. Any discrepancy discovered during the physical inspection will result in the immediate forfeiture of the application processing fees.
+                          </p>
+                        </label>
+                      </div>
+
                     </div>
+                  )}
 
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Audit Remarks</label>
-                      <input 
-                        type="text"
-                        placeholder="No structural premise modifications"
-                        value={newRenewalForm.remarks}
-                        onChange={(e) => setNewRenewalForm({ ...newRenewalForm, remarks: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold placeholder-slate-400 font-sans"
-                      />
-                    </div>
-
-                    <div className="p-3 bg-teal-50 rounded-2xl text-[10px] text-teal-900 border border-teal-500/10 flex gap-2">
-                      <Lock className="w-3.5 h-3.5 text-teal-800 flex-shrink-0 mt-0.5" />
-                      <span className="font-bold">Renewals require matching annual clearance certificates from municipal fire and water boards.</span>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full py-3 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer"
+                  {/* Flow Action Controls */}
+                  <div className="flex justify-between items-center pt-6 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (newLicStep === 1) {
+                          setActiveTab("Home");
+                        } else {
+                          setNewLicStep(newLicStep - 1);
+                        }
+                      }}
+                      className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border border-slate-200 cursor-pointer transition"
                     >
-                      Submit Renewal Petition
+                      {newLicStep === 1 ? "Cancel Application" : "Back"}
                     </button>
-                  </form>
-                )}
 
-                {licenseSubTab === 'License Transfer' && (
-                  <form onSubmit={handleApplyTransfer} className="space-y-5 text-left font-sans">
-                    <div className="border-b border-slate-100 pb-3">
-                      <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Premises Transfer Flow</h3>
-                      <p className="text-[11px] text-slate-400 font-bold">Shift an existing license registry to a newly verified outlet.</p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Source License</label>
-                      <select
-                        value={newTransferForm.licenseId}
-                        onChange={(e) => setNewTransferForm({ ...newTransferForm, licenseId: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                      >
-                        {licenses.filter(l => l.status === 'Approved').map(l => (
-                          <option key={l.id} value={l.id}>{l.id} - {l.type.substring(0, 18)}...</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1 font-sans">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Target Outlet Venue</label>
-                      <select
-                        value={newTransferForm.targetPremises}
-                        onChange={(e) => setNewTransferForm({ ...newTransferForm, targetPremises: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                      >
-                        {premises.map(p => (
-                          <option key={p.id} value={p.address}>{p.address.substring(0, 30)}... ({p.id})</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Justification Reason</label>
-                      <input 
-                        type="text"
-                        placeholder="Lease expiry on current depot"
-                        value={newTransferForm.reason}
-                        onChange={(e) => setNewTransferForm({ ...newTransferForm, reason: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold placeholder-slate-400 font-sans"
-                        required
-                      />
-                    </div>
-
-                    <div className="p-3 bg-amber-50 rounded-2xl text-[10px] text-amber-900 border border-amber-500/10 flex gap-2">
-                      <Info className="w-3.5 h-3.5 text-amber-800 flex-shrink-0 mt-0.5" />
-                      <span className="font-bold">Ownership transitions must match legal deeds precisely. Retain older files until clearance approval notice arrives.</span>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full py-3 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (newLicStep < 3) {
+                          // Validation check
+                          if (newLicStep === 1 && (!newLicData.applicantName || !newLicData.tradeName)) {
+                            showToast("Please enter the registered applicant name and trade name.", "error");
+                            return;
+                          }
+                          if (newLicStep === 2 && (!newLicData.premiseAddress || !newLicData.pincode)) {
+                            showToast("Please specify the premise warehouse layout address and postal pin code.", "error");
+                            return;
+                          }
+                          setNewLicStep(newLicStep + 1);
+                        } else {
+                          // Submit
+                          if (!newLicData.declarationsChecked) {
+                            showToast("Please checkbox the declaration statement to file your application.", "error");
+                            return;
+                          }
+                          setAppSubmissionCompleted(true);
+                          showToast("New Application Privileged Draft filed successfully!");
+                        }
+                      }}
+                      className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition"
                     >
-                      Initiate Relocation Request
+                      {newLicStep === 3 ? "Submit & Pay License Fee (₹ 2.5L)" : "Continue"}
                     </button>
-                  </form>
-                )}
+                  </div>
 
-                {licenseSubTab === 'Document Revalidation' && (
-                  <form onSubmit={handleRevalidateDoc} className="space-y-5 text-left font-sans">
-                    <div className="border-b border-slate-100 pb-3">
-                      <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider font-sans">Revalidation Portal</h3>
-                      <p className="text-[11px] text-slate-400 font-bold">Submit updated scans to override rejected/expired files.</p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">Dossier File Code</label>
-                      <select
-                        value={newDocRevalForm.docId}
-                        onChange={(e) => setNewDocRevalForm({ ...newDocRevalForm, docId: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                      >
-                        {documents.map(d => (
-                          <option key={d.id} value={d.id}>{d.id} - {d.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block">File Attachment Name</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. municipal_firenoc_v5_2026.pdf"
-                        value={newDocRevalForm.fileName}
-                        onChange={(e) => setNewDocRevalForm({ ...newDocRevalForm, fileName: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold placeholder-slate-400 font-sans"
-                        required
-                      />
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full py-3 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer"
-                    >
-                      Upload & Revalidate Dossier
-                    </button>
-                  </form>
-                )}
-
-              </div>
+                </div>
+              )}
 
             </div>
           </div>
-        )}
+        </div>
+      ) : (
+        <main className="page-container max-w-7xl mx-auto w-full flex-grow p-6">
 
-        {/* TAB 3: PREMISE */}
-        {activeTab === 'Premise' && (
-          <div className="space-y-6 animate-fade-in text-left">
-            <div className="flex flex-col lg:flex-row gap-6">
-              
-              {/* Left Column: Registered Locations Directory */}
-              <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                  <div>
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Registered Outlets & Offices</h3>
-                    <p className="text-xs text-slate-400 font-bold mt-0.2">Authorized premises verified under municipal safety & police clearances.</p>
+          {/* HOME TAB MAIN CONTENT */}
+          {activeTab === "Home" && (
+            <>
+              {/* HERO */}
+              <div className="dashboard-card hero-card">
+                <div className="hero-gradient">
+                  <div className="hero-content mx-auto max-w-7xl">
+                    <div>
+                      <h1 className="hero-title">
+                        Welcome back, Demo User 👋
+                      </h1>
+
+                      <p className="hero-description">
+                        Manage applications, licenses, premises,
+                        and approvals from a single unified portal.
+                      </p>
+                    </div>
+
+                    <div className="hero-status">
+                      <p className="hero-status-label">
+                        Account Status
+                      </p>
+
+                      <h3 className="hero-status-value">
+                        Active
+                      </h3>
+
+                      <p className="hero-status-label" style={{ marginTop: "16px" }}>
+                        Last Login: Today, 12:18 PM
+                      </p>
+                    </div>
                   </div>
+                </div>
+              </div>
 
-                  <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-                    <input 
+              {/* STATS */}
+              <section className="stats-grid mt-6">
+                {statsData.map((item, index) => (
+                  <StatCard key={index} item={item} />
+                ))}
+              </section>
+
+              {/* RECENT LICENSES & USER PROFILE */}
+              <div className="content-grid mt-6">
+
+                {/* LICENSES */}
+                <div className="dashboard-card section-padding">
+                  <SectionTitle
+                    title="Recent Licenses"
+                    subtitle="Monitor and manage active permits"
+                  />
+
+                  <div className="search-wrapper">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-4 top-4" />
+
+                    <input
                       type="text"
-                      placeholder="Search premises..."
-                      value={premiseSearch}
-                      onChange={(e) => setPremiseSearch(e.target.value)}
-                      className="pl-9 pr-4 py-1.5 bg-slate-50 rounded-xl text-xs font-bold border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-56"
+                      placeholder="Search licenses..."
+                      value={search}
+                      onChange={(e) =>
+                        setSearch(e.target.value)
+                      }
+                      className="search-input"
                     />
                   </div>
+
+                  <div className="license-list">
+                    {filteredLicenses.map((license) => (
+                      <LicenseCard
+                        key={license.id}
+                        license={license}
+                      />
+                    ))}
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  {premises
-                    .filter(p => p.address.toLowerCase().includes(premiseSearch.toLowerCase()) || p.id.toLowerCase().includes(premiseSearch.toLowerCase()))
-                    .map((prem) => (
-                      <div key={prem.id} className="p-4 border border-slate-100 bg-slate-50/40 rounded-2xl space-y-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100/50 pb-2.5">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-blue-50 text-[#012a52] text-[10px] font-black uppercase tracking-widest">{prem.id}</span>
-                            <span className="text-xs font-black text-[#012a52]">{prem.subDivision} Zone</span>
-                          </div>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                            prem.status === 'Registered' 
-                              ? 'bg-emerald-100 text-emerald-800' 
-                              : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {prem.status}
+                {/* PROFILE */}
+                <div className="dashboard-card profile-card">
+                  <SectionTitle
+                    title="Profile"
+                    subtitle="User account information"
+                  />
+
+                  <div className="profile-wrapper">
+                    <div className="profile-avatar-large">
+                      <User className="w-14 h-14 text-white" />
+                    </div>
+
+                    <h3 className="profile-name">
+                      Demo User
+                    </h3>
+
+                    <p className="profile-role">
+                      System Administrator
+                    </p>
+
+                    <div className="profile-details">
+                      {[
+                        {
+                          label: "Email",
+                          value: "demo@email.com",
+                        },
+                        {
+                          label: "Mobile",
+                          value: "+91 9876543210",
+                        },
+                        {
+                          label: "State",
+                          value: "Delhi",
+                        },
+                      ].map((item, index) => (
+                        <div
+                          key={index}
+                          className="profile-row"
+                        >
+                          <span className="profile-label">
+                            {item.label}
+                          </span>
+
+                          <span className="profile-value">
+                            {item.value}
                           </span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-bold">
-                          <p className="text-slate-700 italic max-w-md font-sans">"{prem.address}"</p>
-                          <div className="flex items-center gap-4 text-[10px] uppercase font-black tracking-wider text-slate-400">
-                            <span className="flex items-center gap-1">
-                              <ShieldCheck className={`w-3.5 h-3.5 ${prem.policeClearance === 'Verified' ? 'text-emerald-500' : 'text-amber-500'}`} />
-                              Police: {prem.policeClearance}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <FileCheck className={`w-3.5 h-3.5 ${prem.fireNoc === 'Approved' ? 'text-emerald-500' : 'text-amber-500'}`} />
-                              Fire NOC: {prem.fireNoc}
-                            </span>
-                          </div>
-                        </div>
+          {/* APPLIED LICENSE VIEW */}
+          {activeTab === "Applied License" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="Applied Licenses" 
+                subtitle="Track the real-time processing status of your submitted applications" 
+              />
+              <div className="dashboard-card p-6 space-y-4 bg-white">
+                <div className="flex justify-between items-center gap-4 flex-wrap pb-4 border-b border-slate-100">
+                  <h3 className="font-bold text-slate-800 text-lg">Active Applications</h3>
+                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">3 Applications Total</span>
+                </div>
+                
+                {/* App 1 */}
+                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
+                  <div className="flex justify-between items-start gap-3 flex-wrap">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
+                        <span className="text-sm font-bold text-slate-700">AP-2026-88021</span>
+                      </div>
+                      <h4 className="font-bold text-slate-800 text-base mt-1">L-1 Wholesale Vend of Indian Liquor</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 14/05/2026</p>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-100">
+                      Scrutiny in Progress
+                    </span>
+                  </div>
+                  
+                  {/* Stepper progress */}
+                  <div className="grid grid-cols-4 gap-2 pt-2">
+                    {[
+                      { label: "Submission", active: true, done: true },
+                      { label: "Scrutiny", active: true, done: false },
+                      { label: "Inspection", active: false, done: false },
+                      { label: "Grant", active: false, done: false }
+                    ].map((st, idx) => (
+                      <div key={idx} className="space-y-1.5">
+                        <div className={`h-2 rounded-full ${st.done ? "bg-emerald-500" : st.active ? "bg-amber-500 animate-pulse" : "bg-slate-100"}`}></div>
+                        <p className="text-[10px] sm:text-xs font-semibold text-slate-500 text-center">{st.label}</p>
                       </div>
                     ))}
+                  </div>
+                </div>
 
-                  {premises.length === 0 && (
-                    <p className="text-xs text-slate-400 text-center py-6 font-bold">No registered premises record.</p>
-                  )}
+                {/* App 2 */}
+                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
+                  <div className="flex justify-between items-start gap-3 flex-wrap">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
+                        <span className="text-sm font-bold text-slate-700">AP-2026-44012</span>
+                      </div>
+                      <h4 className="font-bold text-slate-800 text-base mt-1">L-15 Hotel Bar License</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 02/04/2026</p>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
+                      Approved & Disbursed
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-2 pt-2">
+                    {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, idx) => (
+                      <div key={idx} className="space-y-1.5">
+                        <div className="h-2 rounded-full bg-emerald-500"></div>
+                        <p className="text-[10px] sm:text-xs font-semibold text-slate-500 text-center">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* App 3 */}
+                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
+                  <div className="flex justify-between items-start gap-3 flex-wrap">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
+                        <span className="text-sm font-bold text-slate-700">AP-2026-30219</span>
+                      </div>
+                      <h4 className="font-bold text-slate-800 text-base mt-1">L-22 Club Bar License</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 29/03/2026</p>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-bold border border-rose-100 animate-pulse">
+                      Clarification Needed
+                    </span>
+                  </div>
+                  
+                  <div className="bg-rose-50/70 border border-rose-100 rounded-xl p-3 flex items-start gap-2.5 text-xs text-rose-800 font-semibold mb-2">
+                    <ShieldAlert className="w-4.5 h-4.5 text-rose-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold">Officer Remarks:</span> Fire Safety NOC is near-expiry. Please submit an updated certified copy in the <span className="underline cursor-pointer text-blue-600 font-bold" onClick={() => setActiveTab("Document Revalidate")}>Document Revalidate</span> tab to resume scrutiny.
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+          )}
 
-              {/* Right Column: Add Premise */}
-              <div className="w-full lg:w-96 bg-white border border-slate-200 rounded-3xl p-6">
-                <form onSubmit={handleRegisterPremise} className="space-y-5 text-left">
-                  <div className="border-b border-slate-100 pb-3">
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Register Site</h3>
-                    <p className="text-[11px] text-slate-400 font-bold">Declare a proposed commercial warehouse location.</p>
+          {/* RENEWAL LICENSE VIEW */}
+          {activeTab === "Renewal License" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="License Renewal" 
+                subtitle="Manage end-of-term extensions and annual duty clearances for active licenses" 
+              />
+              <div className="grid md:grid-cols-2 gap-6">
+                {licenses.map((lic) => {
+                  const isRenewed = renewedList[lic.id];
+                  return (
+                    <div key={lic.id} className="dashboard-card p-6 flex flex-col justify-between hover:shadow-md transition bg-white">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-600">{lic.id}</span>
+                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${isRenewed ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-blue-50 text-blue-700 border border-blue-100"}`}>
+                            {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-lg mt-2">{lic.type}</h4>
+                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Valid till: <span className="font-bold text-slate-700">{isRenewed ? "31st March 2028" : "31st March 2027"}</span></span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span className="text-xs text-slate-400 font-bold uppercase">Renewal Fee: ₹ 45,000</span>
+                        <button 
+                          onClick={() => handleRenew(lic.id)}
+                          disabled={isRenewed}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold border-none cursor-pointer transition ${
+                            isRenewed ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+                          }`}
+                        >
+                          {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* LICENSE TRANSFER VIEW */}
+          {activeTab === "License Transfer" && (
+            <div className="space-y-6 max-w-3xl mx-auto">
+              <SectionTitle 
+                title="License Transfer Portal" 
+                subtitle="Apply for change of licensee ownership, management structure, or premises relocation" 
+              />
+              
+              {transferSuccess ? (
+                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-black uppercase text-[#012a52] block">Street Address</label>
-                    <textarea
-                      placeholder="e.g. Shop G-12, Sector 9, Rohini, New Delhi"
-                      value={newPremiseForm.address}
-                      onChange={(e) => setNewPremiseForm({ ...newPremiseForm, address: e.target.value })}
-                      rows={3}
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-400"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-black uppercase text-[#012a52] block">Delhi Administrative Sub-Division</label>
-                    <select
-                      value={newPremiseForm.subDivision}
-                      onChange={(e) => setNewPremiseForm({ ...newPremiseForm, subDivision: e.target.value })}
-                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  <h3 className="text-xl font-bold text-slate-800">Transfer Filed Successfully</h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    Your application for <span className="font-semibold text-slate-700">{transferForm.type} Transfer</span> has been registered under Transaction ID <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">TR-2026-90812</span>. The scrutinizing officer will verify transferee credentials within 7 business days.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setTransferSuccess(false);
+                      setTransferForm({ lic: "ND-25-L10023", type: "Ownership", transferee: "", remarks: "" });
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                  >
+                    Create Another Request
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitTransfer} className="dashboard-card p-6 space-y-5 bg-white">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Select License</label>
+                    <select 
+                      value={transferForm.lic}
+                      onChange={(e) => setTransferForm({ ...transferForm, lic: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700"
                     >
-                      <option value="Civil Lines">Civil Lines</option>
-                      <option value="Chanakyapuri">Chanakyapuri</option>
-                      <option value="Defence Colony">Defence Colony</option>
-                      <option value="Karol Bagh">Karol Bagh</option>
-                      <option value="Vasant Vihar">Vasant Vihar</option>
+                      {licenses.map(l => <option key={l.id} value={l.id}>{l.id} - {l.type}</option>)}
                     </select>
                   </div>
 
-                  <div className="p-3 bg-amber-50/50 rounded-2xl text-[10px] text-amber-900 border border-amber-500/10 flex gap-2">
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-800 flex-shrink-0 mt-0.5" />
-                    <span className="font-bold">By registering this address, you authorize site inspections from the NCT Excise Inspector Squad.</span>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Transfer Type</label>
+                    <div className="grid grid-cols-2 gap-3 mt-1">
+                      {["Ownership", "Premises Relocation"].map(type => (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => setTransferForm({ ...transferForm, type })}
+                          className={`p-3 rounded-xl border font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-2 ${
+                            transferForm.type === type ? "bg-blue-50 border-blue-400 text-blue-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>{type}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <button
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">
+                      {transferForm.type === "Ownership" ? "New Transferee Entity Registered Name" : "Proposed New Premises Complete Address"}
+                    </label>
+                    <input 
+                      type="text"
+                      placeholder={transferForm.type === "Ownership" ? "Legal Name of the Transferee entity" : "Enter complete new premise layout address"}
+                      value={transferForm.transferee}
+                      onChange={(e) => setTransferForm({ ...transferForm, transferee: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Justification for Transfer</label>
+                    <textarea 
+                      rows="3"
+                      placeholder="Provide a legal brief of reasons for the transfer..."
+                      value={transferForm.remarks}
+                      onChange={(e) => setTransferForm({ ...transferForm, remarks: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700 resize-none"
+                    />
+                  </div>
+
+                  <div className="flex gap-4 p-4 bg-amber-50 rounded-xl border border-amber-100/70 text-xs text-amber-800 font-semibold leading-relaxed">
+                    <Info className="w-5 h-5 text-amber-600 shrink-0" />
+                    <p>
+                      Note: A non-refundable transfer processing fee of <span className="font-bold">₹ 15,000</span> will be applicable upon submission of this application.
+                    </p>
+                  </div>
+
+                  <button 
                     type="submit"
-                    className="w-full py-3 bg-[#0f2a52] hover:bg-[#ff7e01] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition hover:scale-[1.01]"
                   >
-                    <Plus className="w-4 h-4" /> Register Site Premises
+                    File Transfer Application
                   </button>
                 </form>
-              </div>
-
+              )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* TAB 4: DEALER */}
-        {activeTab === 'Dealer' && (
-          <div className="space-y-6 animate-fade-in text-left">
-            {dealerSubTab === 'Dealer Registration' ? (
-              <div className="flex flex-col lg:flex-row gap-6">
+          {/* DOCUMENT REVALIDATE VIEW */}
+          {activeTab === "Document Revalidate" && (
+            <div className="space-y-6 max-w-4xl mx-auto">
+              <SectionTitle 
+                title="Document Revalidation" 
+                subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses" 
+              />
+              
+              <div className="dashboard-card p-6 space-y-4 bg-white">
+                <h3 className="font-bold text-slate-800 text-base">Clearance Document Checklist</h3>
                 
-                {/* Main Column: Wholesaler Linkage Form */}
-                <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 font-sans">
-                  <form onSubmit={handleLinkDealer} className="space-y-6 text-left font-sans">
-                    <div className="border-b border-slate-100 pb-4">
-                      <h3 className="text-base font-black text-[#012a52] uppercase tracking-wider text-left">Wholesaler Linkage / Dealer Registration</h3>
-                      <p className="text-xs text-slate-400 font-bold text-left font-sans">Propose a secure supply channel linkage with registered wholesale depots in Delhi.</p>
+                <div className="space-y-3 pt-2">
+                  {Object.entries(docs).map(([key, item]) => {
+                    return (
+                      <div key={key} className="border border-slate-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white hover:border-slate-200 transition">
+                        <div className="flex items-start gap-3">
+                          <div className={`p-2.5 rounded-xl ${
+                            item.type === "verified" ? "bg-emerald-50 text-emerald-600" :
+                            item.type === "expired" ? "bg-red-50 text-red-600" :
+                            item.type === "uploading" ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
+                          }`}>
+                            <FileText className={`w-5 h-5 ${item.type === "uploading" ? "animate-spin" : ""}`} />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-800 text-sm sm:text-base">{item.name}</h4>
+                            <span className={`inline-block text-[11px] font-bold mt-1 px-2.5 py-0.5 rounded-full ${
+                              item.type === "verified" ? "bg-emerald-50 text-emerald-700" :
+                              item.type === "expired" ? "bg-red-50 text-red-700 animate-pulse" :
+                              item.type === "uploading" ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-700"
+                            }`}>
+                              {item.status}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div>
+                          {item.type !== "verified" && (
+                            <button 
+                              onClick={() => handleUpload(key)}
+                              disabled={item.type === "uploading"}
+                              className="px-4 py-2 bg-[#0f2a52] hover:bg-slate-900 border-none text-white text-xs font-bold rounded-xl cursor-pointer transition flex items-center gap-1.5"
+                            >
+                              {item.type === "uploading" ? (
+                                <>Processing...</>
+                              ) : (
+                                <>
+                                  <Upload className="w-3.5 h-3.5" />
+                                  <span>Re-upload Document</span>
+                                </>
+                              )}
+                            </button>
+                          )}
+                          {item.type === "verified" && (
+                            <span className="text-xs text-emerald-700 font-bold bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-xl flex items-center gap-1 font-sans">
+                              ✓ Compliance Validated
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* USER PROFILE TAB */}
+          {activeTab === "UserProfile" && (
+            <div className="space-y-6 max-w-2xl mx-auto">
+              <SectionTitle 
+                title="Account Profile" 
+                subtitle="Manage user information, contact details, and registered authorization credentials" 
+              />
+              <div className="dashboard-card p-6 sm:p-8 bg-white space-y-6">
+                <div className="flex flex-col sm:flex-row items-center gap-5 border-b border-slate-100 pb-6">
+                  <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-md shrink-0">
+                    DU
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <h3 className="text-lg font-bold text-slate-800">Demo User</h3>
+                    <p className="text-xs text-slate-400 font-medium font-sans">System Administrator • Active since Feb 2026</p>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">contact person name</label>
+                    <input 
+                      type="text" 
+                      defaultValue="Demo User" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">official email ID</label>
+                    <input 
+                      type="email" 
+                      defaultValue="demo@email.com" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">mobile number</label>
+                    <input 
+                      type="text" 
+                      defaultValue="+91 9876543210" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">Excise Dealer Code</label>
+                    <input 
+                      type="text" 
+                      defaultValue="DL-RETAIL-990-26" 
+                      disabled
+                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm cursor-not-allowed font-mono font-bold text-slate-500"
+                    />
+                  </div>
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase">registered organization address</label>
+                    <textarea 
+                      rows="2"
+                      defaultValue="Plot 104, Okhla Industrial Area, Phase-III, New Delhi, Pin: 110020" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 flex justify-end">
+                  <button 
+                    onClick={() => showToast("Profile details updated successfully under security reference log!")}
+                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition font-sans"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CHANGE PASSWORD TAB */}
+          {activeTab === "ChangePassword" && (
+            <div className="space-y-6 max-w-xl mx-auto">
+              <SectionTitle 
+                title="Change Password" 
+                subtitle="Update your system password regularly to maintain compliant login security standards" 
+              />
+              <div className="dashboard-card p-6 sm:p-8 bg-white space-y-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase">current password</label>
+                  <input 
+                    type="password" 
+                    placeholder="••••••••••••" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase">new password</label>
+                  <input 
+                    type="password" 
+                    placeholder="Enter strong characters (min 8)" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase">confirm new password</label>
+                  <input 
+                    type="password" 
+                    placeholder="Re-type new password" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Password strength list */}
+                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/60 space-y-2">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Security Recommendations</span>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 font-semibold font-sans">
+                    <div className="flex items-center gap-1.5 text-emerald-600">
+                      <span>✓</span>
+                      <span>Min 8 characters long</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-emerald-600">
+                      <span>✓</span>
+                      <span>1+ Alpha character</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-400">
+                      <span>○</span>
+                      <span>1+ Special char (!,@,#)</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-slate-400">
+                      <span>○</span>
+                      <span>1+ Numeric value</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100">
+                  <button 
+                    onClick={() => {
+                      showToast("Password changed successfully! Please use new credentials on next login.");
+                      setActiveTab("Home");
+                    }}
+                    className="w-full py-3 bg-[#0f2a52] hover:bg-slate-900 border-none text-white text-xs font-bold rounded-xl cursor-pointer transition font-sans"
+                  >
+                    Confirm & Update Password
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* NEW M&TP TAB */}
+          {activeTab === "New M&TP" && (
+            <div className="space-y-6 max-w-3xl mx-auto">
+              <SectionTitle 
+                title="Medicinal & Toilet Preparations (M&TP) License" 
+                subtitle="Apply for a new license to manufacture or store products under the Medicinal and Toilet Preparations (Excise Duties) Act" 
+              />
+
+              {mtpSubmissionCompleted ? (
+                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800">M&TP Application Filed</h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    Your formulation licensing request for <span className="font-semibold text-slate-700">{newMtpData.formulationName}</span> has been registered under Application Reference <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">MTP-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. Technical scrutiny and chemical sample verification has been scheduled.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setMtpSubmissionCompleted(false);
+                      setNewMtpData({
+                        unitName: "Delhi Pharmaceutical Formulation Works",
+                        formulationName: "",
+                        formulationType: "Ayurvedic medicine (with self-generated alcohol)",
+                        spiritType: "Rectified Spirit (95% v/v)",
+                        annualRequirement: "5000 Litres",
+                        drugLicenseNum: "",
+                        declarationsChecked: false
+                      });
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                  >
+                    File Another Formulation Application
+                  </button>
+                </div>
+              ) : (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newMtpData.formulationName || !newMtpData.drugLicenseNum) {
+                      showToast("Please fill all required formulation and drug license fields", "error");
+                      return;
+                    }
+                    if (!newMtpData.declarationsChecked) {
+                      showToast("Please accept the compliance declaration", "error");
+                      return;
+                    }
+
+                    // Add to local state list
+                    const newAppId = `MTP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+                    setMtpApplications(prev => [
+                      {
+                        id: newAppId,
+                        unitName: newMtpData.unitName,
+                        formulation: newMtpData.formulationName,
+                        alcoholStrength: newMtpData.formulationType.includes("self-generated") ? "12% v/v (Self-generated)" : "90% v/v (Rectified Spirit)",
+                        status: "Under Technical Review",
+                        submittedDate: new Date().toLocaleDateString("en-GB"),
+                        remarks: "New application filed under self-declaration standards"
+                      },
+                      ...prev
+                    ]);
+
+                    setMtpSubmissionCompleted(true);
+                    showToast(`M&TP application ${newAppId} successfully processed!`);
+                  }}
+                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
+                >
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Registered Unit / Manufactory Name *</label>
+                      <input 
+                        type="text" 
+                        value={newMtpData.unitName}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, unitName: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Delhi Laboratories Pvt Ltd"
+                        required
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Select Wholesaler</label>
-                      <select
-                        value={newDealerForm.dealerId}
-                        onChange={(e) => setNewDealerForm({ ...newDealerForm, dealerId: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 font-sans"
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Drug License State Reference No. *</label>
+                      <input 
+                        type="text" 
+                        value={newMtpData.drugLicenseNum}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, drugLicenseNum: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. DL-DRUG-88229"
+                        required
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Proposed Formulation Brand/Generic Name *</label>
+                      <input 
+                        type="text" 
+                        value={newMtpData.formulationName}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationName: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Medicated Herbal Syrup base"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Class of Medicinal Preparation *</label>
+                      <select 
+                        value={newMtpData.formulationType}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationType: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                       >
-                        {dealers.map(d => (
-                          <option key={d.id} value={d.id}>{d.name} ({d.id})</option>
-                        ))}
+                        <option value="Ayurvedic medicine (with self-generated alcohol)">Ayurvedic medicine (with self-generated alcohol)</option>
+                        <option value="Allopathic medicinal formulation (with spirit base)">Allopathic medicinal formulation (with spirit base)</option>
+                        <option value="Homeopathic medicine tincture">Homeopathic medicine tincture</option>
+                        <option value="Toilet preparation (perfume/cologne base)">Toilet preparation (perfume/cologne base)</option>
                       </select>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Monthly Quota Request (Bulk Litres)</label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 1500"
-                        value={newDealerForm.quota}
-                        onChange={(e) => setNewDealerForm({ ...newDealerForm, quota: e.target.value })}
-                        min="100"
-                        max="100000"
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-400 font-sans"
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Type of Alcohol/Spirit Base Required</label>
+                      <select 
+                        value={newMtpData.spiritType}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, spiritType: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                      >
+                        <option value="Rectified Spirit (95% v/v)">Rectified Spirit (95% v/v)</option>
+                        <option value="Absolute Alcohol (99% + v/v)">Absolute Alcohol (99% + v/v)</option>
+                        <option value="Denatured Spirit Base">Denatured Spirit Base</option>
+                        <option value="Self-generating Herbal Yeast Ferment">Self-generating Herbal Yeast Ferment</option>
+                      </select>
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Estimated Annual Quota Requirement (LPL)</label>
+                      <input 
+                        type="text" 
+                        value={newMtpData.annualRequirement}
+                        onChange={(e) => setNewMtpData(p => ({ ...p, annualRequirement: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. 5000 Litres"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="mtp-check"
+                      checked={newMtpData.declarationsChecked}
+                      onChange={(e) => setNewMtpData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      className="mt-1 accent-blue-600 scale-110 cursor-pointer"
+                    />
+                    <label htmlFor="mtp-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
+                      I solemnly declare that the formulation ingredients, alcohol strength limits, and manufacturing procedures fulfill Delhi Excise and Drugs & Cosmetics Act rules. All samples will be placed to State Chemical Laboratories for compliance verification prior to dispatch.
+                    </label>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button 
+                      type="button"
+                      onClick={() => setActiveTab("Home")} 
+                      className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
+                    >
+                      Submit M&TP Application
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* APPLIED M&TP TAB */}
+          {activeTab === "Applied M&TP" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="Active M&TP Scrutiny Ledger" 
+                subtitle="Track current technical appraisals, formulation approvals, and spirit allotments for Medicinal & Toilet Preparations" 
+              />
+
+              <div className="space-y-4">
+                {mtpApplications.map((app) => (
+                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                    <div className="flex justify-between items-start gap-4 flex-wrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold text-[#0D9488] bg-teal-50 border border-teal-100 px-2 py-0.5 rounded">M&TP UNIT FILING</span>
+                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.unitName}</h4>
+                        <p className="text-xs text-slate-500 font-semibold mt-1">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Formulation:</span> {app.formulation} ({app.alcoholStrength})
+                        </p>
+                        <p className="text-[11px] text-slate-400 font-medium">Filing Registered on: {app.submittedDate}</p>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2 text-right">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                          app.status === "Approved" 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}>
+                          {app.status}
+                        </span>
+                        <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                          {app.remarks}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
+                      {[
+                        { label: "Technical Appraisal", done: true },
+                        { label: "Chemical Clearance", done: app.status === "Approved" },
+                        { label: "Excise Inspection", done: app.status === "Approved" },
+                        { label: "Quota Release", done: false }
+                      ].map((step, sIdx) => (
+                        <div key={sIdx} className="space-y-1">
+                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* DEALER REGISTRATION TAB */}
+          {activeTab === "Dealer Registration" && (
+            <div className="space-y-6 max-w-3xl mx-auto">
+              <SectionTitle 
+                title="Excise Dealer & Sub-Dealer Registration" 
+                subtitle="File security credentials, warehouse details, and trade classifications to active a registered spirit trade account" 
+              />
+
+              {dealerSubmissionCompleted ? (
+                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800">Trade Dealer Account Submitted</h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    The registration request for <span className="font-semibold text-slate-700">{newDealerData.firmName}</span> has been securely logged with security reference log under Application ID <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">DLR-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. PAN & GSTIN integration clearance is currently on-going.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setDealerSubmissionCompleted(false);
+                      setNewDealerData({
+                        firmName: "",
+                        ownerName: "",
+                        licenseType: "L-13 Wholesale import bond storage",
+                        panNum: "",
+                        gstinNum: "",
+                        warehouseAddress: "",
+                        declarationsChecked: false
+                      });
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                  >
+                    Register Another Dealer Account
+                  </button>
+                </div>
+              ) : (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newDealerData.firmName || !newDealerData.panNum || !newDealerData.gstinNum) {
+                      showToast("Please fill all required business and tax identifier fields", "error");
+                      return;
+                    }
+                    if (!newDealerData.declarationsChecked) {
+                      showToast("Please accept the compliance & trade declaration", "error");
+                      return;
+                    }
+
+                    // Add to dealer applications state list
+                    const referenceNum = `DLR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+                    setDealerApplications(prev => [
+                      {
+                        id: referenceNum,
+                        firmName: newDealerData.firmName,
+                        licenseType: newDealerData.licenseType,
+                        panNum: newDealerData.panNum.toUpperCase(),
+                        status: "Under Assessment",
+                        submittedDate: new Date().toLocaleDateString("en-GB"),
+                        remarks: "Verification of bonded store space under technical review"
+                      },
+                      ...prev
+                    ]);
+
+                    setDealerSubmissionCompleted(true);
+                    showToast(`Dealer registration ${referenceNum} filed under administrative scrutiny ledger!`);
+                  }}
+                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
+                >
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Registered Firm / Business Name *</label>
+                      <input 
+                        type="text" 
+                        value={newDealerData.firmName}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, firmName: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Imperial Spirits Trade Corp"
                         required
                       />
                     </div>
 
-                    <div className="p-4 bg-blue-50 rounded-2xl text-xs text-blue-900 border border-blue-500/15 flex gap-2.5">
-                      <Lock className="w-5 h-5 text-blue-800 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-bold block text-blue-950 font-sans">Procurement Bond Regulatory Guidance</span>
-                        <p className="text-[11px] text-blue-900/80 font-semibold mt-1 font-sans">Affiliation provides automated stock ledger sync inside your retail pass modules. Once established, dispatch permits will be routed in real-time under NCT excise control.</p>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
-                      <button
-                        type="submit"
-                        className="px-6 py-3 bg-[#ff7e01] hover:bg-[#0f2a52] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2 font-sans"
-                      >
-                        <Plus className="w-4 h-4" /> Establish Procurement Bond
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* Right Column: Advisory / Guidelines */}
-                <div className="w-full lg:w-96 bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                  <div className="border-b border-slate-100 pb-3 text-left">
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Dealer Guidance</h3>
-                    <p className="text-[11px] text-slate-400 font-bold font-sans">Key steps to link external logistics supply and wholesale networks.</p>
-                  </div>
-
-                  <div className="space-y-4 font-sans">
-                    <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
-                      <span className="text-[10px] font-black uppercase text-amber-600 block">Quota Verification</span>
-                      <p className="text-xs font-semibold text-slate-700 leading-relaxed font-sans">Requests for bulk quotas are automatically checked against your base license limit criteria before final verification.</p>
-                    </div>
-
-                    <div className="p-4 bg-slate-50 rounded-2xl space-y-1 font-sans">
-                      <span className="text-[10px] font-black uppercase text-amber-600 block">Regulatory Clearances</span>
-                      <p className="text-xs font-semibold text-slate-700 leading-relaxed font-sans">Each linkage submission has to be acknowledged by the target wholesale dealer before the system processes status changes.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Display Applied Dealers */
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                  <div>
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Applied & Associated Wholesale Dealers</h3>
-                    <p className="text-xs text-slate-400 font-bold mt-0.2">Authorized supply depots in Delhi providing stock distribution channels.</p>
-                  </div>
-
-                  <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-                    <input 
-                      type="text"
-                      placeholder="Search distributors..."
-                      value={dealerSearch}
-                      onChange={(e) => setDealerSearch(e.target.value)}
-                      className="pl-9 pr-4 py-1.5 bg-slate-50 rounded-xl text-xs font-bold border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-56 font-sans"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-4 font-sans">
-                  {dealers
-                    .filter(d => d.name.toLowerCase().includes(dealerSearch.toLowerCase()) || d.id.toLowerCase().includes(dealerSearch.toLowerCase()) || d.location.toLowerCase().includes(dealerSearch.toLowerCase()))
-                    .map((deal) => (
-                      <div key={deal.id} className="p-4 border border-slate-100 bg-slate-50/40 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-slate-50/70 font-sans">
-                        <div className="space-y-1 text-left">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-[10px] font-black uppercase tracking-widest">{deal.id}</span>
-                            <h4 className="text-xs font-black text-slate-800">{deal.name}</h4>
-                          </div>
-                          <p className="text-[11px] text-slate-400 font-bold flex items-center gap-1.5 font-sans">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400" /> Depot Zone: {deal.location}
-                          </p>
-                          <p className="text-[10px] text-slate-400 font-bold font-sans">
-                            Excise License Ref: <span className="text-[#012a52] font-semibold">{deal.licenseRef}</span>
-                          </p>
-                        </div>
-
-                        <div className="text-right sm:self-auto self-end flex items-center gap-2 text-xs font-extrabold text-slate-800">
-                          <span className="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-sm uppercase tracking-wider text-[10px] font-black">
-                            {deal.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-
-                  {dealers.filter(d => d.name.toLowerCase().includes(dealerSearch.toLowerCase()) || d.id.toLowerCase().includes(dealerSearch.toLowerCase()) || d.location.toLowerCase().includes(dealerSearch.toLowerCase())).length === 0 && (
-                    <p className="text-xs text-slate-400 text-center py-6 font-bold">No certified wholesalers found.</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 5: M&TP */}
-        {activeTab === 'MTP' && (
-          <div className="space-y-6 animate-fade-in text-left">
-            {mtpSubTab === 'New M&TP' ? (
-              <div className="flex flex-col lg:flex-row gap-6">
-                
-                {/* Main Column: Spirit Indent Request */}
-                <div className="flex-1 bg-white border border-slate-200 rounded-3xl p-6 font-sans">
-                  <form onSubmit={handleApplyMtp} className="space-y-6 text-left font-sans">
-                    <div className="border-b border-slate-100 pb-4">
-                      <h3 className="text-base font-black text-[#012a52] uppercase tracking-wider text-left">Spirit Indent Request</h3>
-                      <p className="text-xs text-slate-400 font-bold text-left font-sans">Request absolute alcohol allocation for pharmaceutical formulations under NCT of Delhi regulations.</p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Preparation Formulation Name</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Tincture Digitalis Co."
-                        value={newMtpForm.prepName}
-                        onChange={(e) => setNewMtpForm({ ...newMtpForm, prepName: e.target.value })}
-                        className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-400 font-sans"
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Proprietor / Representative Full Name *</label>
+                      <input 
+                        type="text" 
+                        value={newDealerData.ownerName}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, ownerName: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Ramesh Chandra"
                         required
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Alcohol Preparation Base Class</label>
-                        <select
-                          value={newMtpForm.spiritType}
-                          onChange={(e) => setNewMtpForm({ ...newMtpForm, spiritType: e.target.value })}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600"
-                        >
-                          <option value="Rectified Spirit 95%">Rectified Spirit 95% v/v</option>
-                          <option value="Absolute Alcohol 99%">Absolute Alcohol 99%</option>
-                          <option value="Extra Neutral Alcohol (ENA)">Extra Neutral Alcohol (ENA)</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Quantity Requested (Litres)</label>
-                        <input
-                          type="number"
-                          placeholder="e.g. 2500"
-                          value={newMtpForm.quota}
-                          onChange={(e) => setNewMtpForm({ ...newMtpForm, quota: e.target.value })}
-                          min="50"
-                          max="100000"
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-600 placeholder-slate-400 font-sans"
-                          required
-                        />
-                      </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Firm Income Tax PAN *</label>
+                      <input 
+                        type="text" 
+                        value={newDealerData.panNum}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, panNum: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. AAACS0409A"
+                        required
+                      />
                     </div>
 
-                    <div className="p-4 bg-purple-50 rounded-2xl text-xs text-purple-900 border border-purple-500/15 flex gap-2.5">
-                      <FlaskConical className="w-5 h-5 text-purple-800 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-bold block text-purple-950 font-sans">M&TP Legal Act Of 1955 Compliance Statement</span>
-                        <p className="text-[11px] text-purple-900/80 font-semibold mt-1 font-sans">This slot allocation follows strict, certified chemical inspector vetting. All formulation recipes submitted online are directly channeled to NCT Excise Central Laboratories for validation prior to stock issuance dispatch.</p>
-                      </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">State GSTIN ID / Code *</label>
+                      <input 
+                        type="text" 
+                        value={newDealerData.gstinNum}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, gstinNum: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. 07AAACS0409A1ZP"
+                        required
+                      />
                     </div>
 
-                    <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
-                      <button
-                        type="submit"
-                        className="px-6 py-3 bg-[#ff7e01] hover:bg-[#0f2a52] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2"
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Excise Dealer Category Class *</label>
+                      <select 
+                        value={newDealerData.licenseType}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, licenseType: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-750"
                       >
-                        <Plus className="w-4 h-4" /> Submit Allocation Docket
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* Right Column: Regulations Info Card */}
-                <div className="w-full lg:w-96 bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                  <div className="border-b border-slate-100 pb-3 text-left">
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">M&TP Advisory Guideline</h3>
-                    <p className="text-[11px] text-slate-400 font-bold font-sans">Key operational procedures for formulation license allocation holds.</p>
-                  </div>
-
-                  <div className="space-y-4 font-sans">
-                    <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
-                      <span className="text-[10px] font-black uppercase text-amber-600 block">Vetting Lead Time</span>
-                      <p className="text-xs font-semibold text-slate-700 leading-relaxed font-sans">Excise commission laboratory screening takes up to 14 working days. You can monitor progress securely within the "Applied M&TP" track state tab.</p>
+                        <option value="L-13 Wholesale import bond storage">L-13 Wholesale import bond storage</option>
+                        <option value="L-15 Wholesale custom bond ware-house">L-15 Wholesale custom bond ware-house</option>
+                        <option value="L-2 Retail Vend of Beer & Wine">L-2 Retail Vend of Beer & Wine</option>
+                        <option value="L-3 Retail Vend of Indian Liquor">L-3 Retail Vend of Indian Liquor</option>
+                      </select>
                     </div>
 
-                    <div className="p-4 bg-slate-50 rounded-2xl space-y-1 font-sans">
-                      <span className="text-[10px] font-black uppercase text-amber-600 block">Required Logbooks</span>
-                      <p className="text-xs font-semibold text-slate-700 leading-relaxed font-sans">Approved physical premises are required to regularly log precise raw inventory stock levels in Ledger Book Form No. 4 and Form No. 5.</p>
-                    </div>
-
-                    <div className="p-4 bg-slate-50 rounded-2xl space-y-1 font-sans">
-                      <span className="text-[10px] font-black uppercase text-amber-600 block">Formulation Integrity</span>
-                      <p className="text-xs font-semibold text-slate-700 leading-relaxed font-sans">Excise department agents carry out random laboratory inspection audits to verify that the spirit concentrations comply exactly with pharmacopoeia standards.</p>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Bonded Warehouse / Stockroom Location address *</label>
+                      <textarea 
+                        rows="2"
+                        value={newDealerData.warehouseAddress}
+                        onChange={(e) => setNewDealerData(p => ({ ...p, warehouseAddress: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
+                        placeholder="Plot number, industrial cluster, sector, PIN..."
+                        required
+                      />
                     </div>
                   </div>
-                </div>
-              </div>
-            ) : (
-              /* Display Applied M&TP */
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                  <div>
-                    <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider">Medicinal & Toilet Preparations Permits</h3>
-                    <p className="text-xs text-slate-400 font-bold mt-0.2">Rectified spirit allocations tracked under the M&TP Act laws.</p>
-                  </div>
 
-                  <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
                     <input 
-                      type="text"
-                      placeholder="Search formulations..."
-                      value={mtpSearch}
-                      onChange={(e) => setMtpSearch(e.target.value)}
-                      className="pl-9 pr-4 py-1.5 bg-slate-50 rounded-xl text-xs font-bold border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 w-full sm:w-56 font-sans"
+                      type="checkbox" 
+                      id="dealer-check"
+                      checked={newDealerData.declarationsChecked}
+                      onChange={(e) => setNewDealerData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      className="mt-1 accent-indigo-600 scale-110 cursor-pointer"
                     />
-                  </div>
-                </div>
-
-                <div className="space-y-4 font-sans">
-                  {mtpPermits
-                    .filter(m => m.prepName.toLowerCase().includes(mtpSearch.toLowerCase()) || m.spiritType.toLowerCase().includes(mtpSearch.toLowerCase()))
-                    .map((item) => (
-                      <div key={item.id} className="p-5 border border-slate-100 bg-slate-50/40 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-slate-50/70 font-sans">
-                        <div className="space-y-2 text-left">
-                          <div className="flex items-center gap-2.5 flex-wrap">
-                            <span className="px-2.5 py-0.5 rounded bg-purple-50 text-purple-800 text-[10px] font-black uppercase tracking-widest">{item.id}</span>
-                            <span className="text-sm font-black text-[#012a52]">{item.prepName}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 text-xs text-slate-500 font-bold flex-wrap font-sans">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-slate-400 font-semibold font-sans">Spirit Basis:</span>
-                              <span className="text-slate-700 font-black font-sans">{item.spiritType}</span>
-                            </div>
-                            <span className="text-slate-200">|</span>
-                            <div className="flex items-center gap-1.5 font-sans">
-                              <span className="text-slate-400 font-semibold font-sans">Quota Size:</span>
-                              <span className="text-slate-800 font-black font-sans">{item.quotaRequested}</span>
-                            </div>
-                            <span className="text-slate-200">|</span>
-                            <div className="flex items-center gap-1.5 font-sans">
-                              <span className="text-slate-400 font-semibold font-sans">Usable Balance:</span>
-                              <span className="text-emerald-700 font-black font-sans">{item.balance}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            item.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                          }`}>
-                            {item.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-
-                  {mtpPermits.filter(m => m.prepName.toLowerCase().includes(mtpSearch.toLowerCase()) || m.spiritType.toLowerCase().includes(mtpSearch.toLowerCase())).length === 0 && (
-                    <p className="text-xs text-slate-400 text-center py-10 font-bold font-sans">No medicinal spirit formulations matched your search query.</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 6: PROFILE */}
-        {activeTab === 'Profile' && (
-          <div className="space-y-6 animate-fade-in text-left">
-            {profileSubTab === 'Profile Detail' ? (
-              <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
-                
-                {/* Header inside settings panel */}
-                <div className="bg-[#0f2a52] text-white p-5 flex items-center gap-3">
-                  <Settings className="w-5 h-5 text-amber-500" />
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-wider text-left">Citizen Profile Registry & Secure Records</h3>
-                    <p className="text-[11px] text-white/75 font-semibold text-left">Edit your certified credentials to update state government records in real time.</p>
-                  </div>
-                </div>
-
-                <form onSubmit={handleSaveProfile} className="p-6 space-y-6">
-                  
-                  {/* Section A: Personal Information */}
-                  <div>
-                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-4">
-                      <User className="w-4 h-4 text-blue-900" />
-                      <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider">Citizen Identity Details</h4>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Legal First Name</label>
-                        <input 
-                          type="text" 
-                          value={profile.firstName} 
-                          onChange={(e) => handleInputChange('firstName', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Last Name</label>
-                        <input 
-                          type="text" 
-                          value={profile.lastName} 
-                          onChange={(e) => handleInputChange('lastName', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Father/Husband Name</label>
-                        <input 
-                          type="text" 
-                          value={profile.fatherHusbandName} 
-                          onChange={(e) => handleInputChange('fatherHusbandName', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Occupation</label>
-                        <input 
-                          type="text" 
-                          value={profile.occupation} 
-                          onChange={(e) => handleInputChange('occupation', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Date of Birth</label>
-                        <input 
-                          type="date" 
-                          value={profile.dob} 
-                          onChange={(e) => handleInputChange('dob', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Gender Selection</label>
-                        <select
-                          value={profile.gender}
-                          onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                        >
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-                    </div>
+                    <label htmlFor="dealer-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
+                      I solemnly affirm that the trade corporation complies fully with tax guidelines, active trade laws, safety regulations, and holds no active excise or customs duty defaults under state or federal laws.
+                    </label>
                   </div>
 
-                  {/* Section B: Addresses */}
-                  <div>
-                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-4">
-                      <MapPin className="w-4 h-4 text-blue-900" />
-                      <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider">Communication & Registered Address</h4>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Address Line 1</label>
-                        <input 
-                          type="text" 
-                          value={profile.address1} 
-                          onChange={(e) => handleInputChange('address1', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Address Line 2 (Landmark)</label>
-                        <input 
-                          type="text" 
-                          value={profile.address2} 
-                          onChange={(e) => handleInputChange('address2', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">State / UT Jurisdiction</label>
-                        <input 
-                          type="text" 
-                          value={profile.stateUt} 
-                          disabled
-                          className="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">District Zone</label>
-                        <input 
-                          type="text" 
-                          value={profile.district} 
-                          onChange={(e) => handleInputChange('district', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Administrative Subdivision</label>
-                        <input 
-                          type="text" 
-                          value={profile.subDivision} 
-                          onChange={(e) => handleInputChange('subDivision', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">PIN Code</label>
-                        <input 
-                          type="text" 
-                          value={profile.pinCode} 
-                          onChange={(e) => handleInputChange('pinCode', e.target.value)}
-                          maxLength={6}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Section C: Technical verification */}
-                  <div>
-                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-4">
-                      <ShieldCheck className="w-4 h-4 text-blue-900" />
-                      <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider">Government Tax Authorities Matching</h4>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">National PAN card Number</label>
-                        <input 
-                          type="text" 
-                          value={profile.panNo} 
-                          onChange={(e) => handleInputChange('panNo', e.target.value.toUpperCase())}
-                          maxLength={10}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black font-sans uppercase tracking-widest"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Registered Mobile Contact (+91)</label>
-                        <input 
-                          type="tel" 
-                          value={profile.mobileNo} 
-                          onChange={(e) => handleInputChange('mobileNo', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Applicant Email Address</label>
-                        <input 
-                          type="email" 
-                          value={profile.emailId} 
-                          onChange={(e) => handleInputChange('emailId', e.target.value)}
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold font-sans"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Submit row */}
-                  <div className="pt-4 border-t border-slate-150 flex items-center justify-end gap-3">
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-[#ff7e01] hover:bg-[#0f2a52] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-sm cursor-pointer"
+                  <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 font-sans">
+                    <button 
+                      type="button"
+                      onClick={() => setActiveTab("Home")} 
+                      className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
                     >
-                      Save Citizen Legal Records
+                      Cancel
                     </button>
-                  </div>
-
-                </form>
-              </div>
-            ) : (
-              <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs animate-fade-in">
-                {/* Header inside settings panel */}
-                <div className="bg-[#0f2a52] text-white p-5 flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-amber-500" />
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-wider text-left">Change Account Security Password</h3>
-                    <p className="text-[11px] text-white/75 font-semibold text-left">Update your login security credentials to maintain NCT Delhi administrative standards.</p>
-                  </div>
-                </div>
-
-                <form onSubmit={handlePasswordChange} className="p-6 space-y-6">
-                  <div>
-                    <div className="flex items-center gap-2 border-b border-slate-100 pb-2 mb-4">
-                      <Lock className="w-4 h-4 text-blue-900" />
-                      <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider">Account Password Configuration</h4>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Current Secure Password</label>
-                        <input 
-                          type="password" 
-                          value={passwordForm.currentPassword} 
-                          onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                          placeholder="••••••••"
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">New Security Password</label>
-                        <input 
-                          type="password" 
-                          value={passwordForm.newPassword} 
-                          onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                          placeholder="••••••••"
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-black uppercase text-[#012a52] block text-left">Confirm New Password</label>
-                        <input 
-                          type="password" 
-                          value={passwordForm.confirmPassword} 
-                          onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                          placeholder="••••••••"
-                          className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Submit row */}
-                  <div className="pt-4 border-t border-slate-150 flex items-center justify-end gap-3">
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-[#ff7e01] hover:bg-[#0f2a52] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all shadow-sm cursor-pointer"
+                    <button 
+                      type="submit" 
+                      className="px-6 py-2.5 bg-[#4f46e5] hover:bg-indigo-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
                     >
-                      Update Account Password
+                      Register Trade Dealer Account
                     </button>
                   </div>
                 </form>
+              )}
+            </div>
+          )}
+
+          {/* APPLIED DEALERS TAB */}
+          {activeTab === "Applied Dealers" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="Active Dealer Appraisals Log" 
+                subtitle="Track trade registrations, warehouse clearances, and active custom security receipts" 
+              />
+
+              <div className="space-y-4">
+                {dealerApplications.map((app) => (
+                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                    <div className="flex justify-between items-start gap-4 flex-wrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold text-[#4f46e5] bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">EXCISE TRADE DEALER</span>
+                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.firmName}</h4>
+                        <p className="text-xs text-slate-500 font-semibold mt-1">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Category Class:</span> {app.licenseType} (PAN: {app.panNum})
+                        </p>
+                        <p className="text-[11px] text-slate-400 font-medium font-sans">Filing Registered on: {app.submittedDate}</p>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2 text-right">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                          app.status === "Approved" 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}>
+                          {app.status}
+                        </span>
+                        <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                          {app.remarks}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
+                      {[
+                        { label: "Credentials Audit", done: true },
+                        { label: "Tax Clearance Verification", done: true },
+                        { label: "Stockroom Security Inspection", done: app.status === "Approved" },
+                        { label: "Trade Authorization Active", done: app.status === "Approved" }
+                      ].map((step, sIdx) => (
+                        <div key={sIdx} className="space-y-1">
+                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-      </main>
+          {/* REGISTER PREMISE TAB */}
+          {activeTab === "Register Premise" && (
+            <div className="space-y-6 max-w-3xl mx-auto">
+              <SectionTitle 
+                title="Register Physical Premise" 
+                subtitle="Apply for excise registration and physical verification of a retail, wholesale, or bonded store space" 
+              />
 
-      {/* Official Bottom Bar Footer, shifted firmly to the bottom */}
-      <footer className="bg-[#061836] py-4 border-t border-white/5 w-full mt-auto flex-shrink-0">
-        <div className="max-w-[1300px] mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <p className="text-gray-400 text-[10px] sm:text-xs text-center sm:text-left font-semibold">
-            © 2025 Department of Excise, Government of NCT of Delhi. All Rights Reserved.
-          </p>
-          <p className="text-gray-400 text-[10px] sm:text-xs text-center sm:text-right font-semibold">
-            Last Updated: 20 May 2025
-          </p>
-        </div>
-      </footer>
+              {premiseSubmissionCompleted ? (
+                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800">Premise Registration Filed</h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    The registration dossier for <span className="font-semibold text-slate-700">{newPremiseData.premiseName}</span> has been compiled and saved. Your request ID is <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">PM-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. State safety division dispatchers will reach out for physical measurements.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setPremiseSubmissionCompleted(false);
+                      setNewPremiseData({
+                        premiseName: "",
+                        ownerName: "",
+                        address: "",
+                        premiseType: "Bonded Warehouse Store",
+                        dimensions: "3,000 Sq. Ft.",
+                        fireNocNumber: "",
+                        securityDepositReceipt: "",
+                        declarationsChecked: false
+                      });
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                  >
+                    Register Another Premise
+                  </button>
+                </div>
+              ) : (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newPremiseData.premiseName || !newPremiseData.address || !newPremiseData.fireNocNumber) {
+                      showToast("Please fill all required brand, address, and clearance fields", "error");
+                      return;
+                    }
+                    if (!newPremiseData.declarationsChecked) {
+                      showToast("Please accept the physical safety compliance bounds", "error");
+                      return;
+                    }
 
+                    // Add to premise applications state list
+                    const referenceNum = `PM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+                    setPremiseApplications(prev => [
+                      {
+                        id: referenceNum,
+                        premiseName: newPremiseData.premiseName,
+                        address: newPremiseData.address,
+                        premiseType: newPremiseData.premiseType,
+                        dimensions: newPremiseData.dimensions,
+                        status: "Under Physical Inspection",
+                        submittedDate: new Date().toLocaleDateString("en-GB"),
+                        remarks: "Verification of bonded store safety metrics registered"
+                      },
+                      ...prev
+                    ]);
+
+                    setPremiseSubmissionCompleted(true);
+                    showToast(`Premise registration filed under ${referenceNum}`);
+                  }}
+                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
+                >
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Premise / Trade Depot Name *</label>
+                      <input 
+                        type="text" 
+                        value={newPremiseData.premiseName}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, premiseName: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. West Delhi Distributing Depot"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Area / Floor Dimensions *</label>
+                      <input 
+                        type="text" 
+                        value={newPremiseData.dimensions}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, dimensions: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. 3,500 Sq. Ft."
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Fire Safety NOC Reference *</label>
+                      <input 
+                        type="text" 
+                        value={newPremiseData.fireNocNumber}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, fireNocNumber: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. DFS/NOC/2026/XXXX"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Treasury Security Deposit Receipt</label>
+                      <input 
+                        type="text" 
+                        value={newPremiseData.securityDepositReceipt}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, securityDepositReceipt: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. SD-EXE-99381-2026"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Premise Category Classification *</label>
+                      <select 
+                        value={newPremiseData.premiseType}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, premiseType: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-750"
+                      >
+                        <option value="Bonded Warehouse Store">Bonded Warehouse Store</option>
+                        <option value="Retail Vend Shop">Retail Vend Shop</option>
+                        <option value="Micro-brewery Service Deck">Micro-brewery Service Deck</option>
+                        <option value="Temporary Permit Bar Ground">Temporary Permit Bar Ground</option>
+                      </select>
+                    </div>
+
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Full Landmark Address & Plot Location *</label>
+                      <textarea 
+                        rows="2"
+                        value={newPremiseData.address}
+                        onChange={(e) => setNewPremiseData(p => ({ ...p, address: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
+                        placeholder="Specific road, industrial sector details, block number, Pin code..."
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="premise-check"
+                      checked={newPremiseData.declarationsChecked}
+                      onChange={(e) => setNewPremiseData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      className="mt-1 accent-amber-600 scale-110 cursor-pointer"
+                    />
+                    <label htmlFor="premise-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
+                      I certify that the store premise is safe, possesses lockable warehouses conforming to physical security standards, and matches dimensions described above. I understand and welcome physical surprise audits by state excise agents.
+                    </label>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 font-sans">
+                    <button 
+                      type="button"
+                      onClick={() => setActiveTab("Home")} 
+                      className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
+                    >
+                      File Premise Registration
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* APPLIED PREMISE TAB */}
+          {activeTab === "Applied Premise" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="Registered Excise Premises Registry" 
+                subtitle="Track current safety certificates, fire audits, and active physical statuses of your warehouses" 
+              />
+
+              <div className="space-y-4">
+                {premiseApplications.map((app) => (
+                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                    <div className="flex justify-between items-start gap-4 flex-wrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold text-[#d97706] bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">EXCISE PHYSICAL PREMISE</span>
+                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.premiseName}</h4>
+                        <p className="text-xs text-slate-500 font-semibold mt-1">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Type / Dimension:</span> {app.premiseType} ({app.dimensions})
+                        </p>
+                        <p className="text-xs text-slate-400 font-medium mt-1">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Location:</span> {app.address}
+                        </p>
+                        <p className="text-[11px] text-slate-400 font-medium font-sans mt-0.5">Application Filed on: {app.submittedDate}</p>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2 text-right">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                          app.status === "Approved" 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}>
+                          {app.status}
+                        </span>
+                        <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                          {app.remarks}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
+                      {[
+                        { label: "Fire Scrutiny", done: true },
+                        { label: "Physical Verification", done: true },
+                        { label: "Safety Audit clearance", done: app.status === "Approved" },
+                        { label: "Premise Active", done: app.status === "Approved" }
+                      ].map((step, sIdx) => (
+                        <div key={sIdx} className="space-y-1">
+                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* NEW PERMIT TAB */}
+          {activeTab === "New Permit" && (
+            <div className="space-y-6 max-w-3xl mx-auto">
+              <SectionTitle 
+                title="Excise Transport & Special Permit" 
+                subtitle="File an application to obtain local bulk cargo movement passes or special single-day trade permits" 
+              />
+
+              {permitSubmissionCompleted ? (
+                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
+                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800">Transport Permit Authorized</h3>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    The consignment permit request for <span className="font-semibold text-slate-700">{newPermitData.consignmentDetails}</span> has been processed. Permit transit code: <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">PRM-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. Keep cargo sheets inside carrier <span className="font-semibold font-mono text-slate-700">{newPermitData.carrierLicense}</span> during logistics movement.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setPermitSubmissionCompleted(false);
+                      setNewPermitData({
+                        permitType: "Local Transport Permit (Bulk Movement)",
+                        sourcePremise: "Central Delhi Logistics Hub (Okhla)",
+                        destPremise: "West Delhi Distributing Depot (Mayapuri)",
+                        consignmentDetails: "",
+                        carrierLicense: "",
+                        declarationsChecked: false
+                      });
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                  >
+                    File Another Permit Request
+                  </button>
+                </div>
+              ) : (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newPermitData.consignmentDetails || !newPermitData.carrierLicense) {
+                      showToast("Please specify cargo description and vehicle carrier license", "error");
+                      return;
+                    }
+                    if (!newPermitData.declarationsChecked) {
+                      showToast("Please agree to transport transit regulations", "error");
+                      return;
+                    }
+
+                    // Add to permit applications list
+                    const referenceNum = `PRM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+                    setPermitApplications(prev => [
+                      {
+                        id: referenceNum,
+                        permitType: newPermitData.permitType,
+                        sourcePremise: newPermitData.sourcePremise,
+                        destPremise: newPermitData.destPremise,
+                        consignmentDetails: newPermitData.consignmentDetails,
+                        carrierLicense: newPermitData.carrierLicense.toUpperCase(),
+                        status: "Approved",
+                        submittedDate: new Date().toLocaleDateString("en-GB"),
+                        remarks: "Gate pass printed, routing active"
+                      },
+                      ...prev
+                    ]);
+
+                    setPermitSubmissionCompleted(true);
+                    showToast(`Permise transport permit ${referenceNum} processed!`);
+                  }}
+                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
+                >
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div className="space-y-1.5 col-span-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Class of Excise Permit *</label>
+                      <select 
+                        value={newPermitData.permitType}
+                        onChange={(e) => setNewPermitData(p => ({ ...p, permitType: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-755"
+                      >
+                        <option value="Local Transport Permit (Bulk Movement)">Local Transport Permit (Bulk Movement)</option>
+                        <option value="Import Permit (Out-of-State Customs Movement)">Import Permit (Out-of-State Customs Movement)</option>
+                        <option value="Export Transport Gate Pass">Export Transport Gate Pass</option>
+                        <option value="Special One-Day Event Temporary Permit">Special One-Day Event Temporary Permit</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Consignment Dispatch Source *</label>
+                      <input 
+                        type="text" 
+                        value={newPermitData.sourcePremise}
+                        onChange={(e) => setNewPermitData(p => ({ ...p, sourcePremise: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Okhla Warehouse Center"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Consignment Receiving Destination *</label>
+                      <input 
+                        type="text" 
+                        value={newPermitData.destPremise}
+                        onChange={(e) => setNewPermitData(p => ({ ...p, destPremise: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. Vedic Retail Shop, Mayapuri"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Vehicle/Carrier License Number *</label>
+                      <input 
+                        type="text" 
+                        value={newPermitData.carrierLicense}
+                        onChange={(e) => setNewPermitData(p => ({ ...p, carrierLicense: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
+                        placeholder="e.g. DL-1LM-9902"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Brand / Consignment Contents Summary *</label>
+                      <input 
+                        type="text" 
+                        value={newPermitData.consignmentDetails}
+                        onChange={(e) => setNewPermitData(p => ({ ...p, consignmentDetails: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
+                        placeholder="e.g. 100 cases of Indian Malt Whiskey"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="permit-check"
+                      checked={newPermitData.declarationsChecked}
+                      onChange={(e) => setNewPermitData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      className="mt-1 accent-amber-600 scale-110 cursor-pointer"
+                    />
+                    <label htmlFor="permit-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
+                      I solemnly affirm that this transit belongs exclusively to authorized trade stockroom allocations, and cargo quantities correspond to state excise tax clearances identically.
+                    </label>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 font-sans">
+                    <button 
+                      type="button"
+                      onClick={() => setActiveTab("Home")} 
+                      className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
+                    >
+                      Process & Print Permit
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* APPLIED PERMIT TAB */}
+          {activeTab === "Applied Permit" && (
+            <div className="space-y-6">
+              <SectionTitle 
+                title="Active Transit Gate Pass & Permit Ledger" 
+                subtitle="Track active carrier transit licenses, dispatcher routes, and temporary event permits" 
+              />
+
+              <div className="space-y-4">
+                {permitApplications.map((app) => (
+                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                    <div className="flex justify-between items-start gap-4 flex-wrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-extrabold text-[#b45309] bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">EXCISE TRANSIT PERMIT</span>
+                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.permitType}</h4>
+                        <p className="text-xs text-slate-500 font-semibold mt-1">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Consignment:</span> {app.consignmentDetails}
+                        </p>
+                        <p className="text-xs text-slate-400 font-medium">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Carrier Vehicle:</span> {app.carrierLicense}
+                        </p>
+                        <p className="text-xs text-slate-400 font-medium">
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Route:</span> From {app.sourcePremise} To {app.destPremise}
+                        </p>
+                        <p className="text-[11px] text-slate-400 font-medium font-sans mt-0.5">Permit Generated on: {app.submittedDate}</p>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-2 text-right">
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                          app.status === "Approved" 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}>
+                          {app.status}
+                        </span>
+                        <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                          {app.remarks}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
+                      {[
+                        { label: "Cargo Declaration", done: true },
+                        { label: "Tax Stamp Verification", done: true },
+                        { label: "Carrier Audit", done: true },
+                        { label: "Transit Pass Ready", done: app.status === "Approved" }
+                      ].map((step, sIdx) => (
+                        <div key={sIdx} className="space-y-1">
+                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* OTHER TABS (MTP, Dealer, Profile, etc. if anyone selects them) */}
+          {!["Home", "New License", "Applied License", "Renewal License", "License Transfer", "Document Revalidate", "UserProfile", "ChangePassword", "New M&TP", "Applied M&TP", "Dealer Registration", "Applied Dealers", "Register Premise", "Applied Premise", "New Permit", "Applied Permit"].includes(activeTab) && (
+            <div className="dashboard-card section-padding text-center bg-white">
+              <h2 className="section-title text-3xl font-bold">
+                {activeTab} Module
+              </h2>
+
+              <p className="section-subtitle mt-3">
+                This module is now fully modular and ready
+                for scalable feature integration.
+              </p>
+            </div>
+          )}
+        </main>
+      )}
     </div>
   );
 }
