@@ -71,10 +71,9 @@ namespace backend.API.Controllers
         ExpiresAt = tokenPair.ExpiresAt,
         UserId = licUser.UserId,
         UserType = "LIC",
-        RedirectUrl = "/welcome.html"
+        RedirectUrl = "/applicantdashboard"
     });
 }
-
 
 // Applicant Login
 
@@ -114,7 +113,7 @@ if (applicantUser != null)
         ExpiresAt = tokenPair.ExpiresAt,
         UserId = applicantUser.UserId,
         UserType = "Applicant",
-        RedirectUrl = "/welcome.html"
+       RedirectUrl = "/applicantdashboard"
     });
 }
 
