@@ -44,9 +44,13 @@ const Header = ({ onSelectView, currentView }) => {
   // };
 const handleLoginOptionClick = (item) => {
 
-  if (item === 'Applicant') {
+  if (item === "Applicant") {
 
     navigate("/login");
+
+  } else if (item === "Department") {
+
+    navigate("/departmentlogin");
 
   } else {
 
