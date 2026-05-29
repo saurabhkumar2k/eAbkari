@@ -1,48 +1,129 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from 'react-router-dom';
 import Header from './src/components/Header';
 import Footer from './src/components/Footer';
 import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
 import ApplicantDashboard from './src/areas/applicant/applicantdashboard.jsx';
+import DepartmentDashboard from './src/areas/dashboard/DepartmentDashboard.jsx';
+import ImportPermitCumPass from './src/components/Department/Pages/ImportPermitPass.jsx';
+import EmptyPermitTable from './src/components/Department/EmptyPermitTable.jsx';
+import PermitForm from './src/components/Department/PermitForm.jsx';
+import DepartmentLogin from './src/components/Department/DepartmentLogin.jsx';
+import DepartmentHeader from './src/components/DepartmentHeader.jsx';
+import AdminHeader from './src/components/AdminHeader.jsx';
 
+import {
+  ChevronDownSvg,
+  FileEditSvg,
+  ShieldSvg,
+  TimerSvg,
+  BarChart3Svg,
+  HeadphonesSvg,
+  BellSvg,
+  DownloadSvg,
+  ChevronLeftSvg,
+  ChevronRightSvg,
+  LayoutGridSvg,
+  BuildingSvg,
+  HomeSvg,
+  FolderSvg,
+  DatabaseSvg,
+  TicketSvg,
+  FileTextSvg,
+  WalletSvg,
+  PenToolSvg,
+  TagSvg,
+  MessageSquareSvg,
+  PieChartSvg,
+  SettingsSvg
+} from "./src/components/icons/GlobalIcons";
 
-
-import { 
-  ChevronDownSvg, 
-  FileEditSvg, 
-  ShieldSvg, 
-  TimerSvg, 
-  BarChart3Svg, 
-  HeadphonesSvg, 
-  BellSvg, 
-  DownloadSvg, 
-  ArrowRightSvg, 
-  ChevronLeftSvg, 
-  ChevronRightSvg, 
-  LayoutGridSvg, 
-  BuildingSvg 
-} from './src/Style/images/Icons';
+import { ArrowRightSvg } from './src/Style/images/Icons';
 
 export default function App() {
 
+  const handleAdminNavigate = (path) => {
+  if (path) {
+    window.location.href = path;
+  }
+};
+// Navigation menu configuration
+const navItems = [
+  { label: "Home", icon: <HomeSvg className="dept-nav-icon" /> },
+
+  { label: "Directory Data", icon: <FolderSvg className="dept-nav-icon" />, hasDropdown: true },
+
+  {
+    label: "Master Data",
+    icon: <DatabaseSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+    items: [
+      { label: "Packaged Liquor" },
+      {
+        label: "Permit/Pass Validity",
+        hasSideMenu: true,
+        sideItems: [
+          "Import : Bulk Spirit",
+          "Import : Packaged FL",
+          "Export : Packaged FL",
+          "Transport : Bulk Spirit",
+          "Transport : Packaged FL",
+          "Export : Bulk Spirit",
+        ],
+      },
+      { label: "Misc. Case" },
+      { label: "Fee/Duty Rate" },
+      { label: "Export : Packaged Liquor" },
+      { label: "Others" },
+      { label: "M&TP" },
+    ],
+  },
+
+  {
+    label: "Permit/Pass",
+    icon: <TicketSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Licensee Data",
+    icon: <FileTextSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Wallet",
+    icon: <WalletSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Stationary Management",
+    icon: <PenToolSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  { label: "Label Regn.", icon: <TagSvg className="dept-nav-icon" /> },
+
+  { label: "Feedback", icon: <MessageSquareSvg className="dept-nav-icon" /> },
+
+  { label: "MIS", icon: <PieChartSvg className="dept-nav-icon" /> },
+
+  {
+    label: "House Keeping",
+    icon: <SettingsSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+];
 
   const renderHomeContent = () => (
     <>
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-gradient" />
-        <img 
-          src="https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=2000" 
-          className="hero-bg"
-          alt=""
-        />
         
         <div className="hero-divider-line" />
         <div className="hero-accent-shape" />
@@ -307,77 +388,183 @@ export default function App() {
     </>
   );
 
-  // return (
-  //   <div className="app-main-layout">
-  //     {currentView === 'APPLICANT_LOGIN' ? (
-  //       <Login onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} />
-  //     ) : (
-  //       <>
-  //         <Header onSelectView={setCurrentView} currentView={currentView} />
-  //         <main>
-  //           {currentView === 'APPLICANT_REGISTRATION' ? (
-  //             <Registration onNavigateToLogin={() => setCurrentView('APPLICANT_LOGIN')} />
-  //           ) : (
-  //             renderHomeContent()
-  //           )
-  //           }:currentView === 'APPLICANT_DASHBOARD' ? (
-  //       <ApplicantDashboard 
-  //         onLogout={() => setCurrentView('HOME')}
-  //         onNavigateToHome={() => setCurrentView('HOME')}
-  //       />
-  //     )          
-  //         </main>
-  //         <Footer />
-  //       </>
-  //     )}
-  //   </div>
-  // );
- return (
-  <BrowserRouter>
-
-    <Routes>
-
-      {/* Home Page */}
-      <Route
-        path="/"
-        element={
-          <>
-            <Header />
-
-            <main>
-              {renderHomeContent()}
-            </main>
-
-            <Footer />
-          </>
-        }
-      />
-
-      {/* Login Page */}
-      <Route
-        path="/login"
-        element={<Login />}
-      />
-
-      {/* Registration Page */}
-      <Route
-        path="/registration"
-        element={<Registration />}
-      />
-
-      {/* Dashboard Page */}
-      <Route
-        path="/applicantdashboard"
-        element={
-          <ApplicantDashboard
-            onLogout={() => window.location.href = "/"}
-            onNavigateToHome={() => window.location.href = "/"}
+  /*return (
+     <div className="app-main-layout">
+      {currentView === 'APPLICANT_LOGIN' ? (
+        <Login 
+          onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} 
+          onNavigateHome={() => setCurrentView('HOME')}
+          onLoginSuccess={() => setCurrentView('APPLICANT_DASHBOARD')}
+        />
+      ) : currentView === 'APPLICANT_DASHBOARD' ? (
+        <ApplicantDashboard 
+          onLogout={() => setCurrentView('HOME')}
+          onNavigateToHome={() => setCurrentView('HOME')}
+        />
+      ) : currentView === 'DEPARTMENT_LOGIN' ? (
+        <DepartmentLogin 
+          onNavigateHome={() => setCurrentView('HOME')} 
+          onLoginSuccess={() => setCurrentView('DEPARTMENT_DASHBOARD')}
+        />
+      ) : currentView === 'DEPARTMENT_DASHBOARD' ? (
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader navItems={navItems} currentView={currentView} onNavigate={handleAdminNavigate} />
+          <DepartmentDashboard 
+            onLogout={() => setCurrentView('HOME')} 
+            onNavigateToPermit={() => setCurrentView('IMPORT_PERMIT_CUM_PASS')}
+            onNavigateHome={() => setCurrentView('HOME')}
           />
+        </div>
+      ) : currentView === 'IMPORT_PERMIT_CUM_PASS' ? (
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader navItems={navItems} currentView={currentView} onNavigate={handleAdminNavigate} />
+          <ImportPermitCumPass />
+        </div>
+      );*/
+return ( <BrowserRouter> <Routes>
+
+```
+  {/* Home */}
+  <Route
+    path="/"
+    element={
+      <>
+        <Header />
+        <main>
+          {renderHomeContent()}
+        </main>
+        <Footer />
+      </>
+    }
+  />
+
+  {/* Applicant Login */}
+  <Route
+    path="/login"
+    element={
+      <Login
+        onNavigateToRegister={() =>
+          (window.location.href = "/registration")
+        }
+        onNavigateHome={() =>
+          (window.location.href = "/")
+        }
+        onLoginSuccess={() =>
+          (window.location.href = "/applicantdashboard")
         }
       />
+    }
+  />
 
-    </Routes>
+  {/* Registration */}
+  <Route
+    path="/registration"
+    element={<Registration />}
+  />
+
+  {/* Applicant Dashboard */}
+  <Route
+    path="/applicantdashboard"
+    element={
+      <ApplicantDashboard
+        onLogout={() =>
+          (window.location.href = "/")
+        }
+        onNavigateToHome={() =>
+          (window.location.href = "/")
+        }
+      />
+    }
+  />
+
+  {/* Department Login */}
+  <Route
+    path="/departmentlogin"
+    element={
+      <DepartmentLogin
+        onNavigateHome={() =>
+          (window.location.href = "/")
+        }
+        onLoginSuccess={() =>
+          (window.location.href = "/departmentdashboard")
+        }
+      />
+    }
+  />
+
+  {/* Department Dashboard with Admin Header */}
+  <Route
+    path="/departmentdashboard"
+    element={
+      <div className="admin-app-layout flex-grow flex flex-col">
+        <AdminHeader
+          navItems={navItems}
+          onNavigate={handleAdminNavigate}
+        />
+
+        <DepartmentDashboard
+          onLogout={() =>
+            (window.location.href = "/")
+          }
+          onNavigateHome={() =>
+            (window.location.href = "/")
+          }
+          onNavigateToPermit={() =>
+            (window.location.href = "/importpermit")
+          }
+        />
+      </div>
+    }
+  />
+
+  {/* Import Permit with Admin Header */}
+  <Route
+    path="/importpermit"
+    element={
+      <div className="admin-app-layout flex-grow flex flex-col">
+        <AdminHeader
+          navItems={navItems}
+          onNavigate={handleAdminNavigate}
+        />
+
+        <ImportPermitCumPass />
+      </div>
+    }
+  />
+
+  {/* Empty Permit Table */}
+  <Route
+    path="/emptypermittable"
+    element={
+      <div className="admin-app-layout flex-grow flex flex-col">
+        <AdminHeader
+          navItems={navItems}
+          onNavigate={handleAdminNavigate}
+        />
+
+        <EmptyPermitTable />
+      </div>
+    }
+  />
+
+  {/* Permit Form */}
+  <Route
+    path="/permitform"
+    element={
+      <div className="admin-app-layout flex-grow flex flex-col">
+        <AdminHeader
+          navItems={navItems}
+          onNavigate={handleAdminNavigate}
+        />
+
+        <PermitForm />
+      </div>
+    }
+  />
+
+</Routes>
 
   </BrowserRouter>
 );
+
 }
