@@ -46,7 +46,9 @@ import { ArrowRightSvg } from './src/Style/images/Icons';
 
 export default function App() {
 
- const handleAdminNavigate = (view) => {
+const handleAdminNavigate = (view) => {
+  console.log("Navigation:", view);
+
   switch (view) {
     case "Bottle":
       window.location.href = "/liquorbrand";
@@ -56,14 +58,144 @@ export default function App() {
       window.location.href = "/importpermitpass";
       break;
 
-    case "HOME":
+    case "Home":
       window.location.href = "/departmentdashboard";
       break;
 
     default:
-      console.log(view);
+      console.log("Unknown route:", view);
   }
 };
+
+return (
+  <BrowserRouter>
+    <Routes>
+
+      {/* Home */}
+      <Route
+        path="/"
+        element={
+          <>
+            <Header />
+            <main>{renderHomeContent()}</main>
+            <Footer />
+          </>
+        }
+      />
+
+      {/* Applicant Login */}
+      <Route
+        path="/login"
+        element={
+          <Login
+            onNavigateToRegister={() =>
+              (window.location.href = "/registration")
+            }
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/applicantdashboard")
+            }
+          />
+        }
+      />
+
+      {/* Registration */}
+      <Route
+        path="/registration"
+        element={<Registration />}
+      />
+
+      {/* Applicant Dashboard */}
+      <Route
+        path="/applicantdashboard"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+          />
+        }
+      />
+
+      {/* Department Login */}
+      <Route
+        path="/departmentlogin"
+        element={
+          <DepartmentLogin
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/departmentdashboard")
+            }
+          />
+        }
+      />
+
+      {/* Department Dashboard */}
+      <Route
+        path="/departmentdashboard"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="DEPARTMENT_DASHBOARD"
+              onNavigate={handleAdminNavigate}
+            />
+
+            <DepartmentDashboard
+              onLogout={() =>
+                (window.location.href = "/")
+              }
+              onNavigateHome={() =>
+                (window.location.href = "/")
+              }
+            />
+          </div>
+        }
+      />
+
+      {/* Import Permit */}
+      <Route
+        path="/importpermitpass"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="IMPORT_PERMIT_PASS"
+              onNavigate={handleAdminNavigate}
+            />
+
+            <ImportPermitPass />
+          </div>
+        }
+      />
+
+      {/* Liquor Brand */}
+      <Route
+        path="/liquorbrand"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="BOTTLE"
+              onNavigate={handleAdminNavigate}
+            />
+
+            <LiquorBrand />
+          </div>
+        }
+      />
+
+    </Routes>
+  </BrowserRouter>
+);
+}
 
 // Navigation menu configuration
 const navItems = [
@@ -443,107 +575,3 @@ const navItems = [
           <ImportPermitCumPass />
         </div>
       );*/
-return (
-<BrowserRouter>
-  <Routes>
-
-    {/* Home */}
-    <Route
-      path="/"
-      element={
-        <>
-          <Header />
-          <main>{renderHomeContent()}</main>
-          <Footer />
-        </>
-      }
-    />
-
-    {/* Applicant Login */}
-    <Route
-      path="/login"
-      element={<Login />}
-    />
-
-    {/* Registration */}
-    <Route
-      path="/registration"
-      element={<Registration />}
-    />
-
-    {/* Applicant Dashboard */}
-    <Route
-      path="/applicantdashboard"
-      element={<ApplicantDashboard />}
-    />
-
-    {/* Department Login */}
-    <Route
-      path="/departmentlogin"
-      element={<DepartmentLogin />}
-    />
-
-    {/* Department Dashboard */}
-    <Route
-      path="/departmentdashboard"
-      element={
-        <div className="admin-app-layout flex-grow flex flex-col">
-          <AdminHeader
-            navItems={navItems}
-            currentView="DEPARTMENT_DASHBOARD"
-            onNavigate={handleAdminNavigate}
-          />
-
-          <DepartmentDashboard />
-        </div>
-      }
-    />
-
-    {/* Import Permit */}
-    <Route
-      path="/importpermitpass"
-      element={
-        <div className="admin-app-layout flex-grow flex flex-col">
-          <AdminHeader
-            navItems={navItems}
-            currentView="IMPORT_PERMIT_PASS"
-            onNavigate={handleAdminNavigate}
-          />
-
-          <ImportPermitPass />
-        </div>
-      }
-    />
-
-    {/* Liquor Brand */}
-    <Route
-      path="/liquorbrand"
-      element={
-        <div className="admin-app-layout flex-grow flex flex-col">
-          <AdminHeader
-            navItems={navItems}
-            currentView="BOTTLE"
-            onNavigate={handleAdminNavigate}
-          />
-
-          <LiquorBrand />
-        </div>
-      }
-    />
-<Route
-  path="/BOTTLE"
-  element={
-    <div className="admin-app-layout flex-grow flex flex-col">
-      <AdminHeader
-        navItems={navItems}
-        currentView="BOTTLE"
-        onNavigate={handleAdminNavigate}
-      />
-      <LiquorBrand />
-    </div>
-  }
-/>
-  </Routes>
-</BrowserRouter>
-);
-}
