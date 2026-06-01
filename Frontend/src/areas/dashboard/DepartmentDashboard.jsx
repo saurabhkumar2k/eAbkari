@@ -14,6 +14,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 
+
 const DepartmentDashboard = ({ onLogout, onNavigateToPermit, onNavigateHome }) => {
   const stats = [
     {

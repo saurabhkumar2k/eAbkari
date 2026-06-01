@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NewLicense from "./NewLicense.jsx";
 import {
   Home,
   Award,
@@ -25,11 +26,7 @@ import {
   Info,
   ShieldAlert
 } from "lucide-react";
-// NewLicenseApplicationWizard deleted, inline wizard built directly into ApplicantDashboard to prevent import errors.
 
-/* =========================
-   REUSABLE DATA
-========================= */
 
 const menuItems = [
   { id: "Home", label: "Home", icon: Home },
@@ -1244,6 +1241,715 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               )}
 
             </div>
+          </div>
+        </div>
+      ) : 
+        activeTab === "New License" ? (
+        <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
+      ) : false ? (
+        <div className="flex-grow w-full py-8 font-sans">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            
+            {appSubmissionCompleted ? (
+              /* SUCCESS SCREEN - HIGH-END DESIGN */
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8 animate-fade select-none">
+                <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse-subtle">
+                  <Check className="w-10 h-10 stroke-[3]" />
+                  <span className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-25"></span>
+                </div>
+                
+                <div className="space-y-3">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Application Submitted Successfully
+                  </h2>
+                  <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+                    Your application for a new excise privilege license has been logged. The Department of Excise, Government of NCT of Delhi will process the physical inspection shortly.
+                  </p>
+                </div>
+
+                {/* Structured Receipts Badge */}
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-left space-y-4 shadow-sm max-w-lg mx-auto">
+                  <div className="flex justify-between items-center text-xs border-b border-slate-100 pb-3">
+                    <span className="font-bold text-slate-400 uppercase tracking-widest">Transaction Receipt</span>
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase">PAID & FILED</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-y-4 gap-x-3 text-xs">
+                    <div>
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Application Ref</span>
+                      <span className="font-mono font-black text-slate-800 text-sm">AP-2026-EX-88021</span>
+                    </div>
+                    <div>
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">License Category</span>
+                      <span className="font-bold text-blue-700 text-sm">
+                        {newLicData.licenseType ? newLicData.licenseType.split(" ")[0] : "L-1"}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Applicant Entity</span>
+                      <span className="font-bold text-slate-800 text-sm">{newLicData.applicantName || "Delhi Retail & Distribution Corp"}</span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Premises Address</span>
+                      <span className="font-semibold text-slate-600 block leading-relaxed">{newLicData.premiseAddress || "Plot 104, Okhla Industrial Area Phase-III, New Delhi"}</span>
+                    </div>
+                    <div>
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Fee Remitted</span>
+                      <span className="font-extrabold text-blue-600 text-base">
+                        {getPriceFormatted()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Filing Date</span>
+                      <span className="font-bold text-slate-700 text-sm">01/06/2026</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                  <button
+                    onClick={() => {
+                      setAppSubmissionCompleted(false);
+                      setNewLicStep(1);
+                      setActiveTab("Home");
+                    }}
+                    className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer border-none"
+                  >
+                    Return to Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      showToast("PDF license filing receipt generated and saved to device!");
+                    }}
+                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition cursor-pointer border-none shadow-md"
+                  >
+                    Print Signed Copy
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* PROGRESSIVE 5-STEP LICENSE WIZARD */
+              <div className="space-y-8 animate-fade">
+
+                {/* 1. HERO BANNER WITH DELHI SKYLINE ILLUSTRATION AND BREADCRUMB */}
+                <div className="new-license-banner p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  {/* Left part */}
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="p-3 bg-white/90 border border-blue-200 text-blue-600 rounded-2xl shadow-sm flex-shrink-0">
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <div className="space-y-1.5 text-left">
+                      {/* Breadcrumbs */}
+                      <nav className="flex items-center gap-1.5 text-[11px] font-bold text-blue-700 uppercase tracking-wider">
+                        <span className="cursor-pointer hover:underline" onClick={() => setActiveTab("Home")}>Home</span>
+                        <ChevronRight className="w-3 h-3 text-blue-400" />
+                        <span className="text-blue-500">License</span>
+                        <ChevronRight className="w-3 h-3 text-blue-400" />
+                        <span className="text-blue-900">New License Application</span>
+                      </nav>
+                      
+                      <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none science-heading">
+                        New License Application
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-600 max-w-lg leading-relaxed font-semibold">
+                        {newLicStep === 2 
+                          ? "Let's get started! Select the license category that best fits your requirement."
+                          : newLicStep === 3
+                            ? "Select the specific operational sub-code or premium endorsement matching your license category."
+                            : newLicStep === 4
+                              ? "Define your business premises address, coordinates, and physical storage layout configuration."
+                              : newLicStep === 5
+                                ? "Upload legal registration documents, tax compliance copies and clearance certifications."
+                                : newLicStep === 6
+                                  ? "Review your application details, make payment of excise tariff fees and file your application."
+                                  : "Let's get started! Fill in the basic details to begin your new license application."
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right part: Stylized SVG Delhi Skyline monument illustration */}
+                  <div className="w-full md:w-64 lg:w-80 flex-shrink-0 opacity-90 block">
+                    <svg viewBox="0 0 320 100" className="w-full h-auto text-blue-800/20 fill-current">
+                      {/* Qutub Minar */}
+                      <g>
+                        <path d="M 40,100 L 48,15 L 52,15 L 60,100 Z" />
+                        <rect x="46" y="35" width="8" height="4" rx="1" />
+                        <rect x="44" y="60" width="12" height="4" rx="1" />
+                        <rect x="42" y="80" width="16" height="4" rx="1" />
+                        <line x1="50" y1="15" x2="50" y2="5" stroke="currentColor" strokeWidth="2" />
+                      </g>
+                      
+                      {/* India Gate */}
+                      <g>
+                        <rect x="100" y="45" width="12" height="55" />
+                        <rect x="138" y="45" width="12" height="55" />
+                        <rect x="94" y="32" width="62" height="13" />
+                        <rect x="90" y="25" width="70" height="7" rx="1" />
+                        <path d="M 104,25 C 104,12 146,12 146,25 Z" />
+                        <path d="M 112,100 L 112,65 C 112,53 138,53 138,65 L 138,100 Z" />
+                      </g>
+
+                      {/* Lotus Temple */}
+                      <g>
+                        <path d="M 220,100 C 210,60 230,50 230,50 C 230,50 250,60 240,100 Z" />
+                        <path d="M 200,100 C 200,70 215,70 220,100 Z" />
+                        <path d="M 240,100 C 245,70 260,70 260,100 Z" />
+                        <path d="M 185,100 C 195,80 212,85 212,100 Z" />
+                        <path d="M 248,100 C 248,85 265,80 275,100 Z" />
+                      </g>
+                      
+                      {/* Baseline ground */}
+                      <line x1="10" y1="100" x2="310" y2="100" stroke="currentColor" strokeWidth="3" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* 2. MULTI-STEP PROGRESS BAR (32px vertical spacing) */}
+                <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 select-none">
+                  <div className="relative">
+                    {/* Line connectors row */}
+                    <div className="absolute top-5 left-0 right-0 -translate-y-1/2 flex items-center z-0 px-8">
+                      <div className={newLicStep >= 2 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
+                      <div className={newLicStep >= 3 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
+                      <div className={newLicStep >= 4 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
+                      <div className={newLicStep >= 5 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
+                      <div className={newLicStep >= 6 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
+                    </div>
+
+                    {/* Circles row */}
+                    <div className="relative flex justify-between items-start z-10">
+                      {[
+                        { step: 1, label: "Basic Details", sub: "Entity Selection" },
+                        { step: 2, label: "License Category", sub: "Privilege Code" },
+                        { step: 3, label: "Select License", sub: "Specific Sub-Type" },
+                        { step: 4, label: "Premise Details", sub: "Address & Layout" },
+                        { step: 5, label: "Documents", sub: "Verification Copies" },
+                        { step: 6, label: "Review & Submit", sub: "Remit & File" }
+                      ].map((item) => {
+                        const isCompleted = newLicStep > item.step;
+                        const isActive = newLicStep === item.step;
+                        return (
+                          <div key={item.step} className="flex flex-col items-center flex-1 text-center">
+                            <div 
+                              className={`step-circle-badge ${
+                                isCompleted 
+                                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-100" 
+                                  : isActive 
+                                    ? "blue-gradient-active-step text-white" 
+                                    : "bg-slate-50 border-2 border-slate-200 text-slate-400"
+                              }`}
+                            >
+                              {isCompleted ? <Check className="w-5 h-5 stroke-[3]" /> : <span>{item.step}</span>}
+                            </div>
+                            <span className={`text-[12px] font-extrabold mt-3 block ${isActive ? "text-blue-600" : isCompleted ? "text-emerald-700" : "text-slate-500"}`}>
+                              {item.label}
+                            </span>
+                            <span className="text-[10px] hidden sm:block text-slate-400 mt-0.5 font-semibold">
+                              {item.sub}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. ACTIVE STEP DETAIL CONTENT (24px padding / equal heights / custom cards) */}
+                <div className="min-h-[340px]">
+                  
+                  {newLicStep === 1 && (
+                    /* STEP 1: BASIC DETAILS CARD */
+                    <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
+                      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                          <UserCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+                            Basic Details
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-1 font-semibold">Select your organization type and applied license privilege schedules.</p>
+                        </div>
+                      </div>
+
+                      {/* Field Forms Grid (Two Column Layout) */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        {/* Owner Type field with field icons and custom arrow inside layout */}
+                        <div className="flex flex-col gap-2 relative">
+                          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
+                            Owner Type <span className="text-red-500">*</span>
+                          </label>
+                          <div className="field-icon-container">
+                            <UserCheck className="field-icon-left" />
+                            <select
+                              value={newLicData.entityType}
+                              onChange={(e) => setNewLicData({ ...newLicData, entityType: e.target.value })}
+                              className="rounded-custom-field focus:ring-4 focus:ring-blue-100 cursor-pointer"
+                            >
+                              <option value="Individual Proprietorship">Individual Proprietorship</option>
+                              <option value="Partnership Firm">Partnership Firm</option>
+                              <option value="Private Limited Company">Private Limited Company</option>
+                              <option value="Public Limited Company">Public Limited Company</option>
+                              <option value="Society / Trust">Society / Trust</option>
+                            </select>
+                            <ChevronDown className="custom-select-arrow" />
+                          </div>
+                          <p className="text-[11px] text-slate-400 font-semibold">Specify the legally incorporated category of applicant business enterprise.</p>
+                        </div>
+
+                        {/* Category of License Applied for */}
+                        <div className="flex flex-col gap-2 relative">
+                          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
+                            Category of License Applied For <span className="text-red-500">*</span>
+                          </label>
+                          <div className="field-icon-container">
+                            <Award className="field-icon-left" />
+                          <select
+                              value={newLicData.licenseType}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                let defaultSub = "L-1 (A) Domestic Registered Indian Spirits Wholesale";
+                                if (val.includes("L-10")) {
+                                  defaultSub = "L-10 (A) General Departmental Retail Vend";
+                                } else if (val.includes("L-15")) {
+                                  defaultSub = "L-15 (A) Star Classified Hotel Bar Service";
+                                } else if (val.includes("L-22")) {
+                                  defaultSub = "L-22 (A) Resident Club & Association Bar Unit";
+                                }
+                                setNewLicData({ ...newLicData, licenseType: val, selectedSubLicense: defaultSub });
+                              }}
+                              className="rounded-custom-field focus:ring-4 focus:ring-blue-100 cursor-pointer"
+                            >
+                              <option value="L-1 (Wholesale Vend of Indian Liquor)">L-1 (Wholesale Vend of Indian Liquor)</option>
+                              <option value="L-10 (Retail Departmental Store)">L-10 (Retail Departmental Store)</option>
+                              <option value="L-15 (Hotel Bar - Star Classified)">L-15 (Hotel Bar - Star Classified)</option>
+                              <option value="L-22 (Club Bar)">L-22 (Club Bar)</option>
+                            </select>
+                            <ChevronDown className="custom-select-arrow" />
+                          </div>
+                          <p className="text-[11px] text-slate-400 font-semibold">These categories represent excise divisions governed under GNCTD Act.</p>
+                        </div>                
+                      </div>
+                    </div>
+                  )}
+
+                  {newLicStep === 2 && (
+                     <LicenseCategory
+                  newLicData={newLicData}
+                  setNewLicData={setNewLicData}
+                  showToast={showToast}
+                  getActiveCategory={getActiveCategory}
+                />
+                  )}
+
+              {newLicStep === 3 && (
+                    /* STEP 3: SELECT SPECIFIC PRIVILEGE LICENSE */
+                    <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
+                      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                          <Compass className="w-5 h-5 animate-spin-slow" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+                            Select Specific Privilege License
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-1 font-semibold">
+                            Choose the specific operational sub-code or premium endorsement matching your license category.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {getSubLicenseOptions().map((opt) => {
+                          const isSelected = newLicData.selectedSubLicense === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => {
+                                setNewLicData({ ...newLicData, selectedSubLicense: opt.id });
+                                showToast(`Selected operational format: ${opt.title}`);
+                              }}
+                              className={`text-left rounded-2xl border-2 p-5 flex flex-col justify-between transition h-full relative cursor-pointer group bg-white ${
+                                isSelected 
+                                  ? "border-blue-600 bg-blue-50/20 shadow-md ring-4 ring-blue-50" 
+                                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/40"
+                              }`}
+                            >
+                              <div className="space-y-4">
+                                <div className="flex justify-between items-start gap-2">
+                                  <span className={`text-[11px] font-black tracking-widest uppercase px-2 py-0.5 rounded ${
+                                    isSelected ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
+                                  }`}>
+                                    {opt.code}
+                                  </span>
+                                  {opt.badge && (
+                                    <span className="text-[10px] font-extrabold text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                      {opt.badge}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                  <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-blue-700 transition">
+                                    {opt.title}
+                                  </h4>
+                                  <p className="text-[11px] text-slate-500 leading-normal font-semibold">
+                                    {opt.desc}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="pt-4 border-t border-slate-100 mt-4 flex items-center justify-between w-full">
+                                <span className={`text-xs font-bold ${isSelected ? "text-blue-700" : "text-slate-500"}`}>
+                                  {opt.feeText}
+                                </span>
+                                {isSelected ? (
+                                  <div className="p-1 bg-blue-600 text-white rounded-full">
+                                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                  </div>
+                                ) : (
+                                  <div className="w-5 h-5 border border-slate-300 rounded-full group-hover:border-slate-400" />
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="col-span-full bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
+                        <div>
+                          <p className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Estimated Total Fee (with premium / exemptions)</p>
+                          <p className="text-xs text-slate-400 font-semibold mt-0.5">Includes base excise quota combined with your selected sub-license premium category.</p>
+                        </div>
+                        <span className="text-xl font-black text-blue-700 px-4 py-2 bg-blue-50 border border-blue-200 rounded-xl leading-none">
+                          {getPriceFormatted()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {newLicStep === 4 && (
+                    /* STEP 4: PREMISE DETAILS FORM */
+                    <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
+                      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                          <Building className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+                            Premise Location & Area Information
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-1 font-semibold">Provide legal warehouse/store layout, municipality pin coordinates, and dimensions.</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
+                            Postal Pin code (NCT of Delhi) <span className="text-red-500">*</span>
+                          </label>
+                          <div className="field-icon-container">
+                            <span className="absolute left-4 font-bold text-xs text-slate-400 uppercase">PIN</span>
+                            <input
+                              type="text"
+                              value={newLicData.pincode}
+                              onChange={(e) => setNewLicData({ ...newLicData, pincode: e.target.value })}
+                              placeholder="e.g. 110020"
+                              maxLength={6}
+                              className="rounded-custom-field focus:ring-4 focus:ring-blue-100 pl-14 text-sm"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
+                            MCD Property / Allied Trade License No <span className="text-red-500">*</span>
+                          </label>
+                          <div className="field-icon-container">
+                            <FileCheck className="field-icon-left" />
+                            <input
+                              type="text"
+                              value={newLicData.mcdTradeLicenseNum}
+                              onChange={(e) => setNewLicData({ ...newLicData, mcdTradeLicenseNum: e.target.value })}
+                              placeholder="e.g. MCD-99120-DEL"
+                              className="rounded-custom-field focus:ring-4 focus:ring-blue-100 text-sm"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="col-span-full flex flex-col gap-2">
+                          <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
+                            Premises Full Registered Warehouse Address <span className="text-red-500">*</span>
+                          </label>
+                          <div className="field-icon-container">
+                            <Building className="field-icon-left top-4 text-blue-600" />
+                            <textarea
+                              rows={3}
+                              value={newLicData.premiseAddress}
+                              onChange={(e) => setNewLicData({ ...newLicData, premiseAddress: e.target.value })}
+                              placeholder="e.g. Plot 104, Industrial Estate Okhla Phase-3, New Delhi"
+                              className="rounded-2xl bg-slate-50 border-1.5 border-slate-200 w-full pl-12 pr-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:bg-white focus:border-blue-500 transition focus:ring-4 focus:ring-blue-100"
+                            />
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  )}
+
+                  {newLicStep === 5 && (
+                    /* STEP 5: DOCUMENTS UPLOAD SECTION */
+                    <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
+                      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                          <Upload className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+                            Document Credentials Validation
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-1 font-semibold">Please upload certificates copy in PDF format. Each file must be under 5MB.</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        {[
+                          { key: "hasFireNoc", title: "Fire Safety NOC Verification Copy", desc: "Issued by Delhi Fire Services Department" },
+                          { key: "hasTaxCompliance", title: "VAT & Commercial Tax Compliance Receipt", desc: "Form 16/18 Trade returns validated statement" }
+                        ].map((docItem) => {
+                          const isUploaded = newLicData[docItem.key];
+                          return (
+                            <div 
+                              key={docItem.key}
+                              className={`border-2 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition ${
+                                isUploaded ? "bg-emerald-50/50 border-emerald-300" : "bg-slate-50 border-dashed border-slate-300 hover:border-slate-400"
+                              }`}
+                            >
+                              <div className="flex gap-3 items-center">
+                                <div className={`p-2 rounded-xl flex-shrink-0 ${isUploaded ? "bg-emerald-100 text-emerald-600" : "bg-slate-200 text-slate-500"}`}>
+                                  {isUploaded ? <Check className="w-5 h-5 stroke-[3]" /> : <FileText className="w-5 h-5" />}
+                                </div>
+                                <div className="text-left">
+                                  <h4 className="text-xs font-bold text-slate-800 leading-none">{docItem.title}</h4>
+                                  <p className="text-[10px] text-slate-400 mt-1 font-semibold">{docItem.desc}</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3 self-end sm:self-auto">
+                                {isUploaded ? (
+                                  <>
+                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full uppercase tracking-wider">Uploaded</span>
+                                    <button 
+                                      type="button"
+                                      onClick={() => setNewLicData({ ...newLicData, [docItem.key]: false })}
+                                      className="text-[11px] font-bold text-red-500 hover:underline border-none bg-transparent cursor-pointer"
+                                    >
+                                      Remove
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      showToast(`Simulating upload for ${docItem.title}...`);
+                                      setTimeout(() => {
+                                        setNewLicData(prev => ({ ...prev, [docItem.key]: true }));
+                                        showToast(`${docItem.title} verified and uploaded successfully!`, "success");
+                                      }, 800);
+                                    }}
+                                    className="px-4 py-2 bg-white hover:bg-slate-50 text-blue-600 border border-blue-200 hover:border-blue-300 text-xs font-extrabold rounded-xl transition cursor-pointer select-none flex items-center gap-1.5"
+                                  >
+                                    <Upload className="w-3.5 h-3.5" />
+                                    <span>Upload PDF</span>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {newLicStep === 6 && (
+                    /* STEP 6: FINAL REVIEW & DECLARATION */
+                    <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
+                      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                          <CheckCircle2 className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+                            Review & Submit Privilege Application
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-1 font-semibold">Please evaluate all structural parameters carefully, checklist terms and remit the fee.</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        {/* Summary side */}
+                        <div className="md:col-span-2 space-y-4">
+                          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                            <h4 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Filing Structure Summary</h4>
+                            
+                            <div className="grid grid-cols-2 gap-x-2 gap-y-3.5 text-xs py-1 border-t border-slate-105 pt-3">
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Applicant Company</span>
+                                <span className="font-extrabold text-slate-800 text-sm leading-none block mt-1">{newLicData.applicantName || "Delhi Retail & Distribution Corp"}</span>
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Owner Entity Class</span>
+                                <span className="font-extrabold text-slate-800 text-sm leading-none block mt-1">{newLicData.entityType}</span>
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Excise Category</span>
+                                <span className="font-extrabold text-blue-700 text-sm leading-none block mt-1">{newLicData.licenseType || "L-1 Wholesale"}</span>
+                              </div>
+                              <div>
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Premise Pin</span>
+                                <span className="font-mono font-extrabold text-slate-800 text-sm leading-none block mt-1">{newLicData.pincode}</span>
+                              </div>
+                              <div className="col-span-2 border-t border-dashed border-slate-200 pt-2.5">
+                                <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wide">Selected License Format</span>
+                                <span className="font-extrabold text-emerald-800 text-xs block mt-1 leading-normal">
+                                  {newLicData.selectedSubLicense || "Not Selected"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Interactive Declaration Checklist and labels */}
+                          <div className="p-1">
+                            <label className="flex items-start gap-3 cursor-pointer select-none group">
+                              <input
+                                type="checkbox"
+                                checked={newLicData.declarationsChecked}
+                                onChange={(e) => setNewLicData({ ...newLicData, declarationsChecked: e.target.checked })}
+                                className="w-4 h-4 mt-0.5 accent-blue-600 rounded cursor-pointer"
+                              />
+                              <span className="text-xs text-slate-500 font-semibold leading-relaxed group-hover:text-slate-800 transition">
+                                I hereby declare that all information furnished is authentic. I understand that misrepresenting physical store warehouse dimension details would lead to summary rejection under Delhi Excise Act 2009.
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Payment widget card right-aligned */}
+                        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex flex-col justify-between space-y-6">
+                          <div className="space-y-1">
+                            <Coins className="w-6 h-6 text-blue-600 animate-pulse" />
+                            <h4 className="text-xs font-extrabold text-blue-900 uppercase tracking-widest pt-1">Total Fee Payable</h4>
+                            <p className="text-[10px] text-blue-500 font-semibold leading-tight">Privilege excise license registration deposit tariff</p>
+                          </div>
+
+                          <div>
+                            <span className="block text-2xl font-black text-blue-700 leading-none">
+                              {getPriceFormatted()}
+                            </span>
+                            <span className="text-[9px] font-extrabold text-blue-600 uppercase tracking-widest mt-1 block">GST Inclusive</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* 4. BLUE INFORMATION ALERT */}
+                <div className="blue-info-alert animate-fade select-none text-left">
+                  <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-black text-blue-950">Filing Instructions Warning</p>
+                    <p className="text-xs text-blue-700 font-semibold leading-relaxed">
+                      Please ensure all the details provided are correct. You can save as draft and continue later. Draft credentials are saved locally for 30 calendar days.
+                    </p>
+                  </div>
+                </div>
+
+                {/* 5. ACTION CONTROLS / FOOTER BUTTONS (Bottom Right Aligned) */}
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200 flex-wrap gap-4 select-none">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (newLicStep > 1) {
+                        setNewLicStep(newLicStep - 1);
+                      } else {
+                        setActiveTab("Home");
+                      }
+                    }}
+                    className="outline-draft-btn"
+                  >
+                    <span>{newLicStep === 1 ? "Cancel Application" : "Go Back"}</span>
+                  </button>
+
+                  <div className="flex items-center gap-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        showToast("Filing details successfully saved as draft! You can access it anytime from Applied tab.");
+                      }}
+                      className="outline-draft-btn border-blue-200 hover:border-blue-400 text-blue-700"
+                    >
+                      <span>Save as Draft</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                     if (newLicStep === 3) {
+                          if (!newLicData.selectedSubLicense) {
+                            showToast("Please select a specific privilege license operational sub-type.", "error");
+                            return;
+                          }
+                        } else if (newLicStep === 4) {
+                          if (!newLicData.premiseAddress || !newLicData.pincode) {
+                            showToast("Please enter the postal pin code and full physical premises address.", "error");
+                            return;
+                          }
+                          if (newLicData.pincode.length < 6 || isNaN(newLicData.pincode)) {
+                            showToast("Please input a valid 6-digit Delhi postal ZIP code.", "error");
+                            return;
+                          }
+                        } else if (newLicStep === 5) {
+                          if (!newLicData.hasFireNoc || !newLicData.hasTaxCompliance) {
+                            showToast("Please upload and certify all credentials copies to continue.", "error");
+                            return;
+                          }
+                        } else if (newLicStep === 6) {
+                          if (!newLicData.declarationsChecked) {
+                            showToast("Please check mark the GNCTD formal declaration checkbox to finalize.", "error");
+                            return;
+                          }
+                          // Fire submit Success
+                          setAppSubmissionCompleted(true);
+                          showToast("Privilege Excise License Application filed successfully!");
+                          return;
+                        }
+
+                        // Advance step
+                        setNewLicStep(newLicStep + 1);
+                      }}
+                      className="blue-gradient-next-btn"
+                    >
+                      <span>
+                        {newLicStep === 6 
+                          ? `Submit & Pay` 
+                          : "Next Step"}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
           </div>
         </div>
       ) : (
