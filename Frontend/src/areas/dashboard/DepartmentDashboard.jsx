@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 
-const DepartmentDashboard = ({ onLogout, onNavigateToPermit, onNavigateHome }) => {
+const DepartmentDashboard = ({ onLogout, onNavigateToPermit,onNavigateToBrandReg, onNavigateHome }) => {
   const stats = [
     {
       title: "Total States",
@@ -46,8 +46,8 @@ const DepartmentDashboard = ({ onLogout, onNavigateToPermit, onNavigateHome }) =
   const quickActions = [
     { label: "Directory Data", action: null },
     { label: "Permit/Pass", action: onNavigateToPermit },
+    { label: "Brand Registration", action: onNavigateToBrandReg },
     { label: "Licensee Data", action: null },
-    { label: "Wallet", action: null },
     { label: "Feedback", action: null },
     { label: "House Keeping", action: null },
   ];
