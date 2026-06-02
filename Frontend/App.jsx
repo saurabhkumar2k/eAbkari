@@ -14,7 +14,7 @@ import PermitForm from './src/components/Department/PermitForm.jsx';
 import DepartmentLogin from './src/components/Department/DepartmentLogin.jsx';
 import DepartmentHeader from './src/components/DepartmentHeader.jsx';
 import AdminHeader from './src/components/AdminHeader.jsx';
-import LiquorBrand from './src/areas/applicant/LiquorBrand.jsx';
+import LiquorBrand from './src/components/Department/LiquorBrand.jsx';
 
 import {
   ChevronDownSvg,
@@ -45,12 +45,12 @@ import {
 import { ArrowRightSvg } from './src/Style/images/Icons';
 
 export default function App() {
-
 const handleAdminNavigate = (view) => {
   console.log("Navigation:", view);
 
-  switch (view) {
-    case "Bottle":
+  switch (view?.trim()) {
+      case "Bottle":
+      case "BOTTLE":
       window.location.href = "/liquorbrand";
       break;
 
@@ -64,6 +64,7 @@ const handleAdminNavigate = (view) => {
 
     default:
       console.log("Unknown route:", view);
+      break;
   }
 };
 
@@ -178,21 +179,22 @@ return (
 
       {/* Liquor Brand */}
       <Route
-        path="/liquorbrand"
-        element={
-          <div className="admin-app-layout flex-grow flex flex-col">
-            <AdminHeader
-              navItems={navItems}
-              currentView="BOTTLE"
-              onNavigate={handleAdminNavigate}
-            />
-
-            <LiquorBrand />
-          </div>
-        }
+  path="/liquorbrand"
+  element={
+    <div className="admin-app-layout flex-grow flex flex-col">
+      <AdminHeader
+        navItems={navItems}
+        currentView="LIQUOR_BRAND"
+        onNavigate={handleAdminNavigate}
       />
 
-    </Routes>
+      <LiquorBrand
+        onBack={() => window.location.href = "/departmentdashboard"}
+      />
+    </div>
+  }
+/>
+</Routes>
   </BrowserRouter>
 );
 }
