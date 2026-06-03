@@ -23,7 +23,7 @@ import {
   FileText,
   Tag as TagIcon
 } from "lucide-react";
-import SelectWholesaleType from "../components/SelectWholesaleType";
+import SelectWholesaleType from "./SelectWholesale";
 import L1AndL31License from "./L1_L31License";
 
 const brandCodeOptions = [

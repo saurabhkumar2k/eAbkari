@@ -33,7 +33,7 @@ import {
   ChevronsUpDown,
   Tag as TagIcon
 } from "lucide-react";
-import SelectLicenseType from "../components/SelectLicenseType";
+import SelectLicenseType from "./SelectLicense";
 
 // Option lists duplicate from LiquorBrandRegistration for ease of access inside modular feature folder
 const brandCodeOptions = [

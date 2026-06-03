@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import NewLicense from "./NewLicense.jsx";
+import NewPermit from "./Permit/NewPermit.jsx";
+
 import {
   Home,
   Award,
@@ -1243,10 +1245,14 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
             </div>
           </div>
         </div>
-      ) : 
-        activeTab === "New License" ? (
-        <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
-      ) : false ? (
+     ) : 
+  activeTab === "New License" ? (
+  <NewLicense
+    setActiveTab={setActiveTab}
+    showToast={showToast}
+  />
+) : false ? 
+(
         <div className="flex-grow w-full py-8 font-sans">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             
@@ -3249,12 +3255,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           )}
 
           {/* NEW PERMIT TAB */}
-          {activeTab === "New Permit" && (
-            <div className="space-y-6 max-w-3xl mx-auto">
-              <SectionTitle 
-                title="Excise Transport & Special Permit" 
-                subtitle="File an application to obtain local bulk cargo movement passes or special single-day trade permits" 
-              />
+         {/* ApplicantDashboard.jsx - High-Level Delegation (Delegates permit creations) */}
+{activeTab === "New Permit" && (
+  <div className="animate-fade">
+    <NewPermitWizard 
+      onBackToDashboard={() => setActiveTab("Home")} 
+      showToast={showToast} 
+      onSubmitPermit={(newPermit) => {
+        setPermitApplications(prev => [newPermit, ...prev]);
+      }}
+    />
+  </div>
+)}
 
               {permitSubmissionCompleted ? (
                 <div className="dashboard-card p-8 text-center space-y-4 bg-white">
@@ -3410,8 +3422,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </button>
                   </div>
                 </form>
-              )}
-            </div>
+            
           )}
 
           {/* APPLIED PERMIT TAB */}
