@@ -22,6 +22,8 @@ import {
   FileCheck
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
+import HcrLicenseWizard from "./HCR/HcrLicense";
+import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense.jsx";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
@@ -41,6 +43,8 @@ export default function NewLicense({ setActiveTab, showToast }) {
   });
 
   const [appSubmissionCompleted, setAppSubmissionCompleted] = useState(false);
+  const [isHCRFlowActive, setIsHCRFlowActive] = useState(false);
+  const [isWholesaleFlowActive, setIsWholesaleFlowActive] = useState(false);
 
   const calculateTotalFeeObj = () => {
     let base = 200000;
@@ -223,7 +227,25 @@ export default function NewLicense({ setActiveTab, showToast }) {
     <div className="flex-grow w-full py-8 font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         
-        {appSubmissionCompleted ? (
+        {isHCRFlowActive ? (
+          <HcrLicenseWizard 
+            onBackToDashboard={() => {
+              setIsHCRFlowActive(false);
+              setNewLicStep(2);
+            }} 
+            showToast={showToast} 
+            rootData={newLicData}
+          />
+        ) : isWholesaleFlowActive ? (
+          <WholesaleLicenseWizard
+            onBackToDashboard={() => {
+              setIsWholesaleFlowActive(false);
+              setNewLicStep(2);
+            }}
+            showToast={showToast}
+            rootData={newLicData}
+          />
+        ) : appSubmissionCompleted ? (
           /* SUCCESS SCREEN - HIGH-END DESIGN */
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8 animate-fade select-none">
             <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse-subtle">
@@ -549,6 +571,14 @@ export default function NewLicense({ setActiveTab, showToast }) {
                   onClick={() => {
                     // VALIDATIONS & ROUTING FOR NEXT
                     if (newLicStep === 2) {
+                      if (getActiveCategory() === "HCR") {
+                        setIsHCRFlowActive(true);
+                        return;
+                      }
+                      if (getActiveCategory() === "Wholesale") {
+                        setIsWholesaleFlowActive(true);
+                        return;
+                      }
                       // Fire submit Success
                       setAppSubmissionCompleted(true);
                       showToast("Privilege Excise License Application filed successfully!");
@@ -562,7 +592,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
                 >
                   <span>
                     {newLicStep === 2 
-                      ? `Submit & Pay` 
+                      ? (["HCR", "Wholesale"].includes(getActiveCategory()) ? "Proceed to Select License" : "Submit & Pay")
                       : "Next Step"}
                   </span>
                   <ArrowRight className="w-4 h-4 text-white" />
