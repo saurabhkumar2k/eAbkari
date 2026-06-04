@@ -379,7 +379,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
   const showTable = formData.category === 'Country Liquor' || formData.category === 'Indian Liquor';
 
   return (
-    <div className="brand-registration-page min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <div className="brand-registration-page flex flex-col font-sans text-slate-800">
       
       {/* Toast Alert Notifications */}
       {toast && (
@@ -399,10 +399,10 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
       )}
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+      <div className="brand-container flex-grow">
         
         {/* Navigation Breadcrumbs / Portal Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 mb-8 border-b border-slate-200 gap-4">
+        <div className="brand-header">
           <div className="flex items-center gap-4">
             <button 
               onClick={onNavigateHome}
@@ -412,13 +412,8 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
             </button>
             <div>
-              <div className="flex items-center gap-2.5">
-                <Briefcase className="w-5 h-5 text-blue-700" />
-                <span className="text-xs font-bold text-blue-700 tracking-wider uppercase font-semibold">Master Registries</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-                Liquor Brand Registration
-              </h1>
+              <div className="brand-subtitle">Master Registries</div>
+              <h1 className="brand-title">Liquor Brand Registration</h1>
             </div>
           </div>
           
@@ -432,99 +427,99 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
           </button>
         </div>
 
-        {/* Dynamic Summary Cards to add depth */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+        {/* Statistics Cards */}
+        <div className="stats-grid">
+          <div className="stat-card">
             <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
               <Sliders className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Total Active Brands</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-0.5">{brandsList.length}</h3>
+              <p>Total Active Brands</p>
+              <h3>{brandsList.length}</h3>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+          <div className="stat-card">
             <div className="p-3 bg-emerald-50 text-emerald-700 rounded-xl">
               <Activity className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Indian Liquor Registries</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-0.5">
+              <p>Indian Liquor Registries</p>
+              <h3>
                 {brandsList.filter(b => b.category === 'Indian Liquor').length}
               </h3>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+          <div className="stat-card">
             <div className="p-3 bg-amber-50 text-amber-700 rounded-xl">
               <Layers className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Country Liquor Registries</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-0.5">
+              <p>Country Liquor Registries</p>
+              <h3>
                 {brandsList.filter(b => b.category === 'Country Liquor').length}
               </h3>
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center gap-4">
+          <div className="stat-card">
             <div className="p-3 bg-slate-50 text-slate-700 rounded-xl">
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Latest Pending Review</p>
-              <h3 className="text-2xl font-bold text-slate-900 mt-0.5">
+              <p>Latest Pending Review</p>
+              <h3>
                 {brandsList.filter(b => b.status === "Pending Approval").length}
               </h3>
             </div>
           </div>
         </div>
 
-        {/* 1. GLASSMORPHISM FORM CARD WITH SOFT SHADOW & PROPER FIELD SPACING */}
-        <div id="liquor-brand-form-card" className="brand-card bg-white border border-slate-200/90 rounded-2xl shadow-xl overflow-hidden mb-8 transition hover:shadow-2xl duration-300">
+        {/* 1. GLASSMORPHISM FORM CARD WITH BLUE ACCENT ACCORDING TO SPEC */}
+        <div id="liquor-brand-form-card" className="brand-card">
           
-          {/* Header decoration bar */}
-          <div className="h-2 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900" />
+          {/* Blue Top Border */}
+          <div className="brand-card-accent" />
           
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2.5 bg-blue-50 text-blue-700 rounded-xl">
-                <Sliders className="w-6 h-6" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-slate-900">Brand Parameters & Specifications</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Fill out physical characteristics, category groupings, and official measure metrics.</p>
-              </div>
+          <div className="brand-card-header flex items-center gap-3">
+            <div className="p-2.5 bg-blue-50 text-blue-700 rounded-xl">
+              <Sliders className="w-6 h-6" />
             </div>
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Brand Parameters & Specifications</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Fill out physical characteristics, category groupings, and official measure metrics.</p>
+            </div>
+          </div>
 
+          <div className="brand-card-body">
             <form onSubmit={handleSave} className="space-y-6">
               
-              {/* TWO COLUMN RESPONSIVE FORM GRID - 24px internal grid field spacing */}
-              <div className="form-grid grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-6">
+              {/* Form Grid */}
+              <div className="form-grid">
                 
                 {/* 1. Category Dropdown */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="category" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="category" className="form-label flex items-center gap-1.5">
                     Liquor Category <span className="text-rose-600 font-bold">*</span>
                   </label>
-                  <div className="relative">
-                    <Sliders className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <Sliders className="field-icon" />
                     <select
                       id="category"
                       value={formData.category}
                       onChange={handleCategoryChange}
-                      className={`w-full pl-11 pr-10 py-3 bg-white border ${
-                        formErrors.category ? 'border-rose-300 focus:ring-rose-100 focus:border-rose-600' : 'border-slate-200 focus:ring-blue-50 focus:border-blue-600'
-                      } hover:border-slate-300 text-sm font-medium rounded-xl select-none outline-none focus:ring-4 transition duration-200 appearance-none`}
+                      className={`field-control brand-select ${
+                        formErrors.category ? 'border-red-500' : ''
+                      }`}
                     >
                       <option value="">Select Category</option>
                       <option value="Country Liquor">Country Liquor</option>
                       <option value="Indian Liquor">Indian Liquor</option>
                     </select>
-                    <div className="absolute right-3.5 top-4 pointer-events-none border-l pl-2 border-slate-200">
+                    <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
                     </div>
                   </div>
                   {formErrors.category && (
-                    <span className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
+                    <span className="field-error flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" />
                       {formErrors.category}
                     </span>
@@ -533,37 +528,37 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
                 {/* 2. Kind of Liquor (Responsive options based on category) */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="kindOfLiquor" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="kindOfLiquor" className="form-label flex items-center gap-1.5">
                     Kind of Liquor {formData.category && <span className="text-rose-600 font-bold">*</span>}
                   </label>
-                  <div className="relative">
-                    <Layers className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <Layers className="field-icon" />
                     <select
                       id="kindOfLiquor"
                       value={formData.kindOfLiquor}
                       onChange={handleKindOfChange}
                       disabled={!formData.category}
-                      className={`w-full pl-11 pr-10 py-3 bg-white border ${
-                        !formData.category ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' :
-                        formErrors.kindOfLiquor ? 'border-rose-300 focus:ring-rose-100 focus:border-rose-600' : 'border-slate-200 focus:ring-blue-50 focus:border-blue-600'
-                      } hover:border-slate-300 text-sm font-medium rounded-xl select-none outline-none focus:ring-4 transition duration-200 appearance-none`}
+                      className={`field-control brand-select ${
+                        !formData.category ? 'bg-slate-100 text-slate-400 cursor-not-allowed' :
+                        formErrors.kindOfLiquor ? 'border-red-500' : ''
+                      }`}
                     >
                       <option value="">Select Kind of Liquor</option>
                       {formData.category && kindOfLiquorOptions[formData.category]?.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="absolute right-3.5 top-4 pointer-events-none border-l pl-2 border-slate-200">
+                    <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
                     </div>
                   </div>
                   {!formData.category && (
-                    <span className="text-xs text-slate-400 font-semibold mt-1.5">
+                    <span className="field-helper block">
                       Select a Liquor Category to unlock Kind of Liquor.
                     </span>
                   )}
                   {formErrors.kindOfLiquor && (
-                    <span className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
+                    <span className="field-error flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" />
                       {formErrors.kindOfLiquor}
                     </span>
@@ -572,37 +567,37 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
                 {/* 3. Liquor Type (Responsive options based on Kind of Liquor) */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="liquorType" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="liquorType" className="form-label flex items-center gap-1.5">
                     Liquor Type {formData.kindOfLiquor && <span className="text-rose-600 font-bold">*</span>}
                   </label>
-                  <div className="relative">
-                    <Activity className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <Activity className="field-icon" />
                     <select
                       id="liquorType"
                       value={formData.liquorType}
                       onChange={(e) => handleInputChange('liquorType', e.target.value)}
                       disabled={!formData.kindOfLiquor}
-                      className={`w-full pl-11 pr-10 py-3 bg-white border ${
-                        !formData.kindOfLiquor ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' :
-                        formErrors.liquorType ? 'border-rose-300 focus:ring-rose-100 focus:border-rose-600' : 'border-slate-200 focus:ring-blue-50 focus:border-blue-600'
-                      } hover:border-slate-300 text-sm font-medium rounded-xl select-none outline-none focus:ring-4 transition duration-200 appearance-none`}
+                      className={`field-control brand-select ${
+                        !formData.kindOfLiquor ? 'bg-slate-100 text-slate-400 cursor-not-allowed' :
+                        formErrors.liquorType ? 'border-red-500' : ''
+                      }`}
                     >
                       <option value="">Select Liquor Type</option>
                       {formData.kindOfLiquor && liquorTypeOptions[formData.kindOfLiquor]?.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="absolute right-3.5 top-4 pointer-events-none border-l pl-2 border-slate-200">
+                    <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
                     </div>
                   </div>
                   {!formData.kindOfLiquor && (
-                    <span className="text-xs text-slate-400 font-semibold mt-1.5">
+                    <span className="field-helper block">
                       Select Kind of Liquor to unlock specific Liquor Type.
                     </span>
                   )}
                   {formErrors.liquorType && (
-                    <span className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
+                    <span className="field-error flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" />
                       {formErrors.liquorType}
                     </span>
@@ -611,103 +606,103 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
                 {/* 4. Old Brand ID */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="oldBrandId" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="oldBrandId" className="form-label flex items-center gap-1.5">
                     Old Brand ID
                   </label>
-                  <div className="relative">
-                    <Hash className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <Hash className="field-icon" />
                     <input
                       id="oldBrandId"
                       type="text"
                       placeholder="e.g. OLD-EXC-4581"
                       value={formData.oldBrandId}
                       onChange={(e) => handleInputChange('oldBrandId', e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 text-sm font-semibold rounded-xl outline-none transition duration-200"
+                      className="field-control brand-input"
                     />
                   </div>
-                  <span className="text-xs text-slate-400 font-semibold mt-1.5">Optional reference index for legacy brand profiles.</span>
+                  <span className="field-helper block">Optional reference index for legacy brand profiles.</span>
                 </div>
 
                 {/* 5. Brand Code Dropdown */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="brandCode" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="brandCode" className="form-label flex items-center gap-1.5">
                     Brand Code
                   </label>
-                  <div className="relative">
-                    <Barcode className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <Barcode className="field-icon" />
                     <select
                       id="brandCode"
                       value={formData.brandCode}
                       onChange={(e) => handleInputChange('brandCode', e.target.value)}
-                      className="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 text-sm font-medium rounded-xl select-none outline-none transition duration-200 appearance-none"
+                      className="field-control brand-select"
                     >
                       <option value="">Select Brand Code</option>
                       {brandCodeOptions.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="absolute right-3.5 top-4 pointer-events-none border-l pl-2 border-slate-200">
+                    <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400 font-semibold mt-1.5">Select a pre-allocated structural tariff billing code.</span>
+                  <span className="field-helper block">Select a pre-allocated structural tariff billing code.</span>
                 </div>
 
                 {/* 6. Quarts Measure */}
                 <div className="form-group flex flex-col">
-                  <label htmlFor="measure" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                  <label htmlFor="measure" className="form-label flex items-center gap-1.5">
                     Quarts / Measure Size
                   </label>
-                  <div className="relative">
-                    <GlassWater className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4 pointer-events-none" />
+                  <div className="field-wrapper">
+                    <GlassWater className="field-icon" />
                     <input
                       id="measure"
                       type="text"
                       placeholder="e.g. 750 Ml, 375 Ml, 180 Ml"
                       value={formData.measure}
                       onChange={(e) => handleInputChange('measure', e.target.value)}
-                      className="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 text-sm font-semibold rounded-xl outline-none transition duration-200"
+                      className="field-control brand-input"
                     />
                   </div>
-                  <span className="text-xs text-slate-400 font-semibold mt-1.5">Specify volume capacity per individual bottle unit.</span>
+                  <span className="field-helper block">Specify volume capacity per individual bottle unit.</span>
                 </div>
 
               </div>
 
               {/* 7. Brand Name (Textarea spanning full width) */}
               <div className="form-group full-width flex flex-col">
-                <label htmlFor="brandName" className="text-xs font-semibold text-slate-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+                <label htmlFor="brandName" className="form-label flex items-center gap-1.5">
                   Brand Name <span className="text-rose-600 font-bold">*</span>
                 </label>
-                <div className="relative">
-                  <TagIcon className="absolute left-3.5 top-4 text-slate-400 w-4 h-4 pointer-events-none" />
+                <div className="textarea-wrapper">
+                  <TagIcon className="textarea-icon" />
                   <textarea
                     id="brandName"
                     rows="2"
                     placeholder="Enter full legislative trademark name (e.g. JOHNNIE WALKER WHITE PLATINUM SELECTION)"
                     value={formData.brandName}
                     onChange={(e) => handleInputChange('brandName', e.target.value)}
-                    className={`w-full pl-11 pr-4 py-3 bg-white border ${
-                      formErrors.brandName ? 'border-rose-300 focus:ring-rose-100 focus:border-rose-600' : 'border-slate-200 focus:ring-blue-50 focus:border-blue-600'
-                    } hover:border-slate-300 text-sm font-semibold rounded-xl outline-none focus:ring-4 transition duration-200 resize-none`}
+                    className={`brand-textarea ${
+                      formErrors.brandName ? 'border-red-500' : ''
+                    }`}
                   />
                 </div>
                 {formErrors.brandName ? (
-                  <span className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
+                  <span className="field-error flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5" />
                     {formErrors.brandName}
                   </span>
                 ) : (
-                  <span className="text-xs text-slate-400 font-semibold mt-1.5">Ensure brand spelling aligns precisely with intellectual property registrations.</span>
+                  <span className="field-helper block">Ensure brand spelling aligns precisely with intellectual property registrations.</span>
                 )}
               </div>
 
-              {/* ACTION BUTTON GRID IN FORM */}
-              <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              {/* Action Buttons */}
+              <div className="form-actions animate-fade">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-xl cursor-pointer transition hover:scale-[1.01] active:scale-[0.99] shadow-sm select-none flex items-center justify-center gap-2"
+                  className="btn-reset hover:bg-slate-100 transition text-slate-600 flex items-center justify-center gap-2 border border-slate-200"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>Reset Fields</span>
@@ -715,14 +710,14 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="w-full sm:w-auto px-5 py-3 text-xs sm:text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl cursor-pointer transition hover:scale-[1.01] active:scale-[0.99] shadow-sm select-none flex items-center justify-center gap-2"
+                  className="btn-cancel hover:bg-slate-50 border border-slate-250 transition text-slate-600 flex items-center justify-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   <span>Cancel</span>
                 </button>
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-bold text-white bg-blue-700 hover:bg-blue-800 active:bg-blue-900 rounded-xl cursor-pointer transition hover:scale-[1.01] active:scale-[0.99] shadow-md select-none flex items-center justify-center gap-2 hover:shadow-lg"
+                  className="btn-save flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   <span>Save Record</span>
@@ -735,10 +730,10 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
         {/* 2. DYNAMICALLY RENDERED DATA TABLE SECTION */}
         {showTable ? (
-          <div className="table-card bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden animate-fade-in transition duration-300">
+          <div className="table-card animate-fade-in transition duration-300">
             
             {/* Table Control Header */}
-            <div className="bg-slate-50 border-b border-slate-200 p-6">
+            <div className="table-header">
               
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 
@@ -756,7 +751,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   
                   {/* Search box built in */}
-                  <div className="relative w-full sm:w-64">
+                  <div className="relative">
                     <Search className="absolute left-3.5 top-3 text-slate-400 w-4 h-4 pointer-events-none" />
                     <input
                       type="text"
@@ -766,7 +761,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                         setSearchTerm(e.target.value);
                         setCurrentPage(1); // reset page
                       }}
-                      className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-50 text-xs font-semibold rounded-xl outline-none transition duration-200"
+                      className="table-search focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-50 text-xs font-semibold"
                     />
                     {searchTerm && (
                       <button 
@@ -823,7 +818,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
               <div className="overflow-x-auto w-full relative">
                 
                 {/* Responsive horizontal scrollable table with Sticky Header */}
-                <table className="w-full text-left border-collapse">
+                <table className="registry-table text-left">
                   
                   <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
                     <tr>
@@ -957,10 +952,10 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
                         {/* 6. Status Badge Column */}
                         <td className="p-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-lg border ${
-                            brand.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                            brand.status === 'Active' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                            'bg-amber-50 text-amber-700 border-amber-100'
+                          <span className={`status-badge inline-flex items-center gap-1.5 ${
+                            brand.status === 'Approved' ? 'status-approved' :
+                            brand.status === 'Active' ? 'status-active' :
+                            'status-pending'
                           }`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${
                               brand.status === 'Approved' ? 'bg-emerald-500' :
@@ -992,7 +987,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
             {/* Pagination Controls Footer - 1-10 Pages as requested */}
             {totalPages > 0 && (
-              <div className="bg-slate-50 border-t border-slate-200 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
+              <div className="pagination-bar flex-col sm:flex-row gap-4 select-none">
                 
                 {/* Progress metadata */}
                 <div className="text-xs text-slate-500 font-semibold">
@@ -1004,7 +999,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                   <button
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className={`p-2 rounded-xl border border-slate-200 transition ${
+                    className={`page-btn flex items-center justify-center border border-slate-200 transition ${
                       currentPage === 1 ? 'bg-slate-100 text-slate-300 cursor-not-allowed' : 'bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100'
                     }`}
                   >
@@ -1017,7 +1012,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                       <button
                         key={val}
                         onClick={() => setCurrentPage(val)}
-                        className={`w-8 h-8 rounded-xl font-bold text-xs transition ${
+                        className={`page-btn transition ${
                           currentPage === val 
                             ? 'bg-blue-700 text-white shadow-sm' 
                             : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-100'
@@ -1031,7 +1026,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className={`p-2 rounded-xl border border-slate-200 transition ${
+                    className={`page-btn flex items-center justify-center border border-slate-200 transition ${
                       currentPage === totalPages ? 'bg-slate-100 text-slate-300 cursor-not-allowed' : 'bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100'
                     }`}
                   >

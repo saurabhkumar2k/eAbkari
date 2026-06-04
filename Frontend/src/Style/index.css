@@ -9063,9 +9063,9 @@ textarea.rounded-custom-field {
   }
 }
 
-/* ============================================================
-   LIQUOR BRAND REGISTRATION PORTAL STYLES
-   ============================================================ */
+/* =======================================================
+   LIQUOR BRAND REGISTRATION CSS
+   ======================================================= */
 
 /* =========================
 HCR License 
@@ -9094,7 +9094,6 @@ HCR License
 
 /* =========================
    CARDS
-========================= */
 
 .brand-card,
 .table-card {
@@ -9111,8 +9110,43 @@ HCR License
 
 /* =========================
    FORM GRID
-========================= */
 
+/* Form Card */
+.brand-card {
+  background: white;
+
+  border-radius: 28px;
+
+  border: 1px solid #e2e8f0;
+
+  box-shadow:
+    0 10px 25px rgba(15, 23, 42, .05),
+    0 2px 8px rgba(15, 23, 42, .04);
+
+  overflow: hidden;
+}
+
+.brand-card-header {
+  padding: 24px 30px;
+}
+
+.brand-card-body {
+  padding: 32px;
+}
+
+/* Blue Top Border */
+.brand-card-accent {
+  height: 8px;
+
+  background: linear-gradient(
+    90deg,
+    #1d4ed8,
+    #2563eb,
+    #1e3a8a
+  );
+}
+
+/* Form Grid */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -9123,14 +9157,12 @@ HCR License
   grid-column: 1 / -1;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
+/* Labels */
+.form-label {
+  display: block;
 
 /* =========================
    INPUTS
-========================= */
 
 .input-box,
 .select-box,
@@ -9169,7 +9201,6 @@ HCR License
 
 /* =========================
    SEARCH BOX
-========================= */
 
 .search-box {
   max-width: 280px;
@@ -9177,7 +9208,6 @@ HCR License
 
 /* =========================
    BUTTONS
-========================= */
 
 .btn {
   display: inline-flex;
@@ -9198,7 +9228,7 @@ HCR License
   padding: 12px 24px;
 }
 
-.btn-primary:hover {
+.btn-save {
   background: #1d4ed8;
   transform: translateY(-1px);
 }
@@ -9215,7 +9245,6 @@ HCR License
 
 /* =========================
    TABLE
-========================= */
 
 .table-header {
   display: flex;
@@ -9264,7 +9293,6 @@ HCR License
 
 /* =========================
    EMPTY STATE
-========================= */
 
 .empty-state {
   text-align: center;
@@ -9276,7 +9304,6 @@ HCR License
 
 /* =========================
    INFO ALERT
-========================= */
 
 .blue-info-alert {
   display: flex;
@@ -9290,7 +9317,6 @@ HCR License
 
 /* =========================
    STATUS BADGES
-========================= */
 
 .badge-success {
   background: #dcfce7;
@@ -9303,12 +9329,14 @@ HCR License
 
 /* =========================
    RESPONSIVE
-========================= */
 
 @media (max-width: 1024px) {
   .form-grid {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 768px) {
 
   .table-header {
     flex-direction: column;
@@ -9493,7 +9521,6 @@ HCR License
 
 /* ===================================
    NOTE CARD
-=================================== */
 
 .note-card {
   background: #f8fbff;
@@ -9514,7 +9541,6 @@ HCR License
 
 /* ===================================
    SELECTED CARD EFFECT
-=================================== */
 
 .card-selected-bg {
   border-color: #2563eb !important;
@@ -9538,7 +9564,6 @@ HCR License
 
 /* ===================================
    BACK BUTTON
-=================================== */
 
 .back-btn {
   display: inline-flex;
@@ -9557,7 +9582,6 @@ HCR License
 
 /* ===================================
    RESPONSIVE
-=================================== */
 
 @media (max-width: 1200px) {
   .license-grid {
@@ -9587,7 +9611,6 @@ HCR License
 
 /* ==========================================
    WHOLESALE LICENSE SELECTION PAGE
-========================================== */
 
 .select-license-type-step {
   width: 100%;
@@ -9596,7 +9619,6 @@ HCR License
 
 /* ==========================================
    ANIMATION
-========================================== */
 
 .animate-fade {
   animation: fadeIn 0.35s ease-in-out;
@@ -9615,7 +9637,6 @@ HCR License
 
 /* ==========================================
    PAGE HEADER
-========================================== */
 
 .select-license-type-step h2 {
   font-size: 30px;
@@ -9630,7 +9651,6 @@ HCR License
 
 /* ==========================================
    BACK BUTTON
-========================================== */
 
 .select-license-type-step button:first-child {
   transition: all 0.25s ease;
@@ -9642,7 +9662,6 @@ HCR License
 
 /* ==========================================
    GROUP HEADER
-========================================== */
 
 .group-header {
   padding: 12px 18px;
@@ -9658,7 +9677,6 @@ HCR License
 
 /* ==========================================
    CARD GRID
-========================================== */
 
 .license-card-grid {
   display: grid;
@@ -9668,7 +9686,6 @@ HCR License
 
 /* ==========================================
    LICENSE CARD
-========================================== */
 
 .wholesale-license-card {
   position: relative;
@@ -9694,7 +9711,6 @@ HCR License
 
 /* ==========================================
    SELECTED CARD
-========================================== */
 
 .card-selected-bg {
   background: linear-gradient(
@@ -9710,7 +9726,6 @@ HCR License
 
 /* ==========================================
    SELECTION CIRCLE
-========================================== */
 
 .selection-circle {
   width: 22px;
@@ -9723,7 +9738,6 @@ HCR License
 
 /* ==========================================
    ICON WRAPPER
-========================================== */
 
 .icon-box {
   width: 56px;
@@ -9741,7 +9755,6 @@ HCR License
 
 /* ==========================================
    CODE LABEL
-========================================== */
 
 .license-code {
   font-size: 12px;
@@ -9753,7 +9766,6 @@ HCR License
 
 /* ==========================================
    TITLE
-========================================== */
 
 .license-title {
   font-size: 17px;
@@ -9769,7 +9781,6 @@ HCR License
 
 /* ==========================================
    DESCRIPTION
-========================================== */
 
 .license-description {
   font-size: 13px;
@@ -9780,7 +9791,6 @@ HCR License
 
 /* ==========================================
    BADGE
-========================================== */
 
 .license-badge {
   padding: 6px 12px;
@@ -9793,7 +9803,6 @@ HCR License
 
 /* ==========================================
    NOTE CARD
-========================================== */
 
 .note-card {
   background: #faf5ff;
@@ -9815,7 +9824,6 @@ HCR License
 
 /* ==========================================
    CARD FOOTER
-========================================== */
 
 .card-footer {
   display: flex;
@@ -9828,7 +9836,6 @@ HCR License
 
 /* ==========================================
    COLOR THEMES
-========================================== */
 
 .theme-blue {
   background: #eff6ff;
@@ -9847,7 +9854,6 @@ HCR License
 
 /* ==========================================
    RESPONSIVE
-========================================== */
 
 @media (max-width: 1024px) {
 
