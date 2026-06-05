@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
 
@@ -23,6 +24,12 @@ namespace backend.Infrastructure.Data
         public DbSet<MstLiquorType> MstLiquorType { get; set; }
         public DbSet<MstUserSQ> MstUserSQ { get; set; }
         public DbSet<MstUsReg> MstUsReg { get; set; }
+         public DbSet<LicenseApplication> LicenseApplication { get; set; }
+        public DbSet<RetailPremiseDetails> RetailPremiseDetails { get; set; }
+        public DbSet<TrainDetails> TrainDetails { get; set; }
+        public DbSet<AddtionalTrainRouteDetails> AddtionalTrainRouteDetails { get; set; }
+        public DbSet<ApplicantLicensePartnersDetails> ApplicantLicensePartnersDetails { get; set; }
+        public DbSet<MstHotelType> MstHotelType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -101,9 +108,38 @@ namespace backend.Infrastructure.Data
 
             //     modelBuilder.Entity<MstPoliceStation>()
             //     .HasKey(x => new { x.DistrictCode, x.PsCode });
+ modelBuilder.Entity<LicenseApplication>().ToTable("LicenseApplication");
+            modelBuilder.Entity<LicenseApplication>()
+            .HasKey(x => x.Application_Id_No);
 
+            modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
+            modelBuilder.Entity<RetailPremiseDetails>()
+            .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<TrainDetails>().ToTable("TrainDetails");
+            modelBuilder.Entity<TrainDetails>()
+            .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<AddtionalTrainRouteDetails>().ToTable("AddtionalTrainRouteDetails");
+
+            modelBuilder.Entity<AddtionalTrainRouteDetails>()
+                    .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<AddtionalTrainRouteDetails>()
+                    .Property(x => x.RouteDescription)
+                    .IsRequired()
+                    .HasMaxLength(1000);
+
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
+            modelBuilder.Entity<MstHotelType>()
+            .HasKey(x => x.Id);
 
             base.OnModelCreating(modelBuilder);
         }
     }
+
 }
