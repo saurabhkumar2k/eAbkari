@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
+using backend.Core.Entities.Licence;
 
 namespace backend.Infrastructure.Data
 {
@@ -30,6 +31,8 @@ namespace backend.Infrastructure.Data
         public DbSet<AddtionalTrainRouteDetails> AddtionalTrainRouteDetails { get; set; }
         public DbSet<ApplicantLicensePartnersDetails> ApplicantLicensePartnersDetails { get; set; }
         public DbSet<MstHotelType> MstHotelType { get; set; }
+        public DbSet<FirmDetails> FirmDetails { get; set; }
+        public DbSet<MstRestaurantQuestionnaire> MstRestaurantQuestionnaire { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -136,6 +139,14 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
+            .HasKey(x => x.Id);
+
+            modelBuilder.Entity<FirmDetails>().ToTable("FirmDetails");
+            modelBuilder.Entity<FirmDetails>()
+            .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<MstRestaurantQuestionnaire>().ToTable("MstRestaurantQuestionnaire");
+            modelBuilder.Entity<MstRestaurantQuestionnaire>()
             .HasKey(x => x.Id);
 
             base.OnModelCreating(modelBuilder);
