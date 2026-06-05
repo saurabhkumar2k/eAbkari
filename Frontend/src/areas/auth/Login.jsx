@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { 
   UserSvg, 
   LockSvg, 
@@ -9,8 +10,67 @@ import {
   EyeSvg
 } from '../../Style/images/Icons';
 
-const Login = ({ onNavigateToRegister }) => {
-  return (
+const LOGIN_API_URL = 'http://localhost:5214/api/Login/Login';
+
+const Login = ({ onNavigateToRegister, onLoginSuccess }) => {
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+ const [successMessage, setSuccessMessage] = useState("");
+ const navigate = useNavigate();
+  const handleSubmit = async (event) => {
+    debugger;
+    event.preventDefault();
+    setErrorMessage('');
+    setIsSubmitting(true);
+
+
+    
+
+  try {
+  const response = await fetch(LOGIN_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: userId.trim(),
+      password: password.trim()
+    })
+  });
+
+  const data = await response.json();
+
+  console.log("API Response:", data);
+
+  if (!response.ok) {
+    setErrorMessage(data.message || "Login failed");
+    return;
+  }
+setSuccessMessage("Login Successful");
+// window.location.href = data.redirectUrl;
+navigate("/applicantdashboard");
+  if (data.success === false) {
+    setErrorMessage(data.message || "Invalid credentials");
+    return;
+  }
+
+ alert("Login Successful");
+
+ if (onLoginSuccess) {
+
+  onLoginSuccess(data);
+}
+
+} catch (error) {
+  console.error(error);
+  setErrorMessage(error.message || "Unable to connect");
+} finally {
+  setIsSubmitting(false);
+}
+  };  return (
     <div className="login-page-wrapper">
       <div className="login-container">
         {/* Left Side: Branding & Info */}
@@ -85,7 +145,7 @@ const Login = ({ onNavigateToRegister }) => {
         {/* Right Side: Form */}
         <div className="login-form-panel">
           <div className="language-selector-top">
-            <button className="lang-btn">
+            <button className="lang-btn" type="button">
               <GlobeSvg className="icon-xs" />
               <span>English</span>
               <ChevronDownSvg className="icon-xs" />
@@ -97,16 +157,24 @@ const Login = ({ onNavigateToRegister }) => {
               <div className="form-header-icon-circle">
                 <UserSvg className="icon-lg login-color-primary" />
               </div>
-              
+               
               <h1 className="login-form-title">Login</h1>
               <p className="login-form-subtitle">Enter your credentials to continue</p>
 
-              <form className="login-form-fields">
+              <form className="login-form-fields" onSubmit={handleSubmit}>
                 <div className="form-field">
                   <label className="reg-label-block">User ID / Email</label>
                   <div className="login-input-group">
                     <div className="login-input-icon"><UserSvg className="icon-sm" /></div>
-                    <input type="text" placeholder="Enter User ID or Email" className="login-input-field" />
+                    {/* <input type="text"  placeholder="Enter User ID or Email" className="login-input-field" /> */}
+                    <input
+                      type="text"
+                      placeholder="Enter User ID or Email"
+                      className="login-input-field"
+                      value={userId}
+                      onChange={(event) => setUserId(event.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -114,8 +182,19 @@ const Login = ({ onNavigateToRegister }) => {
                   <label className="reg-label-block">Password</label>
                   <div className="login-input-group">
                     <div className="login-input-icon"><LockSvg className="icon-sm" /></div>
-                    <input type="password" placeholder="Enter Password" className="login-input-field padding-right-large" />
-                    <button type="button" className="password-toggle-btn">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter Password"
+                      className="login-input-field padding-right-large"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
                       <EyeSvg className="icon-sm" />
                     </button>
                   </div>
@@ -131,13 +210,17 @@ const Login = ({ onNavigateToRegister }) => {
                   </button>
                 </div>
 
+                {errorMessage && (
+                  <div className="login-error-message">{errorMessage}</div>
+                )}
+
                 <button 
-                  type="button" 
+                  type="submit" 
                   className="login-btn-submit"
-                  onClick={onNavigateToRegister}
+                  disabled={isSubmitting}
                 >
                   <LockSvg className="icon-xs margin-right-small" />
-                  Login
+                  {isSubmitting ? 'Signing in...' : 'Login'}
                 </button>
 
                 <div className="divider-container">

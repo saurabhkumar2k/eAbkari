@@ -1,0 +1,62 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\workitem\\r_eabkari\\eabkari\\backend\\backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\workitem\\r_eabkari\\eabkari\\backend\\backend.api\\login\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\login\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Login\\Controllers\\LoginController.cs",
+              "ToolTip": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "backend.API\\Login\\Controllers\\LoginController.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAwwC4AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-26T06:51:17.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginRepository.cs",
+              "DocumentMoniker": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "RelativeDocumentMoniker": "backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "ToolTip": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs*",
+              "RelativeToolTip": "backend.Infrastructure\\Repositories\\LoginRepository.cs*",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwBgAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-26T06:38:28.674Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

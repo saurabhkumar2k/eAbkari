@@ -1,38 +1,285 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Header from './src/components/Header';
 import Footer from './src/components/Footer';
 import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
-import { 
-  ChevronDownSvg, 
-  FileEditSvg, 
-  ShieldSvg, 
-  TimerSvg, 
-  BarChart3Svg, 
-  HeadphonesSvg, 
-  BellSvg, 
-  DownloadSvg, 
-  ArrowRightSvg, 
-  ChevronLeftSvg, 
-  ChevronRightSvg, 
-  LayoutGridSvg, 
-  BuildingSvg 
-} from './src/Style/images/Icons';
+import ApplicantDashboard from './src/areas/applicant/applicantdashboard.jsx';
+import DepartmentDashboard from './src/areas/dashboard/DepartmentDashboard.jsx';
+import ImportPermitPass from './src/components/Department/Pages/ImportPermitPass.jsx';
+import EmptyPermitTable from './src/components/Department/EmptyPermitTable.jsx';
+import PermitForm from './src/components/Department/PermitForm.jsx';
+import DepartmentLogin from './src/components/Department/DepartmentLogin.jsx';
+import DepartmentHeader from './src/components/DepartmentHeader.jsx';
+import AdminHeader from './src/components/AdminHeader.jsx';
+import LiquorBrand from './src/components/Department/LiquorBrand.jsx';
+
+import {
+  ChevronDownSvg,
+  FileEditSvg,
+  ShieldSvg,
+  TimerSvg,
+  BarChart3Svg,
+  HeadphonesSvg,
+  BellSvg,
+  DownloadSvg,
+  ChevronLeftSvg,
+  ChevronRightSvg,
+  LayoutGridSvg,
+  BuildingSvg,
+  HomeSvg,
+  FolderSvg,
+  DatabaseSvg,
+  TicketSvg,
+  FileTextSvg,
+  WalletSvg,
+  PenToolSvg,
+  TagSvg,
+  MessageSquareSvg,
+  PieChartSvg,
+  SettingsSvg
+} from "./src/components/icons/GlobalIcons";
+
+import { ArrowRightSvg } from './src/Style/images/Icons';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('HOME');
+const handleAdminNavigate = (view) => {
+  console.log("Navigation:", view);
+
+  switch (view?.trim()) {
+      case "Bottle":
+      case "BOTTLE":
+      window.location.href = "/liquorbrand";
+      break;
+
+    case "IMPORT : BULK SPIRIT":
+      window.location.href = "/importpermitpass";
+      break;
+
+    case "Home":
+      window.location.href = "/departmentdashboard";
+      break;
+
+    default:
+      console.log("Unknown route:", view);
+      break;
+  }
+};
+
+return (
+  <BrowserRouter>
+    <Routes>
+
+      {/* Home */}
+      <Route
+        path="/"
+        element={
+          <>
+            <Header />
+            <main>{renderHomeContent()}</main>
+            <Footer />
+          </>
+        }
+      />
+
+      {/* Applicant Login */}
+      <Route
+        path="/login"
+        element={
+          <Login
+            onNavigateToRegister={() =>
+              (window.location.href = "/registration")
+            }
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/applicantdashboard")
+            }
+          />
+        }
+      />
+
+      {/* Registration */}
+      <Route
+        path="/registration"
+        element={<Registration />}
+      />
+
+      {/* Applicant Dashboard */}
+      <Route
+        path="/applicantdashboard"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+          />
+        }
+      />
+
+      {/* Department Login */}
+      <Route
+        path="/departmentlogin"
+        element={
+          <DepartmentLogin
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/departmentdashboard")
+            }
+          />
+        }
+      />
+
+      {/* Department Dashboard */}
+      <Route
+        path="/departmentdashboard"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="DEPARTMENT_DASHBOARD"
+              onNavigate={handleAdminNavigate}
+            />
+
+            <DepartmentDashboard
+              onLogout={() =>
+                (window.location.href = "/")
+              }
+              onNavigateHome={() =>
+                (window.location.href = "/")
+              }
+            />
+          </div>
+        }
+      />
+
+      {/* Import Permit */}
+      <Route
+        path="/importpermitpass"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="IMPORT_PERMIT_PASS"
+              onNavigate={handleAdminNavigate}
+            />
+
+            <ImportPermitPass />
+          </div>
+        }
+      />
+
+      {/* Liquor Brand */}
+      <Route
+  path="/liquorbrand"
+  element={
+    <div className="admin-app-layout flex-grow flex flex-col">
+      <AdminHeader
+        navItems={navItems}
+        currentView="LIQUOR_BRAND"
+        onNavigate={handleAdminNavigate}
+      />
+
+      <LiquorBrand
+        onBack={() => window.location.href = "/departmentdashboard"}
+      />
+    </div>
+  }
+/>
+</Routes>
+  </BrowserRouter>
+);
+}
+
+// Navigation menu configuration
+const navItems = [
+  { label: "Home", icon: <HomeSvg className="dept-nav-icon" /> },
+
+  { label: "Directory Data", icon: <FolderSvg className="dept-nav-icon" />, hasDropdown: true },
+
+  {
+    label: "Master Data",
+    icon: <DatabaseSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+    items: [
+      { label: "Packaged Liquor",
+        hasSideMenu: true,
+        sideItems: [
+          "Bottle",
+          "Bottler",
+          "Brand Owner"
+        ],
+      },
+      {
+        label: "Permit/Pass Validity",
+        hasSideMenu: true,
+        sideItems: [
+          "Import : Bulk Spirit",
+          "Import : Packaged FL",
+          "Export : Packaged FL",
+          "Transport : Bulk Spirit",
+          "Transport : Packaged FL",
+          "Export : Bulk Spirit",
+        ],
+      },
+      { label: "Misc. Case" },
+      { label: "Fee/Duty Rate" },
+      { label: "Export : Packaged Liquor" },
+      { label: "Others" },
+      { label: "M&TP" },
+    ],
+  },
+
+  {
+    label: "Permit/Pass",
+    icon: <TicketSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Licensee Data",
+    icon: <FileTextSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Wallet",
+    icon: <WalletSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  {
+    label: "Stationary Management",
+    icon: <PenToolSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+
+  { label: "Label Regn.", icon: <TagSvg className="dept-nav-icon" /> },
+
+  { label: "Feedback", icon: <MessageSquareSvg className="dept-nav-icon" /> },
+
+  { label: "MIS", icon: <PieChartSvg className="dept-nav-icon" /> },
+
+  {
+    label: "House Keeping",
+    icon: <SettingsSvg className="dept-nav-icon" />,
+    hasDropdown: true,
+  },
+];
 
   const renderHomeContent = () => (
     <>
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-gradient" />
-        <img 
-          src="https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&q=80&w=2000" 
-          className="hero-bg"
-          alt=""
-        />
         
         <div className="hero-divider-line" />
         <div className="hero-accent-shape" />
@@ -297,23 +544,36 @@ export default function App() {
     </>
   );
 
-  return (
-    <div className="app-main-layout">
+  /*return (
+     <div className="app-main-layout">
       {currentView === 'APPLICANT_LOGIN' ? (
-        <Login onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} />
-      ) : (
-        <>
-          <Header onSelectView={setCurrentView} currentView={currentView} />
-          <main>
-            {currentView === 'APPLICANT_REGISTRATION' ? (
-              <Registration onNavigateToLogin={() => setCurrentView('APPLICANT_LOGIN')} />
-            ) : (
-              renderHomeContent()
-            )}
-          </main>
-          <Footer />
-        </>
-      )}
-    </div>
-  );
-}
+        <Login 
+          onNavigateToRegister={() => setCurrentView('APPLICANT_REGISTRATION')} 
+          onNavigateHome={() => setCurrentView('HOME')}
+          onLoginSuccess={() => setCurrentView('APPLICANT_DASHBOARD')}
+        />
+      ) : currentView === 'APPLICANT_DASHBOARD' ? (
+        <ApplicantDashboard 
+          onLogout={() => setCurrentView('HOME')}
+          onNavigateToHome={() => setCurrentView('HOME')}
+        />
+      ) : currentView === 'DEPARTMENT_LOGIN' ? (
+        <DepartmentLogin 
+          onNavigateHome={() => setCurrentView('HOME')} 
+          onLoginSuccess={() => setCurrentView('DEPARTMENT_DASHBOARD')}
+        />
+      ) : currentView === 'DEPARTMENT_DASHBOARD' ? (
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader navItems={navItems} currentView={currentView} onNavigate={handleAdminNavigate} />
+          <DepartmentDashboard 
+            onLogout={() => setCurrentView('HOME')} 
+            onNavigateToPermit={() => setCurrentView('IMPORT_PERMIT_CUM_PASS')}
+            onNavigateHome={() => setCurrentView('HOME')}
+          />
+        </div>
+      ) : currentView === 'IMPORT_PERMIT_CUM_PASS' ? (
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader navItems={navItems} currentView={currentView} onNavigate={handleAdminNavigate} />
+          <ImportPermitCumPass />
+        </div>
+      );*/
