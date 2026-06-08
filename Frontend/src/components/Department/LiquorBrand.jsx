@@ -18,7 +18,6 @@ import {
   Info, 
   AlertCircle, 
   CheckCircle2, 
-  ArrowLeft,
   ChevronsUpDown,
   Filter,
   Download,
@@ -404,13 +403,6 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
         {/* Navigation Breadcrumbs / Portal Header */}
         <div className="brand-header">
           <div className="flex items-center gap-4">
-            <button 
-              onClick={onNavigateHome}
-              className="p-2 bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-xl transition cursor-pointer text-slate-600 shadow-sm flex items-center justify-center group"
-              title="Go back to dashboard"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-            </button>
             <div>
               <div className="brand-subtitle">Master Registries</div>
               <h1 className="brand-title">Liquor Brand Registration</h1>

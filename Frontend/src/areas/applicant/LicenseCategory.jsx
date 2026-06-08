@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  LayoutGrid,
+  Grid3X3,
   Hotel,
   Factory,
   ShoppingCart,
@@ -74,15 +74,15 @@ export default function LicenseCategory({ newLicData, setNewLicData, showToast, 
 
   return (
     <div className="basic-details-card animate-fade">
-      <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
-        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-          <LayoutGrid className="w-5 h-5" />
+      <div className="section-header">
+        <div className="section-header-icon p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+          <Grid3X3 className="w-7 h-7 text-blue-600" />
         </div>
-        <div>
-          <h3 className="under-blue-accent">
+        <div className="section-header-content">
+          <h2 className="section-title">
             Select License Category
-          </h3>
-          <p className="text-xs mt-1 font-semibold">
+          </h2>
+          <p className="section-subtitle">
             Choose the category under which you want to apply for a new license.
           </p>
         </div>

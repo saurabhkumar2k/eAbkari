@@ -276,11 +276,11 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
         <div className="space-y-6">
           
           {/* Internal Title Box Header */}
-          <div className="bg-[#5c6b73] text-white p-3 rounded-lg text-center font-bold text-sm select-none uppercase tracking-wider">
+          <div className={`bg-[#5c6b73] text-white p-3 rounded-lg text-center font-bold text-sm select-none uppercase tracking-wider ${currentStep === 4 || currentStep === 5 ? "personal-doc-header" : ""}`}>
             {steps[currentStep - 1].sub}
           </div>
 
-          <div className="brand-card mb-6">
+          <div className={`brand-card mb-6 ${currentStep === 4 || currentStep === 5 ? "personal-doc-card" : ""}`}>
             
             {/* Step 1: APPLICANT DETAILS FORM BLOCK */}
             {currentStep === 1 && (
@@ -692,87 +692,87 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
 
             {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
             {currentStep === 4 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="bg-purple-50 text-purple-950 p-4 rounded-xl border border-purple-100 flex items-start gap-2.5">
-                  <Bookmark className="w-5 h-5 text-purple-700 shrink-0 mt-0.5" />
-                  <div className="text-xs font-semibold leading-relaxed">
+              <div className="personal-doc-container text-left space-y-6">
+                <div className="document-info-banner">
+                  <Bookmark className="w-5 h-5" />
+                  <p>
                     Please map and endorse your core personal identification proofs. Attach certified PDF documents (file sizes must remain below 10MB per document).
-                  </div>
+                  </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="document-list">
                   {/* File 1: Personal PAN */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-blue-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">PAN Card of Board Directors / Applicant *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Acceptable formats: PDF, JPEG (Color scan mandatory)</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">PAN Card of Board Directors / Applicant *</h4>
+                      <p className="document-description">Acceptable formats: PDF, JPEG (Color scan mandatory)</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: pan_card_full.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: pan_card_full.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("File pan_card_full.pdf re-uploaded."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* File 2: Aadhaar Card */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-blue-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Aadhaar Card Identifications *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">E-Aadhaar PDF certified by UIDAI seal</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Aadhaar Card Identifications *</h4>
+                      <p className="document-description">E-Aadhaar PDF certified by UIDAI seal</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: aadhaar_signed.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: aadhaar_signed.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("Aadhaar proof updated."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* File 3: Partnership Deed */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-blue-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Partnership Deed / Board Resolution Certificate *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Corporate certificate mapping authorizations under directors board approval</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Partnership Deed / Board Resolution Certificate *</h4>
+                      <p className="document-description">Corporate certificate mapping authorizations under directors board approval</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: resolution_board_delhi.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: resolution_board_delhi.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("Deed file modified."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* File 4: Income Tax Return */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-blue-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Income Tax Return Acknowledgment Receipts (Past 3 FY)</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Combined PDF containing certified filings filed with ITR departments</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Income Tax Return Acknowledgment Receipts (Past 3 FY)</h4>
+                      <p className="document-description">Combined PDF containing certified filings filed with ITR departments</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: itr_returns_3_yr_combined.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: itr_returns_3_yr_combined.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("ITR files uploaded."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
@@ -783,87 +783,87 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
 
             {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
             {currentStep === 5 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="bg-amber-50 text-amber-950 p-4 rounded-xl border border-amber-100 flex items-start gap-2.5">
-                  <Warehouse className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                  <div className="text-xs font-semibold leading-relaxed">
+              <div className="personal-doc-container text-left space-y-6">
+                <div className="document-info-banner">
+                  <Warehouse className="w-5 h-5" />
+                  <p>
                     Warehouse Premises Deeds are inspected under Delhi Fire Services & Municipal Excise laws. Please upload certified blueprint surveys.
-                  </div>
+                  </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="document-list">
                   {/* Deed 1: Registered Lease Deed */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-amber-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Registered Warehouse Lease Deed / Ownership Papers *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Registered deed papers showing full possession details</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Registered Warehouse Lease Deed / Ownership Papers *</h4>
+                      <p className="document-description">Registered deed papers showing full possession details</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: registered_lease_mayapuri.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: registered_lease_mayapuri.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("Lease deed updated."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* Deed 2: Fire Safety NOC */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-amber-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Delhi Fire Services NOC (No Objection Certificate) *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">NOC affirming safety exits and automatic fire suppression controls</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Delhi Fire Services NOC (No Objection Certificate) *</h4>
+                      <p className="document-description">NOC affirming safety exits and automatic fire suppression controls</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: dfs_noc_clearance_2026.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: dfs_noc_clearance_2026.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("Fire safety NOC updated."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* Deed 3: MCD Trade License */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-amber-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">MCD Commercial Trade License *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Approval for operations of commercial storage depot</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">MCD Commercial Trade License *</h4>
+                      <p className="document-description">Approval for operations of commercial storage depot</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: mcd_commercial_license.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: mcd_commercial_license.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("MCD copy re-uploaded."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
 
                   {/* Deed 4: Approved Site layout plan map */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:border-amber-400 hover:bg-slate-50/50 transition">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Licensed Premise Blue Site Layout Blueprint *</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-1">Detailed architect-signed architectural drawing detailing dry stack bays</p>
+                  <div className="document-row">
+                    <div className="document-content">
+                      <h4 className="document-title">Licensed Premise Blue Site Layout Blueprint *</h4>
+                      <p className="document-description">Detailed architect-signed architectural drawing detailing dry stack bays</p>
                     </div>
-                    <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100 flex items-center gap-1">
-                        <Check className="w-3 h-3 stroke-[3]" /> Mapped: arch_layout_stamps_2026.pdf
+                    <div className="document-actions">
+                      <span className="document-status animate-fade">
+                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: arch_layout_stamps_2026.pdf</span>
                       </span>
                       <button 
                         onClick={() => { if (showToast) showToast("Site plan blueprint replaced."); }}
-                        className="btn-secondary text-[11px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100"
+                        className="btn-replace"
                       >
-                        <Upload className="w-3.5 h-3.5 text-slate-500" /> Replace
+                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
                       </button>
                     </div>
                   </div>
@@ -932,7 +932,7 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
             )}
 
             {/* Action buttons footer for Next & Back navigation */}
-            <div className="flex items-center justify-between pt-6 mt-8 border-t border-slate-200">
+            <div className={currentStep === 4 || currentStep === 5 ? "document-footer" : "flex items-center justify-between pt-6 mt-8 border-t border-slate-200"}>
               <button 
                 type="button" 
                 onClick={() => {
@@ -942,34 +942,46 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
                     handlePrevStep();
                   }
                 }}
-                className="btn btn-secondary border border-slate-200 px-6"
+                className={currentStep === 4 || currentStep === 5 ? "btn-prev" : "btn btn-secondary border border-slate-200 px-6"}
               >
-                <ArrowLeft className="w-4 h-4 text-slate-600" />
+                {currentStep !== 4 && currentStep !== 5 && <ArrowLeft className="w-4 h-4 text-slate-600 animate-none opacity-100" />}
                 <span>{currentStep === 1 ? "Exit Wizard" : "Previous Step"}</span>
               </button>
 
               <button 
                 type="button" 
                 onClick={handleNextStep}
-                className="btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"
+                className={currentStep === 4 || currentStep === 5 ? "btn-next" : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"}
               >
                 <span>{currentStep === 6 ? "File Joint Application" : "Next Step"}</span>
-                <ArrowRight className="w-4 h-4 text-white" />
+                {currentStep !== 4 && currentStep !== 5 && <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />}
               </button>
             </div>
 
           </div>
 
           {/* Core instruction info container card at very bottom */}
-          <div className="blue-info-alert flex items-start text-left bg-blue-50 border border-blue-200 p-4 rounded-xl gap-3">
-            <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider mb-1">State Excise Desk Guidelines</h4>
-              <p className="text-[11px] text-blue-700 font-semibold leading-relaxed">
+          {currentStep === 4 || currentStep === 5 ? (
+            <div className="guideline-card">
+              <div className="guideline-title">
+                <Info className="w-5 h-5" />
+                <span>State Excise Desk Guidelines</span>
+              </div>
+              <p className="guideline-content">
                 Applying jointly for L-1 Wholesale distribution and L-31 Bonded Warehouse simplifies tax and audit evaluations from Department personnel. Joint applications are typically audited in a synchronized timeline of 7 working days.
               </p>
             </div>
-          </div>
+          ) : (
+            <div className="blue-info-alert flex items-start text-left bg-blue-50 border border-blue-200 p-4 rounded-xl gap-3">
+              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-black text-blue-950 uppercase tracking-wider mb-1">State Excise Desk Guidelines</h4>
+                <p className="text-[11px] text-blue-700 font-semibold leading-relaxed">
+                  Applying jointly for L-1 Wholesale distribution and L-31 Bonded Warehouse simplifies tax and audit evaluations from Department personnel. Joint applications are typically audited in a synchronized timeline of 7 working days.
+                </p>
+              </div>
+            </div>
+          )}
 
         </div>
       ) : (
