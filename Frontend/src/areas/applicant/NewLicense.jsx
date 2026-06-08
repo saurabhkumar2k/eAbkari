@@ -4,7 +4,7 @@ import {
   ChevronRight,
   ChevronDown,
   FileText,
-  UserCheck,
+  User,
   Award,
   Building,
   Briefcase,
@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
 import HcrLicenseWizard from "./HCR/HcrLicense";
-import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense.jsx";
+import WholesaleLicenseWizard from "./HCR/SelectLicense";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
@@ -392,63 +392,21 @@ export default function NewLicense({ setActiveTab, showToast }) {
               </div>
             </div>
 
-            {/* 2. MULTI-STEP PROGRESS BAR (32px vertical spacing) */}
-            <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 select-none">
-              <div className="relative">
-                {/* Line connectors row */}
-                <div className="absolute top-5 left-0 right-0 -translate-y-1/2 flex items-center z-0 px-8">
-                  <div className={newLicStep >= 2 ? "step-dotted-connector-active" : "step-dotted-connector"}></div>
-                </div>
-
-                {/* Circles row */}
-                <div className="relative flex justify-between items-start z-10">
-                  {[
-                    { step: 1, label: "Basic Details", sub: "Entity Selection" },
-                    { step: 2, label: "License Category", sub: "Privilege Code" }
-                  ].map((item) => {
-                    const isCompleted = newLicStep > item.step;
-                    const isActive = newLicStep === item.step;
-                    return (
-                      <div key={item.step} className="flex flex-col items-center flex-1 text-center">
-                        <div 
-                          className={`step-circle-badge ${
-                            isCompleted 
-                              ? "bg-emerald-600 text-white shadow-md shadow-emerald-100" 
-                              : isActive 
-                                ? "blue-gradient-active-step text-white" 
-                                : "bg-slate-50 border-2 border-slate-200 text-slate-400"
-                          }`}
-                        >
-                          {isCompleted ? <Check className="w-5 h-5 stroke-[3]" /> : <span>{item.step}</span>}
-                        </div>
-                        <span className={`text-[12px] font-extrabold mt-3 block ${isActive ? "text-blue-600" : isCompleted ? "text-emerald-700" : "text-slate-500"}`}>
-                          {item.label}
-                        </span>
-                        <span className="text-[10px] hidden sm:block text-slate-400 mt-0.5 font-semibold">
-                          {item.sub}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
             {/* 3. ACTIVE STEP DETAIL CONTENT (24px padding / equal heights / custom cards) */}
             <div className="min-h-[340px]">
               
               {newLicStep === 1 && (
                 /* STEP 1: BASIC DETAILS CARD */
                 <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
-                  <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                    <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-                      <UserCheck className="w-5 h-5" />
+                  <div className="basic-details-header">
+                    <div className="basic-details-icon">
+                      <User className="w-7 h-7 text-blue-600" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-black text-slate-900 under-blue-accent">
+
+                    <div className="basic-details-content">
+                      <h2 className="basic-details-title">
                         Basic Details
-                      </h3>
-                      <p className="text-xs text-slate-400 mt-1 font-semibold">Select your organization type and applied license privilege schedules.</p>
+                      </h2>
                     </div>
                   </div>
 
@@ -461,7 +419,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
                         Owner Type <span className="text-red-500">*</span>
                       </label>
                       <div className="field-icon-container">
-                        <UserCheck className="field-icon-left" />
+                        <User className="field-icon-left" />
                         <select
                           value={newLicData.entityType}
                           onChange={(e) => setNewLicData({ ...newLicData, entityType: e.target.value })}
