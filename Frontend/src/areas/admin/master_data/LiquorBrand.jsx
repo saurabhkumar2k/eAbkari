@@ -18,6 +18,7 @@ import {
   Info, 
   AlertCircle, 
   CheckCircle2, 
+  ArrowLeft,
   ChevronsUpDown,
   Filter,
   Download,
@@ -403,6 +404,13 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
         {/* Navigation Breadcrumbs / Portal Header */}
         <div className="brand-header">
           <div className="flex items-center gap-4">
+            <button 
+              onClick={onNavigateHome}
+              className="p-2 bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-xl transition cursor-pointer text-slate-600 shadow-sm flex items-center justify-center group"
+              title="Go back to dashboard"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+            </button>
             <div>
               <div className="brand-subtitle">Master Registries</div>
               <h1 className="brand-title">Liquor Brand Registration</h1>
@@ -506,9 +514,9 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                       <option value="Country Liquor">Country Liquor</option>
                       <option value="Indian Liquor">Indian Liquor</option>
                     </select>
-                    <div className="select-arrow">
+                    {/* <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
-                    </div>
+                    </div> */}
                   </div>
                   {formErrors.category && (
                     <span className="field-error flex items-center gap-1">
@@ -540,9 +548,9 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="select-arrow">
+                    {/* <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
-                    </div>
+                    </div> */}
                   </div>
                   {!formData.category && (
                     <span className="field-helper block">
@@ -579,9 +587,9 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="select-arrow">
+                    {/* <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
-                    </div>
+                    </div> */}
                   </div>
                   {!formData.kindOfLiquor && (
                     <span className="field-helper block">
@@ -633,9 +641,9 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <div className="select-arrow">
+                    {/* <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
-                    </div>
+                    </div> */}
                   </div>
                   <span className="field-helper block">Select a pre-allocated structural tariff billing code.</span>
                 </div>
@@ -1030,8 +1038,10 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
             )}
 
           </div>
+
         ) : (
-          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 shadow-sm flex items-start gap-4">
+          
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-6 shadow-sm flex items-start gap-4" style={{ padding: '0.5rem' }}>
             <Info className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-bold text-blue-900">Excise Database Preview Mode</h4>

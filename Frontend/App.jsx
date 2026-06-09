@@ -14,7 +14,7 @@ import PermitForm from './src/components/Department/PermitForm.jsx';
 import DepartmentLogin from './src/components/Department/DepartmentLogin.jsx';
 import DepartmentHeader from './src/components/DepartmentHeader.jsx';
 import AdminHeader from './src/components/AdminHeader.jsx';
-import LiquorBrand from './src/components/Department/LiquorBrand.jsx';
+import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 
 import {
   ChevronDownSvg,
