@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
 import HcrLicenseWizard from "./HCR/HcrLicense";
-import WholesaleLicenseWizard from "./HCR/SelectLicense";
+import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
