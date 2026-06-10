@@ -123,7 +123,7 @@ export default function SelectWholesaleType({ selectedType, onSelectType, onBack
           </div>
         </div>
       </div>
-
+      
       {/* Grouped Cards Sections */}
       <div className="space-y-8">
         {licenseGroups.map((group, gIdx) => {
