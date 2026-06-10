@@ -18,22 +18,6 @@ export default function SelectWholesaleType({ selectedType, onSelectType, onBack
       color: "blue",
       items: [
         {
-          id: "L-1",
-          code: "L-1",
-          title: "Wholesale Vend of Indian Liquor",
-          description: "License for Wholesale Vend of Indian Liquor. Authorizes bulk inventory management and supply to authorized retailers or hotel-club bars.",
-          badge: "IMFL Distribution",
-          icon: Package
-        },
-        {
-          id: "L-31",
-          code: "L-31",
-          title: "Warehouse for storage of Indian Liquor",
-          description: "License for Warehouse for storage of Indian Liquor. Mandated of bulk traders requiring specialized bonded safety storage facility guidelines.",
-          badge: "Bonded Storage",
-          icon: Warehouse
-        },
-        {
           id: "L-1-L-31",
           code: "L-1 & L-31",
           title: "Joint L1 & L31 Fast-Track License",
@@ -55,6 +39,7 @@ export default function SelectWholesaleType({ selectedType, onSelectType, onBack
           badge: "Foreign Liquor",
           icon: Wine
         },
+        
         {
           id: "L-32",
           code: "L-32",
@@ -123,7 +108,7 @@ export default function SelectWholesaleType({ selectedType, onSelectType, onBack
           </div>
         </div>
       </div>
-      
+
       {/* Grouped Cards Sections */}
       <div className="space-y-8">
         {licenseGroups.map((group, gIdx) => {
