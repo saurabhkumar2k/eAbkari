@@ -59,6 +59,12 @@ public class MstUsReg
      public DateTime? RefreshTokenExpiry { get; set; }
 public string? Password { get; set; }
 
-    //public bool? IsPunishableOffence { get; set; }
+    public bool? IsPunishableOffence { get; set; }
+
+    [Required]
+    public string? SubDivision { get; set; }
+    [Required]
+    [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN number format.")]
+    public string? PanNo { get; set; }
 }
 
