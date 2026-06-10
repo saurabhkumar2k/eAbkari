@@ -22,12 +22,12 @@ import {
   FileCheck
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
-import HcrLicenseWizard from "./HCR/HcrLicense";
+import HcrLicenseWizard from "./HCR/HcrLicense" // Import the HCR license wizard components
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
-  const [newLicStep, setNewLicStep] = useState(1);
+  const [newLicStep, setNewLicStep] = useState(2);
   const [newLicData, setNewLicData] = useState({
     entityType: "Private Limited",
     licenseType: "L-1 Wholesale Vend of Indian Liquor",
@@ -305,7 +305,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
               <button
                 onClick={() => {
                   setAppSubmissionCompleted(false);
-                  setNewLicStep(1);
+                  setNewLicStep(2);
                   setActiveTab("Home");
                 }}
                 className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer border-none"
@@ -502,7 +502,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
               <button
                 type="button"
                 onClick={() => {
-                  if (newLicStep > 1) {
+                  if (newLicStep > 2) {
                     setNewLicStep(newLicStep - 1);
                   } else {
                     setActiveTab("Home");
@@ -510,7 +510,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
                 }}
                 className="outline-draft-btn"
               >
-                <span>{newLicStep === 1 ? "Cancel Application" : "Go Back"}</span>
+                <span>{newLicStep === 2 ? "Cancel Application" : "Go Back"}</span>
               </button>
 
               <div className="flex items-center gap-3 text-right">

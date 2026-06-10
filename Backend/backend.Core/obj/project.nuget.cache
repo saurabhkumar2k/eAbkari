@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "mjCOPB5bqaE=",
+  "dgSpecHash": "O3lkn5+oOHs=",
   "success": true,
-  "projectFilePath": "E:\\WorkItem\\R_eAbkari\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\muska\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.16\\microsoft.netcore.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\muska\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.16\\microsoft.windowsdesktop.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\muska\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.16\\microsoft.aspnetcore.app.ref.9.0.16.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -68,3 +68,15 @@ E:\WorkItem\R_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core
 E:\WorkItem\R_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\refint\backend.Core.dll
 E:\WorkItem\R_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.pdb
 E:\WorkItem\R_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\ref\backend.Core.dll
+C:\Eabkari\eabkari\backend\backend.Core\bin\Debug\net9.0\backend.Core.deps.json
+C:\Eabkari\eabkari\backend\backend.Core\bin\Debug\net9.0\backend.Core.dll
+C:\Eabkari\eabkari\backend\backend.Core\bin\Debug\net9.0\backend.Core.pdb
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.AssemblyInfoInputs.cache
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.AssemblyInfo.cs
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.csproj.CoreCompileInputs.cache
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.sourcelink.json
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.dll
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\refint\backend.Core.dll
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.pdb
+C:\Eabkari\eabkari\backend\backend.Core\obj\Debug\net9.0\ref\backend.Core.dll

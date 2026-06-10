@@ -1,0 +1,102 @@
+.dept-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.dept-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dept-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.dept-brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.dept-header-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.dept-header-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.dept-login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.dept-login-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+.dept-dash-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dept-dash-footer {
+  background: white;
+  padding: 2rem 0;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 4rem;
+}
+
+.footer-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-links a {
+  font-size: 0.8125rem;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--brand-blue);
+}
+/* --- Admin Header Styles --- */
+.admin-header-wrapper {
+  background: white;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}

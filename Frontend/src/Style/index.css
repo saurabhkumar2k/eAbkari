@@ -1,6 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+@import "./main.css";
+@import "./main_head.css";
+
+@import "./department.css";
+@import "./departmenthead.css";
+
+@import "./applicant.css";
+@import "./applicanthead.css";
+
 :root {
   --brand-blue: #012a52;
   --brand-blue-dark: #00172e;
@@ -19,10 +28,10 @@
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body {
@@ -5975,7 +5984,6 @@ body {
 
 /* =========================================
    GLOBAL RESET
-========================================= */
 
 * {
   margin: 0;
@@ -5992,7 +6000,6 @@ body {
 
 /* =========================================
    SCROLLBAR
-========================================= */
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -6013,7 +6020,6 @@ body {
 
 /* =========================================
    LAYOUT
-========================================= */
 
 .dashboard-layout {
   display: flex;
@@ -6042,7 +6048,6 @@ body {
 
 /* =========================================
    SIDEBAR
-========================================= */
 
 .sidebar {
   width: 280px;
@@ -6083,7 +6088,6 @@ body {
 
 /* =========================================
    MODERN SIDEBAR / NAV BUTTON & LICENSE DROPDOWN
-========================================= */
 
 .sidebar-btn {
   position: relative;
@@ -6170,7 +6174,6 @@ body {
 
 /* =========================================
    DROPDOWN CONTAINER
-========================================= */
 
 .license-dropdown {
   position: absolute;
@@ -6215,7 +6218,6 @@ body {
 
 /* =========================================
    DROPDOWN HEADER
-========================================= */
 
 .dropdown-header {
   display: flex;
@@ -6278,7 +6280,6 @@ body {
 
 /* =========================================
    DROPDOWN MENU LIST
-========================================= */
 
 .dropdown-menu-list {
   display: flex;
@@ -6290,7 +6291,6 @@ body {
 
 /* =========================================
    DROPDOWN ITEM
-========================================= */
 
 .dropdown-item {
   width: 100%;
@@ -6330,7 +6330,6 @@ body {
 
 /* =========================================
    ACTIVE SUBMENU
-========================================= */
 
 .active-submenu {
   background:
@@ -6352,7 +6351,6 @@ body {
 
 /* =========================================
    LEFT CONTENT
-========================================= */
 
 .dropdown-item-left {
   display: flex;
@@ -6364,7 +6362,6 @@ body {
 
 /* =========================================
    NUMBER / ICON BADGE
-========================================= */
 
 .dropdown-item-badge {
   width: 36px;
@@ -6402,7 +6399,6 @@ body {
 
 /* =========================================
    TEXT GROUP
-========================================= */
 
 .dropdown-text-group {
   display: flex;
@@ -6438,7 +6434,6 @@ body {
 
 /* =========================================
    RIGHT ARROW
-========================================= */
 
 .dropdown-arrow {
   width: 16px;
@@ -6462,7 +6457,6 @@ body {
 
 /* =========================================
    ANIMATION
-========================================= */
 
 @keyframes dropdownFade {
 
@@ -6485,7 +6479,6 @@ body {
 
 /* =========================================
    MOBILE RESPONSIVE
-========================================= */
 
 @media (max-width: 768px) {
 
@@ -6509,7 +6502,6 @@ body {
 
 /* =========================================
    HEADER
-========================================= */
 
 .dashboard-header {
   position: sticky;
@@ -6610,7 +6602,6 @@ body {
 
 /* =========================================
    CARD
-========================================= */
 
 .dashboard-card {
   background: rgba(255, 255, 255, 0.88);
@@ -6632,7 +6623,6 @@ body {
 
 /* =========================================
    HERO SECTION
-========================================= */
 
 .hero-card {
   overflow: hidden;
@@ -6707,7 +6697,6 @@ body {
 
 /* =========================================
    STATS GRID
-========================================= */
 
 .stats-grid {
   display: grid;
@@ -6756,7 +6745,6 @@ body {
 
 /* =========================================
    GRID SECTION
-========================================= */
 
 .content-grid {
   display: grid;
@@ -6782,7 +6770,6 @@ body {
 
 /* =========================================
    SEARCH
-========================================= */
 
 .search-wrapper {
   position: relative;
@@ -6808,7 +6795,6 @@ body {
 
 /* =========================================
    LICENSE CARD
-========================================= */
 
 .license-list {
   margin-top: 24px;
@@ -6853,7 +6839,6 @@ body {
 
 /* =========================================
    PROFILE CARD
-========================================= */
 
 .profile-card {
   padding: 28px;
@@ -6924,7 +6909,6 @@ body {
 
 /* =========================================
    RESPONSIVE
-========================================= */
 
 @media (max-width: 1200px) {
   .stats-grid {
@@ -7156,7 +7140,6 @@ body {
 
 /* ==========================
    PAGE LAYOUT
-========================== */
 
 .flex-grow.w-full.py-8.font-sans {
   width: 100%;
@@ -7171,7 +7154,6 @@ body {
 
 /* ==========================
    HERO SECTION
-========================== */
 
 .new-license-banner {
   background: #ffffff;
@@ -7189,7 +7171,6 @@ body {
 
 /* ==========================
    MAIN CARD
-========================== */
 
 .basic-details-card {
   background: #ffffff;
@@ -7201,7 +7182,6 @@ body {
 
 /* ==========================
    FORM FIELDS
-========================== */
 
 .field-icon-container {
   position: relative;
@@ -7255,7 +7235,6 @@ textarea.rounded-custom-field {
 
 /* ==========================
    PROGRESS BAR
-========================== */
 
 .step-circle-badge {
   width: 42px;
@@ -7291,7 +7270,6 @@ textarea.rounded-custom-field {
 
 /* ==========================
    CATEGORY CARDS
-========================== */
 
 button[class*="rounded-2xl"] {
   transition: all 0.25s ease;
@@ -7315,7 +7293,6 @@ button[class*="rounded-2xl"]:hover {
 
 /* ==========================
    INFO ALERT
-========================== */
 
 .blue-info-alert {
   display: flex;
@@ -7329,7 +7306,6 @@ button[class*="rounded-2xl"]:hover {
 
 /* ==========================
    BUTTONS
-========================== */
 
 .blue-gradient-next-btn {
   display: flex;
@@ -7366,7 +7342,6 @@ button[class*="rounded-2xl"]:hover {
 
 /* ==========================
    SUCCESS PAGE
-========================== */
 
 .animate-pulse-subtle {
   animation: pulseSoft 2s infinite;
@@ -7386,7 +7361,6 @@ button[class*="rounded-2xl"]:hover {
 
 /* ==========================
    TYPOGRAPHY
-========================== */
 
 h2,
 h3,
@@ -7410,7 +7384,6 @@ h4 {
 
 /* ==========================
    RESPONSIVE
-========================== */
 
 @media (max-width: 768px) {
   .new-license-banner,
@@ -7436,7 +7409,6 @@ h4 {
 
 /* ================================
    CATEGORY SECTION CARD
-================================ */
 
 .basic-details-card {
   background: #ffffff;
@@ -7448,7 +7420,6 @@ h4 {
 
 /* ================================
    SECTION HEADER
-================================ */
 
 .under-blue-accent {
   position: relative;
@@ -7476,7 +7447,6 @@ h4 {
 
 /* ================================
    CATEGORY GRID
-================================ */
 
 .category-grid {
   display: grid;
@@ -7498,7 +7468,6 @@ h4 {
 
 /* ================================
    CATEGORY CARD
-================================ */
 
 .category-card {
   background: #ffffff;
@@ -7539,7 +7508,6 @@ h4 {
 
 /* ================================
    ICON AREA
-================================ */
 
 .category-icon {
   width: 56px;
@@ -7565,7 +7533,6 @@ h4 {
 
 /* ================================
    TITLES
-================================ */
 
 .category-title {
   font-size: 18px;
@@ -7589,7 +7556,6 @@ h4 {
 
 /* ================================
    DESCRIPTION
-================================ */
 
 .category-description {
   font-size: 13px;
@@ -7603,7 +7569,6 @@ h4 {
 
 /* ================================
    ARROW BUTTON
-================================ */
 
 .category-arrow {
   width: 36px;
@@ -7640,7 +7605,6 @@ h4 {
 
 /* ================================
    DIVIDER
-================================ */
 
 .category-divider {
   height: 1px;
@@ -7650,7 +7614,6 @@ h4 {
 
 /* ================================
    REMOVE EXCESS COLORS
-================================ */
 
 .bg-blue-50,
 .bg-emerald-50,
@@ -7668,7 +7631,6 @@ h4 {
 
 /* ================================
    CARD ANIMATION
-================================ */
 
 .category-card {
   animation: fadeUp .3s ease;
@@ -7686,12 +7648,6 @@ h4 {
   }
 }
 
-<<<<<<< Updated upstream
-/* ============================================================
-   LIQUOR BRAND REGISTRATION PORTAL STYLES (WITH HCR & WHOLESALE UPDATES)
-   ============================================================ */
-=======
->>>>>>> Stashed changes
 
 /* =========================
 HCR License 
@@ -7718,12 +7674,6 @@ HCR License
   }
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   CARDS
-========================= */
-=======
->>>>>>> Stashed changes
 
 .brand-card,
 .table-card {
@@ -7738,12 +7688,6 @@ HCR License
   backdrop-filter: blur(10px);
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   FORM GRID
-========================= */
-=======
->>>>>>> Stashed changes
 
 .form-grid {
   display: grid;
@@ -7755,21 +7699,10 @@ HCR License
   grid-column: 1 / -1;
 }
 
-<<<<<<< Updated upstream
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* =========================
-   INPUTS
-========================= */
-=======
 /* Labels */
 .form-label {
   display: block;
 }
->>>>>>> Stashed changes
 
 .input-box,
 .select-box,
@@ -7806,24 +7739,12 @@ HCR License
   border-color: #94a3b8;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   SEARCH BOX
-========================= */
-=======
->>>>>>> Stashed changes
 
 .search-box {
   max-width: 280px;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   BUTTONS
-========================= */
 
-=======
->>>>>>> Stashed changes
 .btn {
   display: inline-flex;
   align-items: center;
@@ -7858,13 +7779,7 @@ HCR License
   background: #e2e8f0;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   TABLE
-========================= */
 
-=======
->>>>>>> Stashed changes
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -7910,12 +7825,6 @@ HCR License
   background: #f8fafc;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   EMPTY STATE
-========================= */
-=======
->>>>>>> Stashed changes
 
 .empty-state {
   text-align: center;
@@ -7925,12 +7834,6 @@ HCR License
   background: #fafafa;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   INFO ALERT
-========================= */
-=======
->>>>>>> Stashed changes
 
 .blue-info-alert {
   display: flex;
@@ -7942,12 +7845,6 @@ HCR License
   border-radius: 16px;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   STATUS BADGES
-========================= */
-=======
->>>>>>> Stashed changes
 
 .badge-success {
   background: #dcfce7;
@@ -7958,12 +7855,6 @@ HCR License
   font-weight: 700;
 }
 
-<<<<<<< Updated upstream
-/* =========================
-   RESPONSIVE
-========================= */
-=======
->>>>>>> Stashed changes
 
 @media (max-width: 1024px) {
   .form-grid {
@@ -7999,10 +7890,6 @@ HCR License
   }
 }
 
-<<<<<<< Updated upstream
-/* =====================================
-   WHOLESALE PRIVILEGE OVERLAYS & CONTROLS
-===================================== */
 
 .empty-state p:first-of-type {
   font-weight: 700;
@@ -8086,9 +7973,6 @@ HCR License
 
 /* ===================================
    SELECT LICENSE TYPE PAGE
-=================================== */
-=======
->>>>>>> Stashed changes
 
 .select-license-type-step {
   width: 100%;
@@ -8238,13 +8122,7 @@ HCR License
   color: #be185d;
 }
 
-<<<<<<< Updated upstream
-/* ===================================
-   NOTE CARD
-=================================== */
 
-=======
->>>>>>> Stashed changes
 .note-card {
   background: #f8fbff;
   border: 1px solid #dbeafe;
@@ -8262,12 +8140,6 @@ HCR License
   color: #64748b;
 }
 
-<<<<<<< Updated upstream
-/* ===================================
-   SELECTED CARD EFFECT
-=================================== */
-=======
->>>>>>> Stashed changes
 
 .card-selected-bg {
   border-color: #2563eb !important;
@@ -8289,12 +8161,6 @@ HCR License
   pointer-events: none;
 }
 
-<<<<<<< Updated upstream
-/* ===================================
-   BACK BUTTON
-=================================== */
-=======
->>>>>>> Stashed changes
 
 .back-btn {
   display: inline-flex;
@@ -8311,12 +8177,6 @@ HCR License
   transform: translateX(-2px);
 }
 
-<<<<<<< Updated upstream
-/* ===================================
-   RESPONSIVE
-=================================== */
-=======
->>>>>>> Stashed changes
 
 @media (max-width: 1200px) {
   .license-grid {
@@ -8344,24 +8204,12 @@ HCR License
   }
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   WHOLESALE LICENSE SELECTION PAGE
-========================================== */
 
-=======
->>>>>>> Stashed changes
 .select-license-type-step {
   width: 100%;
   padding: 8px 0;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   ANIMATION
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .animate-fade {
   animation: fadeIn 0.35s ease-in-out;
@@ -8378,13 +8226,7 @@ HCR License
   }
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   PAGE HEADER
-========================================== */
 
-=======
->>>>>>> Stashed changes
 .select-license-type-step h2 {
   font-size: 30px;
   font-weight: 800;
@@ -8396,12 +8238,6 @@ HCR License
   line-height: 1.6;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   BACK BUTTON
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .select-license-type-step button:first-child {
   transition: all 0.25s ease;
@@ -8411,12 +8247,6 @@ HCR License
   transform: translateX(-4px);
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   GROUP HEADER
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .group-header {
   padding: 12px 18px;
@@ -8430,12 +8260,6 @@ HCR License
   text-transform: uppercase;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   CARD GRID
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .license-card-grid {
   display: grid;
@@ -8443,13 +8267,7 @@ HCR License
   gap: 24px;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   LICENSE CARD
-========================================== */
-=======
 
->>>>>>> Stashed changes
 
 .wholesale-license-card {
   position: relative;
@@ -8473,13 +8291,7 @@ HCR License
     0 10px 35px rgba(124, 58, 237, 0.12);
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   SELECTED CARD
-========================================== */
-=======
 
->>>>>>> Stashed changes
 
 .card-selected-bg {
   background: linear-gradient(
@@ -8493,12 +8305,6 @@ HCR License
     0 14px 32px rgba(124, 58, 237, .12);
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   SELECTION CIRCLE
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .selection-circle {
   width: 22px;
@@ -8509,12 +8315,6 @@ HCR License
   justify-content: center;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   ICON WRAPPER
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .icon-box {
   width: 56px;
@@ -8530,12 +8330,6 @@ HCR License
   height: 28px;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   CODE LABEL
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .license-code {
   font-size: 12px;
@@ -8545,13 +8339,7 @@ HCR License
   font-family: monospace;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   TITLE
-========================================== */
-=======
 
->>>>>>> Stashed changes
 
 .license-title {
   font-size: 17px;
@@ -8565,12 +8353,6 @@ HCR License
   color: #7c3aed;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   DESCRIPTION
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .license-description {
   font-size: 13px;
@@ -8579,12 +8361,6 @@ HCR License
   margin-top: 12px;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   BADGE
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .license-badge {
   padding: 6px 12px;
@@ -8595,13 +8371,7 @@ HCR License
   letter-spacing: .05em;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   NOTE CARD
-========================================== */
 
-=======
->>>>>>> Stashed changes
 .note-card {
   background: #faf5ff;
   border: 1px solid #e9d5ff;
@@ -8620,12 +8390,6 @@ HCR License
   color: #64748b;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   CARD FOOTER
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .card-footer {
   display: flex;
@@ -8636,12 +8400,6 @@ HCR License
   margin-top: 20px;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   COLOR THEMES
-========================================== */
-=======
->>>>>>> Stashed changes
 
 .theme-blue {
   background: #eff6ff;
@@ -8658,12 +8416,6 @@ HCR License
   color: #d97706;
 }
 
-<<<<<<< Updated upstream
-/* ==========================================
-   RESPONSIVE
-========================================== */
-=======
->>>>>>> Stashed changes
 
 @media (max-width: 1024px) {
 
@@ -10170,20 +9922,10 @@ HCR License
   }
 }
 
-<<<<<<< Updated upstream
-/* =======================================================
-   LIQUOR BRAND REGISTRATION CSS
-   ======================================================= */
-
-.brand-registration-page {
-  background: #f4f8fc;
-  min-height: 100vh;
-=======
 /*Liquor Brand Registration*/
 .brand-registration-page {
 background: #f4f9fc;
 min-height: 100vh;
->>>>>>> Stashed changes
 }
 
 .brand-container {
@@ -10192,17 +9934,6 @@ min-height: 100vh;
   padding: 32px;
 }
 
-<<<<<<< Updated upstream
-/* Header Section */
-.brand-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding-bottom: 24px;
-  margin-bottom: 28px;
-
-=======
 /* Header */
 .brand-header {
   display: flex;
@@ -10210,7 +9941,6 @@ min-height: 100vh;
   align-items: center;
   padding-bottom: 24px;
   margin-bottom: 28px;
->>>>>>> Stashed changes
   border-bottom: 1px solid #dbe2ea;
 }
 
@@ -10220,44 +9950,14 @@ min-height: 100vh;
   color: #0f172a;
 }
 
-<<<<<<< Updated upstream
-.brand-subtitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: #2563eb;
-=======
 .brand-subtitle{
   font-size: 13px;
   color: #2563eb;
   font-weight: 700;
->>>>>>> Stashed changes
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-<<<<<<< Updated upstream
-/* Statistics Cards */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-
-  margin-bottom: 32px;
-}
-
-.stat-card {
-  background: #fff;
-  border: 1px solid #dbe2ea;
-  border-radius: 18px;
-
-  padding: 18px 22px;
-
-  display: flex;
-  align-items: center;
-  gap: 14px;
-
-  box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
-=======
 /*Statics cards*/
 .stats-grid {
   display: grid;
@@ -10274,7 +9974,6 @@ min-height: 100vh;
   align-items: center;
   gap: 14px;
   box-shadow: 0 4px 16px rgba(15,23,42,.04);
->>>>>>> Stashed changes
 }
 
 .stat-card h3 {
@@ -10290,20 +9989,6 @@ min-height: 100vh;
   color: #64748b;
 }
 
-<<<<<<< Updated upstream
-/* Form Card */
-.brand-card {
-  background: white;
-
-  border-radius: 28px;
-
-  border: 1px solid #e2e8f0;
-
-  box-shadow:
-    0 10px 25px rgba(15, 23, 42, .05),
-    0 2px 8px rgba(15, 23, 42, .04);
-
-=======
 /*form cards*/
 .brand-card{
   background: white;
@@ -10312,7 +9997,6 @@ min-height: 100vh;
   box-shadow: 
   0 8px 24px rgba(15, 23, 42, .05),
   0 2px 8px rgba(15, 23, 42, .02);
->>>>>>> Stashed changes
   overflow: hidden;
 }
 
@@ -10320,66 +10004,6 @@ min-height: 100vh;
   padding: 24px 30px;
 }
 
-<<<<<<< Updated upstream
-.brand-card-body {
-  padding: 32px;
-}
-
-/* Blue Top Border */
-.brand-card-accent {
-  height: 8px;
-
-  background: linear-gradient(
-    90deg,
-    #1d4ed8,
-    #2563eb,
-    #1e3a8a
-  );
-}
-
-/* Form Grid */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 28px;
-}
-
-/* Labels */
-.form-label {
-  display: block;
-
-  margin-bottom: 8px;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  color: #475569;
-
-  letter-spacing: .8px;
-  text-transform: uppercase;
-}
-
-/* Inputs */
-.brand-input,
-.brand-select,
-.brand-textarea {
-  width: 100%;
-
-  min-height: 52px;
-
-  border: 1px solid #dbe2ea;
-  border-radius: 14px;
-
-  background: white;
-
-  padding: 14px 16px 14px 42px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  transition: all .25s ease;
-=======
 .brand-card-body{
   padding: 32px;
 }
@@ -10422,55 +10046,16 @@ min-height: 100vh;
   font-size: 14px;
   font-weight: 600;
   transition: all.25s ease;
->>>>>>> Stashed changes
 }
 
 .brand-input:hover,
 .brand-select:hover,
-<<<<<<< Updated upstream
-.brand-textarea:hover {
-=======
 .brand-textarea:hover{
->>>>>>> Stashed changes
   border-color: #94a3b8;
 }
 
 .brand-input:focus,
 .brand-select:focus,
-<<<<<<< Updated upstream
-.brand-textarea:focus {
-  outline: none;
-
-  border-color: #2563eb;
-
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, .08);
-}
-
-/* Textarea */
-.brand-textarea {
-  min-height: 90px;
-  resize: vertical;
-  padding-left: 52px;
-  padding-top: 16px;
-}
-
-/* Common Wrapper */
-.field-wrapper {
-  position: relative;
-}
-
-.field-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 18px;
-  height: 18px;
-
-  color: #94a3b8;
-
-=======
 .brand-textarea:focus{
 outline: none;
 border-color: #2563eb;
@@ -10497,76 +10082,10 @@ box-shadow: 0 0 0 4px rgba(37,99,235,.08);
   transform: translateY(-50%);
   width: 18px;
   height: 18px; 
->>>>>>> Stashed changes
   pointer-events: none;
   z-index: 2;
 }
 
-<<<<<<< Updated upstream
-.field-control {
-  width: 100%;
-  height: 54px;
-
-  padding-left: 52px;
-  padding-right: 42px;
-
-  border: 1px solid #cbd5e1;
-  border-radius: 14px;
-
-  font-size: 15px;
-  font-weight: 500;
-
-  background: #fff;
-}
-
-/* For Textarea */
-.textarea-wrapper {
-  position: relative;
-}
-
-.textarea-icon {
-  position: absolute;
-  left: 16px;
-  top: 18px;
-
-  width: 18px;
-  height: 18px;
-
-  color: #94a3b8;
-}
-
-/* Fix Dropdown Arrow Area */
-.select-arrow {
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  width: 48px;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-left: 1px solid #e2e8f0;
-  pointer-events: none;
-}
-
-/* Button Alignment Fix */
-.form-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-
-  margin-top: 20px;
-  padding-top: 20px;
-
-  border-top: 1px solid #e2e8f0;
-}
-
-.form-actions button {
-=======
 .field-control{
   width: 100%;
   height: 54px;
@@ -10615,159 +10134,10 @@ box-shadow: 0 0 0 4px rgba(37,99,235,.08);
 }
 
 .form-actions button{
->>>>>>> Stashed changes
   min-width: 150px;
   height: 42px;
 }
 
-<<<<<<< Updated upstream
-/* Helper Text */
-.field-helper {
-  margin-top: 6px;
-
-  font-size: 12px;
-  color: #94a3b8;
-
-  line-height: 1.5;
-}
-
-/* Error Text */
-.field-error {
-  margin-top: 6px;
-
-  color: #dc2626;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* Buttons */
-.action-bar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 14px;
-
-  margin-top: 28px;
-
-  padding-top: 24px;
-
-  border-top: 1px solid #edf2f7;
-}
-
-.btn-reset,
-.btn-cancel,
-.btn-save {
-  min-width: 150px;
-  height: 48px;
-
-  border-radius: 14px;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  transition: .25s;
-}
-
-.btn-save {
-  background: #1d4ed8;
-  color: white;
-}
-
-.btn-save:hover {
-  background: #1e40af;
-}
-
-/* Table Section */
-.table-card {
-  margin-top: 32px;
-
-  background: white;
-
-  border-radius: 24px;
-
-  overflow: hidden;
-
-  border: 1px solid #e2e8f0;
-
-  box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
-}
-
-/* Table Header Area */
-.table-header {
-  padding: 24px;
-
-  background: #f8fafc;
-
-  border-bottom: 1px solid #e2e8f0;
-}
-
-/* Search Box */
-.table-search {
-  width: 320px;
-  height: 44px;
-
-  border: 1px solid #dbe2ea;
-  border-radius: 12px;
-
-  padding-left: 42px;
-}
-
-/* Table */
-.registry-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.registry-table thead th {
-  background: #f8fafc;
-
-  padding: 16px;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-  letter-spacing: .8px;
-
-  color: #475569;
-
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.registry-table tbody td {
-  padding: 18px 16px;
-
-  font-size: 13px;
-
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.registry-table tbody tr:hover {
-  background: #f8fbff;
-}
-
-/* Status Badges */
-.status-approved {
-  background: #ecfdf5;
-  color: #047857;
-}
-
-.status-active {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.status-pending {
-  background: #fffbeb;
-  color: #b45309;
-}
-
-.status-badge {
-  padding: 6px 12px;
-
-  border-radius: 999px;
-
-=======
 /*Helper text*/
 .field-helper{
   margin-top: 6px;
@@ -10883,41 +10253,10 @@ box-shadow: 0 0 0 4px rgba(37,99,235,.08);
 .status-badge{
   padding: 65px 12px;
   border-radius: 999px;
->>>>>>> Stashed changes
   font-size: 11px;
   font-weight: 700;
 }
 
-<<<<<<< Updated upstream
-/* Pagination */
-.pagination-bar {
-  padding: 20px 24px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background: #fafafa;
-
-  border-top: 1px solid #e2e8f0;
-}
-
-.page-btn {
-  width: 36px;
-  height: 36px;
-
-  border-radius: 10px;
-}
-
-/* Mobile */
-@media (max-width: 1024px) {
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .form-grid {
-=======
 /*Pagination*/
 .pagination-bar{
   padding: 20px 24px;
@@ -10940,593 +10279,7 @@ box-shadow: 0 0 0 4px rgba(37,99,235,.08);
   }
 
   .form-grid{
->>>>>>> Stashed changes
     grid-template-columns: 1fr;
   }
 }
 
-<<<<<<< Updated upstream
-@media (max-width: 768px) {
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .action-bar {
-    flex-direction: column;
-  }
-
-  .btn-save,
-  .btn-reset,
-  .btn-cancel {
-    width: 100%;
-  }
-}
-
-/* Section Header */
-.basic-details-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-
-  margin-bottom: 28px;
-}
-
-.basic-details-icon {
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.basic-details-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.basic-details-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #0f172a;
-
-  line-height: 1.2;
-  margin: 0;
-}
-
-.basic-details-subtitle {
-  margin-top: 8px;
-
-  font-size: 15px;
-  color: #64748b;
-
-  line-height: 1.6;
-
-  position: static;
-}
-
-.form-section {
-  padding: 32px;
-}
-
-.form-section-header {
-  margin-bottom: 24px;
-}
-
-.form-grid {
-  margin-top: 12px;
-}
-
-/* Section Header for Select License Category */
-.section-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-
-  margin-bottom: 28px;
-}
-
-.section-header-icon {
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-
-.section-header-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.section-title {
-  margin: 0;
-
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-
-  color: #0f172a;
-}
-
-.section-subtitle {
-  margin-top: 8px;
-  margin-bottom: 0;
-
-  font-size: 15px;
-  line-height: 1.6;
-
-  color: #64748b;
-
-  position: static;
-}
-
-/* ==========================================
-   SELECT WHOLESALE LICENSE TYPE / IMPROVED STYLES
-   ========================================== */
-
-.license-selection-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 24px 32px;
-}
-
-.license-page-title {
-  font-size: 42px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 10px;
-  line-height: 1.2;
-}
-
-.license-page-subtitle {
-  font-size: 16px;
-  color: #64748b;
-  margin-bottom: 28px;
-}
-
-.license-note {
-  display: flex;
-  gap: 12px;
-  max-width: 650px;
-  padding: 16px 18px;
-  background: #faf5ff;
-  border: 1px solid #e9d5ff;
-  border-radius: 16px;
-  margin-bottom: 28px;
-}
-
-.license-note-title {
-  font-weight: 700;
-  color: #6b21a8;
-}
-
-.license-note-text {
-  color: #64748b;
-  line-height: 1.6;
-}
-
-.license-group-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 30px 0 20px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #1d4ed8;
-  border-bottom: 1px solid #dbeafe;
-  padding-bottom: 10px;
-}
-
-.license-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 24px;
-}
-
-/* Scoped or qualified to avoid conflict with generic card */
-.license-selection-container .license-card {
-  position: relative;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 22px;
-  padding: 20px;
-  min-height: 180px;
-  max-height: 220px;
-  display: flex;
-  flex-direction: column;
-  transition: all .25s ease;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.license-selection-container .license-card:hover {
-  transform: translateY(-4px);
-  border-color: #2563eb;
-  box-shadow: 0 10px 25px rgba(37,99,235,.08);
-}
-
-.license-selection-container .license-card.selected {
-  border: 2px solid #7c3aed;
-  box-shadow: 0 0 0 4px rgba(124,58,237,.08);
-}
-
-.license-selection-container .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-  width: 100%;
-}
-
-.license-selection-container .card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #eff6ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #2563eb;
-  flex-shrink: 0;
-}
-
-.license-selection-container .card-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.license-selection-container .card-radio {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.license-selection-container .card-radio.active {
-  background: #7c3aed;
-  border-color: #7c3aed;
-}
-
-.license-selection-container .card-code {
-  font-size: 12px;
-  font-weight: 700;
-  color: #7c3aed;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  font-family: monospace;
-  text-align: left;
-}
-
-.license-selection-container .card-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.4;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-.license-selection-container .card-description {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.7;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-align: left;
-}
-
-.license-selection-container .card-footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.license-selection-container .card-badge {
-  padding: 6px 12px;
-  background: #eff6ff;
-  border-radius: 999px;
-  color: #2563eb;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  text-align: left;
-}
-
-.stepper-container {
-  margin-bottom: 32px;
-}
-
-.stepper-item {
-  min-width: 150px;
-}
-
-.stepper-title {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.stepper-subtitle {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-@media (max-width: 768px) {
-  .license-grid {
-    grid-template-columns: 1fr;
-  }
-  .license-selection-container .license-card {
-    min-height: auto;
-    max-height: none;
-  }
-  .license-page-title {
-    font-size: 30px;
-  }
-}
-
-/* ==========================================
-   MODERN PERSONAL DOCUMENT UI CSS
-   ========================================== */
-
-.personal-doc-container {
-  max-width: 1450px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.personal-doc-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 28px !important;
-  overflow: hidden !important;
-  box-shadow: 0 10px 30px rgba(15,23,42,.05) !important;
-  padding: 0 !important;
-}
-
-.personal-doc-header {
-  background: linear-gradient(
-      135deg,
-      #334155,
-      #475569
-  ) !important;
-  color: white !important;
-  text-align: center !important;
-  padding: 16px !important;
-  font-size: 22px !important;
-  font-weight: 700 !important;
-  letter-spacing: .5px !important;
-  border-radius: 0 !important;
-}
-
-.document-info-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px;
-  padding: 16px 20px;
-  background: #faf5ff;
-  border: 1px solid #e9d5ff;
-  border-radius: 16px;
-}
-
-.document-info-banner svg {
-  color: #7c3aed !important;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.document-info-banner p {
-  margin: 0;
-  color: #6b21a8;
-  font-weight: 500;
-  line-height: 1.6;
-  font-size: 14px;
-  text-align: left;
-}
-
-.document-list {
-  padding: 0 24px 24px;
-}
-
-.document-row {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
-  padding: 18px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  transition: all .25s ease;
-}
-
-.document-row:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 6px 18px rgba(15,23,42,.05);
-}
-
-.document-content {
-  flex: 1;
-  text-align: left;
-}
-
-.document-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 6px;
-}
-
-.document-description {
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.document-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: 24px;
-}
-
-.document-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: #ecfdf5;
-  border: 1px solid #bbf7d0;
-  color: #047857;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.document-status svg {
-  width: 16px;
-  height: 16px;
-  color: #047857 !important;
-}
-
-.btn-replace {
-  height: 44px;
-  padding: 0 18px;
-  border: 1px solid #dbe2ea;
-  border-radius: 12px;
-  background: white;
-  color: #475569;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all .25s ease;
-  font-size: 13px;
-}
-
-.btn-replace:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-}
-
-.document-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.btn-prev {
-  min-width: 180px;
-  height: 52px;
-  border: 1px solid #dbe2ea;
-  border-radius: 14px;
-  background: white;
-  color: #475569;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s ease;
-  font-size: 14px;
-}
-
-.btn-prev:hover {
-  background: #f8fafc;
-}
-
-.btn-next {
-  min-width: 180px;
-  height: 52px;
-  border: none;
-  border-radius: 14px;
-  background: #2563eb;
-  color: white;
-  font-weight: 600;
-  box-shadow: 0 8px 18px rgba(37,99,235,.18);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s ease;
-  font-size: 14px;
-}
-
-.btn-next:hover {
-  background: #1d4ed8;
-}
-
-.guideline-card {
-  margin-top: 24px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 20px;
-  padding: 20px;
-}
-
-.guideline-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1d4ed8;
-  margin-bottom: 12px;
-  text-align: left;
-}
-
-.guideline-title svg {
-  color: #1d4ed8 !important;
-  width: 20px;
-  height: 20px;
-}
-
-.guideline-content {
-  color: #475569;
-  line-height: 1.8;
-  font-size: 14px;
-  text-align: left;
-}
-
-@media(max-width:768px){
-  .document-row{
-      flex-direction:column;
-      align-items:flex-start;
-      gap:16px;
-  }
-  .document-actions{
-      width:100%;
-      margin-left:0;
-      flex-wrap:wrap;
-  }
-  .document-footer{
-      flex-direction:column;
-      gap:16px;
-  }
-  .btn-prev,
-  .btn-next{
-      width:100%;
-  }
-}
-=======
-@media (max-width: 768px){
-  .stats-grid{
-    grid-template-columns: 1fr;
-  }
-.action-bar{
-  flex-direction: column;
-}
-
-.btn-save,
-.btn-reset,
-.btn-cancel{
-  width: 100%;
-}
-}
->>>>>>> Stashed changes

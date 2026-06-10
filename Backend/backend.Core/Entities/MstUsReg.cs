@@ -34,7 +34,7 @@ public class MstUsReg
     [Phone]
     [StringLength(10, MinimumLength = 10, ErrorMessage = "Mobile number must be 10 digits")]
     public string? Mobile { get; set; }
-    public string? Fax { get; set; }
+    //public string? Fax { get; set; }
 
     [Required]
     [EmailAddress]
