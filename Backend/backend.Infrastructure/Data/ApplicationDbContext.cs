@@ -33,6 +33,7 @@ namespace backend.Infrastructure.Data
         public DbSet<MstHotelType> MstHotelType { get; set; }
         public DbSet<FirmDetails> FirmDetails { get; set; }
         public DbSet<MstRestaurantQuestionnaire> MstRestaurantQuestionnaire { get; set; }
+
         public DbSet<AdditionalL10L22Details> AdditionalL10L22Details { get; set; }
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
         public DbSet<AdditionalRetailDetails> AdditionalRetailDetails { get; set; }
