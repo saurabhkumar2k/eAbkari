@@ -33,6 +33,9 @@ namespace backend.Infrastructure.Data
         public DbSet<MstHotelType> MstHotelType { get; set; }
         public DbSet<FirmDetails> FirmDetails { get; set; }
         public DbSet<MstRestaurantQuestionnaire> MstRestaurantQuestionnaire { get; set; }
+        public DbSet<AdditionalL10L22Details> AdditionalL10L22Details { get; set; }
+        public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
+        public DbSet<AdditionalRetailDetails> AdditionalRetailDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -113,20 +116,20 @@ namespace backend.Infrastructure.Data
             //     .HasKey(x => new { x.DistrictCode, x.PsCode });
  modelBuilder.Entity<LicenseApplication>().ToTable("LicenseApplication");
             modelBuilder.Entity<LicenseApplication>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
             modelBuilder.Entity<RetailPremiseDetails>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<TrainDetails>().ToTable("TrainDetails");
             modelBuilder.Entity<TrainDetails>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>().ToTable("AddtionalTrainRouteDetails");
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
-                    .HasKey(x => x.Application_Id_No);
+                    .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
                     .Property(x => x.RouteDescription)
@@ -135,7 +138,7 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
@@ -148,6 +151,18 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstRestaurantQuestionnaire>().ToTable("MstRestaurantQuestionnaire");
             modelBuilder.Entity<MstRestaurantQuestionnaire>()
             .HasKey(x => x.Id);
+
+            modelBuilder.Entity<AdditionalL10L22Details>().ToTable("AdditionalL10L22Details");
+            modelBuilder.Entity<AdditionalL10L22Details>()
+            .HasKey(x => x.ApplicationIdNo);
+
+            modelBuilder.Entity<AdditionalHCRDetails>().ToTable("AdditionalHCRDetails");
+            modelBuilder.Entity<AdditionalHCRDetails>()
+            .HasKey(x => x.ApplicationIdNo);
+
+            modelBuilder.Entity<AdditionalRetailDetails>().ToTable("AdditionalRetailDetails");
+            modelBuilder.Entity<AdditionalRetailDetails>()
+            .HasKey(x => x.ApplicationIdNo);
 
             base.OnModelCreating(modelBuilder);
         }
