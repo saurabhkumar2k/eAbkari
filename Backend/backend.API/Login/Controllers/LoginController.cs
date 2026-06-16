@@ -70,6 +70,7 @@ namespace backend.API.Controllers
         RefreshToken = tokenPair.RefreshToken,
         ExpiresAt = tokenPair.ExpiresAt,
         UserId = licUser.UserId,
+        regId = licUser.RegId,
         UserType = "LIC",
         RedirectUrl = "/applicantdashboard"
     });
@@ -108,6 +109,7 @@ if (applicantUser != null)
     {
         Success = true,
         Message = "Applicant Login successful",
+        
         AccessToken = tokenPair.AccessToken,
         RefreshToken = tokenPair.RefreshToken,
         ExpiresAt = tokenPair.ExpiresAt,

@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
+using backend.Core.Entities.Licence;
 
 namespace backend.Infrastructure.Data
 {
@@ -31,12 +32,16 @@ namespace backend.Infrastructure.Data
         public DbSet<ApplicantLicensePartnersDetails> ApplicantLicensePartnersDetails { get; set; }
         public DbSet<MstHotelType> MstHotelType { get; set; }
 
+        public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
+
+        public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
 
             modelBuilder.Entity<MstState>()
-                .HasKey(x => x.StateCode);
+                .HasKey(x => x.SID);
 
                  modelBuilder.Entity<MstSubDivision>().ToTable("MstSubDivision");
 
@@ -134,9 +139,16 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
             .HasKey(x => x.Application_Id_No);
 
+            modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
+            modelBuilder.Entity<LicenseApplicationUserDetails>()
+            .HasKey(x => x.Id);
+
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
             .HasKey(x => x.Id);
+
+             modelBuilder.Entity<MstLicenseDocumentMaster>()
+       .ToTable("MstLicenseDocumentMaster");
 
             base.OnModelCreating(modelBuilder);
         }

@@ -71,6 +71,61 @@
         }
       }
     },
+    "/api/LicenseDocument/documents": {
+      "get": {
+        "tags": [
+          "LicenseDocument"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LicenseDocument/test": {
+      "get": {
+        "tags": [
+          "LicenseDocument"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LicenseeCategories/ApplyLicense": {
+      "post": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicenseApplicationUserDetailsDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicenseApplicationUserDetailsDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicenseApplicationUserDetailsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/LiquorMaster/kind": {
       "get": {
         "tags": [
@@ -174,6 +229,46 @@
         }
       }
     },
+    "/api/MstUsReg/{regId}": {
+      "get": {
+        "tags": [
+          "MstUsReg"
+        ],
+        "parameters": [
+          {
+            "name": "regId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MstUsRegDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MstUsRegDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MstUsRegDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/UserRegistration/register": {
       "post": {
         "tags": [
@@ -195,8 +290,10 @@
                   "LastName",
                   "Mobile",
                   "Occupation",
+                  "PanNo",
                   "PIN",
-                  "StateUT"
+                  "StateUT",
+                  "SubDivision"
                 ],
                 "type": "object",
                 "properties": {
@@ -249,9 +346,6 @@
                     "type": "string",
                     "format": "tel"
                   },
-                  "Fax": {
-                    "type": "string"
-                  },
                   "Email": {
                     "maxLength": 256,
                     "minLength": 0,
@@ -295,7 +389,14 @@
                     "type": "string"
                   },
                   "IsPunishableOffence": {
-                    "type": "boolean"
+                    "type": "string"
+                  },
+                  "SubDivision": {
+                    "type": "string"
+                  },
+                  "PanNo": {
+                    "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
+                    "type": "string"
                   },
                   "photo": {
                     "type": "string",
@@ -346,9 +447,6 @@
                 "Mobile": {
                   "style": "form"
                 },
-                "Fax": {
-                  "style": "form"
-                },
                 "Email": {
                   "style": "form"
                 },
@@ -388,6 +486,12 @@
                 "IsPunishableOffence": {
                   "style": "form"
                 },
+                "SubDivision": {
+                  "style": "form"
+                },
+                "PanNo": {
+                  "style": "form"
+                },
                 "photo": {
                   "style": "form"
                 }
@@ -405,6 +509,102 @@
   },
   "components": {
     "schemas": {
+      "LicenseApplicationUserDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "regNumber": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "regId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "mobileNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicantName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dob": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "applicationIdNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "oprDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fatherHusbandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "occupation": {
+            "type": "string",
+            "nullable": true
+          },
+          "presentAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "permanentAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateUT": {
+            "type": "string",
+            "nullable": true
+          },
+          "district": {
+            "type": "string",
+            "nullable": true
+          },
+          "pin": {
+            "type": "string",
+            "nullable": true
+          },
+          "policeStation": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailId": {
+            "type": "string",
+            "nullable": true
+          },
+          "landLine": {
+            "type": "string",
+            "nullable": true
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "panNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "subDivision": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicantDesig": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginRequest": {
         "type": "object",
         "properties": {
@@ -413,6 +613,77 @@
             "nullable": true
           },
           "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MstUsRegDto": {
+        "type": "object",
+        "properties": {
+          "regId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fatherHusbandName": {
+            "type": "string",
+            "nullable": true
+          },
+          "occupation": {
+            "type": "string",
+            "nullable": true
+          },
+          "panNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine1": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine2": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateUT": {
+            "type": "string",
+            "nullable": true
+          },
+          "district": {
+            "type": "string",
+            "nullable": true
+          },
+          "subDivision": {
+            "type": "string",
+            "nullable": true
+          },
+          "pin": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPunishableOffence": {
             "type": "string",
             "nullable": true
           }

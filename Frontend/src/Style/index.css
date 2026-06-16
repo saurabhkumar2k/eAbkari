@@ -7704,7 +7704,7 @@ HCR License
   display: block;
 }
 
-.input-box,
+/* .input-box,
 .select-box,
 .textarea-box,
 .search-box {
@@ -7717,7 +7717,7 @@ HCR License
   background: #fff;
   transition: all 0.25s ease;
   outline: none;
-}
+} */
 
 .textarea-box {
   min-height: 110px;
@@ -8482,7 +8482,7 @@ HCR License
 }
 
 /* Inputs */
-.input-box,
+/* .input-box,
 .select-box,
 .textarea-box {
   width: 100%;
@@ -8495,7 +8495,7 @@ HCR License
   font-weight: 500;
   transition: all 0.25s ease;
   outline: none;
-}
+} */
 
 .input-box:hover,
 .select-box:hover,
