@@ -1,4 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
+
+import ApplicantDetails from "../../../components/Applicant_Details";
+import WarehouseDetails from "../../../components/WarehouseDetails";
+ import DirectorsList from "../../../components/DirectorsList";
+ import DocumentUpload from "../../../components/DocumentsDetails";
+
+
+import { createApplicant } from "../../../Model/Applicant";
+
+
+
 import {
   User,
   Building2,
@@ -26,6 +37,47 @@ import {
 
 export default function L1AndL31License({ onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [applicant, setApplicant] = useState(createApplicant());
+
+
+
+const [applicantDistricts, setApplicantDistricts] = useState([]);
+const [warehouseDistricts, setWarehouseDistricts] = useState([]);
+
+
+const [warehouseSubDivisions, setWarehouseSubDivisions] = useState([]);
+const [warehousePoliceStations, setWarehousePoliceStations] = useState([]);
+
+const [applicationId, setApplicationId] = useState(null);
+
+  const [states, setStates] = useState([]);
+
+  const [subDivisions, setSubDivisions] = useState([]);
+  const [policeStations, setPoliceStations] = useState([]);
+
+  const [documents, setDocuments] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState({});
+
+  const [innerStep, setInnerStep] = useState(1);
+
+  const [fssai, setFssai] = useState({ licenseNo: "", startDate: "", endDate: "" });
+  const [vat, setVat] = useState({ certNo: "", endDate: "" });
+  const [distillery, setDistillery] = useState({ licenceNo: "", endDate: "" });
+  const [bwh, setBwh] = useState({ insuranceNo: "", endDate: "" });
+
+ const [nominee, setNominee] = useState({
+    isExciseNominee: "0",
+    name: "",
+    address: "",
+    email: "",
+    mobile: "",
+    panNo: "",
+  });
+
+
+
+
   const [formData, setFormData] = useState({
     // Step 1: Applicant Details
     applicantName: "VISHAL DEVILAL JAISWAL",
@@ -106,6 +158,152 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
     }
   };
 
+
+  /* ================= HANDLERS ================= */
+
+const handleApplicantChange = (field, value) => {
+  debugger;
+  setApplicant((prev) => ({ ...prev, [field]: value }));
+
+  if (field === "state") {
+    fetchDistricts(value, "applicant");
+  }
+
+  if (field === "warehouseState") {
+    fetchDistricts(value, "warehouse");
+  }
+
+  if (field === "warehouseDistrict") {
+    fetchWarehouseExtras(value); // ✅ ONLY THIS
+  }
+};
+
+
+// Applicant
+useEffect(() => {
+  if (applicant.StateUT) {
+    fetchDistricts(applicant.StateUT, "applicant");
+  }
+}, [applicant.StateUT]);
+
+// Warehouse
+useEffect(() => {
+  if (applicant.warehouseState) {
+    fetchDistricts(applicant.warehouseState, "warehouse");
+  }
+}, [applicant.warehouseState]);
+
+
+
+  const handleDirectorChange = (i, f, v) => {
+    const d = [...(applicant.directors || [])];
+    d[i][f] = v;
+    setApplicant({ ...applicant, directors: d });
+  };
+
+  const addRow = () =>
+    setApplicant((p) => ({
+      ...p,
+      directors: [...(p.directors || []), { name: "", panNo: "" }]
+    }));
+
+  const deleteRow = (i) =>
+    setApplicant((p) => ({
+      ...p,
+      directors: p.directors.filter((_, x) => x !== i)
+    }));
+
+const handleFileChange = (key, file) => {
+  setUploadedFiles((prev) => ({
+    ...prev,
+    [key]: {
+      file,
+      previewUrl: URL.createObjectURL(file)
+    }
+  }));
+};
+
+const handleDeleteFile = (key) => {
+  setUploadedFiles((prev) => {
+    const updated = { ...prev };
+    delete updated[key];
+    return updated;
+  });
+};
+
+
+
+  // useEffect(() => {
+  //   fetch("http://localhost:5214/api/LGDiretory/getState")
+  //     .then((r) => r.json())
+  //     .then(setStates);
+  // }, []);
+
+
+useEffect(() => {
+  debugger;
+  fetch("http://localhost:5214/api/LGDiretory/getState")
+    .then((r) => r.json())
+    .then((data) => {
+      console.log("API Response:", data);
+      console.log("API isArray:", Array.isArray(data));
+
+      setStates(data);
+    });
+}, []);
+
+
+const fetchDistricts = async (stateCode, type) => {
+  debugger;
+  const res = await fetch(
+    `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`
+  );
+
+  const data = await res.json();
+
+  if (type === "applicant") {
+    setApplicantDistricts(data);
+  } else {
+    setWarehouseDistricts(data);
+  }
+};
+
+
+
+useEffect(() => {
+  debugger;
+  fetch("http://localhost:5214/api/LicenseDocument/documents")
+    .then((r) => r.json())
+    .then((data) => {
+      console.log("API Response:", data);
+      console.log("API isArray:", Array.isArray(data));
+
+      setDocuments(data);
+    });
+}, []);
+
+
+const handleStep1Next = async () => {
+  const response = await fetch(
+    "http://localhost:5214/api/Application/SaveApplicant",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(applicant),
+    }
+  );
+
+  const data = await response.json();
+
+  setApplicationId(data.applicationId);
+
+  setCurrentStep(2);
+};
+
+
+  
   const validateStep = (step) => {
     const errors = {};
     if (step === 1) {
@@ -157,19 +355,91 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
     return Object.keys(errors).length === 0;
   };
 
-  const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < 6) {
-        setCurrentStep(currentStep + 1);
-        if (showToast) showToast(`Step ${currentStep} completed successfully!`);
-      } else {
-        // Trigger final submit
-        handleFinalSubmission();
+  // const handleNextStep = () => {
+  //   if (validateStep(currentStep)) {
+  //     if (currentStep < 6) {
+  //       setCurrentStep(currentStep + 1);
+  //       if (showToast) showToast(`Step ${currentStep} completed successfully!`);
+  //     } else {
+  //       // Trigger final submit
+  //       handleFinalSubmission();
+  //     }
+  //   } else {
+  //     if (showToast) showToast("Please review marked fields before advancing.", "error");
+  //   }
+  // };
+
+
+const handleNextStep = async () => {
+
+  if (!validateStep(currentStep)) {
+    if (showToast) {
+      showToast(
+        "Please review marked fields before advancing.",
+        "error"
+      );
+    }
+    return;
+  }
+
+  try {
+
+    // STEP 1 SAVE
+    if (currentStep === 1 && !applicationId) {
+debugger;
+
+const payload = {
+  ...applicant,
+  regId: localStorage.getItem("regId"),
+};
+
+
+      const response = await fetch(
+        "http://localhost:5214/api/LicenseeCategories/ApplyLicense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await response.json();
+
+      setApplicationId(data.applicationId);
+
+      console.log("Generated Id:", data.applicationId);
+      alert(`Your Application Reference No. is ${data.applicationId}`);
+    }
+
+    if (currentStep < 6) {
+      setCurrentStep(currentStep + 1);
+
+      if (showToast) {
+        showToast(
+          `Step ${currentStep} completed successfully!`
+        );
       }
     } else {
-      if (showToast) showToast("Please review marked fields before advancing.", "error");
+      handleFinalSubmission();
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+
+    if (showToast) {
+      showToast("Unable to save applicant data", "error");
+    }
+  }
+};
+
+
+
+
+
+
+
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
@@ -284,593 +554,524 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
             
             {/* Step 1: APPLICANT DETAILS FORM BLOCK */}
             {currentStep === 1 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  {/* Applicant Name (ReadOnly style as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Applicant Name</label>
-                    <input 
-                      type="text" 
-                      value={formData.applicantName} 
-                      readOnly
-                      disabled
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Name of Company/Firm/LLP/Society/Individual * (Required editable) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">
-                      Name of Company/Firm/LLP/Society/Individual <span className="text-red-500 font-black">*</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. KRISTAL SPIRITS PVT LTD"
-                      value={formData.companyName}
-                      onChange={(e) => handleInputChange("companyName", e.target.value)}
-                      className={`input-box ${formErrors.companyName ? "border-red-500 focus:border-red-500 focus:shadow-red-50" : ""}`}
-                    />
-                    {formErrors.companyName && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.companyName}</span>
-                    )}
-                  </div>
-
-                  {/* Date of Birth (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Date of Birth</label>
-                    <input 
-                      type="text" 
-                      value="01/01/1980" 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Father/Husband Name (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Father/Husband Name</label>
-                    <input 
-                      type="text" 
-                      value={formData.fatherName} 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Occupation (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Occupation</label>
-                    <input 
-                      type="text" 
-                      value={formData.occupation} 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Address 1 (Editable with long pre-filled text) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Address 1</label>
-                    <input 
-                      type="text" 
-                      value={formData.address1}
-                      onChange={(e) => handleInputChange("address1", e.target.value)}
-                      className={`input-box ${formErrors.address1 ? "border-red-500 focus:border-red-500" : ""}`}
-                    />
-                    {formErrors.address1 && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.address1}</span>
-                    )}
-                  </div>
-
-                  {/* Address 2 */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Address 2</label>
-                    <input 
-                      type="text" 
-                      placeholder="Line 2 of Address"
-                      value={formData.address2}
-                      onChange={(e) => handleInputChange("address2", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* State (Select list with prefilled Delhi) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">State</label>
-                    <select 
-                      value={formData.state} 
-                      onChange={(e) => handleInputChange("state", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Delhi">Delhi</option>
-                      <option value="Haryana">Haryana</option>
-                      <option value="Uttar Pradesh">Uttar Pradesh</option>
-                      <option value="Punjab">Punjab</option>
-                    </select>
-                  </div>
-
-                  {/* District (Select list with default West) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">District</label>
-                    <select 
-                      value={formData.district} 
-                      onChange={(e) => handleInputChange("district", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="West">West</option>
-                      <option value="North West">North West</option>
-                      <option value="South Delhi">South Delhi</option>
-                      <option value="Central Delhi">Central Delhi</option>
-                      <option value="East Delhi">East Delhi</option>
-                    </select>
-                  </div>
-
-                  {/* Sub Division (Select list with default Rajouri Garden) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Sub Division</label>
-                    <select 
-                      value={formData.subDivision} 
-                      onChange={(e) => handleInputChange("subDivision", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Rajouri Garden">Rajouri Garden</option>
-                      <option value="Punjabi Bagh">Punjabi Bagh</option>
-                      <option value="Patel Nagar">Patel Nagar</option>
-                      <option value="Dwarka">Dwarka</option>
-                    </select>
-                  </div>
-
-                  {/* PIN */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">PIN</label>
-                    <input 
-                      type="text" 
-                      value={formData.pin}
-                      maxLength={6}
-                      onChange={(e) => handleInputChange("pin", e.target.value)}
-                      className={`input-box ${formErrors.pin ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.pin && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.pin}</span>
-                    )}
-                  </div>
-
-                  {/* Email */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Email</label>
-                    <input 
-                      type="email" 
-                      value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      className={`input-box ${formErrors.email ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.email && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.email}</span>
-                    )}
-                  </div>
-
-                  {/* Mobile */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Mobile</label>
-                    <input 
-                      type="text" 
-                      value={formData.mobile}
-                      maxLength={12}
-                      onChange={(e) => handleInputChange("mobile", e.target.value)}
-                      className={`input-box ${formErrors.mobile ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.mobile && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.mobile}</span>
-                    )}
-                  </div>
-
-                  {/* Landline */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Landline</label>
-                    <input 
-                      type="text" 
-                      value={formData.landline}
-                      onChange={(e) => handleInputChange("landline", e.target.value)}
-                      className="input-box"
-                      placeholder="e.g. 011-23348812"
-                    />
-                  </div>
-
-                  {/* PAN NO */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">PAN No</label>
-                    <input 
-                      type="text" 
-                      value={formData.panNo}
-                      maxLength={10}
-                      onChange={(e) => handleInputChange("panNo", e.target.value.toUpperCase())}
-                      className={`input-box font-mono ${formErrors.panNo ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.panNo && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.panNo}</span>
-                    )}
-                  </div>
-
-                </div>
-              </div>
+                 <ApplicantDetails
+            applicant={applicant}
+            states={states}
+              districts={applicantDistricts}   // ✅ FIX HERE
+            onChange={handleApplicantChange}
+          />
             )}
 
             {/* Step 2: WAREHOUSE DETAILS FORM BLOCK */}
             {currentStep === 2 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="bg-blue-50/70 border border-blue-100 p-4 rounded-xl flex items-start gap-3">
-                  <Info className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
-                  <p className="text-xs text-blue-800 font-semibold leading-relaxed">
-                    Under L-31 guidelines, standard commercial warehouses inside municipal zones of Delhi must pass structural and temperature parameters to ensure standard shelf stability of spirits.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Warehouse Name */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Warehouse Trading Name *</label>
-                    <input 
-                      type="text" 
-                      value={formData.warehouseName}
-                      onChange={(e) => handleInputChange("warehouseName", e.target.value)}
-                      className={`input-box ${formErrors.warehouseName ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseName && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseName}</span>
-                    )}
-                  </div>
-
-                  {/* Physical Area Sq.Ft */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Total Area (In Square Feet) *</label>
-                    <input 
-                      type="number" 
-                      value={formData.warehouseSize}
-                      onChange={(e) => handleInputChange("warehouseSize", e.target.value)}
-                      className={`input-box ${formErrors.warehouseSize ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseSize && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseSize}</span>
-                    )}
-                  </div>
-
-                  {/* Warehouse address */}
-                  <div className="form-group md:col-span-2">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Bonded Warehouse Physical Address *</label>
-                    <textarea 
-                      value={formData.warehouseAddress}
-                      onChange={(e) => handleInputChange("warehouseAddress", e.target.value)}
-                      className={`textarea-box ${formErrors.warehouseAddress ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseAddress && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseAddress}</span>
-                    )}
-                  </div>
-
-                  {/* Fire Sprinklers Fitted */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Automatic Fire Sprinklers Fitted?</label>
-                    <select 
-                      value={formData.hasFireSprinklers}
-                      onChange={(e) => handleInputChange("hasFireSprinklers", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, compliant with DFS norms</option>
-                      <option value="No">No / Pending Audit Inspection</option>
-                    </select>
-                  </div>
-
-                  {/* CCTV Vendor */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">CCTV Safety System Provider</label>
-                    <input 
-                      type="text" 
-                      value={formData.cctvProvider}
-                      onChange={(e) => handleInputChange("cctvProvider", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* Locker Count */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Storage Vaults / High-Security Dry Bays</label>
-                    <input 
-                      type="number" 
-                      value={formData.lockerCount}
-                      onChange={(e) => handleInputChange("lockerCount", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* AC Temperature controls */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">HVAC System installed (Cool Cellar Mode)</label>
-                    <select 
-                      value={formData.hasTemperatureControl}
-                      onChange={(e) => handleInputChange("hasTemperatureControl", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, Constant temperature maintained </option>
-                      <option value="No">No, Standard thermal circulation only</option>
-                    </select>
-                  </div>
-
-                </div>
-              </div>
+                  <WarehouseDetails
+              applicant={applicant}
+              states={states}
+               districts={warehouseDistricts}   // ✅ correct
+  subDivisions={warehouseSubDivisions}
+  policeStations={warehousePoliceStations}
+              onChange={handleApplicantChange}
+            />
             )}
 
             {/* Step 3: ADDITIONAL DETAILS FORM BLOCK */}
             {currentStep === 3 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                  {/* Annual Turn over */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Anticipated Excise Turnover (INR in Crores) *</label>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      value={formData.annualTurnover}
-                      onChange={(e) => handleInputChange("annualTurnover", e.target.value)}
-                      className={`input-box ${formErrors.annualTurnover ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.annualTurnover && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.annualTurnover}</span>
-                    )}
-                  </div>
+ <>
+      
 
-                  {/* Security Bank BG Ref */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Excise Security Guarantee Reference No *</label>
-                    <input 
-                      type="text" 
-                      value={formData.bankGuaranteeRef}
-                      onChange={(e) => handleInputChange("bankGuaranteeRef", e.target.value)}
-                      className={`input-box ${formErrors.bankGuaranteeRef ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.bankGuaranteeRef && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.bankGuaranteeRef}</span>
-                    )}
-                  </div>
+{/* ================= ADDITIONAL WAREHOUSE DETAILS ================= */}
 
-                  {/* Security amount */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Guarantee Bond Amount (INR)</label>
-                    <select 
-                      value={formData.bankGuaranteeAmount}
-                      onChange={(e) => handleInputChange("bankGuaranteeAmount", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="5000000">₹ 50,00,000 (standard limit)</option>
-                      <option value="10000000">₹ 1,00,00,000 (extended limit)</option>
-                      <option value="25000000">₹ 2,50,00,000 (premium merchant status)</option>
-                    </select>
-                  </div>
+ <div className="section-card">
+  <h3 className="section-title">Additional Details of Warehouse</h3>
 
-                  {/* Past Exp years */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Years of Active Spirits Import/Supply Experience</label>
-                    <input 
-                      type="number" 
-                      value={formData.pastExpYears}
-                      onChange={(e) => handleInputChange("pastExpYears", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
+  <div className="form-row">
+    <div className="form-item">
+      <label>Whether License Premise is</label>
+      <select
+        value={applicant.licensePremise || ""}
+        onChange={(e) => onChange("licensePremise", e.target.value)}
+      >
+        <option value="">Select</option>
+        <option value="Owned">Owned</option>
+        <option value="Leased">Leased</option>
+        <option value="Rented">Rented</option>
+      </select>
+    </div>
 
-                  {/* Delivery Vehicles */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Fleet size of Insured Delivery Carriers (Excise Permit Registered)</label>
-                    <input 
-                      type="number" 
-                      value={formData.deliveryVehicles}
-                      onChange={(e) => handleInputChange("deliveryVehicles", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
+    <div className="form-item">
+      <label>Lease / Sale / Rent Registration No</label>
+      <input
+        value={applicant.registrationNo || ""}
+        onChange={(e) => onChange("registrationNo", e.target.value)}
+      />
+    </div>
 
-                  {/* Prior Delhi Licenses held */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Previously held Licenses under Delhi Excise Act 2010?</label>
-                    <select 
-                      value={formData.priorLicensesDelhi}
-                      onChange={(e) => handleInputChange("priorLicensesDelhi", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, non-revoked track record</option>
-                      <option value="No">No / Fresh Corporate Applicant</option>
-                    </select>
-                  </div>
+    <div className="form-item">
+      <label>Registration Date</label>
+      <input
+        type="date"
+        value={applicant.registrationDate || ""}
+        onChange={(e) => onChange("registrationDate", e.target.value)}
+      />
+    </div>
+  </div>
 
-                </div>
-              </div>
-            )}
+  <div className="form-row">
+    <div className="form-item">
+      <label>Expiration Date</label>
+      <input
+        type="date"
+        value={applicant.expirationDate || ""}
+        onChange={(e) => onChange("expirationDate", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Architect Reg. No</label>
+      <input
+        value={applicant.caRegNo || ""}
+        onChange={(e) => onChange("caRegNo", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Architect Valid Upto</label>
+      <input
+        type="date"
+        value={applicant.caValidUpto || ""}
+        onChange={(e) => onChange("caValidUpto", e.target.value)}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Super Area (sq ft)</label>
+      <input
+        value={applicant.superArea || ""}
+        onChange={(e) =>
+          onChange("superArea", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Carpet Area (sq ft)</label>
+      <input
+        value={applicant.carpetArea || ""}
+        onChange={(e) =>
+          onChange("carpetArea", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Distance from CP (KM)</label>
+      <input
+        value={applicant.distanceFromCP || ""}
+        onChange={(e) =>
+          onChange("distanceFromCP", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Hours of Sale</label>
+      <select
+        value={applicant.hoursOfSale || ""}
+        onChange={(e) => onChange("hoursOfSale", e.target.value)}
+      >
+        <option value="">Select</option>
+        <option value="9-5">9 AM - 5 PM</option>
+        <option value="8-8">8 AM - 8 PM</option>
+        <option value="10-6">10 AM - 6 PM</option>
+      </select>
+    </div>
+  </div>
+</div> 
+
+
+
+<div className="section-card">
+  <h3 className="section-title">Company / Firm Details</h3>
+
+  <div className="form-row">
+
+    <div className="form-item">
+      <label>Constitution Type</label>
+      <select
+        value={applicant.constitutionType || ""}
+        onChange={(e) => onChange("constitutionType", e.target.value)}
+      >
+        <option value="">Select</option>
+        <option value="Company">Company</option>
+        <option value="Partnership">Partnership</option>
+        <option value="LLP">LLP</option>
+        <option value="Proprietorship">Proprietorship</option>
+        <option value="Society">Society</option>
+      </select>
+    </div>
+
+    {applicant.constitutionType === "Company" && (
+      <div className="form-item">
+        <label>CIN No</label>
+        <input
+          value={applicant.cinNo || ""}
+          onChange={(e) => onChange("cinNo", e.target.value)}
+        />
+      </div>
+    )}
+
+    <div className="form-item">
+      <label>Registration No</label>
+      <input
+        value={applicant.registrationFirm || ""}
+        onChange={(e) => onChange("registrationFirm", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Registration Date</label>
+      <input
+        type="date"
+        value={applicant.registrationFirmDate || ""}
+        onChange={(e) =>
+          onChange("registrationFirmDate", e.target.value)
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>PAN No</label>
+      <input
+        value={applicant.companyPan || ""}
+        onChange={(e) =>
+          onChange("companyPan", e.target.value.toUpperCase())
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>VAT / TIN</label>
+      <input
+        value={applicant.vatNo || ""}
+        onChange={(e) => onChange("vatNo", e.target.value)}
+      />
+    </div>
+
+  </div>
+</div> 
+
+
+    <DirectorsList
+            directors={applicant.directors || []}
+            constitutionType={applicant.constitutionType}
+            onChange={handleDirectorChange}
+            onAdd={addRow}
+            onDelete={deleteRow}
+          />
+
+
+
+</>
+
+        )}
+
+
+
+
+
+
+
+             
+           
 
             {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
             {currentStep === 4 && (
-              <div className="personal-doc-container text-left space-y-6">
-                <div className="document-info-banner">
-                  <Bookmark className="w-5 h-5" />
-                  <p>
-                    Please map and endorse your core personal identification proofs. Attach certified PDF documents (file sizes must remain below 10MB per document).
-                  </p>
-                </div>
+               <div className="form-container">
 
-                <div className="document-list">
-                  {/* File 1: Personal PAN */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">PAN Card of Board Directors / Applicant *</h4>
-                      <p className="document-description">Acceptable formats: PDF, JPEG (Color scan mandatory)</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: pan_card_full.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("File pan_card_full.pdf re-uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+    {/* ================= NOMINEE ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>Excise Nominee</h3>
+      </div>
 
-                  {/* File 2: Aadhaar Card */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Aadhaar Card Identifications *</h4>
-                      <p className="document-description">E-Aadhaar PDF certified by UIDAI seal</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: aadhaar_signed.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Aadhaar proof updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+      <div className="card-body">
+        <label className="label">
+          Is Excise Nominee other than applicant?
+        </label>
 
-                  {/* File 3: Partnership Deed */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Partnership Deed / Board Resolution Certificate *</h4>
-                      <p className="document-description">Corporate certificate mapping authorizations under directors board approval</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: resolution_board_delhi.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Deed file modified."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+        <div className="radio-group">
+          <label>
+            <input
+              type="radio"
+              value="1"
+              checked={nominee.isExciseNominee === "1"}
+              onChange={(e) =>
+                setNominee({ ...nominee, isExciseNominee: e.target.value })
+              }
+            />
+            Yes
+          </label>
 
-                  {/* File 4: Income Tax Return */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Income Tax Return Acknowledgment Receipts (Past 3 FY)</h4>
-                      <p className="document-description">Combined PDF containing certified filings filed with ITR departments</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: itr_returns_3_yr_combined.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("ITR files uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+          <label>
+            <input
+              type="radio"
+              value="0"
+              checked={nominee.isExciseNominee === "0"}
+              onChange={(e) =>
+                setNominee({ ...nominee, isExciseNominee: e.target.value })
+              }
+            />
+            No
+          </label>
+        </div>
+      </div>
+    </div>
 
-                </div>
+    {/* ================= NOMINEE DETAILS ================= */}
+    {nominee.isExciseNominee === "1" && (
+      <div className="card">
+        <div className="card-header">
+          <h3>Nominee Details</h3>
+        </div>
+
+        <div className="grid-3">
+          <input
+            placeholder="Name"
+            value={nominee.name}
+            onChange={(e) =>
+              setNominee({ ...nominee, name: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Address"
+            value={nominee.address}
+            onChange={(e) =>
+              setNominee({ ...nominee, address: e.target.value })
+            }
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={nominee.email}
+            onChange={(e) =>
+              setNominee({ ...nominee, email: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Mobile"
+            maxLength={10}
+            value={nominee.mobile}
+            onChange={(e) =>
+              setNominee({
+                ...nominee,
+                mobile: e.target.value.replace(/\D/g, "")
+              })
+            }
+          />
+
+          <input
+            placeholder="PAN"
+            value={nominee.panNo}
+            onChange={(e) =>
+              setNominee({
+                ...nominee,
+                panNo: e.target.value.toUpperCase()
+              })
+            }
+          />
+
+          {/* FILE */}
+          <div className="file-box">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg"
+              onChange={(e) =>
+                setNominee({
+                  ...nominee,
+                  panFile: e.target.files[0]
+                })
+              }
+            />
+
+            {nominee.panFile && (
+              <div className="file-actions">
+                <span>{nominee.panFile.name}</span>
+
+                <button
+                  onClick={() =>
+                    window.open(
+                      URL.createObjectURL(nominee.panFile),
+                      "_blank"
+                    )
+                  }
+                >
+                  View
+                </button>
+
+                <button
+                  onClick={() =>
+                    setNominee({ ...nominee, panFile: null })
+                  }
+                >
+                  Remove
+                </button>
               </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* ================= FSSAI ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>FSSAI Licence</h3>
+      </div>
+
+      <div className="grid-3">
+        <input
+          placeholder="Licence No"
+          value={fssai.licenseNo}
+          onChange={(e) =>
+            setFssai({ ...fssai, licenseNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={fssai.startDate}
+          onChange={(e) =>
+            setFssai({ ...fssai, startDate: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={fssai.endDate}
+          onChange={(e) =>
+            setFssai({ ...fssai, endDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= VAT ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>VAT / GST</h3>
+      </div>
+
+      <div className="grid-2">
+        <input
+          placeholder="Certificate No"
+          value={vat.certNo}
+          onChange={(e) =>
+            setVat({ ...vat, certNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={vat.endDate}
+          onChange={(e) =>
+            setVat({ ...vat, endDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= DISTILLERY ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>Distillery Licence</h3>
+      </div>
+
+      <div className="grid-2">
+        <input
+          placeholder="Licence No"
+          value={distillery.licenceNo}
+          onChange={(e) =>
+            setDistillery({ ...distillery, licenceNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={distillery.endDate}
+          onChange={(e) =>
+            setDistillery({ ...distillery, endDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= BWH ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>BWH Details</h3>
+      </div>
+
+      <div className="grid-4">
+        <input
+          placeholder="Insurance No"
+          value={bwh.insuranceNo}
+          onChange={(e) =>
+            setBwh({ ...bwh, insuranceNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={bwh.endDate}
+          onChange={(e) =>
+            setBwh({ ...bwh, endDate: e.target.value })
+          }
+        />
+
+        <input
+          placeholder="Lease No"
+          value={bwh.leaseNo}
+          onChange={(e) =>
+            setBwh({ ...bwh, leaseNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={bwh.leaseEndDate}
+          onChange={(e) =>
+            setBwh({ ...bwh, leaseEndDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+  </div>
             )}
 
             {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
             {currentStep === 5 && (
-              <div className="personal-doc-container text-left space-y-6">
-                <div className="document-info-banner">
-                  <Warehouse className="w-5 h-5" />
-                  <p>
-                    Warehouse Premises Deeds are inspected under Delhi Fire Services & Municipal Excise laws. Please upload certified blueprint surveys.
-                  </p>
-                </div>
-
-                <div className="document-list">
-                  {/* Deed 1: Registered Lease Deed */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Registered Warehouse Lease Deed / Ownership Papers *</h4>
-                      <p className="document-description">Registered deed papers showing full possession details</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: registered_lease_mayapuri.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Lease deed updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Deed 2: Fire Safety NOC */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Delhi Fire Services NOC (No Objection Certificate) *</h4>
-                      <p className="document-description">NOC affirming safety exits and automatic fire suppression controls</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: dfs_noc_clearance_2026.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Fire safety NOC updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Deed 3: MCD Trade License */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">MCD Commercial Trade License *</h4>
-                      <p className="document-description">Approval for operations of commercial storage depot</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: mcd_commercial_license.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("MCD copy re-uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Deed 4: Approved Site layout plan map */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Licensed Premise Blue Site Layout Blueprint *</h4>
-                      <p className="document-description">Detailed architect-signed architectural drawing detailing dry stack bays</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: arch_layout_stamps_2026.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Site plan blueprint replaced."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+                  <DocumentUpload
+            documents={documents}
+            uploadedFiles={uploadedFiles}
+            handleDocumentFileChange={handleFileChange}
+            handleDeleteFile={handleDeleteFile}
+          />
             )}
+
+
+
+
+
+
 
             {/* Step 6: STATUTORY DECLARATIONS & UNDERTAKING */}
             {currentStep === 6 && (

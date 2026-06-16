@@ -52,6 +52,42 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "backend.API.Controllers.LicenseDocumentController",
+    "Method": "GetDocuments",
+    "RelativePath": "api/LicenseDocument/documents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseDocumentController",
+    "Method": "Test",
+    "RelativePath": "api/LicenseDocument/test",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateApplyLicense",
+    "RelativePath": "api/LicenseeCategories/ApplyLicense",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "backend.Core.DTOs.LicenseApplicationUserDetailsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "backend.API.Controllers.LiquorMasterController",
     "Method": "GetCategory",
     "RelativePath": "api/LiquorMaster/Category",
@@ -126,6 +162,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MstUsRegController",
+    "Method": "GetUser",
+    "RelativePath": "api/MstUsReg/{regId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MstUsRegDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "backend.API.Controllers.UserRegistrationController",
@@ -206,11 +268,6 @@
         "IsRequired": false
       },
       {
-        "Name": "Fax",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "Email",
         "Type": "System.String",
         "IsRequired": false
@@ -272,7 +329,17 @@
       },
       {
         "Name": "IsPunishableOffence",
-        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubDivision",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PanNo",
+        "Type": "System.String",
         "IsRequired": false
       },
       {

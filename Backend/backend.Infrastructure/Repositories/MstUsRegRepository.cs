@@ -33,7 +33,8 @@ namespace backend.Infrastructure.Repositories
                 SubDivision = x.SubDivision,
                 PIN = x.PIN,
                 Email = x.Email,
-                Mobile = x.Mobile
+                Mobile = x.Mobile,
+                IsPunishableOffence=x.IsPunishableOffence
             })
             .ToListAsync();
 
