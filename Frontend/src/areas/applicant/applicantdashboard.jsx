@@ -223,7 +223,7 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-6 py-4 shadow-sm">
-      <div className="max-w-7xl mx-auto flex flex-col gap-4">
+      <div className="" style={{ padding:"7px 20px 7px 20px" }}>
         {/* Tier 1: Brand & User Actions */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-4">
           <div 
@@ -932,7 +932,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               </div>
 
               {/* STATS */}
-              <section className="stats-grid mt-6">
+              <section className="stats-grid">
                 {statsData.map((item, index) => (
                   <StatCard key={index} item={item} />
                 ))}
