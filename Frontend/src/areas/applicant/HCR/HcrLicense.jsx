@@ -354,8 +354,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
         {/* Dynamic Wizard Steps Indicator Row (32px vertical separation from header) */}
         {currentStep < 7 && (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 mb-8 overflow-x-auto">
-            <div className="flex items-center justify-between min-w-[700px] relative">
+<div className="hcr-dynamic">
+  <div className="hcr-dynamic-header">
               {/* Connector dots bar */}
               <div className="absolute top-5 left-0 right-0 -translate-y-1/2 h-[2px] bg-slate-100 z-0 px-12">
                 <div 
