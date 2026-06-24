@@ -125,7 +125,7 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
             modelBuilder.Entity<RetailPremiseDetails>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<TrainDetails>().ToTable("TrainDetails");
             modelBuilder.Entity<TrainDetails>()
@@ -143,7 +143,7 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
             modelBuilder.Entity<LicenseApplicationUserDetails>()

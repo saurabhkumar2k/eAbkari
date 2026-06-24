@@ -386,7 +386,6 @@ if (selectedLicenseId === "10" && currentStep > 3) {
           
           {/* STEP 3: SELECT WHOLESALE LICENSE TYPE */}
           {currentStep === 3 && (
-<<<<<<< HEAD
             <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
 <SelectWholesaleType
   applicant={applicant}
@@ -423,24 +422,6 @@ if (selectedLicenseId === "10" && currentStep > 3) {
     <ArrowRight className="w-4 h-4 ml-1.5" />
   </button>
 </div>
-=======
-            <div className="wizard-content">
-              <SelectWholesaleType 
-                selectedType={selectedLicenseId}
-                onSelectType={(id) => setSelectedLicenseId(id)}
-                onBack={onBackToDashboard}
-              />
-              
-              {/* Continue button row */}
-              <div className="align-center justify-end mt-8-custom pt-6-custom border-top">
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="primary-btn"
-                >
-                  <span>Continue Application</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
-                </button>
->>>>>>> origin/master
               </div>
             </div>
           )}
