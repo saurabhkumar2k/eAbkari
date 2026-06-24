@@ -14,7 +14,7 @@ namespace backend.Infrastructure.Data
 
         public DbSet<MstState> MstStates { get; set; }
         public DbSet<MstSubDivision> MstSubDivisions { get; set; }
-        // public DbSet<MstPoliceStation> MstPoliceStations { get; set; }
+         public DbSet<MstPoliceStation> MstPoliceStation { get; set; }
         public DbSet<MstDistrict> MstDistrict { get; set; }
         //public DbSet<MM_US_MT> MM_US_MTs { get; set; }
         public DbSet<MstLiquorKind> MstLiquorKind { get; set; }
@@ -35,6 +35,13 @@ namespace backend.Infrastructure.Data
         public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
 
         public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
+
+        public DbSet<WarehouseDetails> WarehouseDetails { get; set; }
+
+        public DbSet<LicenseCompanyDetails> LicenseCompanyDetails { get; set; }
+
+
+        public DbSet<LicenseApplication> LicenseApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,7 +97,6 @@ namespace backend.Infrastructure.Data
 
 
                 modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
-
                 modelBuilder.Entity<MstUsReg>()
                     .HasKey(x => x.UserId);
 
@@ -109,13 +115,13 @@ namespace backend.Infrastructure.Data
 
 
 
-            //  modelBuilder.Entity<MstPoliceStation>().ToTable("MstPoliceStation");
-
-            //     modelBuilder.Entity<MstPoliceStation>()
-            //     .HasKey(x => new { x.DistrictCode, x.PsCode });
+             modelBuilder.Entity<MstPoliceStation>().ToTable("MstPoliceStation");
+                modelBuilder.Entity<MstPoliceStation>()
+               .HasKey(x => new { x.DistrictCode, x.PsCode });
+               
  modelBuilder.Entity<LicenseApplication>().ToTable("LicenseApplication");
             modelBuilder.Entity<LicenseApplication>()
-            .HasKey(x => x.Application_Id_No);
+            .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
             modelBuilder.Entity<RetailPremiseDetails>()
@@ -149,6 +155,17 @@ namespace backend.Infrastructure.Data
 
              modelBuilder.Entity<MstLicenseDocumentMaster>()
        .ToTable("MstLicenseDocumentMaster");
+
+
+       modelBuilder.Entity<WarehouseDetails>()
+       .ToTable("WarehouseDetails");
+
+       modelBuilder.Entity<LicenseCompanyDetails>()
+       .ToTable("LicenseCompanyDetails");
+
+            modelBuilder.Entity<LicenseApplication>()
+  .ToTable("LicenseApplication");
+
 
             base.OnModelCreating(modelBuilder);
         }

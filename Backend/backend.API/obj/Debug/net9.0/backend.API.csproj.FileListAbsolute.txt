@@ -252,3 +252,4 @@ E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\refint\backend.API.d
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\backend.API.pdb
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\backend.API.genruntimeconfig.cache
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\ref\backend.API.dll
+E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

@@ -3,24 +3,51 @@
   "WorkspaceRootPath": "E:\\New_eAbkari\\eAbkari\\Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\registrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\registrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\licenseecategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\licenseecategoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\dtos\\licenseapplicationuserdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\dtos\\licenseapplicationuserdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\login\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\login\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\repositories\\mstusregrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\repositories\\mstusregrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\licence\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\licence\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\licence\\licenseapplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\licence\\licenseapplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\licensecompanydetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\licensecompanydetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\repositories\\liquormasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\repositories\\liquormasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\HP\\AppData\\Local\\SourceServer\\7c3bc895625049250f60ef5c584ecf5f0c69787aff6961bc8351199febb8f1e6\\Backend\\backend.Infrastructure\\Data\\ApplicationDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\lgdiretorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\lgdiretorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\dtos\\mstusregdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,28 +58,48 @@
       "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\mstusreg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\registrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\registrationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\dtos\\licenseapplicationuserdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\dtos\\licenseapplicationuserdetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E50641D0-DB16-421D-8F8F-5C61ED08F609}|backend.Infrastructure\\backend.Infrastructure.csproj|solutionrelative:backend.infrastructure\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\liquorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\liquorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\liquormaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\liquormaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\interfaces\\iliquormasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\interfaces\\iliquormasterrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\warehousedetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\warehousedetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\dtos\\warehousedetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\dtos\\warehousedetailsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\interfaces\\ilgdiretoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\interfaces\\ilgdiretoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\licensedocumentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\licensedocumentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.core\\entities\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C901C407-23BE-4457-9786-FDCF4BF16AC9}|backend.Core\\backend.Core.csproj|solutionrelative:backend.core\\entities\\licenseapplicationuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\mstusregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\mstusregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|e:\\new_eabkari\\eabkari\\backend\\backend.api\\master\\controllers\\lgdiretorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FDB51E86-40EF-4598-8192-31894633E4F9}|backend.API\\backend.API.csproj|solutionrelative:backend.api\\master\\controllers\\lgdiretorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -71,6 +118,173 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "LicenseeCategoriesController.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
+              "RelativeToolTip": "backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAewD0AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T12:33:19.411Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "LicenseApplicationUserDetails.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\Licence\\LicenseApplicationUserDetails.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\Licence\\LicenseApplicationUserDetails.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\Licence\\LicenseApplicationUserDetails.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\Licence\\LicenseApplicationUserDetails.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAcwBAAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T10:04:05.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LicenseApplicationUserDetails.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T05:55:34.77Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "LiquorMasterRepository.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LiquorMasterRepository.cs",
+              "RelativeDocumentMoniker": "backend.Infrastructure\\Repositories\\LiquorMasterRepository.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LiquorMasterRepository.cs",
+              "RelativeToolTip": "backend.Infrastructure\\Repositories\\LiquorMasterRepository.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAcwEYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-19T11:47:45.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "MstUsRegDto.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\MstUsRegDto.cs",
+              "RelativeDocumentMoniker": "backend.Core\\DTOs\\MstUsRegDto.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\MstUsRegDto.cs",
+              "RelativeToolTip": "backend.Core\\DTOs\\MstUsRegDto.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAA9wCQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-16T06:40:47.439Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAwwHMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-18T07:07:46.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LicenseApplicationUserDetailsDto.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
+              "RelativeDocumentMoniker": "backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
+              "RelativeToolTip": "backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAA5wBYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T11:03:47.39Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LicenseCompanyDetails.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseCompanyDetails.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\LicenseCompanyDetails.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseCompanyDetails.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\LicenseCompanyDetails.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAuwCAAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-19T11:49:58.5Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Class1.cs",
+              "RelativeDocumentMoniker": "backend.Infrastructure\\Class1.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Class1.cs",
+              "RelativeToolTip": "backend.Infrastructure\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-23T10:32:51.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Login\\Controllers\\LoginController.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "backend.API\\Login\\Controllers\\LoginController.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACAAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-26T06:51:17.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LicenseApplication.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\Licence\\LicenseApplication.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\Licence\\LicenseApplication.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\Licence\\LicenseApplication.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\Licence\\LicenseApplication.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-24T05:05:18.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "LGDiretoryController.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LGDiretoryController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LGDiretoryController.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LGDiretoryController.cs",
+              "RelativeToolTip": "backend.API\\Master\\Controllers\\LGDiretoryController.cs",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAmwGkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-12T09:30:56.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\HP\\AppData\\Local\\SourceServer\\7c3bc895625049250f60ef5c584ecf5f0c69787aff6961bc8351199febb8f1e6\\Backend\\backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\HP\\AppData\\Local\\SourceServer\\7c3bc895625049250f60ef5c584ecf5f0c69787aff6961bc8351199febb8f1e6\\Backend\\backend.Infrastructure\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAIAAAAAAAAAAAAAqwI4AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-17T11:22:34.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "RegistrationController.cs",
               "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\RegistrationController.cs",
               "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\RegistrationController.cs",
@@ -83,67 +297,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 13,
               "Title": "MstUsReg.cs",
               "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\MstUsReg.cs",
               "RelativeDocumentMoniker": "backend.Core\\Entities\\MstUsReg.cs",
               "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\MstUsReg.cs",
               "RelativeToolTip": "backend.Core\\Entities\\MstUsReg.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAowAQAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAxwEcAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T06:51:33.149Z"
+              "WhenOpened": "2026-06-15T06:51:33.149Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "MstUsRegController.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\MstUsRegController.cs",
-              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\MstUsRegController.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\MstUsRegController.cs",
-              "RelativeToolTip": "backend.API\\Master\\Controllers\\MstUsRegController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 15,
+              "Title": "LoginRepository.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "RelativeDocumentMoniker": "backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "RelativeToolTip": "backend.Infrastructure\\Repositories\\LoginRepository.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAmwBUAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T07:21:27.327Z"
+              "WhenOpened": "2026-05-26T06:38:28.674Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "LicenseApplicationUserDetails.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
-              "RelativeDocumentMoniker": "backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
-              "RelativeToolTip": "backend.Core\\Entities\\LicenseApplicationUserDetails.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T05:55:34.77Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "LicenseApplicationUserDetailsDto.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
-              "RelativeDocumentMoniker": "backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
-              "RelativeToolTip": "backend.Core\\DTOs\\LicenseApplicationUserDetailsDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-12T11:03:47.39Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Program.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Program.cs",
-              "RelativeDocumentMoniker": "backend.API\\Program.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Program.cs",
-              "RelativeToolTip": "backend.API\\Program.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAawFUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-12T07:21:55.158Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 23,
               "Title": "LicenseDocumentController.cs",
               "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LicenseDocumentController.cs",
               "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LicenseDocumentController.cs",
@@ -155,78 +335,105 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "LicenseeCategoriesController.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
-              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
-              "RelativeToolTip": "backend.API\\Master\\Controllers\\LicenseeCategoriesController.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAlwA4AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 22,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Program.cs",
+              "RelativeDocumentMoniker": "backend.API\\Program.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Program.cs",
+              "RelativeToolTip": "backend.API\\Program.cs",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAawFUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-11T12:33:19.411Z",
+              "WhenOpened": "2026-06-12T07:21:55.158Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "LiquorController.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LiquorController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LiquorController.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LiquorController.cs",
+              "RelativeToolTip": "backend.API\\Master\\Controllers\\LiquorController.cs",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAmwGwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-19T11:29:36.242Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginController.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
-              "RelativeDocumentMoniker": "backend.API\\Login\\Controllers\\LoginController.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Login\\Controllers\\LoginController.cs",
-              "RelativeToolTip": "backend.API\\Login\\Controllers\\LoginController.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAtwC4AAAAEAAAAAAAAAA==",
+              "DocumentIndex": 17,
+              "Title": "LiquorMaster.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LiquorMaster.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\LiquorMaster.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\LiquorMaster.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\LiquorMaster.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAIAwwFUAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-26T06:51:17.944Z",
+              "WhenOpened": "2026-06-19T11:51:03.238Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LoginRepository.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs",
-              "RelativeDocumentMoniker": "backend.Infrastructure\\Repositories\\LoginRepository.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\LoginRepository.cs",
-              "RelativeToolTip": "backend.Infrastructure\\Repositories\\LoginRepository.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAA8wBgAAAAQAAAAAAAAAA==",
+              "DocumentIndex": 18,
+              "Title": "ILiquorMasterRepository.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Interfaces\\ILiquorMasterRepository.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Interfaces\\ILiquorMasterRepository.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Interfaces\\ILiquorMasterRepository.cs",
+              "RelativeToolTip": "backend.Core\\Interfaces\\ILiquorMasterRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-26T06:38:28.674Z",
+              "WhenOpened": "2026-06-19T12:15:58.606Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MstUsRegRepository.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\MstUsRegRepository.cs",
-              "RelativeDocumentMoniker": "backend.Infrastructure\\Repositories\\MstUsRegRepository.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\Repositories\\MstUsRegRepository.cs",
-              "RelativeToolTip": "backend.Infrastructure\\Repositories\\MstUsRegRepository.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAgwCkAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 21,
+              "Title": "ILGDiretoryRepository.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Interfaces\\ILGDiretoryRepository.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Interfaces\\ILGDiretoryRepository.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Interfaces\\ILGDiretoryRepository.cs",
+              "RelativeToolTip": "backend.Core\\Interfaces\\ILGDiretoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAQAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-15T07:22:20.498Z"
+              "WhenOpened": "2026-06-17T11:08:13.873Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MstUsRegDto.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\MstUsRegDto.cs",
-              "RelativeDocumentMoniker": "backend.Core\\DTOs\\MstUsRegDto.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\MstUsRegDto.cs",
-              "RelativeToolTip": "backend.Core\\DTOs\\MstUsRegDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 19,
+              "Title": "WarehouseDetails.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\WarehouseDetails.cs",
+              "RelativeDocumentMoniker": "backend.Core\\Entities\\WarehouseDetails.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\Entities\\WarehouseDetails.cs",
+              "RelativeToolTip": "backend.Core\\Entities\\WarehouseDetails.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-16T06:40:47.439Z"
+              "WhenOpened": "2026-06-18T09:27:23.847Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "LGDiretoryController.cs",
-              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LGDiretoryController.cs",
-              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\LGDiretoryController.cs",
-              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\LGDiretoryController.cs",
-              "RelativeToolTip": "backend.API\\Master\\Controllers\\LGDiretoryController.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAA1wCgAAAACAAAAAAAAAA==",
+              "DocumentIndex": 20,
+              "Title": "WarehouseDetailsDto.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\WarehouseDetailsDto.cs",
+              "RelativeDocumentMoniker": "backend.Core\\DTOs\\WarehouseDetailsDto.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\DTOs\\WarehouseDetailsDto.cs",
+              "RelativeToolTip": "backend.Core\\DTOs\\WarehouseDetailsDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-12T09:30:56.668Z"
+              "WhenOpened": "2026-06-18T09:27:36.018Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "MstUsRegController.cs",
+              "DocumentMoniker": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\MstUsRegController.cs",
+              "RelativeDocumentMoniker": "backend.API\\Master\\Controllers\\MstUsRegController.cs",
+              "ToolTip": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\Master\\Controllers\\MstUsRegController.cs",
+              "RelativeToolTip": "backend.API\\Master\\Controllers\\MstUsRegController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T07:21:27.327Z"
             }
           ]
         }

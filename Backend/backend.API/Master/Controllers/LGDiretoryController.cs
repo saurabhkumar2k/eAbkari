@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Core.Interfaces;
 using backend.Infrastructure.Repositories;
 using backend.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.API.Controllers
 {
@@ -87,6 +88,26 @@ public LGDiretoryController(ILGDiretoryRepository  lGDiretoryRepository)
             }
             return Ok(data);
         }
+
+
+
+        // ✅ POLICE STATION
+        [HttpGet("PoliceStations/{district_code}")]
+        public async Task<IActionResult> GetPoliceStations(string district_code)
+        {
+             var data = await _LiquorMasterRepository.GetPoliceStationsAsync(district_code);
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No Questions found" });
+            }
+            return Ok(data);
+        }
+
+ 
+
+
+
+
 
     }
 }

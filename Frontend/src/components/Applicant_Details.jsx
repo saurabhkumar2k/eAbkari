@@ -10,6 +10,19 @@ const ApplicantDetails = ({
   districts = [],
   onChange,
 }) => {
+
+
+console.log("Applicant District:", applicant.district);
+console.log("Districts:", districts);
+
+districts?.forEach((d) =>
+  console.log(
+    typeof d.districtCode,
+    d.districtCode
+  )
+);
+
+
   return (
     <div className="premium-form">
 
@@ -29,11 +42,10 @@ const ApplicantDetails = ({
         <div className="grid-3">
 
           <Field icon="👤" label="Applicant Name *">
-            <input
-              placeholder=" "
-              value={applicant.ApplicantName || ""}
-              onChange={(e) => onChange("ApplicantName", e.target.value)}
-            />
+        <input
+  value={applicant.applicantName || ""}
+  disabled
+/>
           </Field>
 
           {/* <Field icon="🏢" label="Company / Firm Name *">
@@ -47,25 +59,23 @@ const ApplicantDetails = ({
           <Field icon="📅" label="Date of Birth *">
             <input
               type="date"
-              placeholder=" "
-              value={applicant.dob || ""}
-              onChange={(e) => onChange("dob", e.target.value)}
+              value={applicant.dateOfBirth || ""}
+              disabled
             />
           </Field>
 
           <Field icon="👨" label="Father / Husband Name *">
             <input
-              placeholder=" "
-              value={applicant.FatherHusbandName || ""}
-              onChange={(e) => onChange("FatherHusbandName", e.target.value)}
+              value={applicant.fatherHusbandName || ""}
+              disabled
             />
           </Field>
 
           <Field icon="💼" label="Occupation">
             <input
               placeholder=" "
-              value={applicant.Occupation || ""}
-              onChange={(e) => onChange("Occupation", e.target.value)}
+              value={applicant.occupation || ""}
+              disabled
             />
           </Field>
 
@@ -73,9 +83,9 @@ const ApplicantDetails = ({
             <input
               placeholder=" "
               value={applicant.panNo || ""}
-              onChange={(e) =>
-                onChange("panNo", e.target.value.toUpperCase())
-              }
+              disabled
+               
+              
             />
           </Field>
 
@@ -90,17 +100,15 @@ const ApplicantDetails = ({
 
           <Field icon="🏠" label="Address Line 1 *">
             <input
-              placeholder=" "
-              value={applicant.PresentAddress || ""}
-              onChange={(e) => onChange("PresentAddress", e.target.value)}
+              value={applicant.addressLine1 || ""}
+              disabled
             />
           </Field>
 
           <Field icon="📍" label="Address Line 2">
             <input
-              placeholder=" "
-              value={applicant.PermanentAddress || ""}
-              onChange={(e) => onChange("PermanentAddress", e.target.value)}
+              value={applicant.addressLine2 || ""}
+              disabled
             />
           </Field>
 
@@ -109,10 +117,10 @@ const ApplicantDetails = ({
         <div className="grid-3">
 
           <Field icon="🌏" label="State *">
-<select
+{/* <select
   name="state"
-  value={applicant.StateUT || ""}
-  onChange={(e) => onChange("StateUT", e.target.value)}
+  value={applicant.stateUT || ""}
+  onChange={(e) => onChange("stateUT", e.target.value)}
 >
   <option value="">Select State</option>
 
@@ -121,9 +129,23 @@ const ApplicantDetails = ({
       {state.stateName}
     </option>
   ))}
+</select> */}
+
+<select
+  value={applicant.stateUT?.trim() || ""}
+  disabled
+>
+  <option value="">Select State</option>
+
+  {states.map((s) => (
+    <option
+      key={s.stateCode}
+      value={s.stateCode?.trim()}
+    >
+      {s.stateName}
+    </option>
+  ))}
 </select>
-
-
 
 
 
@@ -132,9 +154,9 @@ const ApplicantDetails = ({
           </Field>
 
           <Field icon="🏙️" label="District *">
- <select
+ {/* <select
   value={applicant.district || ""}
-  disabled={!applicant.StateUT}
+  disabled={!applicant.stateUT}
   onChange={(e) => onChange("district", e.target.value)}
 >
   <option value="">Select District</option>
@@ -144,6 +166,22 @@ const ApplicantDetails = ({
   {d.districtName}
 </option>
   ))}
+</select> */}
+
+<select
+  value={applicant.district?.trim() || ""}
+  disabled
+>
+  <option value="">Select District</option>
+
+  {districts.map((d) => (
+    <option
+      key={d.did}
+      value={d.districtCode?.trim()}
+    >
+      {d.districtName}
+    </option>
+  ))}
 </select>
           </Field>
 
@@ -151,10 +189,9 @@ const ApplicantDetails = ({
             <input
               maxLength={6}
               placeholder=" "
-              value={applicant.PIN || ""}
-              onChange={(e) =>
-                onChange("PIN", e.target.value.replace(/\D/g, ""))
-              }
+              value={applicant.pin || ""}
+              disabled
+              
             />
           </Field>
 
@@ -171,8 +208,8 @@ const ApplicantDetails = ({
             <input
               type="email"
               placeholder=" "
-              value={applicant.EmailId || ""}
-              onChange={(e) => onChange("EmailId", e.target.value)}
+              value={applicant.email || ""}
+              disabled
             />
           </Field>
 
@@ -180,10 +217,9 @@ const ApplicantDetails = ({
             <input
               maxLength={10}
               placeholder=" "
-              value={applicant.MobileNo || ""}
-              onChange={(e) =>
-                onChange("MobileNo", e.target.value.replace(/\D/g, ""))
-              }
+              value={applicant.mobile || ""}
+                disabled
+              
             />
           </Field>
 
@@ -191,10 +227,9 @@ const ApplicantDetails = ({
             <input
               maxLength={10}
               placeholder=" "
-              value={applicant.LandLine || ""}
-              onChange={(e) =>
-                onChange("LandLine", e.target.value.replace(/\D/g, ""))
-              }
+              value={applicant.landline || ""}
+              disabled
+              
             />
           </Field>
 

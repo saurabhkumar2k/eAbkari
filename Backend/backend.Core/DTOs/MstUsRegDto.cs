@@ -32,5 +32,7 @@ public class MstUsRegDto
 
     public string? IsPunishableOffence { get; set; }
 
+    public string? Landline { get; set; }
 
+    public string? applicantName { get; set; }
 }

@@ -61,7 +61,7 @@ const WarehouseDetails = ({
         <div className="grid-3">
 
           <Field icon="🌏" label="State *">
-            <select
+            {/* <select
               value={applicant.warehouseState || ""}
               onChange={(e) => {
                 onChange("warehouseState", e.target.value);
@@ -74,11 +74,28 @@ const WarehouseDetails = ({
                   {s.name}
                 </option>
               ))}
-            </select>
+            </select> */}
+
+<select
+  name="state"
+  value={applicant.warehouseState || ""}
+  onChange={(e) => onChange("warehouseState", e.target.value)}
+>
+  <option value="">Select State</option>
+
+  {states.map((state) => (
+    <option key={state.sid} value={state.stateCode}>
+      {state.stateName}
+    </option>
+  ))}
+</select>
+
+
+
           </Field>
 
           <Field icon="🏙️" label="District *">
-            <select
+            {/* <select
               value={applicant.warehouseDistrict || ""}
               onChange={(e) =>
                 onChange("warehouseDistrict", e.target.value)
@@ -90,7 +107,28 @@ const WarehouseDetails = ({
                   {d.name}
                 </option>
               ))}
-            </select>
+            </select> */}
+
+
+ <select
+  value={applicant.warehouseDistrict || ""}
+  disabled={!applicant.warehouseState}
+  onChange={(e) => onChange("warehouseDistrict", e.target.value)}
+   //onChange={(e) => { handleChange(e);fetchSubDivisions(e.target.value)}}
+>
+  <option value="">Select District</option>
+
+  {(districts || []).map((d) => (
+  <option key={d.did} value={d.districtCode}>
+  {d.districtName}
+</option>
+  ))}
+</select>
+
+
+
+
+
           </Field>
 
           <Field icon="📮" label="PIN Code *">
@@ -105,7 +143,8 @@ const WarehouseDetails = ({
           </Field>
 
   <Field icon="🏢" label="Sub Division">
-  <select
+
+  {/* <select
     value={applicant.warehouseSubDivision || ""}
     onChange={(e) =>
       onChange("warehouseSubDivision", e.target.value)
@@ -118,23 +157,40 @@ const WarehouseDetails = ({
         {s.name}
       </option>
     ))}
-  </select>
+  </select> */}
+
+
+ <select
+  value={applicant.WarehouseSubDivision || ""}
+  onChange={(e) => onChange("WarehouseSubDivision", e.target.value)}
+>
+  <option value="">Select Sub Division</option>
+
+  {(subDivisions || []).map((s) => (
+    <option
+      key={s.subDivisionCode}
+      value={s.subDivisionCode}
+    >
+      {s.subDivisionName}
+    </option>
+  ))}
+</select>
+
 </Field>
 
           <Field icon="🚓" label="Police Station">
-            <select
-              value={applicant.warehousePoliceStation || ""}
-              onChange={(e) =>
-                onChange("warehousePoliceStation", e.target.value)
-              }
-            >
-              <option value=""></option>
-              {policeStations.map((p) => (
-                <option key={p.code} value={p.code}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+<select
+  value={applicant.WarehousePoliceStation || ""}
+  onChange={(e) => onChange("WarehousePoliceStation", e.target.value)}
+>
+  <option value="">Select Police Station</option>
+
+  {(policeStations || []).map((p) => (
+    <option key={p.psCode} value={p.psCode}>
+      {p.psName}
+    </option>
+  ))}
+</select>
           </Field>
 
           <Field icon="📍" label="Constituency">
@@ -150,9 +206,9 @@ const WarehouseDetails = ({
           <Field icon="🏷️" label="Ward Name">
             <input
               placeholder=" "
-              value={applicant.warehouseWard || ""}
+              value={applicant.WarehouseWardName || ""}
               onChange={(e) =>
-                onChange("warehouseWard", e.target.value)
+                onChange("WarehouseWardName", e.target.value)
               }
             />
           </Field>
@@ -210,6 +266,126 @@ const WarehouseDetails = ({
 
         </div>
       </div>
+
+
+
+ <div className="section-card">
+  <h3 className="section-title">Additional Details of Warehouse</h3>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Whether License Premise is</label>
+      <select
+        value={applicant.licensePremise || ""}
+        onChange={(e) => onChange("licensePremise", e.target.value)}
+      >
+        <option value="">Select</option>
+        <option value="Owned">Owned</option>
+        <option value="Leased">Leased</option>
+        <option value="Rented">Rented</option>
+      </select>
+    </div>
+
+    <div className="form-item">
+      <label>Lease / Sale / Rent Registration No</label>
+      <input
+        value={applicant.LeaseRegistration || ""}
+        onChange={(e) => onChange("LeaseRegistration", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Registration Date</label>
+      <input
+        type="date"
+        value={applicant.LeaseRegistrationDate || ""}
+        onChange={(e) => onChange("LeaseRegistrationDate", e.target.value)}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Expiration Date</label>
+      <input
+        type="date"
+        value={applicant.LeaseRegistrationExpiryDate || ""}
+        onChange={(e) => onChange("LeaseRegistrationExpiryDate", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Architect Reg. No</label>
+      <input
+        value={applicant.ArchitectRegistrationNo || ""}
+        onChange={(e) => onChange("ArchitectRegistrationNo", e.target.value)}
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Architect Valid Upto</label>
+      <input
+        type="date"
+        value={applicant.ArchitectRegistrationNoValidUpto || ""}
+        onChange={(e) => onChange("ArchitectRegistrationNoValidUpto", e.target.value)}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Super Area (sq ft)</label>
+      <input
+        value={applicant.SuperAreaofLicensePremise || ""}
+        onChange={(e) =>
+          onChange("SuperAreaofLicensePremise", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Carpet Area (sq ft)</label>
+      <input
+        value={applicant.CarpetAreaofLicensePremise || ""}
+        onChange={(e) =>
+          onChange("CarpetAreaofLicensePremise", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+
+    <div className="form-item">
+      <label>Distance from CP (KM)</label>
+      <input
+        value={applicant.DistanceofDistillery || ""}
+        onChange={(e) =>
+          onChange("DistanceofDistillery", e.target.value.replace(/\D/g, ""))
+        }
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-item">
+      <label>Hours of Sale</label>
+      <select
+        value={applicant.HoursofSale || ""}
+        onChange={(e) => onChange("HoursOfSale", e.target.value)}
+      >
+        <option value="">Select</option>
+        <option value="9-5">9 AM - 5 PM</option>
+        <option value="8-8">8 AM - 8 PM</option>
+        <option value="10-6">10 AM - 6 PM</option>
+      </select>
+    </div>
+  </div>
+</div> 
+
+
+
+
+
+
+
 
     </div>
   );

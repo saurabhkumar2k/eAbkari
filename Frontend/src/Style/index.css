@@ -63,6 +63,8 @@ body {
 .gap-12 { gap: 3rem; }
 
 /* Header & Navbar */
+
+
 .header {
   background: white;
   position: sticky;
@@ -10283,3 +10285,91 @@ box-shadow: 0 0 0 4px rgba(37,99,235,.08);
   }
 }
 
+/* ----ashu---- */
+
+.license-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;
+}
+
+.license-card{
+  border:1px solid #ddd;
+  border-radius:20px;
+  padding:20px;
+  text-align:left;
+  background:#fff;
+  cursor:pointer;
+  min-height:220px;
+}
+
+.license-card.selected{
+  border:2px solid #2563eb;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+.card-code{
+  font-weight:700;
+  color:#2563eb;
+}
+
+.card-title{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+
+.card-badge{
+  background:#eef2ff;
+  padding:4px 10px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.owner-type-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 24px 0 32px;
+}
+
+.owner-type-label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1e293b;
+}
+
+.owner-type-label span {
+  color: #dc2626;
+}
+
+.owner-type-dropdown {
+  width: 380px;
+  max-width: 90%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.owner-type-dropdown:hover {
+  border-color: #6366f1;
+}
+
+.owner-type-dropdown:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
