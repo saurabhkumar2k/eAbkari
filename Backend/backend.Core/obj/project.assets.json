@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
+      "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
       "projectName": "backend.Core",
-      "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
+      "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
       "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-      "outputPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\obj\\",
+      "outputPath": "C:\\New\\eabkari\\backend\\backend.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"

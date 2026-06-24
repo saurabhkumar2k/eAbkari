@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Eabkari\\eabkari\\backend\\backend.api\\backend.API.csproj": {}
+    "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj": {}
   },
   "projects": {
-    "C:\\Eabkari\\eabkari\\backend\\backend.api\\backend.API.csproj": {
+    "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Eabkari\\eabkari\\backend\\backend.api\\backend.API.csproj",
+        "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
         "projectName": "backend.API",
-        "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.api\\backend.API.csproj",
+        "projectPath": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
         "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-        "outputPath": "C:\\Eabkari\\eabkari\\backend\\backend.api\\obj\\",
+        "outputPath": "C:\\New\\eabkari\\backend\\backend.api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -27,14 +27,14 @@
             "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Eabkari\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
-                "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Application\\backend.Application.csproj"
+              "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
+                "projectPath": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj"
               },
-              "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
-                "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
+              "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
+                "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
               },
-              "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
-                "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
+              "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+                "projectPath": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
               }
             }
           }
@@ -110,14 +110,14 @@
         }
       }
     },
-    "C:\\Eabkari\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
+    "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Eabkari\\eabkari\\backend\\backend.Application\\backend.Application.csproj",
+        "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj",
         "projectName": "backend.Application",
-        "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Application\\backend.Application.csproj",
+        "projectPath": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj",
         "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-        "outputPath": "C:\\Eabkari\\eabkari\\backend\\backend.Application\\obj\\",
+        "outputPath": "C:\\New\\eabkari\\backend\\backend.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -133,8 +133,8 @@
             "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
-                "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
+              "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
+                "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
               }
             }
           }
@@ -189,14 +189,14 @@
         }
       }
     },
-    "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
+    "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
+        "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
         "projectName": "backend.Core",
-        "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
+        "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj",
         "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-        "outputPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\obj\\",
+        "outputPath": "C:\\New\\eabkari\\backend\\backend.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -264,14 +264,14 @@
         }
       }
     },
-    "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+    "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
+        "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
         "projectName": "backend.Infrastructure",
-        "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
+        "projectPath": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-        "outputPath": "C:\\Eabkari\\eabkari\\backend\\backend.Infrastructure\\obj\\",
+        "outputPath": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -287,8 +287,8 @@
             "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
-                "projectPath": "C:\\Eabkari\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
+              "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
+                "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
               }
             }
           }

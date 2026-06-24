@@ -38,12 +38,16 @@ namespace backend.Infrastructure.Data
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
         public DbSet<AdditionalRetailDetails> AdditionalRetailDetails { get; set; }
 
+        public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
+
+        public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
 
             modelBuilder.Entity<MstState>()
-                .HasKey(x => x.StateCode);
+                .HasKey(x => x.SID);
 
                  modelBuilder.Entity<MstSubDivision>().ToTable("MstSubDivision");
 
@@ -141,6 +145,10 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
             .HasKey(x => x.ApplicationIdNo);
 
+            modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
+            modelBuilder.Entity<LicenseApplicationUserDetails>()
+            .HasKey(x => x.Id);
+
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
             .HasKey(x => x.Id);
@@ -164,6 +172,8 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<AdditionalRetailDetails>().ToTable("AdditionalRetailDetails");
             modelBuilder.Entity<AdditionalRetailDetails>()
             .HasKey(x => x.ApplicationIdNo);
+             modelBuilder.Entity<MstLicenseDocumentMaster>()
+       .ToTable("MstLicenseDocumentMaster");
 
             base.OnModelCreating(modelBuilder);
         }
