@@ -34,6 +34,8 @@ import {
   Tag as TagIcon
 } from "lucide-react";
 import SelectLicenseType from "./SelectLicense";
+import L20 from "./L20";
+import HcrApplicantDetails from "./HcrApplicantDetail";
 
 // Option lists duplicate from LiquorBrandRegistration for ease of access inside modular feature folder
 const brandCodeOptions = [
@@ -120,10 +122,49 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   // Selected HCR license code
   const [selectedLicenseId, setSelectedLicenseId] = useState("L-15");
 
+  // HCR Applicant Profile State
+  const [applicantForm, setApplicantForm] = useState({
+    applicantName: "RAMESH KUMAR",
+    dob: "1985-05-15",
+    fatherName: "SURESH KUMAR",
+    occupation: "HOTELIER",
+    panNo: "ABCDE1234F",
+    address1: "74, KHAN MARKET",
+    address2: "NEAR METRO STATION",
+    state: "Delhi",
+    district: "South",
+    subDivision: "Saket",
+    pin: "110003",
+    mobile: "9876543210",
+    email: "ramesh.kumar@hotels.in",
+    landline: "",
+    fax: ""
+  });
+  const [applicantErrors, setApplicantErrors] = useState({});
+
+  // L-20 Train Details State
+  const [trainForm, setTrainForm] = useState({
+    exciseYear: "2025-2026",
+    operatingCompany: "Indian Railways Catering and Tourism Corporation (IRCTC)",
+    trainName: "Palace on Wheels Premium",
+    trainNumber: "12953",
+    tempStoreAddress: "Platform 1, New Delhi Railway Station Warehouse, New Delhi",
+    trainOrigin: "New Delhi Railway Station (NDLS)",
+    trainRoutes: ["New Delhi", "Jaipur", "Udaipur", "Jaisalmer"],
+    numCompartments: "14",
+    numSeatCovers: "42",
+    numDispensingCounters: "2",
+    numManagers: "3",
+    numKitchenStaff: "8",
+    numUtilityEmployees: "12",
+    numTrainAttendants: "20"
+  });
+  const [trainErrors, setTrainErrors] = useState({});
+
   // HCR Brand associated state
   const [associatedBrands, setAssociatedBrands] = useState([]);
 
-  // Brand registration sub-form state (inside step 4)
+  // Brand registration sub-form state
   const [brandForm, setBrandForm] = useState({
     category: 'Indian Liquor', // default selection
     kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
@@ -139,7 +180,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [sortColumn, setSortColumn] = useState('brandName');
   const [sortDirection, setSortDirection] = useState('asc');
 
-  // Premises Details States (inside step 5)
+  // Premises Details States (inside step 5 for non-L20)
   const [premisesForm, setPremisesForm] = useState({
     premiseAddress: "Star Class Annex Area, Indira Gandhi Int'l Airport Runway, New Delhi",
     mcdTradeLicenseNum: "MCD-99120-DEL-HCR",
@@ -150,7 +191,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   });
   const [premisesErrors, setPremisesErrors] = useState({});
 
-  // Documents State (inside step 6)
+  // Documents State
   const [documents, setDocuments] = useState({
     fireNocDoc: null,
     mcdTradeDoc: null,
@@ -174,16 +215,108 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     setToast({ message, type });
   };
 
-  // Step names dictionary
-  const steps = [
-    { num: 1, label: "Basic Details", sub: "Done" },
-    { num: 2, label: "License Category", sub: "Done" },
-    { num: 3, label: "Select License", sub: "Active" },
-    { num: 4, label: "Brand Registration", sub: "Liquor Brands" },
-    { num: 5, label: "Premise Details", sub: "Safety / Address" },
-    { num: 6, label: "Documents", sub: "Uploads" },
-    { num: 7, label: "Review & Submit", sub: "Success Finalize" }
-  ];
+  // Dynamic license steps computed mapping
+  const currentLicenseSteps = useMemo(() => {
+    const list = [
+      { num: 1, id: "basic", label: "Basic Details", sub: "Done" },
+      { num: 2, id: "category", label: "License Category", sub: "Done" },
+      { num: 3, id: "select", label: "Select License", sub: "Active" },
+      { num: 4, id: "applicant", label: "Applicant Details", sub: "Demographics" }
+    ];
+
+    let nextNum = 5;
+    if (selectedLicenseId === "L-20") {
+      list.push({ num: nextNum++, id: "train", label: "Train Details", sub: "L-20 Specific" });
+    }
+    
+    list.push({ num: nextNum++, id: "brand", label: "Brand Registration", sub: "Liquor Brands" });
+    
+    if (selectedLicenseId !== "L-20") {
+      list.push({ num: nextNum++, id: "premises", label: "Premise Details", sub: "Safety / Address" });
+    }
+
+    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Uploads" });
+    list.push({ num: nextNum++, id: "review", label: "Review & Submit", sub: "Success Finalize" });
+
+    return list;
+  }, [selectedLicenseId]);
+
+  // Applicant Submission validation helper
+  const handleApplicantSubmit = () => {
+    const errors = {};
+    if (!applicantForm.applicantName.trim()) {
+      errors.applicantName = "Applicant Name is required";
+    }
+    if (!applicantForm.dob) {
+      errors.dob = "Date of birth is required";
+    }
+    if (!applicantForm.occupation.trim()) {
+      errors.occupation = "Occupation is required";
+    }
+    if (!applicantForm.panNo.trim() || applicantForm.panNo.length !== 10) {
+      errors.panNo = "Valid 10-digit PAN number is required";
+    }
+    if (!applicantForm.address1.trim()) {
+      errors.address1 = "Address Line 1 is required";
+    }
+    if (!applicantForm.pin.trim() || applicantForm.pin.length !== 6) {
+      errors.pin = "Valid 6-digit pin code is required";
+    }
+    if (!applicantForm.mobile.trim() || applicantForm.mobile.length !== 10) {
+      errors.mobile = "Valid 10-digit mobile number is required";
+    }
+    if (!applicantForm.email.trim() || !applicantForm.email.includes("@")) {
+      errors.email = "Valid email address is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setApplicantErrors(errors);
+      triggerToast("Please verify required fields in primary applicant profile.", "error");
+      return false;
+    }
+    setApplicantErrors({});
+    return true;
+  };
+
+  // Train Submission validation helper
+  const handleTrainSubmit = () => {
+    const errors = {};
+    if (!trainForm.operatingCompany.trim()) {
+      errors.operatingCompany = "Operating company/board is required";
+    }
+    if (!trainForm.trainName.trim()) {
+      errors.trainName = "Train Name is required";
+    }
+    if (!trainForm.trainNumber.trim()) {
+      errors.trainNumber = "Train Number is required";
+    }
+    if (!trainForm.tempStoreAddress.trim()) {
+      errors.tempStoreAddress = "Temporary store warehouse address is required";
+    }
+    if (!trainForm.trainOrigin.trim()) {
+      errors.trainOrigin = "Originating train station is required";
+    }
+    if (!trainForm.trainRoutes || trainForm.trainRoutes.length === 0) {
+      errors.trainRoutes = "Please specify at least one route stop/junction";
+    }
+    if (!trainForm.numCompartments) {
+      errors.numCompartments = "Number of compartments is required";
+    }
+    if (!trainForm.numSeatCovers) {
+      errors.numSeatCovers = "Number of dining seat covers is required";
+    }
+    if (!trainForm.numDispensingCounters) {
+      errors.numDispensingCounters = "Number of dispensing counters is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setTrainErrors(errors);
+      triggerToast("Please specify the statutory train route and setup fields.", "error");
+      return false;
+    }
+    setTrainErrors({});
+    return true;
+  };
 
   // Brand association save helper
   const handleSaveBrand = (e) => {
@@ -310,7 +443,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     }
 
     setPremisesErrors({});
-    setCurrentStep(6);
+    setCurrentStep(7); // Proceed to Documents (Step 7)
   };
 
   // Final Action Filing
@@ -320,13 +453,13 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     setSuccessReceipt({
       applicationNo,
       licenseId: selectedLicenseId,
-      fee: selectedLicenseId === "L-15" ? "₹ 3,25,000" : "₹ 2,80,000",
+      fee: selectedLicenseId === "L-15" ? "₹ 3,25,000" : selectedLicenseId === "L-20" ? "₹ 2,00,000" : "₹ 2,80,000",
       date: new Date().toLocaleDateString('en-IN'),
       brandsCount: associatedBrands.length,
-      address: premisesForm.premiseAddress,
-      pincode: premisesForm.pincode
+      address: selectedLicenseId === "L-20" ? trainForm.tempStoreAddress : premisesForm.premiseAddress,
+      pincode: selectedLicenseId === "L-20" ? "110001" : premisesForm.pincode
     });
-    setCurrentStep(7);
+    setCurrentStep(8); // Proceed to Final Receipt (Step 8)
     showToast("Excise Star Classified Restaurant Privilege Code application created!");
   };
 
@@ -334,54 +467,72 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     <div className="brand-registration-page select-none text-slate-800">
       
       {/* Toast Notifier */}
-      {toast && (
-        <div className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl transition-all border transform translate-y-0 animate-bounce duration-300 ${
-          toast.type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
-          toast.type === 'error' ? 'bg-rose-50 text-rose-800 border-rose-200' :
-          'bg-blue-50 text-blue-800 border-blue-200'
-        }`}>
-          {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />}
-          {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />}
-          <span className="text-sm font-semibold">{toast.message}</span>
-          <button onClick={() => setToast(null)} className="ml-3 text-slate-400 hover:text-slate-600">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+{toast && (
+  <div className={`hcr-toast hcr-toast-${toast.type}`}>
+    {toast.type === "success" && (
+      <CheckCircle2 className="hcr-toast-icon hcr-success-icon" />
+    )}
+
+    {toast.type === "error" && (
+      <AlertCircle className="hcr-toast-icon hcr-error-icon" />
+    )}
+
+    <span className="hcr-toast-message">
+      {toast.message}
+    </span>
+
+    <button
+      onClick={() => setToast(null)}
+      className="hcr-toast-close"
+    >
+      <X className="hcr-toast-close-icon" />
+    </button>
+  </div>
+)}
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto w-full flex-grow">
+   <div className="hcr-container">
 
         {/* Dynamic Wizard Steps Indicator Row (32px vertical separation from header) */}
-        {currentStep < 7 && (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 mb-8 overflow-x-auto">
-            <div className="flex items-center justify-between min-w-[700px] relative">
+        {currentStep < 8 && (
+<div className="hcr-dynamic">
+  <div className="hcr-stepper">
               {/* Connector dots bar */}
-              <div className="absolute top-5 left-0 right-0 -translate-y-1/2 h-[2px] bg-slate-100 z-0 px-12">
-                <div 
-                  className="h-full bg-blue-600 transition-all duration-300" 
-                  style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-                />
-              </div>
+              <div className="hcr-step-progress">
+  <div
+    className="hcr-step-progress-fill"
+    style={{
+      width: `${((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100}%`,
+    }}
+  />
+</div>
 
-              {steps.map((st, i) => {
+              {currentLicenseSteps.map((st) => {
                 const isActive = currentStep === st.num;
                 const isCompleted = currentStep > st.num;
                 return (
-                  <div key={st.num} className="flex flex-col items-center flex-1 relative z-10">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-xs border-2 transition ${
-                      isCompleted ? "bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-50" :
-                      isActive ? "bg-blue-700 border-blue-700 text-white shadow-md shadow-blue-50 scale-110" :
-                      "bg-white border-slate-200 text-slate-400"
-                    }`}>
-                      {isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : <span>{st.num}</span>}
-                    </div>
-                    <span className={`text-[11px] font-extrabold mt-2 whitespace-nowrap ${
-                      isActive ? "text-blue-700" : isCompleted ? "text-emerald-700" : "text-slate-500"
-                    }`}>
-                      {st.label}
-                    </span>
-                    <span className="text-[9px] text-slate-400 mt-0.5 whitespace-nowrap">{st.sub}</span>
+                <div key={st.id} className="hcr-step-item">
+                <div className={`hcr-step-circle ${ isCompleted ? "hcr-step-completed" : isActive ? "hcr-step-active" : "hcr-step-pending" }`}>  {isCompleted ? (
+                <Check className="hcr-step-check" />
+                ) : (
+                  <span>{st.num}</span>
+                )}
+              </div>
+ <span
+    className={`hcr-step-label ${
+      isActive
+        ? "hcr-step-label-active"
+        : isCompleted
+        ? "hcr-step-label-completed"
+        : "hcr-step-label-pending"
+    }`}
+  >
+    {st.label}
+  </span>
+
+  <span className="hcr-step-subtitle">
+    {st.sub}
+  </span>
                   </div>
                 );
               })}
@@ -390,51 +541,158 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
         )}
 
         {/* STEP CONTROLLER CONTENT */}
-        <div className="min-h-[450px]">
+       <div className="hcr-content-area">
           
           {/* STEP 3: SELECT LICENSE TYPE */}
           {currentStep === 3 && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-              <SelectLicenseType 
-                selectedType={selectedLicenseId}
-                onSelectType={(id) => setSelectedLicenseId(id)}
-                onBack={onBackToDashboard}
-                onContinue={() => setCurrentStep(4)}
-              />
+           <div className="hcr-license-card">
+  <SelectLicenseType
+    selectedType={selectedLicenseId}
+    onSelectType={(id) => setSelectedLicenseId(id)}
+    onBack={onBackToDashboard}
+    onContinue={() => setCurrentStep(4)}
+  />
+
               
               {/* Active select step continue helper */}
-              <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+             <div className="hcr-license-footer">
+  <button
+    onClick={() => setCurrentStep(4)}
+    className="btn btn-primary hcr-continue-btn"
+  >
+    <span>Continue Application</span>
+    <ArrowRight className="hcr-arrow-icon" />
+  </button>
+</div>
+            </div>
+          )}
+
+          {/* STEP 4: APPLICANT DETAILS (COMMON FIRST STEP FOR ALL HCR LICENSES) */}
+          {currentStep === 4 && (
+            <div className="hcr-form-section">
+              <div className="hcr-step-header">
+                <div>
+                  <h2 className="hcr-step-title font-sans">Step 4: Applicant Personal & Profile Details</h2>
+                  <p className="hcr-step-description font-sans">
+                    Verify legal, identification, demographic, and resident contact coordinates for receipt-docket generation.
+                  </p>
+                </div>
+                <div className="hcr-license-badge">
+                  Licence Chosen: <span className="hcr-license-badge-value">{selectedLicenseId}</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
+                <HcrApplicantDetails
+                  formData={applicantForm}
+                  onChange={(key, val) => setApplicantForm(prev => ({ ...prev, [key]: val }))}
+                  errors={applicantErrors}
+                />
+              </div>
+
+              {/* Navigation for Applicant details step */}
+              <div className="hcr-wizard">
                 <button
-                  onClick={() => setCurrentStep(4)}
-                  className="btn btn-primary px-8 py-3.5"
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  className="btn btn-secondary"
                 >
-                  <span>Continue Application</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
+                  <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
+                  <span>Go Back</span>
                 </button>
+                <div className="hcr-nav-actions">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (handleApplicantSubmit()) {
+                        setCurrentStep(5); // Go to next step (Step 5 which is Train Details for L-20, or Brand Registration for others)
+                      }
+                    }}
+                    className="btn btn-primary"
+                  >
+                    <span>Proceed to Next Step</span>
+                    <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
-          {/* STEP 4: BRAND REGISTRATION / ASSOCIATION (THE DYNAMIC REQUESTED PAGE!) */}
-          {currentStep === 4 && (
-            <div className="space-y-8 animate-fade text-left">
+          {/* STEP 5: LUXURY TRAIN DETAILS (L-20 LICENSE EXCLUSIVE) */}
+          {currentStep === 5 && selectedLicenseId === "L-20" && (
+            <div className="hcr-form-section animate-fade">
+              <div className="hcr-step-header">
+                <div>
+                  <h2 className="hcr-step-title font-sans">Step 5: L-20 Luxury Train Service Configurations</h2>
+                  <p className="hcr-step-description font-sans">
+                    Configure operating corporation, transit routes, stops, compartment maps, and staff dimensions.
+                  </p>
+                </div>
+                <div className="hcr-license-badge">
+                  Licence Chosen: <span className="hcr-license-badge-value">{selectedLicenseId}</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
+                <L20
+                  formData={trainForm}
+                  onChange={(key, val) => setTrainForm(prev => ({ ...prev, [key]: val }))}
+                  errors={trainErrors}
+                />
+              </div>
+
+              {/* Navigation for Train details step */}
+              <div className="hcr-wizard">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(4)} // Back to Applicant details
+                  className="btn btn-secondary"
+                >
+                  <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
+                  <span>Go Back</span>
+                </button>
+                <div className="hcr-nav-actions">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (handleTrainSubmit()) {
+                        setCurrentStep(6); // Go to Brand Registration (Step 6 for L-20)
+                      }
+                    }}
+                    className="btn btn-primary"
+                  >
+                    <span>Proceed to Brand Registration</span>
+                    <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* DYNAMIC PACKAGED LIQUOR BRAND REGISTRATION / ASSOCIATION */}
+          {((currentStep === 5 && selectedLicenseId !== "L-20") || (currentStep === 6 && selectedLicenseId === "L-20")) && (
+            <div className="hcr-form-section">
               
               {/* Section Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200">
+              <div className="hcr-step-header">
                 <div>
-                  <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">Step 4: Packaged Liquor Brand Association</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Register the wholesale/retail bottle codes and trademark names associated with this HCR License profile.</p>
+                  <h2 className="hcr-step-title font-sans">
+                    Step {selectedLicenseId === "L-20" ? 6 : 5}: Packaged Liquor Brand Association
+                  </h2>
+                  <p className="hcr-step-description font-sans">
+                    Register the wholesale/retail bottle codes and trademark names associated with this HCR License profile.
+                  </p>
                 </div>
-                <div className="text-xs font-bold text-blue-700 bg-blue-50 py-1.5 px-3.5 rounded-full mt-2 sm:mt-0 max-w-max">
-                  Licence Chosen: <span className="font-extrabold">{selectedLicenseId}</span>
+                <div className="hcr-license-badge">
+                  Licence Chosen: <span className="hcr-license-badge-value">{selectedLicenseId}</span>
                 </div>
               </div>
 
               {/* Glassmorphism Input Form Card */}
               <div className="brand-card">
-                <div className="flex items-center gap-2 mb-6">
-                  <TagIcon className="w-5 h-5 text-blue-700" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700">Add Brand Specifications</h3>
+                <div className="hcr-brand-header">
+                  <TagIcon className="hcr-brand-icon" />
+                  <h3 className="hcr-brand-title font-sans"> Add Brand Specifications </h3>
                 </div>
 
                 <form onSubmit={handleSaveBrand} className="space-y-6">
@@ -442,7 +700,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     
                     {/* 1. Category Dropdown */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Liquor Category *</label>
+                      <label className="hcr-form-label"> Liquor Category * </label>
                       <select 
                         value={brandForm.category}
                         onChange={handleBrandCategoryChange}
@@ -456,7 +714,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 2. Kind of Liquor */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Kind of Liquor</label>
+                      <label className="hcr-form-label"> Kind of Liquor </label>
                       <select
                         value={brandForm.kindOfLiquor}
                         onChange={handleBrandKindChange}
@@ -471,7 +729,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 3. Liquor Type */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Liquor Type</label>
+                      <label className="hcr-form-label"> Liquor Type </label>
                       <select
                         value={brandForm.liquorType}
                         onChange={(e) => setBrandForm(prev => ({ ...prev, liquorType: e.target.value }))}
@@ -486,7 +744,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 4. Old Brand ID */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Old Brand ID (Reference)</label>
+                      <label className="hcr-form-label"> Old Brand ID (Reference) </label>
                       <input 
                         type="text"
                         placeholder="e.g. OLD-EXC-4412"
@@ -498,7 +756,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 5. Brand Code */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Brand Code</label>
+                      <label className="hcr-form-label">Brand Code</label>
                       <select
                         value={brandForm.brandCode}
                         onChange={(e) => setBrandForm(prev => ({ ...prev, brandCode: e.target.value }))}
@@ -512,7 +770,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 6. Measurment volume */}
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Quarts Measure</label>
+                      <label className="hcr-form-label">Quarts Measure</label>
                       <input
                         type="text"
                         placeholder="e.g. 750 Ml"
@@ -524,7 +782,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 7. Brand Name (Spanning Full width) */}
                     <div className="form-group full-width">
-                      <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Brand Name *</label>
+                      <label className="hcr-form-label">Brand Name *</label>
                       <textarea
                         rows="2"
                         placeholder="Enter full legislative trademark name (e.g. BACARDI WHITE SUPERIOR RUM)"
@@ -533,17 +791,16 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         className="textarea-box"
                       />
                       {brandFormErrors.brandName && (
-                        <span className="text-[11px] text-rose-600 font-bold mt-1.5 flex items-center gap-1">
-                          <AlertCircle className="w-3.5 h-3.5" />
+                        <span className="hcr-error-message">  
+                          <AlertCircle className="hcr-error-icon" />
                           {brandFormErrors.brandName}
                         </span>
                       )}
                     </div>
-
                   </div>
 
                   {/* Add Brand Action Row */}
-                  <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                  <div className="hcr-action-row">
                     <button
                       type="button"
                       onClick={() => setBrandForm({
@@ -557,13 +814,10 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       })}
                       className="btn btn-secondary"
                     >
-                      <RotateCcw className="w-4 h-4" />
+                      <RotateCcw className="hcr-action-icon" />
                       <span>Reset Form</span>
                     </button>
-                    <button
-                      type="submit"
-                      className="btn btn-primary bg-indigo-700 hover:bg-indigo-800"
-                    >
+                    <button type="submit" className="btn btn-primary hcr-reset-btn">
                       <Plus className="w-4 h-4" />
                       <span>Add Brand to Profile</span>
                     </button>
@@ -576,13 +830,16 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 
                 <div className="table-header">
                   <div>
-                    <h4 className="text-sm font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                    <h4 className="hcr-brand-list-title font-sans">
                       <span>Brand Associations List</span>
-                      <span className="bg-blue-100 text-blue-800 text-[10px] py-0.5 px-2 rounded-full font-extrabold">
+                      <span className="hcr-brand-count-badge font-sans">
                         {associatedBrands.length} Associated
                       </span>
                     </h4>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Below are the custom entities registered for brand validation with Delhi Excise.</p>
+
+                    <p className="hcr-brand-list-description font-sans">
+                      Below are the custom entities registered for brand validation with Delhi Excise.
+                    </p>
                   </div>
 
                   {/* Simple live search box */}
@@ -598,9 +855,13 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 {/* Table Layout */}
                 {filteredBrands.length === 0 ? (
                   <div className="empty-state">
-                    <Sliders className="w-10 h-10 text-slate-300 mx-auto mb-3 animate-pulse" />
-                    <p className="font-bold text-sm text-slate-700">No records available. Please search or add a brand.</p>
-                    <p className="text-xs text-slate-400 mt-1">Fill the brand form fields above to attach brands to your star classification package.</p>
+                    <Sliders className="hcr-empty-icon" />
+                    <p className="hcr-empty-title font-sans">
+                      No records available. Please search or add a brand.
+                    </p>
+                    <p className="hcr-empty-description font-sans">
+                      Fill the brand form fields above to attach brands to your star classification package.
+                    </p>
                   </div>
                 ) : (
                   <div className="table-container">
@@ -617,36 +878,40 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredBrands.map(b => (
-                          <tr key={b.id} className="hover:bg-slate-50/50 transition">
-                            <td className="font-mono text-xs font-bold text-blue-700">{b.id}</td>
-                            <td className="font-mono text-xs text-slate-600">{b.brandCode}</td>
+                        {filteredBrands.map((b) => (
+                          <tr key={b.id} className="hcr-table-row">
+                            <td className="hcr-id-cell">{b.id}</td>
+                            <td className="hcr-code-cell">{b.brandCode}</td>
                             <td>
-                              <div className="flex flex-col">
-                                <span className="font-bold text-xs text-slate-900">{b.brandName}</span>
-                                <span className="text-[10px] text-slate-400 uppercase font-mono mt-0.5">{b.category} / {b.kindOfLiquor}</span>
+                              <div className="hcr-brand-info">
+                                <span className="hcr-brand-name">{b.brandName}</span>
+                                <span className="hcr-brand-meta font-sans">
+                                  {b.category} / {b.kindOfLiquor}
+                                </span>
                               </div>
                             </td>
                             <td>
-                              <div className="flex flex-col">
-                                <span className="text-xs font-semibold text-slate-800">{b.liquorType}</span>
-                                <span className="text-[10px] text-slate-400">{b.kindOfLiquor.split(' (')[0]}</span>
+                              <div className="hcr-brand-info">
+                                <span className="hcr-liquor-type font-sans">{b.liquorType}</span>
+                                <span className="hcr-liquor-subtype font-sans">
+                                  {b.kindOfLiquor.split(" (")[0]}
+                                </span>
                               </div>
                             </td>
-                            <td className="font-mono text-xs text-slate-600">{b.measure}</td>
+                            <td className="hcr-measure-cell">{b.measure}</td>
                             <td>
-                              <span className="inline-flex items-center gap-1 text-[9px] bg-emerald-50 text-emerald-700 font-bold uppercase tracking-wider py-1 px-2 rounded-md border border-emerald-100">
-                                <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                              <span className="hcr-status-badge font-sans">
+                                <span className="hcr-status-dot" />
                                 {b.status}
                               </span>
                             </td>
-                            <td className="text-right">
+                            <td className="hcr-action-cell">
                               <button
                                 onClick={() => handleRemoveBrand(b.id)}
-                                className="p-2 text-slate-400 hover:text-rose-600 rounded-lg transition"
+                                className="hcr-delete-btn"
                                 title="Remove associated brand"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="hcr-delete-icon" />
                               </button>
                             </td>
                           </tr>
@@ -658,28 +923,39 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
               </div>
 
               {/* Wizard navigation and proceed controls */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+              <div className="hcr-wizard">
                 <button
                   type="button"
-                  onClick={() => setCurrentStep(3)}
+                  onClick={() => {
+                    if (selectedLicenseId === "L-20") {
+                      setCurrentStep(5); // Back to luxury train carriage details (Step 5)
+                    } else {
+                      setCurrentStep(4); // Back to generic applicant profile details (Step 4)
+                    }
+                  }}
                   className="btn btn-secondary"
                 >
-                  <ChevronLeft className="w-4 h-4 mr-1.5" />
+                  <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                   <span>Go Back</span>
                 </button>
-                <div className="flex items-center gap-3">
+                <div className="hcr-nav-actions">
                   <button
                     type="button"
                     onClick={() => {
                       if(associatedBrands.length === 0) {
                         triggerToast("Tip: Registering at least 1 brand is recommended, but you may proceed as draft.", "info");
                       }
-                      setCurrentStep(5);
+                      
+                      if (selectedLicenseId === "L-20") {
+                        setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
+                      } else {
+                        setCurrentStep(6); // Proceed to Premises Details (Step 6 for non-L20)
+                      }
                     }}
                     className="btn btn-primary"
                   >
-                    <span>Proceed to Premises Details</span>
-                    <ChevronRight className="w-4 h-4 ml-1.5" />
+                    <span>{selectedLicenseId === "L-20" ? "Proceed to Documents" : "Proceed to Premises Details"}</span>
+                    <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                   </button>
                 </div>
               </div>
@@ -687,22 +963,22 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
             </div>
           )}
 
-          {/* STEP 5: PREMISE DETAILS */}
-          {currentStep === 5 && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-              <div className="border-b border-slate-100 pb-4 mb-6 text-left">
-                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Building className="w-5 h-5 text-blue-700" />
-                  <span>Step 5: Premise & Structural Layout Details</span>
+          {/* STEP 6: PREMISE DETAILS (NON L-20 ONLY) */}
+          {currentStep === 6 && selectedLicenseId !== "L-20" && (
+            <div className="hcr-step-card animate-fade">
+              <div className="hcr-step-card-header">
+                <h3 className="hcr-step-card-title">
+                  <Building className="hcr-step-card-icon" />
+                  <span className="font-sans">Step 6: Premise & Structural Layout Details</span>
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">Specify layout dimensions, local authorities compliance, and physical location coordinates of Star Class premises.</p>
+                <p className="hcr-step-card-description font-sans">Specify layout dimensions, local authorities compliance, and physical location coordinates of Star Class premises.</p>
               </div>
 
-              <form onSubmit={handlePremisesSubmit} className="space-y-6 text-left">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handlePremisesSubmit} className="hcr-premises-form">
+                <div className="hcr-form-grid">
                   {/* Address Textarea */}
-                  <div className="form-group md:col-span-2">
-                    <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Exact Premise Delivery Address *</label>
+                  <div className="form-group hcr-grid-span-2">
+                    <label className="hcr-form-label">Exact Premise Delivery Address *</label>
                     <textarea
                       rows="2"
                       value={premisesForm.premiseAddress}
@@ -710,12 +986,14 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       className="textarea-box"
                       placeholder="Enter licensed delivery area location"
                     />
-                    {premisesErrors.premiseAddress && <span className="text-xs text-rose-600 font-bold mt-1">{premisesErrors.premiseAddress}</span>}
+                    {premisesErrors.premiseAddress && <span className="hcr-field-error"> {premisesErrors.premiseAddress}</span>}
                   </div>
 
                   {/* Pincode */}
                   <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Delhi Area Pin Code *</label>
+                    <label className="hcr-form-label">
+                      Delhi Area Pin Code *
+                    </label>
                     <input 
                       type="text"
                       maxLength="6"
@@ -724,12 +1002,12 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       className="input-box"
                       placeholder="e.g. 110037"
                     />
-                    {premisesErrors.pincode && <span className="text-xs text-rose-600 font-bold mt-1">{premisesErrors.pincode}</span>}
+                    {premisesErrors.pincode && <span className="hcr-field-error">{premisesErrors.pincode}</span>}
                   </div>
 
                   {/* MCD Certificate Id */}
                   <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">MCD Trade Clearance Registration ID *</label>
+                    <label className="hcr-form-label">MCD Trade Clearance Registration ID *</label>
                     <input 
                       type="text"
                       value={premisesForm.mcdTradeLicenseNum}
@@ -737,87 +1015,86 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       className="input-box"
                       placeholder="e.g. MCD-889-HCR"
                     />
-                    {premisesErrors.mcdTradeLicenseNum && <span className="text-xs text-rose-600 font-bold mt-1">{premisesErrors.mcdTradeLicenseNum}</span>}
+                    {premisesErrors.mcdTradeLicenseNum && <span className="hcr-field-error">{premisesErrors.mcdTradeLicenseNum}</span>}
                   </div>
 
                   {/* Affirmations toggles */}
-                  <div className="md:col-span-2 border-t border-slate-100 pt-4 space-y-4">
-                    <div className="flex items-start gap-3">
+                  <div className="hcr-declaration-section">
+                    <div className="hcr-checkbox-row">
                       <input 
                         id="nocFire"
                         type="checkbox"
                         checked={premisesForm.hasFireNoc}
                         onChange={(e) => setPremisesForm(prev => ({ ...prev, hasFireNoc: e.target.checked }))}
-                        className="w-4 h-4 mt-0.5 rounded text-blue-600 cursor-pointer"
+                        className="hcr-checkbox"
                       />
-                      <label htmlFor="nocFire" className="text-xs font-semibold text-slate-700 leading-relaxed cursor-pointer select-none">
+                      <label htmlFor="nocFire" className="hcr-checkbox-label">
                         Certified Fire Security NOC: Confirm that local Fire Department audit and escape routes have been authorized for Star service class layout.
                       </label>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="hcr-checkbox-row">
                       <input 
                         id="taxAff"
                         type="checkbox"
                         checked={premisesForm.hasTaxCompliance}
                         onChange={(e) => setPremisesForm(prev => ({ ...prev, hasTaxCompliance: e.target.checked }))}
-                        className="w-4 h-4 mt-0.5 rounded text-blue-600 cursor-pointer"
+                        className="hcr-checkbox"
                       />
-                      <label htmlFor="taxAff" className="text-xs font-semibold text-slate-700 leading-relaxed cursor-pointer select-none">
+                      <label htmlFor="taxAff" className="hcr-checkbox-label">
                         Pro-rata Tax Affirmation: Confirm that all municipal taxes, commercial levies, and excise excise dues for the property have been settled.
                       </label>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="hcr-checkbox-row">
                       <input 
                         id="policyChecked"
                         type="checkbox"
                         checked={premisesForm.declarationsChecked}
                         onChange={(e) => setPremisesForm(prev => ({ ...prev, declarationsChecked: e.target.checked }))}
-                        className="w-4 h-4 mt-0.5 rounded text-blue-600 cursor-pointer"
+                        className="hcr-checkbox"
                       />
-                      <label htmlFor="policyChecked" className="text-xs font-bold text-slate-800 leading-relaxed cursor-pointer select-none">
-                        I hereby declare and affirm that the locations structural maps are verified, compliant with municipal norms and I accept absolute liability for regulatory deviation. <span className="text-rose-600">*</span>
+                      <label htmlFor="policyChecked" className="hcr-checkbox-label hcr-checkbox-label-required">
+                        I hereby declare and affirm that the locations structural maps are verified, compliant with municipal norms and I accept absolute liability for regulatory deviation. 
+                        <span className="hcr-required">*</span>
                       </label>
                     </div>
-                    {premisesErrors.declarationsChecked && <span className="text-xs text-rose-600 font-bold block mt-1">{premisesErrors.declarationsChecked}</span>}
+                    {premisesErrors.declarationsChecked && <span className="hcr-field-error">{premisesErrors.declarationsChecked}</span>}
                   </div>
                 </div>
 
                 {/* Back and Continue */}
-                <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep(4)}
-                    className="btn btn-secondary"
-                  >
-                    <ChevronLeft className="w-4 h-4 mr-1.5" />
+                <div className="hcr-step-navigation">
+                  <button type="button" onClick={() => setCurrentStep(5)} className="btn btn-secondary">
+                    <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                     <span>Go Back</span>
                   </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                  >
+                  <button type="submit" className="btn btn-primary">
                     <span>Proceed to Documents</span>
-                    <ChevronRight className="w-4 h-4 ml-1.5" />
+                    <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                   </button>
                 </div>
               </form>
             </div>
           )}
 
-          {/* STEP 6: DOCUMENTS & UPLOADS */}
-          {currentStep === 6 && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-              <div className="border-b border-slate-100 pb-4 mb-6 text-left">
-                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-blue-700" />
-                  <span>Step 6: Compliance Documentation Upload</span>
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">Upload verified legislative documents to authorize the digital privilege card generation.</p>
-              </div>
+        {/* STEP 7: DOCUMENTS & UPLOADS */}
+        {currentStep === 7 && (
+          <div className="hcr-step-card animate-fade">
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <div className="hcr-step-card-header">
+              <h3 className="hcr-step-card-title">
+                <Upload className="hcr-step-card-icon" />
+                <span className="font-sans">Step 7: Compliance Documentation Upload</span>
+              </h3>
+
+              <p className="hcr-step-card-description font-sans">
+                Upload verified legislative documents to authorize the
+                digital privilege card generation.
+              </p>
+            </div>
+
+             <div className="hcr-document-grid">
                 {/* Custom upload slots */}
                 {[
                   { key: 'fireNocDoc', title: 'Fire NOC Certificate', desc: 'Authorized PDF file copy under DFS Delhi agency.' },
@@ -825,145 +1102,156 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   { key: 'vatRegDoc', title: 'VAT / GST Commercial registration', desc: 'Signed tax invoice or portal filing document.' },
                   { key: 'identityProof', title: 'Director ID Proof copy', desc: 'Certified Aadhar / PAN / Board Resolution copy.' }
                 ].map(doc => {
-                  return (
-                    <div key={doc.key} className="p-5 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50 flex flex-col justify-between">
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">{doc.title}</h4>
-                        <p className="text-[11px] text-slate-400 mt-1 font-semibold">{doc.desc}</p>
-                      </div>
+                 return (
+  <div key={doc.key} className="hcr-document-card">
+    <div>
+      <h4 className="hcr-document-title">
+        {doc.title}
+      </h4>
 
-                      {/* Fake upload simulation field */}
-                      <div className="mt-4 flex items-center justify-between gap-4 bg-white border border-slate-200 p-2.5 rounded-xl">
-                        <span className="text-[11px] text-slate-500 font-bold truncate">
-                          {documents[doc.key] ? documents[doc.key] : "No document uploaded yet"}
-                        </span>
-                        
-                        {documents[doc.key] ? (
-                          <button
-                            onClick={() => setDocuments(prev => ({ ...prev, [doc.key]: null }))}
-                            className="text-xs font-semibold text-rose-600 hover:bg-rose-50 px-2.5 py-1 rounded"
-                          >
-                            Remove
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setDocuments(prev => ({ ...prev, [doc.key]: `excise_attachment_${doc.key}.pdf` }));
-                              triggerToast(`${doc.title} uploaded successfully!`);
-                            }}
-                            className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-blue-100 hover:bg-blue-100 transition cursor-pointer shrink-0"
-                          >
-                            Upload PDF
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
+      <p className="hcr-document-description">
+        {doc.desc}
+      </p>
+    </div>
+
+    {/* Fake upload simulation field */}
+    <div className="hcr-upload-box">
+      <span className="hcr-upload-filename">
+        {documents[doc.key]
+          ? documents[doc.key]
+          : "No document uploaded yet"}
+      </span>
+
+      {documents[doc.key] ? (
+        <button
+          onClick={() =>
+            setDocuments(prev => ({
+              ...prev,
+              [doc.key]: null
+            }))
+          }
+          className="hcr-remove-upload-btn"
+        >
+          Remove
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setDocuments(prev => ({
+              ...prev,
+              [doc.key]: `excise_attachment_${doc.key}.pdf`
+            }));
+            triggerToast(`${doc.title} uploaded successfully!`);
+          }}
+          className="hcr-upload-btn"
+        >
+          Upload PDF
+        </button>
+      )}
+    </div>
+  </div>
+);
                 })}
               </div>
 
               {/* Informative prompt */}
-              <div className="blue-info-alert mt-6 text-left">
-                <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                <p className="text-xs text-blue-800 leading-relaxed">
-                  <strong>Verification SLA Notice:</strong> Uploading dummy or invalid documents will result in instant rejection of the applicant dossier by physical auditing officers. Review details before remitting file fees.
+              <div className="hcr-info-alert">
+                <Info className="hcr-info-alert-icon" />
+
+                <p className="hcr-info-alert-text">
+                  <strong>Verification SLA Notice:</strong> Uploading dummy or
+                  invalid documents will result in instant rejection of the
+                  applicant dossier by physical auditing officers. Review details
+                  before remitting file fees.
                 </p>
               </div>
 
               {/* Back and Submit Application actions */}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
-                <button
+             <div className="hcr-submit-actions">
+              <button
                   type="button"
-                  onClick={() => setCurrentStep(5)}
+                  onClick={() => setCurrentStep(6)}
                   className="btn btn-secondary"
                 >
-                  <ChevronLeft className="w-4 h-4 mr-1.5" />
+                 <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                   <span>Go Back</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleFinalSubmit}
-                  className="btn btn-primary bg-emerald-600 hover:bg-emerald-700"
+                  className="btn btn-success"
                 >
-                  <FileCheck className="w-4 h-4 mr-1.5" />
+                   <FileCheck className="hcr-nav-icon hcr-nav-icon-right" />
                   <span>Register & File Application</span>
                 </button>
               </div>
             </div>
           )}
 
-          {/* STEP 7: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
-          {currentStep === 7 && successReceipt && (
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8 animate-fade text-slate-800 select-none">
-              <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse">
-                <Check className="w-10 h-10 stroke-[3]" />
-                <span className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-25"></span>
+          {/* STEP 8: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
+          {currentStep === 8 && successReceipt && (
+            <div className="hcr-success-card">
+              <div className="hcr-success-icon-wrapper">
+      <Check className="hcr-success-icon" />
+      <span className="hcr-success-ring"></span>
               </div>
               
-              <div className="space-y-3">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+    <div className="hcr-success-content">
+      <h2 className="hcr-success-title">
                   HCR Application Filed Successfully
                 </h2>
-                <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed font-semibold">
-                  Excise privilege dossier generated for category <span className="font-extrabold text-slate-800">{successReceipt.licenseId}</span>. Associated brand parameters have been logged and locked for municipal clearance.
+                  <p className="hcr-success-description">
+                  Excise privilege dossier generated for category  <span className="hcr-success-license">{successReceipt.licenseId}</span>. Associated brand parameters have been logged and locked for municipal clearance.
                 </p>
               </div>
 
               {/* Structured Receipt Info */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-left space-y-4 shadow-sm max-w-lg mx-auto">
-                <div className="flex justify-between items-center text-xs border-b border-slate-100 pb-3">
-                  <span className="font-bold text-slate-400 uppercase tracking-widest font-mono">Dossier Docket Record</span>
-                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase">PENDING INSPECT</span>
-                </div>
+              <div className="hcr-receipt-card">
+                <div className="hcr-receipt-header">
+                  <span className="hcr-receipt-title">Dossier Docket Record</span>
+                 <span className="hcr-receipt-status"> PENDING INSPECT </span>
+              </div>
 
-                <div className="grid grid-cols-2 gap-y-4 gap-x-3 text-xs">
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">File Reference No</span>
-                    <span className="font-mono font-black text-slate-800 text-sm select-all">{successReceipt.applicationNo}</span>
+               <div className="hcr-receipt-grid">
+                <div className="hcr-receipt-item">
+                  <span className="hcr-receipt-label"> File Reference No </span>
+                  <span className="hcr-receipt-value hcr-receipt-reference"> {successReceipt.applicationNo} </span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">License Class</span>
-                    <span className="font-bold text-blue-700 text-sm">{successReceipt.licenseId} Premium Class</span>
+                  <div className="hcr-receipt-item">
+                    <span className="hcr-receipt-label"> License Class </span>
+                    <span className="hcr-receipt-value hcr-receipt-license">{successReceipt.licenseId} Premium Class </span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Filing Timestamp</span>
-                    <span className="font-bold text-slate-800 text-sm">{successReceipt.date}</span>
+                  <div className="hcr-receipt-item">
+                    <span className="hcr-receipt-label"> Filing Timestamp </span>
+                    <span className="hcr-receipt-value"> {successReceipt.date} </span>
+                  </div>  
+                  <div className="hcr-receipt-item">
+                    <span className="hcr-receipt-label"> Linked Liquor Brand </span>
+                    <span className="hcr-receipt-value hcr-receipt-brand-count"> {successReceipt.brandsCount} Registered </span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Linked Liquor Brands</span>
-                    <span className="font-extrabold text-blue-600 text-sm">{successReceipt.brandsCount} Registered</span>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Structure Premise Address</span>
-                    <span className="font-semibold text-slate-600 text-xs block leading-relaxed">{successReceipt.address} (Pincode: {successReceipt.pincode})</span>
+                   <div className="hcr-receipt-item hcr-receipt-item-full">
+                    <span className="hcr-receipt-label"> Structure Premise Address </span> 
+                    <span className="hcr-receipt-address"> {successReceipt.address} (Pincode: {successReceipt.pincode}) </span>
                   </div>
                 </div>
               </div>
 
               {/* Success primary buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                <button
-                  onClick={onBackToDashboard}
-                  className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer border-none"
-                >
-                  Return to Portal Home
-                </button>
-                <button
-                  onClick={() => {
-                    showToast("Excise Star Classified Docket receipt generated and saved!");
-                  }}
-                  className="px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl text-xs transition cursor-pointer border-none shadow-md"
-                >
-                  Download Docket Summary Receipt
-                </button>
-              </div>
-
-            </div>
-          )}
-
-        </div>
-
-      </div>
+              <div className="hcr-success-actions">
+              <button onClick={onBackToDashboard}  className="hcr-btn-secondary">
+              Return to Portal Home
+              </button>
+              <button onClick={() => { showToast("Excise Star Classified Docket receipt generated and saved!");
+              }}
+              className="hcr-btn-download"
+              >
+    Download Docket Summary Receipt
+  </button>
+</div>
+</div>          
+)}
+</div>
+</div>
     </div>
   );
 }

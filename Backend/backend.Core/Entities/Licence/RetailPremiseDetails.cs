@@ -8,7 +8,7 @@ namespace backend.Core.Entities.Licence
         [Key]
         [Required]
         [StringLength(50)]
-        public string Application_Id_No { get; set; }
+        public string ApplicationIdNo { get; set; }
 
         [StringLength(250)]
         public string? OwnerPremiseAddress1 { get; set; }
@@ -32,7 +32,7 @@ namespace backend.Core.Entities.Licence
         public string? OwnerPremiseSubDivision_Code { get; set; }
 
         [StringLength(10)]
-        public string? OwnerPremisePS_Code { get; set; }
+        public string? OwnerPremisePSCode { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal? ProposedPremiseLength { get; set; }
