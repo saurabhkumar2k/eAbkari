@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.Core.Entities.Licence
 {
     public class ApplicantLicensePartnersDetails

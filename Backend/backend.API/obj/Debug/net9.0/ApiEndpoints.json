@@ -43,6 +43,22 @@
   },
   {
     "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetPoliceStations",
+    "RelativePath": "api/LGDiretory/PoliceStations/{district_code}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "district_code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
     "Method": "GetQuestions",
     "RelativePath": "api/LGDiretory/Question",
     "HttpMethod": "GET",
@@ -88,9 +104,51 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateWarehouseLicense",
+    "RelativePath": "api/LicenseeCategories/ApplyWarehouseLicense",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WarehouseDetailsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "GetApplicantByRegId",
+    "RelativePath": "api/LicenseeCategories/GetApplicantByRegId/{regId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "backend.API.Controllers.LiquorMasterController",
     "Method": "GetCategory",
     "RelativePath": "api/LiquorMaster/Category",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetWholesaleLicenseeCategory",
+    "RelativePath": "api/LiquorMaster/GetWholesaleLicenseeCategory",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -243,11 +301,6 @@
         "IsRequired": false
       },
       {
-        "Name": "City",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "StateUT",
         "Type": "System.String",
         "IsRequired": false
@@ -339,6 +392,11 @@
       },
       {
         "Name": "PanNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Landline",
         "Type": "System.String",
         "IsRequired": false
       },

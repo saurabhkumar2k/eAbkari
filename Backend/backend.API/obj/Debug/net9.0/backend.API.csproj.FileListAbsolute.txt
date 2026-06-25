@@ -252,6 +252,9 @@ E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\refint\backend.API.d
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\backend.API.pdb
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\backend.API.genruntimeconfig.cache
 E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\ref\backend.API.dll
+<<<<<<< HEAD
+E:\New_eAbkari\eAbkari\Backend\backend.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+=======
 C:\New\eabkari\backend\backend.api\bin\Debug\net9.0\appsettings.Development.json
 C:\New\eabkari\backend\backend.api\bin\Debug\net9.0\appsettings.json
 C:\New\eabkari\backend\backend.api\bin\Debug\net9.0\appsettings.Production.json
@@ -337,3 +340,4 @@ C:\New\eabkari\backend\backend.api\obj\Debug\net9.0\refint\backend.API.dll
 C:\New\eabkari\backend\backend.api\obj\Debug\net9.0\backend.API.pdb
 C:\New\eabkari\backend\backend.api\obj\Debug\net9.0\backend.API.genruntimeconfig.cache
 C:\New\eabkari\backend\backend.api\obj\Debug\net9.0\ref\backend.API.dll
+>>>>>>> origin/master

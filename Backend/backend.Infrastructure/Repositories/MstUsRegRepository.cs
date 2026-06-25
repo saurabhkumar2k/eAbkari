@@ -34,7 +34,9 @@ namespace backend.Infrastructure.Repositories
                 PIN = x.PIN,
                 Email = x.Email,
                 Mobile = x.Mobile,
-                IsPunishableOffence=x.IsPunishableOffence
+                IsPunishableOffence=x.IsPunishableOffence,
+                Landline=x.Landline,
+                applicantName=(x.FirstName + " " + x.LastName).Trim()
             })
             .ToListAsync();
 

@@ -60,7 +60,14 @@ console.log("DirectorRow constitutionType:", constitutionType);
           />
         </div>
 
-        {/* PAN */}
+     
+
+
+
+        </div>
+
+<div className="form-row">
+   {/* PAN */}
         <div className="form-item">
           <label>PAN No *</label>
           <input
@@ -90,11 +97,29 @@ console.log("DirectorRow constitutionType:", constitutionType);
               No
             </button>
           </div>
-        </div>
-
-
 
         </div>
+
+
+          <div className="form-item">
+            
+            
+            
+            {constitutionType === "Company" && (
+  <input
+    value={director.dinNo || ""}
+    label="DIN No"
+    placeholder="DIN No"
+    onChange={(e) =>
+      onChange(index, "dinNo", e.target.value)
+    }
+  />
+)}</div>
+
+
+  </div>
+
+
 
 
 {/* 🔥 FILE ROW (FULL WIDTH) */}

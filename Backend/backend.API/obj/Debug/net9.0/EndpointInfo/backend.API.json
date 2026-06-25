@@ -71,6 +71,28 @@
         }
       }
     },
+    "/api/LGDiretory/PoliceStations/{district_code}": {
+      "get": {
+        "tags": [
+          "LGDiretory"
+        ],
+        "parameters": [
+          {
+            "name": "district_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/LicenseDocument/documents": {
       "get": {
         "tags": [
@@ -126,6 +148,60 @@
         }
       }
     },
+    "/api/LicenseeCategories/ApplyWarehouseLicense": {
+      "post": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseDetailsDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseDetailsDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarehouseDetailsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LicenseeCategories/GetApplicantByRegId/{regId}": {
+      "get": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "parameters": [
+          {
+            "name": "regId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/LiquorMaster/kind": {
       "get": {
         "tags": [
@@ -163,6 +239,18 @@
       }
     },
     "/api/LiquorMaster/LicenseeCategory": {
+      "get": {
+        "tags": [
+          "LiquorMaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LiquorMaster/GetWholesaleLicenseeCategory": {
       "get": {
         "tags": [
           "LiquorMaster"
@@ -280,7 +368,6 @@
               "schema": {
                 "required": [
                   "AddressLine1",
-                  "City",
                   "DateOfBirth",
                   "District",
                   "Email",
@@ -324,9 +411,6 @@
                     "type": "string"
                   },
                   "AddressLine2": {
-                    "type": "string"
-                  },
-                  "City": {
                     "type": "string"
                   },
                   "StateUT": {
@@ -398,6 +482,9 @@
                     "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
                     "type": "string"
                   },
+                  "Landline": {
+                    "type": "string"
+                  },
                   "photo": {
                     "type": "string",
                     "format": "binary"
@@ -430,9 +517,6 @@
                   "style": "form"
                 },
                 "AddressLine2": {
-                  "style": "form"
-                },
-                "City": {
                   "style": "form"
                 },
                 "StateUT": {
@@ -492,6 +576,9 @@
                 "PanNo": {
                   "style": "form"
                 },
+                "Landline": {
+                  "style": "form"
+                },
                 "photo": {
                   "style": "form"
                 }
@@ -514,17 +601,14 @@
         "properties": {
           "id": {
             "type": "integer",
-            "format": "int64"
-          },
-          "regNumber": {
-            "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "nullable": true
           },
           "regId": {
             "type": "integer",
             "format": "int64"
           },
-          "mobileNo": {
+          "mobile": {
             "type": "string",
             "nullable": true
           },
@@ -533,15 +617,6 @@
             "nullable": true
           },
           "dob": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "applicationIdNo": {
-            "type": "string",
-            "nullable": true
-          },
-          "oprDate": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -574,19 +649,11 @@
             "type": "string",
             "nullable": true
           },
-          "policeStation": {
-            "type": "string",
-            "nullable": true
-          },
-          "emailId": {
+          "email": {
             "type": "string",
             "nullable": true
           },
           "landLine": {
-            "type": "string",
-            "nullable": true
-          },
-          "fax": {
             "type": "string",
             "nullable": true
           },
@@ -598,7 +665,11 @@
             "type": "string",
             "nullable": true
           },
-          "applicantDesig": {
+          "catCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerType": {
             "type": "string",
             "nullable": true
           }
@@ -684,6 +755,131 @@
             "nullable": true
           },
           "isPunishableOffence": {
+            "type": "string",
+            "nullable": true
+          },
+          "landline": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicantName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WarehouseDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseAddress1": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseAddress2": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseState": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseDistrict": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehousePin": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseMobile": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseYear": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseSubDivision": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehousePoliceStation": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseConstituency": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseWardName": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseFAX": {
+            "type": "string",
+            "nullable": true
+          },
+          "leaseRegistration": {
+            "type": "string",
+            "nullable": true
+          },
+          "leaseRegistrationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "leaseRegistrationExpiryDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "architectRegistrationNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "architectRegistrationNoValidUpto": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "superAreaofLicensePremise": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "carpetAreaofLicensePremise": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "distanceofDistillery": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "hoursofSale": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDateAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "additionalYN": {
             "type": "string",
             "nullable": true
           }

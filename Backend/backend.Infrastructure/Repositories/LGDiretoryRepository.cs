@@ -42,6 +42,12 @@ namespace backend.Infrastructure.Repositories
         }
 
 
+      
+
+        public async Task<IEnumerable<MstPoliceStation>> GetPoliceStationsAsync(string district_code)
+        {
+            return await _context.MstPoliceStation.ToListAsync();
+        }
     }
 
 }
