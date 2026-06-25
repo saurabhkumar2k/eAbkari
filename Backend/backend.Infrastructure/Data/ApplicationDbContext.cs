@@ -31,9 +31,7 @@ namespace backend.Infrastructure.Data
         public DbSet<AddtionalTrainRouteDetails> AddtionalTrainRouteDetails { get; set; }
         public DbSet<ApplicantLicensePartnersDetails> ApplicantLicensePartnersDetails { get; set; }
         public DbSet<MstHotelType> MstHotelType { get; set; }
-
         public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
-
         public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
 
         public DbSet<WarehouseDetails> WarehouseDetails { get; set; }
@@ -50,67 +48,70 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstState>()
                 .HasKey(x => x.SID);
 
-                 modelBuilder.Entity<MstSubDivision>().ToTable("MstSubDivision");
+            modelBuilder.Entity<MstSubDivision>().ToTable("MstSubDivision");
 
-                 modelBuilder.Entity<MstSubDivision>()
+            modelBuilder.Entity<MstSubDivision>()
                     .HasKey(x => x.DVID);
 
 
-                modelBuilder.Entity<MstDistrict>().ToTable("MstDistrict");
+            modelBuilder.Entity<MstDistrict>().ToTable("MstDistrict");
 
-                 modelBuilder.Entity<MstDistrict>()
+            modelBuilder.Entity<MstDistrict>()
                     .HasKey(x => x.DID);
 
 
 
-                modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
+            modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
 
-                 modelBuilder.Entity<MstLiquorKind>()
+            modelBuilder.Entity<MstLiquorKind>()
                     .HasKey(x => x.LiquorCatCode);
 
 
 
-                    modelBuilder.Entity<MstLiquorCategory>().ToTable("MstLiquorCategory");
+            modelBuilder.Entity<MstLiquorCategory>().ToTable("MstLiquorCategory");
 
-                 modelBuilder.Entity<MstLiquorCategory>()
+            modelBuilder.Entity<MstLiquorCategory>()
                     .HasKey(x => x.LiquorCatCode);
 
 
-                modelBuilder.Entity<MstLiquorBottler>().ToTable("MstLiquorBottler");
-                 modelBuilder.Entity<MstLiquorBottler>()
+            modelBuilder.Entity<MstLiquorBottler>().ToTable("MstLiquorBottler");
+            modelBuilder.Entity<MstLiquorBottler>()
                     .HasKey(x => x.LiquorBottlerCode);
 
                     
-                modelBuilder.Entity<MstLicenseeCategory>().ToTable("MstLicenseeCategory");
-                 modelBuilder.Entity<MstLicenseeCategory>()
+            modelBuilder.Entity<MstLicenseeCategory>().ToTable("MstLicenseeCategory");
+            modelBuilder.Entity<MstLicenseeCategory>()
                     .HasKey(x => x.LicenseeCatCode);
 
                     
-                    modelBuilder.Entity<MstLiquorMeasure>().ToTable("MstLiquorMeasure");
-                 modelBuilder.Entity<MstLiquorMeasure>()
+            modelBuilder.Entity<MstLiquorMeasure>().ToTable("MstLiquorMeasure");
+            modelBuilder.Entity<MstLiquorMeasure>()
                     .HasKey(x => x.LiquorCatCode);
 
 
-                modelBuilder.Entity<MstLiquorType>().ToTable("MstLiquorType");
-                 modelBuilder.Entity<MstLiquorType>()
+            modelBuilder.Entity<MstLiquorType>().ToTable("MstLiquorType");
+            modelBuilder.Entity<MstLiquorType>()
                     .HasKey(x => x.LiquorCatCode);
 
 
                 modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
                 modelBuilder.Entity<MstUsReg>()
+            modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
+
+            modelBuilder.Entity<MstUsReg>()
                     .HasKey(x => x.UserId);
 
 
-    modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
+            modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
 
-                modelBuilder.Entity<MstUsReg>()
+            modelBuilder.Entity<MstUsReg>()
                     .HasKey(x => x.RegId);
 
 
 
-  modelBuilder.Entity<MstUserSQ>().ToTable("MstUserSQ");
+            modelBuilder.Entity<MstUserSQ>().ToTable("MstUserSQ");
 
-                modelBuilder.Entity<MstUserSQ>()
+            modelBuilder.Entity<MstUserSQ>()
                     .HasKey(x => x.SecretQuestionId);
 
 
@@ -126,15 +127,26 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
             modelBuilder.Entity<RetailPremiseDetails>()
             .HasKey(x => x.ApplicationIdNo);
+            //  modelBuilder.Entity<MstPoliceStation>().ToTable("MstPoliceStation");
+
+            //     modelBuilder.Entity<MstPoliceStation>()
+            //     .HasKey(x => new { x.DistrictCode, x.PsCode });
+            modelBuilder.Entity<LicenseApplication>().ToTable("LicenseApplication");
+            modelBuilder.Entity<LicenseApplication>()
+                    .HasKey(x => x.Application_Id_No);
+
+            modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
+            modelBuilder.Entity<RetailPremiseDetails>()
+                    .HasKey(r => r.ApplicationIdNo);
 
             modelBuilder.Entity<TrainDetails>().ToTable("TrainDetails");
             modelBuilder.Entity<TrainDetails>()
-            .HasKey(x => x.Application_Id_No);
+                    .HasKey(t => t.ApplicationIdNo);
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>().ToTable("AddtionalTrainRouteDetails");
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
-                    .HasKey(x => x.Application_Id_No);
+                    .HasKey(ar => ar.ApplicationIdNo);
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
                     .Property(x => x.RouteDescription)
@@ -144,17 +156,22 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
             .HasKey(x => x.ApplicationIdNo);
+                    .HasKey(ap => ap.ApplicationIdNo);
+
+            modelBuilder.Entities<ApplicantLicensePartnersDetails>()
+                    .Property(ap => ap.PName)
+                    .IsRequired()
+                    .HasMaxLength(150)
 
             modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
             modelBuilder.Entity<LicenseApplicationUserDetails>()
-            .HasKey(x => x.Id);
+                    .HasKey(x => x.Id);
 
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
-            .HasKey(x => x.Id);
+                    .HasKey(x => x.Id);
 
-             modelBuilder.Entity<MstLicenseDocumentMaster>()
-       .ToTable("MstLicenseDocumentMaster");
+            modelBuilder.Entity<MstLicenseDocumentMaster>().ToTable("MstLicenseDocumentMaster");
 
 
        modelBuilder.Entity<WarehouseDetails>()

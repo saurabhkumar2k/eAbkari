@@ -6,7 +6,7 @@ namespace backend.Core.Entities.Licence
     {
         [Key]
         [StringLength(50)]
-        public string Application_Id_No { get; set; }
+        public string ApplicationIdNo { get; set; }
 
         [StringLength(1000)]
         public string? TrainName { get; set; }
@@ -28,7 +28,7 @@ namespace backend.Core.Entities.Licence
         [Key]
         [Required]
         [StringLength (50)]
-        public string Application_Id_No {get; set;}
+        public string ApplicationIdNo {get; set;}
 
         [Required]
         [StringLength(1000)]
@@ -71,4 +71,5 @@ namespace backend.Core.Entities.Licence
     //    [StringLength(50)]
     //    public string? DINNo { get; set; }
     //}
+  
 }

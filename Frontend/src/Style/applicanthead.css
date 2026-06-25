@@ -17,35 +17,181 @@
 /*======Header=======*/
 
 .dashboard-header {
-  position: sticky;
+  background-color: #ffffff; /* bg-white */
+  border-bottom: 1px solid #e2e8f0; /* border-slate-200 */
+  position: sticky; /* sticky */
   top: 0;
-  z-index: 40;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid #e2e8f0;
-  padding: 18px 28px;
+  z-index: 40; /* z-40 */
+  padding: 0.5rem 2rem;; /* py-4 px-6 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* shadow-sm */
 }
 
-.header-wrapper {
+
+.header-top-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 0.75rem; /* pb-3 */
+  border-bottom: 1px solid #f1f5f9; /* border-slate-100 */
+  flex-wrap: wrap;
+  gap: 1rem; /* gap-4 */
 }
 
-.header-title {
-  font-size: 30px;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.header-subtitle {
-  margin-top: 4px;
-  font-size: 14px;
-  color: #64748b;
-}
-
-.header-right {
+.header-brand {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1rem; /* gap-4 */
+  padding-top: 0.25rem; /* py-1 */
+  padding-bottom: 0.25rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.header-brand:hover {
+  opacity: 0.95;
+}
+.header-logo {
+  height: 3rem; /* h-12 */
+  width: auto;
+  object-fit: contain; /* object-contain */
+}
+
+@media (min-width: 640px) {
+  .header-logo {
+    height: 3.5rem; /* sm:h-14 */
+  }
+}
+.header-divider {
+  width: 1px;
+  height: 2.5rem; /* h-10 */
+  background-color: #e2e8f0; /* slate-200 */
+}
+
+.header-title-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-main-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 900; /* font-black */
+  letter-spacing: -0.025em; /* tracking-tight */
+  color: #0f172a; /* slate-900 */
+  line-height: 1.25; /* leading-tight */
+}
+
+.header-tagline {
+  margin-top: 0.25rem; /* mt-1 */
+  font-size: 0.625rem; /* text-[10px] */
+  font-weight: 800; /* font-extrabold */
+  text-transform: uppercase;
+  letter-spacing: 0.1em; /* tracking-widest */
+  line-height: 1; /* leading-none */
+  color: #64748b; /* slate-500 */
+}
+
+@media (min-width: 640px) {
+  .header-divider {
+    height: 3rem; /* sm:h-12 */
+  }
+
+  .header-main-title {
+    font-size: 1.5rem; /* sm:text-2xl */
+  }
+
+  .header-tagline {
+    font-size: 0.75rem; /* sm:text-xs */
+  }
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.portal-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem; /* gap-1.5 */
+
+  padding: 0.5rem 0.75rem; /* py-2 px-3 */
+
+  background-color: #f8fafc; /* slate-50 */
+  border: 1px solid #e2e8f0; /* slate-200 */
+  border-radius: 0.75rem; /* rounded-xl */
+
+  color: #475569; /* slate-600 */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 800; /* font-extrabold */
+
+  text-transform: uppercase;
+  letter-spacing: 0.1em; /* tracking-widest */
+
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.portal-back-btn:hover {
+  color: #2563eb; /* blue-600 */
+  border-color: #cbd5e1; /* slate-300 */
+}
+
+.portal-back-icon {
+  width: 0.875rem; /* w-3.5 */
+  height: 0.875rem; /* h-3.5 */
+}
+
+.portal-back-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .portal-back-text {
+    display: inline;
+  }
+}
+.header-menu-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+
+  width: max-content;
+  min-width: 100%;
+}
+
+.header-menu {
+   display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem; /* 40px */
+  width: 100%;
+}
+.menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* gap-3 */
+}
+
+.menu-item-icon {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+  flex-shrink: 0;
+}
+
+.menu-item-label {
+  font-size: 0.9375rem; /* text-[15px] */
+  font-weight: 600; /* font-semibold */
+}
+.dropdown-arrow {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+  flex-shrink: 0;
+
+  transition: transform 0.2s ease; /* transition-transform duration-200 */
+}
+
+.dropdown-arrow-open {
+  transform: rotate(180deg); /* rotate-180 */
 }
