@@ -94,9 +94,6 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
             Console.WriteLine(application.Id);
             _context.LicenseApplications.Add(application);
 
-
-
-
             _context.LicenseApplicationUserDetails.Add(license);
             _context.ChangeTracker.Entries();
     await _context.SaveChangesAsync();
