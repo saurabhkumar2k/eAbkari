@@ -19,6 +19,7 @@ namespace backend.API.Controllers
         private readonly ILoginRepository _LoginRepository;
         private readonly IJwtService _jwtService;
         private readonly IConfiguration _configuration;
+       
         //private readonly ApplicationDbContext _context;
         public LoginController(ILoginRepository LoginRepository, IJwtService jwtService, IConfiguration configuration)
         {
@@ -35,14 +36,17 @@ namespace backend.API.Controllers
                 return BadRequest(new { Success = false, Message = "Username and password are required" });
             }
 
-               string hashedPassword = PasswordHelper.HashPassword(request.Password);
+            string username = request.Username!;
+            string password = request.Password!;
+            string hashedPassword = PasswordHelper.HashPassword(password);
+            var userTypeCode = await _LoginRepository.GetUserTypeAsync(username);//MM_US_MT
 
-            // LIC Login
-              var licUser = await _LoginRepository.AuthenticateAsync( request.Username,hashedPassword);
+               //Department Login
+            var licUser1 = await _LoginRepository.AuthenticateAsyncs(username,hashedPassword);
 
-         if (licUser != null)
+         if (licUser1 != null)
           {
-    var tokenPair = _jwtService.GenerateTokenPair(licUser.UserId);
+    var tokenPair = _jwtService.GenerateTokenPair(licUser1.UserId);
 
     var refreshTokenExpiryDays = int.Parse(
         _configuration.GetSection("JwtSettings")["RefreshTokenExpiryDays"] ?? "7"
@@ -50,29 +54,79 @@ namespace backend.API.Controllers
 
     var refreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
 
-    await _LoginRepository.SaveTokenAsync(
-        licUser.UserId,
-        tokenPair.AccessToken
+    await _LoginRepository.SaveTokenAsyncDEP(
+        licUser1.UserId,      
+     tokenPair.AccessToken
     );
 
-    await _LoginRepository.SaveTokenPairAsync(
-        licUser.UserId,
+    await _LoginRepository.SaveTokenPairAsyncDEP(
+        licUser1.UserId,
         tokenPair.AccessToken,
         tokenPair.RefreshToken,
         refreshTokenExpiry
+    );
+
+    await _LoginRepository.CreateUserSessionAsync(
+        licUser1.UserId,
+        DateTime.UtcNow,
+        tokenPair.ExpiresAt,
+        DateTime.UtcNow
+    );
+
+    return Ok(new
+    {
+        Success = true,
+        Message = "Department Login successful",
+        AccessToken = tokenPair.AccessToken,
+        RefreshToken = tokenPair.RefreshToken,
+        ExpiresAt = tokenPair.ExpiresAt,
+        UserId = licUser1.UserId,
+        UserType = "Department Login",
+        RedirectUrl = "/welcome.html"
+    });
+}
+ // LIC Login
+    var licUser = await _LoginRepository.AuthenticateAsync(username,hashedPassword);
+
+         if (licUser != null)
+          {
+    var tokenPairL = _jwtService.GenerateTokenPair(licUser.User_Id);
+
+    var refreshTokenExpiryDays = int.Parse(
+        _configuration.GetSection("JwtSettings")["RefreshTokenExpiryDays"] ?? "7"
+    );
+
+    var refreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
+
+    await _LoginRepository.SaveTokenAsyncLIC(
+        licUser.User_Id,      
+     tokenPairL.AccessToken
+    );
+
+    await _LoginRepository.SaveTokenPairAsyncLIC(
+        licUser.User_Id,
+        tokenPairL.AccessToken,
+        tokenPairL.RefreshToken,
+        refreshTokenExpiry
+    );
+
+    await _LoginRepository.CreateUserSessionAsync(
+        licUser.User_Id,
+        DateTime.UtcNow,
+        tokenPairL.ExpiresAt,
+        DateTime.UtcNow
     );
 
     return Ok(new
     {
         Success = true,
         Message = "LIC Login successful",
-        AccessToken = tokenPair.AccessToken,
-        RefreshToken = tokenPair.RefreshToken,
-        ExpiresAt = tokenPair.ExpiresAt,
-        UserId = licUser.UserId,
-        regId = licUser.RegId,
-        UserType = "LIC",
-        RedirectUrl = "/applicantdashboard"
+        AccessToken = tokenPairL.AccessToken,
+        RefreshToken = tokenPairL.RefreshToken,
+        ExpiresAt = tokenPairL.ExpiresAt,
+        UserId = licUser.User_Id,
+        UserType = "License Login",
+        RedirectUrl = "/welcome.html"
     });
 }
 
@@ -80,12 +134,13 @@ namespace backend.API.Controllers
 
 
 var applicantUser = await _LoginRepository.LoginAuthenticateAsync(
-    request.Username, hashedPassword
+    username, hashedPassword
 );
 
 if (applicantUser != null)
 {
-    var tokenPair = _jwtService.GenerateTokenPair(applicantUser.UserId);
+    var userId = applicantUser.UserId!;
+    var tokenPair = _jwtService.GenerateTokenPair(userId);
 
     var refreshTokenExpiryDays = int.Parse(
         _configuration.GetSection("JwtSettings")["RefreshTokenExpiryDays"] ?? "7"
@@ -94,30 +149,37 @@ if (applicantUser != null)
     var refreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenExpiryDays);
 
     await _LoginRepository.SaveTokenAsync(
-        applicantUser.UserId,
+        userId,
         tokenPair.AccessToken
     );
 
     await _LoginRepository.SaveTokenPairAsync(
-        applicantUser.UserId,
+        userId,
         tokenPair.AccessToken,
         tokenPair.RefreshToken,
         refreshTokenExpiry
+    );
+
+    await _LoginRepository.CreateUserSessionAsync(
+        userId,
+        DateTime.UtcNow,
+        tokenPair.ExpiresAt,
+        DateTime.UtcNow
     );
 
     return Ok(new
     {
         Success = true,
         Message = "Applicant Login successful",
-        
         AccessToken = tokenPair.AccessToken,
         RefreshToken = tokenPair.RefreshToken,
         ExpiresAt = tokenPair.ExpiresAt,
-        UserId = applicantUser.UserId,
+        UserId = userId,
         UserType = "Applicant",
-       RedirectUrl = "/applicantdashboard"
+        RedirectUrl = "/welcome.html"
     });
 }
+
 
 
 // Invalid Login

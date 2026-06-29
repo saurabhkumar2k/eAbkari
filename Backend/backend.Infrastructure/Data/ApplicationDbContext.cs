@@ -12,11 +12,13 @@ namespace backend.Infrastructure.Data
         {
         }
 
+        public DbSet<DepartmentUsers> DepartmentUsers { get; set; }
         public DbSet<MstState> MstStates { get; set; }
         public DbSet<MstSubDivision> MstSubDivisions { get; set; }
          public DbSet<MstPoliceStation> MstPoliceStation { get; set; }
         public DbSet<MstDistrict> MstDistrict { get; set; }
         //public DbSet<MM_US_MT> MM_US_MTs { get; set; }
+        public DbSet<MM_US_MT> MM_US_MT { get; set; }
         public DbSet<MstLiquorKind> MstLiquorKind { get; set; }
         public DbSet<MstLiquorCategory> MstLiquorCategory { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
@@ -40,7 +42,7 @@ namespace backend.Infrastructure.Data
 
 
         public DbSet<LicenseApplication> LicenseApplications { get; set; }
-
+        public DbSet<UserSession> UserSessions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
@@ -95,7 +97,7 @@ namespace backend.Infrastructure.Data
 
 
                 modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
-                modelBuilder.Entity<MstUsReg>()
+                modelBuilder.Entity<MstUsReg>();
             modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
 
             modelBuilder.Entity<MstUsReg>()
@@ -131,10 +133,6 @@ namespace backend.Infrastructure.Data
 
             //     modelBuilder.Entity<MstPoliceStation>()
             //     .HasKey(x => new { x.DistrictCode, x.PsCode });
-            modelBuilder.Entity<LicenseApplication>().ToTable("LicenseApplication");
-            modelBuilder.Entity<LicenseApplication>()
-                    .HasKey(x => x.Application_Id_No);
-
             modelBuilder.Entity<RetailPremiseDetails>().ToTable("RetailPremiseDetails");
             modelBuilder.Entity<RetailPremiseDetails>()
                     .HasKey(r => r.ApplicationIdNo);
@@ -155,13 +153,12 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-            .HasKey(x => x.ApplicationIdNo);
-                    .HasKey(ap => ap.ApplicationIdNo);
+                    .HasKey(x => x.ApplicationIdNo);
 
-            modelBuilder.Entities<ApplicantLicensePartnersDetails>()
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
                     .Property(ap => ap.PName)
                     .IsRequired()
-                    .HasMaxLength(150)
+                    .HasMaxLength(150);
 
             modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
             modelBuilder.Entity<LicenseApplicationUserDetails>()
