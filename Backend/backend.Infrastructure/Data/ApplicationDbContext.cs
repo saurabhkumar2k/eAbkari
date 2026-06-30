@@ -35,7 +35,7 @@ namespace backend.Infrastructure.Data
         public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
 
         public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
-
+        public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
@@ -151,6 +151,16 @@ namespace backend.Infrastructure.Data
        .ToTable("MstLicenseDocumentMaster");
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<MstLiquorBrand>()
+             .HasKey(x => new
+                 {
+                      x.LiquorCatCode,
+                      x.LiquorKindCode,
+                      x.LiquorTypeCode,
+                      x.LiquorBrandCode
+        }); 
+             
+
         }
     }
 

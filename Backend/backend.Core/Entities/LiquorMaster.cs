@@ -33,8 +33,6 @@ public class MstLiquorType
     [StringLength(50)]
     public string LiquorTypeDesc { get; set; } = string.Empty;
 
-    [StringLength(2)]
-    public string? LiquorTypeCodeOld { get; set; } = string.Empty;
 
     [StringLength(1)]
     public string DeleteStatus { get; set; } = string.Empty;
@@ -122,6 +120,27 @@ public class MstLiquorMeasure
     public string? DeleteStatus { get; set; } = string.Empty;
 }
 
+public class MstLiquorBrand
+{
+    public string? LiquorCatCode { get; set; }
 
+    public string? LiquorKindCode { get; set; }
+
+    public string?  LiquorTypeCode { get; set; }
+
+    public string? LiquorBrandCode { get; set; }
+
+    public string? LiquorBrandDesc { get; set; }
+
+    public string? LiquorTypeCodeOld { get; set; }
+
+    public string? EntryFlag { get; set; }
+
+    public string? BrandNameAlias { get; set; }
+
+    public decimal? QuartsMeasure { get; set; }
+
+    public string? DeleteStatus { get; set; }
+}
 
 }
