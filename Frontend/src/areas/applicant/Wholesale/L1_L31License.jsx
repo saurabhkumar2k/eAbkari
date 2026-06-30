@@ -35,7 +35,9 @@ import {
   Sparkles
 } from "lucide-react";
 
-export default function L1AndL31License({ onBackToSelect, showToast }) {
+
+export default function L1AndL31License({ ownerType,
+  catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicant, setApplicant] = useState(createApplicant());
@@ -162,7 +164,7 @@ const [applicationId, setApplicationId] = useState(null);
   /* ================= HANDLERS ================= */
 
 const handleApplicantChange = (field, value) => {
-  debugger;
+ // debugger;
   setApplicant((prev) => ({ ...prev, [field]: value }));
 
   if (field === "state") {
@@ -173,9 +175,23 @@ const handleApplicantChange = (field, value) => {
     fetchDistricts(value, "warehouse");
   }
 
-  if (field === "warehouseDistrict") {
-    fetchWarehouseExtras(value); // ✅ ONLY THIS
+  // if (field === "warehouseDistrict") {
+  //   fetchWarehouseExtras(value); // ✅ ONLY THIS
+  // }
+
+if (field === "warehouseDistrict") {
+    fetchSubDivisions(value);   // 👈 Add this
   }
+
+if (field === "WarehouseSubDivision") {
+fetchPoliceStations(applicant.warehouseDistrict);   // 👈 Add this
+
+}
+
+ if (field === "constitutionType") {
+    console.log("Selected:", value);
+  }
+
 };
 
 
@@ -269,9 +285,69 @@ const fetchDistricts = async (stateCode, type) => {
 };
 
 
+// const fetchSubdivisions = async (districtCode, type) => {
+//   debugger;
+//   const res = await fetch(
+//     `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+//   );
+
+//   const data = await res.json();
+
+//   if (type === "applicant") {
+//     setApplicantSubdivisions(data);
+//   } else {
+//     setWarehouseSubdivisions(data);
+//   }
+// };
+
+
+
+const fetchPoliceStations = async (districtCode) => {
+  try {
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+    );
+
+    console.log("Status:", res.status);
+
+    const text = await res.text();
+    console.log("Response:", text);
+
+    if (!text) {
+      console.log("Empty response received");
+      return;
+    }
+
+    const data = JSON.parse(text);
+
+    setWarehousePoliceStations(data);
+  } catch (err) {
+    console.log(err);s
+  }
+};
+
+
+const fetchSubDivisions = async (districtCode) => {
+  try {
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+    );
+
+    const data = await res.json();
+
+    setWarehouseSubDivisions(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+
 
 useEffect(() => {
-  debugger;
+  //debugger;
   fetch("http://localhost:5214/api/LicenseDocument/documents")
     .then((r) => r.json())
     .then((data) => {
@@ -301,6 +377,70 @@ const handleStep1Next = async () => {
 
   setCurrentStep(2);
 };
+
+
+useEffect(() => {
+  const regId = localStorage.getItem("regId");
+
+  if (regId) {
+    loadApplicantData(regId);
+  }
+}, []);
+
+
+
+const loadApplicantData = async (regId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+    );
+
+    if (!response.ok) {
+      console.log("API Error:", response.status);
+      return;
+    }
+
+    const data = await response.json();
+  debugger;
+    console.log(data);
+console.log("ownerType prop =", ownerType);
+console.log("catCode prop =", catCode);
+
+// 👇 Pehle state ke basis par district list load karo
+  await fetchDistricts(data.stateUT, "applicant");
+
+
+ setApplicant((prev) => ({
+
+  ...prev,
+  // firstName: data.firstName,
+  // lastName: data.lastName,
+  applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
+  fatherHusbandName: data.fatherHusbandName,
+    dateOfBirth: data.dateOfBirth
+    ? data.dateOfBirth.split("T")[0]
+    : "",
+    panNo: data.panNo,
+    constitutionType: data.constitutionType,
+    occupation: data.occupation,
+    addressLine1: data.addressLine1,
+    addressLine2: data.addressLine2,
+    stateUT: data.stateUT,
+    district: data.district,
+    pin: data.pin,
+    email: data.email,
+    mobile: data.mobile,
+    landline: data.landline,
+  ownerType: ownerType,   // prop se
+  catCode: catCode        // prop se
+
+}));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
 
 
   
@@ -389,8 +529,27 @@ const handleNextStep = async () => {
 debugger;
 
 const payload = {
-  ...applicant,
-  regId: localStorage.getItem("regId"),
+  RegId: Number(localStorage.getItem("regId")),
+
+  ApplicantName: applicant.applicantName,
+  Dob: applicant.dateOfBirth,
+  FatherHusbandName: applicant.fatherHusbandName,
+  Occupation: applicant.occupation,
+  PanNo: applicant.panNo,
+
+  PresentAddress: applicant.addressLine1,
+  PermanentAddress: applicant.addressLine2,
+
+  StateUT: applicant.stateUT,
+  District: applicant.district,
+  PIN: applicant.pin,
+
+  Email: applicant.email,
+  Mobile: applicant.mobile,
+  LandLine: applicant.landline,
+  CinNo: applicant.cinNo,
+  OwnerType: applicant.ownerType,
+  CatCode: applicant.catCode
 };
 
 
@@ -406,12 +565,45 @@ const payload = {
       );
 
       const data = await response.json();
-
+debugger;
       setApplicationId(data.applicationId);
 
       console.log("Generated Id:", data.applicationId);
       alert(`Your Application Reference No. is ${data.applicationId}`);
     }
+
+
+if (currentStep === 2 ) {
+debugger;
+
+const payload = {
+  ...applicant,
+  regId: localStorage.getItem("regId"),
+};
+
+
+      const response = await fetch(
+        "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("Warehouse License Response:", data);
+
+}
+
+
+
+
+
+
 
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
@@ -569,6 +761,7 @@ const payload = {
               states={states}
                districts={warehouseDistricts}   // ✅ correct
   subDivisions={warehouseSubDivisions}
+  
   policeStations={warehousePoliceStations}
               onChange={handleApplicantChange}
             />
@@ -582,119 +775,6 @@ const payload = {
 
 {/* ================= ADDITIONAL WAREHOUSE DETAILS ================= */}
 
- <div className="section-card">
-  <h3 className="section-title">Additional Details of Warehouse</h3>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Whether License Premise is</label>
-      <select
-        value={applicant.licensePremise || ""}
-        onChange={(e) => onChange("licensePremise", e.target.value)}
-      >
-        <option value="">Select</option>
-        <option value="Owned">Owned</option>
-        <option value="Leased">Leased</option>
-        <option value="Rented">Rented</option>
-      </select>
-    </div>
-
-    <div className="form-item">
-      <label>Lease / Sale / Rent Registration No</label>
-      <input
-        value={applicant.registrationNo || ""}
-        onChange={(e) => onChange("registrationNo", e.target.value)}
-      />
-    </div>
-
-    <div className="form-item">
-      <label>Registration Date</label>
-      <input
-        type="date"
-        value={applicant.registrationDate || ""}
-        onChange={(e) => onChange("registrationDate", e.target.value)}
-      />
-    </div>
-  </div>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Expiration Date</label>
-      <input
-        type="date"
-        value={applicant.expirationDate || ""}
-        onChange={(e) => onChange("expirationDate", e.target.value)}
-      />
-    </div>
-
-    <div className="form-item">
-      <label>Architect Reg. No</label>
-      <input
-        value={applicant.caRegNo || ""}
-        onChange={(e) => onChange("caRegNo", e.target.value)}
-      />
-    </div>
-
-    <div className="form-item">
-      <label>Architect Valid Upto</label>
-      <input
-        type="date"
-        value={applicant.caValidUpto || ""}
-        onChange={(e) => onChange("caValidUpto", e.target.value)}
-      />
-    </div>
-  </div>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Super Area (sq ft)</label>
-      <input
-        value={applicant.superArea || ""}
-        onChange={(e) =>
-          onChange("superArea", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
-
-    <div className="form-item">
-      <label>Carpet Area (sq ft)</label>
-      <input
-        value={applicant.carpetArea || ""}
-        onChange={(e) =>
-          onChange("carpetArea", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
-
-    <div className="form-item">
-      <label>Distance from CP (KM)</label>
-      <input
-        value={applicant.distanceFromCP || ""}
-        onChange={(e) =>
-          onChange("distanceFromCP", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
-  </div>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Hours of Sale</label>
-      <select
-        value={applicant.hoursOfSale || ""}
-        onChange={(e) => onChange("hoursOfSale", e.target.value)}
-      >
-        <option value="">Select</option>
-        <option value="9-5">9 AM - 5 PM</option>
-        <option value="8-8">8 AM - 8 PM</option>
-        <option value="10-6">10 AM - 6 PM</option>
-      </select>
-    </div>
-  </div>
-</div> 
-
-
-
 <div className="section-card">
   <h3 className="section-title">Company / Firm Details</h3>
 
@@ -702,10 +782,12 @@ const payload = {
 
     <div className="form-item">
       <label>Constitution Type</label>
-      <select
-        value={applicant.constitutionType || ""}
-        onChange={(e) => onChange("constitutionType", e.target.value)}
-      >
+    <select
+  value={applicant.constitutionType || ""}
+  onChange={(e) =>
+    handleApplicantChange("constitutionType", e.target.value)
+  }
+>
         <option value="">Select</option>
         <option value="Company">Company</option>
         <option value="Partnership">Partnership</option>
@@ -766,31 +848,17 @@ const payload = {
 </div> 
 
 
-    <DirectorsList
-            directors={applicant.directors || []}
-            constitutionType={applicant.constitutionType}
-            onChange={handleDirectorChange}
-            onAdd={addRow}
-            onDelete={deleteRow}
-          />
+<DirectorsList
+  directors={applicant.directors || []}
+  constitutionType={applicant.constitutionType}
+  onChange={handleDirectorChange}
+  onAdd={addRow}
+  onDelete={deleteRow}
+/>
+
+ {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
 
 
-
-</>
-
-        )}
-
-
-
-
-
-
-
-             
-           
-
-            {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
-            {currentStep === 4 && (
                <div className="form-container">
 
     {/* ================= NOMINEE ================= */}
@@ -1055,10 +1123,21 @@ const payload = {
     </div>
 
   </div>
-            )}
+         
+
+</>
+
+
+ )}
+
+        {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
+          
+
+
+       
 
             {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
-            {currentStep === 5 && (
+            {currentStep === 4 && (
                   <DocumentUpload
             documents={documents}
             uploadedFiles={uploadedFiles}
@@ -1074,7 +1153,7 @@ const payload = {
 
 
             {/* Step 6: STATUTORY DECLARATIONS & UNDERTAKING */}
-            {currentStep === 6 && (
+            {currentStep === 5 && (
               <div className="animate-fade text-left space-y-6">
                 <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />

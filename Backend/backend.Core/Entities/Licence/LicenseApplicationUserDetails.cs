@@ -11,17 +11,13 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(150)]
         [Column(TypeName = "NVARCHAR(150)")]
-        public string? RegNumber { get; set; }
+        public string? Regid { get; set; }
 
         [StringLength(10)]
         [Column(TypeName = "CHAR(10)")]
         public string? MobileNo { get; set; }
 
-        [Key]
-        [Required]
-        [StringLength(21)]
-        [Column(TypeName = "CHAR(21)")]
-        public string ApplicationIdNo { get; set; } = null!;
+      
 
         [StringLength(5)]
         [Column(TypeName = "CHAR(5)")]
@@ -61,9 +57,7 @@ namespace backend.Core.Entities.Licence
         [Column(TypeName = "NVARCHAR(50)")]
         public string? LandLine { get; set; }
 
-        [StringLength(50)]
-        [Column(TypeName = "NVARCHAR(50)")]
-        public string? Fax { get; set; }
+      
 
         public DateTime? OprDate { get; set; }
 
@@ -83,12 +77,12 @@ namespace backend.Core.Entities.Licence
         [Column(TypeName = "VARCHAR(50)")]
         public string? SubDivision { get; set; }
 
-        [StringLength(50)]
-        [Column(TypeName = "VARCHAR(50)")]
-        public string? PoliceStation { get; set; }
+ 
 
-        [StringLength(100)]
-        [Column(TypeName = "NVARCHAR(100)")]
-        public string? ApplicantDesig { get; set; }
+        
     }
+
+
+
+    
 }

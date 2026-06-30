@@ -24,6 +24,12 @@ import {
   Tag as TagIcon
 } from "lucide-react";
 import SelectWholesaleType from "./SelectWholesale";
+import ApplicantDetails from "../../../components/Applicant_Details";
+import { createApplicant } from "../../../Model/Applicant";
+
+
+//import { SelectWholesaleType } from "./SelectWholesale";
+
 import L1AndL31License from "./L1_L31License";
 
 const brandCodeOptions = [
@@ -73,11 +79,11 @@ const liquorTypeOptions = {
 
 export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, rootData = {} }) {
   const [currentStep, setCurrentStep] = useState(3);
-  const [selectedLicenseId, setSelectedLicenseId] = useState("L-1");
+  const [selectedLicenseId, setSelectedLicenseId] = useState("");
   const [associatedBrands, setAssociatedBrands] = useState([]);
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);
-
+  const [applicant, setApplicant] = useState(createApplicant());
   // Brand form state
   const [brandForm, setBrandForm] = useState({
     category: 'Indian Liquor',
@@ -92,6 +98,8 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
   const [searchTerm, setSearchTerm] = useState('');
   const [sortColumn, setSortColumn] = useState('brandName');
   const [sortDirection, setSortDirection] = useState('asc');
+
+  const [licenseGroups, setLicenseGroups] = useState([]);
 
   // Warehouse physical premise details
   const [premisesForm, setPremisesForm] = useState({
@@ -112,6 +120,44 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
     incorporationCertificate: null,
     exciseBondReceipt: null
   });
+
+
+const handleApplicantChange = (field, value) => {
+  setApplicant((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
+useEffect(() => {
+  fetchLicenseCategories();
+}, []);
+
+const fetchLicenseCategories = async () => {
+  debugger;
+  try {
+    const res = await fetch(
+      "http://localhost:5214/api/LiquorMaster/GetWholesaleLicenseeCategory"
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    setLicenseGroups(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+console.log("OwnerType:", applicant?.ownerType);
+console.log("SelectedLicenseId:", selectedLicenseId);
+
+
+
+
+
+
 
   useEffect(() => {
     if (toast) {
@@ -259,15 +305,21 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
     setCurrentStep(7);
     showToast("Wholesale Vend Privileges application docket registered!");
   };
-
-  if (selectedLicenseId === "L-1-L-31" && currentStep > 3) {
-    return (
-      <L1AndL31License 
-        onBackToSelect={() => { setSelectedLicenseId("L-1"); setCurrentStep(3); }} 
-        showToast={showToast || triggerToast} 
-      />
-    );
-  }
+console.log("Parent ownerType:", applicant.ownerType);
+console.log("Parent catCode:", selectedLicenseId);
+if (selectedLicenseId === "10" && currentStep > 3) {
+  return (
+<L1AndL31License
+  ownerType={applicant.ownerType}
+  catCode={selectedLicenseId}
+  onBackToSelect={() => {
+    setSelectedLicenseId("");
+    setCurrentStep(3);
+  }}
+  showToast={showToast || triggerToast}
+/>
+  );
+}
 
   return (
     <div className="wholesale-page">
@@ -334,22 +386,42 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
           
           {/* STEP 3: SELECT WHOLESALE LICENSE TYPE */}
           {currentStep === 3 && (
-            <div className="wizard-content">
-              <SelectWholesaleType 
-                selectedType={selectedLicenseId}
-                onSelectType={(id) => setSelectedLicenseId(id)}
-                onBack={onBackToDashboard}
-              />
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+<SelectWholesaleType
+  applicant={applicant}
+  onChange={handleApplicantChange}
+  licenseGroups={licenseGroups}
+  selectedType={selectedLicenseId}
+  onSelectType={(id) => {
+  setSelectedLicenseId(id);
+  setCurrentStep(4);
+}}
+  onBack={onBackToDashboard}
+/>
               
               {/* Continue button row */}
-              <div className="align-center justify-end mt-8-custom pt-6-custom border-top">
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="primary-btn"
-                >
-                  <span>Continue Application</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
-                </button>
+              <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+<div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+  <button
+    onClick={() => {
+      if (!applicant?.ownerType) {
+        alert("Please select Owner Type");
+        return;
+      }
+
+      if (!selectedLicenseId) {
+        alert("Please select License Type");
+        return;
+      }
+
+      setCurrentStep(4);
+    }}
+    className="btn btn-primary bg-purple-700 hover:bg-purple-800 px-8 py-3.5"
+  >
+    <span>Continue Application</span>
+    <ArrowRight className="w-4 h-4 ml-1.5" />
+  </button>
+</div>
               </div>
             </div>
           )}

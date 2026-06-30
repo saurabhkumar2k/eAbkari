@@ -1,5 +1,5 @@
 export const createApplicant = () => ({
-  ApplicantName: "",
+  applicantName: "",
   CompanyName: "",
   dob: "",
   FatherHusbandName: "",
@@ -8,36 +8,37 @@ export const createApplicant = () => ({
   PresentAddress: "",
   PermanentAddress: "",
   address: "",
-
+addressLine1: "",
+addressLine2: "",
   name: "",
   StateUT: "",
   district: "",
-  subDivision: "",
-  policeStation: "",
+  WarehouseSubDivision: "",
+  WarehousePoliceStation: "",
   PIN: "",
-
+  ownerType: "",
   EmailId: "",
   MobileNo: "",
   contact: "",
   LandLine: "",
   fax: "",
-
+email: "",
   panNo: "",
   size: "",
   licensePremise: "",
-
+landline: "",
   registrationNo: "",
   registrationDate: "",
   expirationDate: "",
+OwnerType: "",
+  ArchitectRegistrationNo: "",
+  ArchitectRegistrationNoValidUpto: "",
 
-  caRegNo: "",
-  caValidUpto: "",
-
-  superArea: "",
-  carpetArea: "",
-  distanceFromCP: "",
+  SuperAreaofLicensePremise: "",
+  CarpetAreaofLicensePremise: "",
+  DistanceofDistillery: "",
   hoursOfSale: "",
-
+CatCode: "",
   constitutionType: "",
   cinNo: "",
 

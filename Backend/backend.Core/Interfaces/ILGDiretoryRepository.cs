@@ -5,6 +5,7 @@ namespace backend.Core.Interfaces
     public interface ILGDiretoryRepository
     {
 
+
                 Task<IEnumerable<MstState>> GetStateAsync();
 
                 Task<IEnumerable<MstDistrict>> GetDistrictAsync(string  Statecode);
@@ -13,6 +14,10 @@ namespace backend.Core.Interfaces
                 Task<IEnumerable<MstSubDivision>> GetSubDivisionAsync(string districtCode);
 
                 Task<IEnumerable<MstUserSQ>> GetQuestionsAsync();
+
+                
+
+                Task<IEnumerable<MstPoliceStation>> GetPoliceStationsAsync(string district_code);
     }
 
 }

@@ -91,7 +91,7 @@ public class MstLicenseeCategory
     public string? RetailerFlag { get; set; } = string.Empty;
     public string? RenewalPaymentMode { get; set; } = string.Empty;
     public string? VisibilityStatus { get; set; } = string.Empty;
-    public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
+    //public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
     public bool? IsPayment { get; set; }
     public int? Amount { get; set; }
     public string? LicenseTypeFlag { get; set; } = string.Empty;

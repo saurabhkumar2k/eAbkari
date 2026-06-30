@@ -96,115 +96,129 @@ export default function SelectLicenseType({ selectedType, onSelectType, onBack, 
       {/* Top Breadcrumb action */}
 <button
   onClick={onBack}
-  className="back-category-btn"
+  className="hcr-back-btn"
 >
-  <ArrowLeft className="back-category-icon" />
+  <ArrowLeft className="hcr-back-btn-icon" />
   <span>Back to Category</span>
 </button>
 
       {/* Main Title Banner & Note card side-by-side */}
-    <div className="hcr-header">
-  <div className="hcr-header-content">
-    <h2 className="hcr-title">
+<div className="hcr-license-header">
+  <div>
+    <h2 className="hcr-license-title">
       Select License Type
     </h2>
 
-    <p className="hcr-subtitle">
+    <p className="hcr-license-subtitle">
       Category Selected:
-      <span className="hcr-category">
+      <span className="hcr-license-category-highlight">
         HCR (Hotel, Club & Restaurant)
       </span>
     </p>
   </div>
-</div>
 
-        {/* Note Notification Card matching screenshot */}
-        <div className="hcr-note-card">
+       {/* Note Notification Card */}
+<div className="hcr-note-card">
   <Info className="hcr-note-icon" />
 
-  <div className="hcr-note-content">
+  <div>
     <h4 className="hcr-note-title">
       Note
     </h4>
 
-    <p className="hcr-note-text">
-      Please select the appropriate license type to continue with the application process.
+    <p className="hcr-note-description">
+      Please select the appropriate license type to continue with the
+      application process.
     </p>
   </div>
 </div>
-
+</div>
       {/* Cards Grid */}
-      <div className="hcr-grid">
+      <div className="hcr-license-grid">
         {licenseTypeCards.map((card) => {
           const isSelected = selectedType === card.id;
           const IconComp = card.icon;
           
           // Badge Color Styles
-          const badgeStyles = 
-            card.category === "Hotel" ? "bg-blue-50 text-blue-700 border-blue-100" :
-            card.category === "Restaurant" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
-            "bg-pink-50 text-pink-700 border-pink-100";
+          const badgeStyles =
+  card.category === "Hotel"
+    ? "hcr-badge-hotel"
+    : card.category === "Restaurant"
+    ? "hcr-badge-restaurant"
+    : "hcr-badge-club";
 
-          // Icon Color Styles
-          const iconStyles = 
-            card.color === "blue" ? "bg-blue-50 text-blue-600" :
-            card.color === "emerald" ? "bg-emerald-50 text-emerald-600" :
-            card.color === "amber" ? "bg-amber-50 text-amber-600" :
-            card.color === "purple" ? "bg-purple-50 text-purple-600" :
-            card.color === "cyan" ? "bg-cyan-50 text-cyan-600" :
-            card.color === "pink" ? "bg-pink-50 text-pink-600" :
-            "bg-indigo-50 text-indigo-600";
+const iconStyles =
+  card.color === "blue"
+    ? "hcr-icon-blue"
+    : card.color === "emerald"
+    ? "hcr-icon-emerald"
+    : card.color === "amber"
+    ? "hcr-icon-amber"
+    : card.color === "purple"
+    ? "hcr-icon-purple"
+    : card.color === "cyan"
+    ? "hcr-icon-cyan"
+    : card.color === "pink"
+    ? "hcr-icon-pink"
+    : "hcr-icon-indigo";
 
           return (
-          <button key={card.id} type="button" onClick={() => onSelectType(card.id)}
-          className={`hcr-card ${ isSelected ? "hcr-card-selected" : "hcr-card-default"
-          }`}
-          >
-              
-              {/* Radio selection circle at the top-right */}
-              <div className="hcr-card-check">
-                <div className={`selection-indicator ${
-                  isSelected 
-                    ? "selection-indicator-selected"
-                    : "selection-indicator-default"
-                }`}>
-                  {isSelected && <Check className="selection-check-icon" />}
+           <button
+  key={card.id}
+  type="button"
+  onClick={() => onSelectType(card.id)}
+  className={`hcr-license-card ${
+    isSelected
+      ? "hcr-license-card-selected"
+      : "hcr-license-card-default"
+  }`}
+>
+               {/* Radio selection circle at the top-right */}
+              <div className="hcr-card-radio-wrapper">
+  <div
+    className={`hcr-card-radio ${
+      isSelected
+        ? "hcr-card-radio-selected"
+        : "hcr-card-radio-default"
+    }`}
+  >
+                  {isSelected && <Check className="hcr-card-radio-icon"/>}
                 </div>
               </div>
 
               <div>
                 {/* Icon wrapper */}
-                <div className={`hcr-icon-wrapper ${iconStyles} ${
-                  isSelected    ? "hcr-icon-selected" : "hcr-icon-hover"
+                <div    className={`hcr-license-icon-wrapper ${iconStyles} ${ isSelected
+                ? "hcr-license-icon-selected"        
+                : "hcr-license-icon-hover"
                 }`}>
-                  <IconComp className="hcr-icon" />
+                  <IconComp className="hcr-license-icon" />
                 </div>
 
                 {/* License Code */}
-                <span className="hcr-code">
+                 <span className="hcr-license-code">
                   {card.code}
                 </span>
 
                 {/* License Title */}
-                <h3 className="hcr-card-title">
+                <h3 className="text-sm font-extrabold text-slate-900 mt-1.5 leading-snug group-hover:text-blue-700 transition">
                   {card.title}
                 </h3>
 
                 {/* License Description */}
-                 <p className="hcr-card-description">
+                  <p className="hcr-license-card-description">
                   {card.description}
                 </p>
               </div>
 
-              {/* Bottom Badge Tag */}
-              <div className="hcr-card-footer">
-                 <span className={`hcr-badge ${badgeStyles}`}>
-                  {card.category}
-                </span>
-                
-                 <span className={`hcr-badge ${badgeStyles}`}></span>
-              </div>
+             {/* Bottom Badge Tag */}
+<div className="hcr-license-card-footer">
+  <span className={`hcr-license-badge ${badgeStyles}`}>
+    {card.category}
+  </span>
 
+  <ChevronRight className="hcr-license-arrow" />
+</div>
             </button>
           );
         })}
