@@ -71,25 +71,7 @@ const DepartmentDashboard = ({ onLogout, onNavigateToPermit,onNavigateToBrandReg
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
 
-        {/* TOP SUB-HEADER BAR */}
-        <div className="flex items-center justify-between pb-4 border-b border-sidebar-line">
-          <button
-            onClick={onNavigateHome}
-            className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-blue-600 uppercase tracking-widest py-2 px-3.5 bg-white border border-slate-200 hover:border-slate-300 rounded-lg cursor-pointer transition shadow-sm"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Portal</span>
-          </button>
-
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white uppercase tracking-widest border-none py-2 px-3.5 rounded-lg cursor-pointer transition select-none shadow-sm"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
-          </button>
-        </div>
-
+        
         {/* TOP SECTION */}
         <div className="top-grid">
 
