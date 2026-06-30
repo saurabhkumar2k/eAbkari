@@ -16,6 +16,7 @@ import DepartmentHeader from './src/components/DepartmentHeader.jsx';
 import AdminHeader from './src/components/AdminHeader.jsx';
 import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/components/BottlerMaster.jsx';
+import BrandOwner from './src/components/BrandOwner.jsx';
 
 import {
   ChevronDownSvg,
@@ -54,10 +55,17 @@ const handleAdminNavigate = (view) => {
       case "BOTTLE":
       window.location.href = "/liquorbrand";
       break;
+
     case "Bottler":
     case "BOTTLER":
     window.location.href= "/bottlermaster";
     break;
+case "Brand Owner":
+case "BRAND OWNER":
+case "BrandOwner":
+case "BRANDOWNER":
+  window.location.href = "/brandowner";
+  break;
 
     case "IMPORT : BULK SPIRIT":
       window.location.href = "/importpermitpass";
@@ -210,6 +218,21 @@ return (
       />
 
       <BottlerMaster
+        onBack={() => (window.location.href = "/departmentdashboard")}
+      />
+    </div>
+  }
+/>
+<Route
+  path="/brandowner"
+  element={
+    <div className="admin-app-layout flex-grow flex flex-col">
+      <AdminHeader
+        navItems={navItems}
+        currentView="BRAND_OWNER"
+        onNavigate={handleAdminNavigate}
+      />
+      <BrandOwner
         onBack={() => (window.location.href = "/departmentdashboard")}
       />
     </div>
