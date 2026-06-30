@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.API.Services;
-
+using backend.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +45,7 @@ builder.Services.AddScoped<IUserRegistrationRepository, UserRegistrationReposito
 builder.Services.AddScoped<ILGDiretoryRepository, LGDiretoryRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IMstUsRegRepository, MstUsRegRepository>();
+builder.Services.AddScoped<ILiquorBrandRepository,LiquorBrandRepository>();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

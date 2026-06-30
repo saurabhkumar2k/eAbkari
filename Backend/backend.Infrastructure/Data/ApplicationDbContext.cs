@@ -33,6 +33,7 @@ namespace backend.Infrastructure.Data
         public DbSet<MstHotelType> MstHotelType { get; set; }
         public DbSet<LicenseApplicationUserDetails> LicenseApplicationUserDetails { get; set; }
         public DbSet<MstLicenseDocumentMaster> MstLicenseDocumentMaster { get; set; }
+        public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
 
         public DbSet<WarehouseDetails> WarehouseDetails { get; set; }
 
@@ -185,6 +186,16 @@ namespace backend.Infrastructure.Data
 
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<MstLiquorBrand>()
+             .HasKey(x => new
+                 {
+                      x.LiquorCatCode,
+                      x.LiquorKindCode,
+                      x.LiquorTypeCode,
+                      x.LiquorBrandCode
+        }); 
+             
+
         }
     }
 
