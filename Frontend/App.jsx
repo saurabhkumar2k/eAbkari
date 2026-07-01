@@ -41,46 +41,50 @@ import {
   TagSvg,
   MessageSquareSvg,
   PieChartSvg,
-  SettingsSvg
+  SettingsSvg,
+  LogOutSvg
 } from "./src/components/icons/GlobalIcons";
 
 import { ArrowRightSvg } from './src/Style/images/Icons';
 
 export default function App() {
-const handleAdminNavigate = (view) => {
-  console.log("Navigation:", view);
+  const handleAdminNavigate = (view) => {
+    console.log("Navigation:", view);
 
-  switch (view?.trim()) {
+    switch (view?.trim()) {
       case "Bottle":
       case "BOTTLE":
-      window.location.href = "/liquorbrand";
-      break;
+        window.location.href = "/liquorbrand";
+        break;
 
-    case "Bottler":
-    case "BOTTLER":
-    window.location.href= "/bottlermaster";
-    break;
-case "Brand Owner":
-case "BRAND OWNER":
-case "BrandOwner":
-case "BRANDOWNER":
-  window.location.href = "/brandowner";
+      case "Bottler":
+      case "BOTTLER":
+        window.location.href = "/bottlermaster";
+        break;
+
+      case "Brand Owner":
+      case "BRAND OWNER":
+      case "BrandOwner":
+      case "BRANDOWNER":
+        window.location.href = "/brandowner";
+        break;
+
+      case "IMPORT : BULK SPIRIT":
+        window.location.href = "/importpermitpass";
+        break;
+
+      case "Home":
+        window.location.href = "/departmentdashboard";
+        break;
+case "LOGOUT":
+  window.location.href = "/";
   break;
 
-    case "IMPORT : BULK SPIRIT":
-      window.location.href = "/importpermitpass";
-      break;
-
-    case "Home":
-      window.location.href = "/departmentdashboard";
-      break;
-
-    default:
-      console.log("Unknown route:", view);
-      break;
-  }
-};
-
+      default:
+        console.log("Unknown route:", view);
+        break;
+    }
+  };
 return (
   <BrowserRouter>
     <Routes>
@@ -317,6 +321,7 @@ const navItems = [
     icon: <SettingsSvg className="dept-nav-icon" />,
     hasDropdown: true,
   },
+  { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
 
   const renderHomeContent = () => (
