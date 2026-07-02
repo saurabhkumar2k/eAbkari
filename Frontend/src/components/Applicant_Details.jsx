@@ -2,7 +2,9 @@ import React from "react";
 
 // import "./../Style/ApplicantDetails.css";
 
-import "../Style/ApplyLicense.css";
+//import "../Style/ApplyLicense.css";
+
+
 
 const ApplicantDetails = ({
   applicant,

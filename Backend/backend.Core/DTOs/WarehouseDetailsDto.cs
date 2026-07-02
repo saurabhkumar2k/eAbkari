@@ -7,6 +7,10 @@ public class WarehouseDetailsDto
 
     public string? WarehouseName { get; set; }
 
+    public string? ApplicationIdNo { get; set; }
+    public long RegId { get; set; }
+
+    public string CatCode { get; set; } = string.Empty;
     public string? WarehouseAddress1 { get; set; }
 
     public string? WarehouseAddress2 { get; set; }

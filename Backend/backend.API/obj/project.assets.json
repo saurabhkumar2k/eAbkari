@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
     "net9.0": {
       "Azure.Core/1.38.0": {
@@ -65,6 +65,23 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "Microsoft.AspNetCore.Http.Features/5.0.17": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "5.0.1",
+          "System.IO.Pipelines": "5.0.2"
+        },
+        "compile": {
+          "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll": {
+            "related": ".xml"
+          }
+        }
       },
       "Microsoft.AspNetCore.OpenApi/9.0.11": {
         "type": "package",
@@ -774,6 +791,19 @@
           }
         }
       },
+      "System.IO.Pipelines/5.0.2": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.0/System.IO.Pipelines.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.IO.Pipelines.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Memory/4.5.4": {
         "type": "package",
         "compile": {
@@ -1072,6 +1102,9 @@
       "backend.Core/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Features": "5.0.17"
+        },
         "compile": {
           "bin/placeholder/backend.Core.dll": {}
         },
@@ -1149,6 +1182,25 @@
         "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
         "microsoft.aspnetcore.authentication.jwtbearer.9.0.0.nupkg.sha512",
         "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Http.Features/5.0.17": {
+      "sha512": "3jG2xS+dx8DDCGV/F+STdPTg89lX3ao3dF/VEPvJaz3wzBIjuadipTtYNEXDIVuOPZwb6jdmhrX9jkzOIBm5cw==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.http.features/5.0.17",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/Microsoft.AspNetCore.Http.Features.dll",
+        "lib/net461/Microsoft.AspNetCore.Http.Features.xml",
+        "lib/net5.0/Microsoft.AspNetCore.Http.Features.dll",
+        "lib/net5.0/Microsoft.AspNetCore.Http.Features.xml",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.xml",
+        "microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+        "microsoft.aspnetcore.http.features.nuspec"
       ]
     },
     "Microsoft.AspNetCore.OpenApi/9.0.11": {
@@ -2390,6 +2442,32 @@
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
+    "System.IO.Pipelines/5.0.2": {
+      "sha512": "Iew+dfa6FFiyvWBdRmXApixRY1db+beyutpIck4SOSe0NLM8FD/7AD54MscqVLhvfSMLHO7KadjTRT7fqxOGTA==",
+      "type": "package",
+      "path": "system.io.pipelines/5.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.IO.Pipelines.dll",
+        "lib/net461/System.IO.Pipelines.xml",
+        "lib/netcoreapp3.0/System.IO.Pipelines.dll",
+        "lib/netcoreapp3.0/System.IO.Pipelines.xml",
+        "lib/netstandard1.3/System.IO.Pipelines.dll",
+        "lib/netstandard1.3/System.IO.Pipelines.xml",
+        "lib/netstandard2.0/System.IO.Pipelines.dll",
+        "lib/netstandard2.0/System.IO.Pipelines.xml",
+        "ref/netcoreapp2.0/System.IO.Pipelines.dll",
+        "ref/netcoreapp2.0/System.IO.Pipelines.xml",
+        "system.io.pipelines.5.0.2.nupkg.sha512",
+        "system.io.pipelines.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Memory/4.5.4": {
       "sha512": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
       "type": "package",
@@ -2993,39 +3071,45 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\muska\\.nuget\\packages\\": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
+      "projectUniqueName": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
       "projectName": "backend.API",
-      "projectPath": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
-      "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
-      "outputPath": "C:\\New\\eabkari\\backend\\backend.api\\obj\\",
+      "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
-          "framework": "net9.0",
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
-              "projectPath": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj"
+            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Application\\backend.Application.csproj": {
+              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Application\\backend.Application.csproj"
             },
-            "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
-              "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
+            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj": {
+              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj"
             },
-            "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
-              "projectPath": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
+            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
             }
           }
         }
@@ -3040,11 +3124,10 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net9.0": {
-        "framework": "net9.0",
         "targetAlias": "net9.0",
         "dependencies": {
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
@@ -3071,24 +3154,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[9.0.16, 9.0.16]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[9.0.16, 9.0.16]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[9.0.16, 9.0.16]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[9.0.16, 9.0.16]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -3097,7 +3162,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

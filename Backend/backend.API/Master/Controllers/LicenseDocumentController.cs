@@ -21,26 +21,50 @@ namespace backend.API.Controllers
             _context = context;
         }
 
-
+ 
+     
         [HttpGet("documents")]
-        public async Task<IActionResult> GetDocuments()
+        public async Task<IActionResult> GetDocuments(string applicationIdNo, string catCode,string docStatus)
         {
-            var documents = await _context.MstLicenseDocumentMaster
-                .Where(x => x.DocStatus == "C" && x.DeleteStatus == "N")
-                .OrderBy(x => x.DocId)
-                .Select(x => new DocumentDto
-                {
-                    DocId = x.DocId,                           // string now, matches DB
-                    DocDesc = x.DocDesc.Replace("<br>", "").Replace("<br/>", "").Replace("<br />", "") .Trim(),
+            var documents = await (
+                from a in _context.MstLicenseApplicationDocument
+                join b in _context.LicenseApplicationCategoryDocument
+                    on a.DocId equals b.DocId
 
-                    Key = x.DocDesc.ToLower().Replace(" ", ""),
-                    IsMandatory = x.IsValid
-                })
-                .ToListAsync();
+                where a.DocStatus == docStatus
+                   && a.DeleteStatus == "N"
+                   && b.LicenseeCatCode == catCode
+                   && b.ActiveStatus == "Y"
+                   && (b.LicenseeTypeFlag == "A" || b.LicenseeTypeFlag == "I")
+
+                join c in _context.LicenseApplicationUploadedDocument
+                    .Where(x => x.ApplicationIdNo == applicationIdNo &&
+                                x.MobileNoReleaseStatus == "N")
+                    on a.DocId equals c.DocId into gj
+
+                from c in gj.DefaultIfEmpty()
+
+                orderby (Convert.ToInt32(a.DocId) == 186 ? 999 : 1),
+                        Convert.ToInt32(a.DocId)
+
+                select new DocumentDto
+                {
+                    DocId = a.DocId,
+                    DocDesc = a.DocDesc,
+                    DocUrl = c != null ? c.DocUrl : "",
+                    DocAppl = c != null && c.DocStatus == "N" ? "Yes" : "No",
+                    DocSl = c != null ? c.DocSl : null,
+                    SDate = c == null
+                                ? "View"
+                                : (c.SubmitDate == null
+                                    ? "View"
+                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),
+                    IsMandatory = b.IsMandatory
+                }).ToListAsync();
 
             return Ok(documents);
-        }
 
+        }
 
 
         [HttpGet("test")]

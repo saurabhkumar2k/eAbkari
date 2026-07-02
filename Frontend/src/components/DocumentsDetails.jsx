@@ -14,7 +14,7 @@ const DocumentUpload = ({
 
       {documents.length > 0 ? (
         documents.map((doc) => {
-          const uploaded = uploadedFiles[doc.key];
+          const uploaded = uploadedFiles[doc.docId];
 
           return (
             <div key={doc.docId} className="doc-box">
@@ -39,7 +39,7 @@ const DocumentUpload = ({
                       hidden
                       onChange={(e) =>
                         handleDocumentFileChange(
-                          doc.key,
+                          doc.docId,
                           e.target.files[0]
                         )
                       }
@@ -61,7 +61,7 @@ const DocumentUpload = ({
                       <button
                         type="button"
                         className="delete-btn"
-                        onClick={() => handleDeleteFile(doc.key)}
+                        onClick={() => handleDeleteFile(doc.docId)}
                       >
                         Delete
                       </button>

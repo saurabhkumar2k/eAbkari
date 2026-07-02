@@ -3,6 +3,7 @@ using backend.Core.Entities.Licence;
 using backend.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.Core.Entities;
 using System.Linq;
 
 namespace backend.API.Controllers
@@ -20,7 +21,7 @@ namespace backend.API.Controllers
             _context = context;
         }
 
-
+        private readonly IWebHostEnvironment _env;
 
 
 
@@ -117,7 +118,9 @@ if (!ModelState.IsValid)
 
             var WarehouseLicense = new WarehouseDetails
             {
-
+                RegId=dto.RegId,
+                CatCode=dto.CatCode,
+                ApplicationIdNo=dto.ApplicationIdNo,
                    WarehouseName = dto.WarehouseName,
                  WarehouseAddress1 = dto.WarehouseAddress1,
                  WarehouseAddress2 = dto.WarehouseAddress2,
@@ -127,12 +130,12 @@ if (!ModelState.IsValid)
                     WarehousePin = dto.WarehousePin,
                     WarehouseMobile = dto.WarehouseMobile,
                     WarehouseEmail = dto.WarehouseEmail,
-                    LicenseYear = dto.LicenseYear,
+                   // LicenseYear = dto.LicenseYear,
                     WarehouseSubDivision = dto.WarehouseSubDivision,
                     WarehousePoliceStation = dto.WarehousePoliceStation,
-                    WarehouseConstituency = dto.WarehouseConstituency,
+                  //  WarehouseConstituency = dto.WarehouseConstituency,
                     WarehouseWardName = dto.WarehouseWardName,
-                    WarehouseFAX = dto.WarehouseFAX,
+                   /// WarehouseFAX = dto.WarehouseFAX,
                     LeaseRegistration = dto.LeaseRegistration,
                     LeaseRegistrationDate = dto.LeaseRegistrationDate,
                     LeaseRegistrationExpiryDate = dto.LeaseRegistrationExpiryDate,
@@ -140,9 +143,9 @@ if (!ModelState.IsValid)
                     ArchitectRegistrationNoValidUpto = dto.ArchitectRegistrationNoValidUpto,
                     SuperAreaofLicensePremise = dto.SuperAreaofLicensePremise,
                     CarpetAreaofLicensePremise = dto.CarpetAreaofLicensePremise,
-                    DistanceofDistillery = Convert.ToInt64(dto.DistanceofDistillery),
+                DistanceofDistilleryCP = Convert.ToInt64(dto.DistanceofDistillery),
                     HoursofSale = dto.HoursofSale,
-                    CreatedDateAt = DateTime.UtcNow,
+                    CreatedDateAt = DateTime.Now,
                 
             };
              _context.WarehouseDetails.Add(WarehouseLicense);
@@ -157,10 +160,177 @@ if (!ModelState.IsValid)
 
 }
 
+        [HttpPost("ApplyCompanydetails")]
+        [HttpPost]
+        public async Task<IActionResult> CreateCompanydetails([FromForm] LicenseCompanyDetailsDto dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                // Company table save
+                var company = new LicenseCompanyDetails
+                {
+                    ApplicationIdNo = dto.ApplicationIdNo,
+                    RegistrationNo = dto.RegistrationNo,
+                    RegDate = dto.RegDate,
+                    CompanyPAN = dto.CompanyPAN,
+                    VATNO = dto.VATNO,
+                    IsExciseNominee = dto.IsExciseNominee,
+                    ExciseNomineeName = dto.ExciseNomineeName,
+                    ExciseNomineeAddress = dto.ExciseNomineeAddress,
+                    ExciseNomineeEmailID = dto.ExciseNomineeEmailID,
+                    ExciseNomineeMobileNo = dto.ExciseNomineeMobileNo,
+                    ExciseNomineePAN = dto.ExciseNomineePAN,
+                    ExciseNomineePanImage = dto.ExciseNomineePanImage,
+                    FSSAILicenceNo = dto.FSSAILicenceNo,
+                    FSSAILicenceStartDate = dto.FSSAILicenceStartDate,
+                    FSSAILicenceEndDate = dto.FSSAILicenceEndDate,
+                    VATGSTCertNo = dto.VATGSTCertNo,
+                    VATGSTCertEnddate = dto.VATGSTCertEnddate,
+                    DistilleryLicNo = dto.DistilleryLicNo,
+                    DistilleryLicEnddate = dto.DistilleryLicEnddate,
+                    BWHInsuranceEndDate = dto.BWHInsuranceEndDate,
+                    BWHRentAgreementEndDate = dto.BWHRentAgreementEndDate
+
+
+                };
+
+                _context.LicenseCompanyDetails.Add(company);
 
 
 
-        [HttpGet("GetApplicantByRegId/{regId}")]
+
+
+                //foreach (var partner in dto.CompanyPartnersDetails)
+                //{
+
+                //    if (partner.PanFile != null)
+                //    {
+                //        var fileName = Guid.NewGuid() +
+                //            Path.GetExtension(partner.PanFile.FileName);
+
+                //        var folder = Path.Combine(_env.WebRootPath, "Uploads", "PartnerPAN");
+
+                //        if (!Directory.Exists(folder))
+                //            Directory.CreateDirectory(folder);
+
+                //        var path = Path.Combine(folder, fileName);
+
+                //        using (var stream = new FileStream(path, FileMode.Create))
+                //        {
+                //            await partner.PanFile.CopyToAsync(stream);
+                //        }
+
+                //        // Database me filename save hoga
+                //        partner.PhotoURLPanNo = fileName;
+                //    }
+
+
+                //    _context.AdditionalCompanyPartnersDetails.Add(partner);
+                //}
+
+
+                //await _context.SaveChangesAsync();
+
+
+
+                foreach (var director in dto.CompanyPartnersDetails)
+                {
+                    string? panFileName = null;
+
+                    if (director.PanFile != null)
+                    {
+                        // Save file...
+
+                        panFileName = Guid.NewGuid() +
+                            Path.GetExtension(director.PanFile.FileName);
+
+                        var folder = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "Documents",
+                            "LicenseCompanyDocuments");
+
+                        if (!Directory.Exists(folder))
+                            Directory.CreateDirectory(folder);
+
+                        var path = Path.Combine(folder, panFileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await director.PanFile.CopyToAsync(stream);
+                        }
+                    }
+
+                    string? AddressFileName = null;
+
+                    if (director.AddressProofFile != null)
+                    {
+                        AddressFileName = Guid.NewGuid() +
+                                      Path.GetExtension(director.AddressProofFile.FileName);
+
+                        var folder = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        "Documents",
+        "LicenseCompanyDocuments"
+    );
+
+                        if (!Directory.Exists(folder))
+                        {
+                            Directory.CreateDirectory(folder);
+                        }
+
+                        var fileName = Guid.NewGuid().ToString() +
+                                       Path.GetExtension(director.AddressProofFile.FileName);
+
+                        var filePath = Path.Combine(folder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await director.AddressProofFile.CopyToAsync(stream);
+                        }
+                    }
+
+
+
+                    var partnerEntity = new AdditionalCompanyPartnersDetails
+                    {
+                        ApplicationIdNo = dto.ApplicationIdNo,
+                        PName = director.PName,
+                        PPerShare = director.PPerShare,
+                        PPanNo = director.PPanNo,
+                        PExciseNominee = director.PExciseNominee,
+                        DINNo = director.DINNo,
+                        PhotoURLPanNo = panFileName,
+                        PhotoURLAddressProof = AddressFileName
+                    };
+
+                    _context.AdditionalCompanyPartnersDetails.Add(partnerEntity);
+                }
+                var entity = _context.Model.FindEntityType(typeof(AdditionalCompanyPartnersDetails));
+
+                foreach (var p in entity.GetProperties())
+                {
+                    Console.WriteLine($"{p.Name} - Shadow: {p.IsShadowProperty()}");
+                }
+
+                await _context.SaveChangesAsync();
+
+
+                return Ok(new
+                {
+                    //applicationId = WarehouseLicense.ApplicationIdNo
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+
+            [HttpGet("GetApplicantByRegId/{regId}")]
         public async Task<IActionResult> GetApplicantByRegId(long regId)
         {
             var user = await _context.MstUsReg
@@ -171,6 +341,67 @@ if (!ModelState.IsValid)
 
             return Ok(user);
         }
+
+        
+
+        [HttpPost("UploadApplicationDocuments")]
+        public async Task<IActionResult> UploadApplicationDocuments([FromForm] ApplicationDocumentUploadDto dto)
+        {
+            //string folder = Path.Combine(_env.WebRootPath, "Documents", "ApplicationDocuments");
+
+            var folder = Path.Combine(
+    Directory.GetCurrentDirectory(),
+    "Documents",
+    "ApplicationDocuments");
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            foreach (var doc in dto.Documents)
+            {
+                string? fileName = null;
+
+                if (doc.DocumentFile != null)
+                {
+                    fileName = Guid.NewGuid() + Path.GetExtension(doc.DocumentFile.FileName);
+
+                    string filePath = Path.Combine(folder, fileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await doc.DocumentFile.CopyToAsync(stream);
+                }
+
+                var entity = new Core.Entities.Licence.LicenseApplicationUploadedDocument
+                {
+                    ApplicationIdNo = dto.ApplicationIdNo, // Wrapper se
+                    MobileNo = dto.MobileNo,               // Wrapper se
+
+                    ApplicantSl = doc.ApplicantSl,
+                    DocId = doc.DocId,
+                    DocSl = doc.DocSl,
+                    //DocStatus = doc.DocStatus,
+                    MobileNoReleaseStatus = doc.MobileNoReleaseStatus,
+                    //IsValid = doc.IsValid,
+                    Remarks = doc.Remarks,
+                    DateOfValidity = doc.DateOfValidity,
+                    //DocumentvalidationYN = doc.DocumentvalidationYN,
+                    LicenseeIdNo = doc.LicenseeIdNo,
+                    DocStatus = "N",
+                    IsValid = false,
+                    DocumentvalidationYN = "N",
+                    DocUrl = fileName
+                };
+                _context.LicenseApplicationUploadedDocument.Add(entity);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Documents uploaded successfully."
+            });
+        }
+
 
 
 

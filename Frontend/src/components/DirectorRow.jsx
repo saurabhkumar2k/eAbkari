@@ -46,8 +46,8 @@ console.log("DirectorRow constitutionType:", constitutionType);
         <div className="form-item">
           <label>Name *</label>
           <input
-            value={director.name || ""}
-            onChange={(e) => onChange(index, "name", e.target.value)}
+            value={director.PName || ""}
+            onChange={(e) => onChange(index, "PName", e.target.value)}
           />
         </div>
 
@@ -55,8 +55,8 @@ console.log("DirectorRow constitutionType:", constitutionType);
         <div className="form-item">
           <label>Share % *</label>
           <input
-            value={director.share || ""}
-            onChange={(e) => onChange(index, "share", e.target.value)}
+            value={director.PPerShare || ""}
+            onChange={(e) => onChange(index, "PPerShare", e.target.value)}
           />
         </div>
 
@@ -71,8 +71,8 @@ console.log("DirectorRow constitutionType:", constitutionType);
         <div className="form-item">
           <label>PAN No *</label>
           <input
-            value={director.panNo || ""}
-            onChange={(e) => onChange(index, "panNo", e.target.value)}
+            value={director.PPanNo || ""}
+            onChange={(e) => onChange(index, "PPanNo", e.target.value)}
           />
         </div>
 
