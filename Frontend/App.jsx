@@ -15,8 +15,8 @@ import DepartmentLogin from './src/components/Department/DepartmentLogin.jsx';
 import DepartmentHeader from './src/components/DepartmentHeader.jsx';
 import AdminHeader from './src/components/AdminHeader.jsx';
 import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
-import BottlerMaster from './src/components/BottlerMaster.jsx';
-import BrandOwner from './src/components/BrandOwner.jsx';
+import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
+import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 
 import {
   ChevronDownSvg,

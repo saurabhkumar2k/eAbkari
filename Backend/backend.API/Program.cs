@@ -55,6 +55,9 @@ builder.Services.AddScoped<ILGDiretoryRepository, LGDiretoryRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IMstUsRegRepository, MstUsRegRepository>();
 builder.Services.AddScoped<ILiquorBrandRepository,LiquorBrandRepository>();
+builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepository>();
+
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
