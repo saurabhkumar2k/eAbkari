@@ -1,6 +1,18 @@
 import React from "react";
 import "../Style/ApplyLicense.css";
-
+import{
+ House, 
+ MapPin,
+ Building2,
+ Globe,
+ MapPinned,
+ Building,
+ Car,
+ Phone,
+ Smartphone,
+ Tag, 
+ Mail
+} from 'lucide-react';
 const WarehouseDetails = ({
   applicant,
   states = [],
@@ -14,7 +26,7 @@ const WarehouseDetails = ({
 
       {/* HEADER */}
       <div className="premium-header">
-        <div className="icon-box">🏬</div>
+        <div className="icon-box"><House className="section-icon"/></div>
         <div>
           <h2>Warehouse Details</h2>
           <p>Enter warehouse location & contact info</p>
@@ -27,7 +39,7 @@ const WarehouseDetails = ({
 
         <div className="grid-3">
 
-          <Field icon="🏬" label="Warehouse Name *">
+          <Field icon={<House className="section-icon"/>} label="Warehouse Name *">
             <input
               placeholder=" "
               value={applicant.warehouseName || ""}
@@ -35,7 +47,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          <Field icon="🏠" label="Address Line 1 *">
+          <Field icon={<Building2 className="section-icon"/>} label="Address Line 1 *">
             <input
               placeholder=" "
               value={applicant.warehouseAddress1 || ""}
@@ -43,7 +55,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          <Field icon="📍" label="Address Line 2">
+          <Field icon= {<MapPin className="section-icon"/>} label="Address Line 2">
             <input
               placeholder=" "
               value={applicant.warehouseAddress2 || ""}
@@ -56,11 +68,11 @@ const WarehouseDetails = ({
 
       {/* ================= LOCATION ================= */}
       <div className="card-section address-box">
-        <h3>📍 Location Details</h3>
+        <h3><MapPin className="section-icon"/> Location Details</h3>
 
         <div className="grid-3">
 
-          <Field icon="🌏" label="State *">
+          <Field icon= {<Globe className="section-icon"/> }label="State *">
             {/* <select
               value={applicant.warehouseState || ""}
               onChange={(e) => {
@@ -94,7 +106,7 @@ const WarehouseDetails = ({
 
           </Field>
 
-          <Field icon="🏙️" label="District *">
+          <Field icon= {<Building2 className="section-icon"/>} label="District *">
             {/* <select
               value={applicant.warehouseDistrict || ""}
               onChange={(e) =>
@@ -131,7 +143,7 @@ const WarehouseDetails = ({
 
           </Field>
 
-          <Field icon="📮" label="PIN Code *">
+          <Field icon={<MapPinned className="section-icon"/> } label="PIN Code *">
             <input
               maxLength={6}
               placeholder=" "
@@ -142,7 +154,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-  <Field icon="🏢" label="Sub Division">
+  <Field icon={<Building className="section-icon"/>} label="Sub Division">
 
   {/* <select
     value={applicant.warehouseSubDivision || ""}
@@ -178,7 +190,7 @@ const WarehouseDetails = ({
 
 </Field>
 
-          <Field icon="🚓" label="Police Station">
+          <Field icon= {<Car className="section-icon"/>} label="Police Station">
 <select
   value={applicant.WarehousePoliceStation || ""}
   onChange={(e) => onChange("WarehousePoliceStation", e.target.value)}
@@ -203,7 +215,7 @@ const WarehouseDetails = ({
             />
           </Field> */}
 
-          <Field icon="🏷️" label="Ward Name">
+          <Field icon={<Tag className="section-icon"/>} label="Ward Name">
             <input
               placeholder=" "
               value={applicant.WarehouseWardName || ""}
@@ -218,11 +230,11 @@ const WarehouseDetails = ({
 
       {/* ================= CONTACT ================= */}
       <div className="card-section contact-box">
-        <h3>📞 Contact Details</h3>
+        <h3><Phone className="section-icon"/> Contact Details</h3>
 
         <div className="grid-3">
 
-          <Field icon="📧" label="Email">
+          <Field icon={<Mail className="section-icon"/>} label="Email">
             <input
               type="email"
               placeholder=" "
@@ -233,7 +245,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          <Field icon="📱" label="Mobile">
+          <Field icon={<Smartphone className="section-icon"/>} label="Mobile">
             <input
               maxLength={10}
               placeholder=" "
@@ -244,7 +256,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          <Field icon="☎️" label="Landline">
+          <Field icon={<Phone className="section-icon"/>} label="Landline">
             <input
               placeholder=" "
               value={applicant.warehouseLandline || ""}
@@ -254,7 +266,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          {/* <Field icon="📠" label="FAX">
+          {/* <Field icon={<Fax className="section-icon"/>} label="FAX">
             <input
               placeholder=" "
               value={applicant.warehouseFAX || ""}
@@ -379,14 +391,6 @@ const WarehouseDetails = ({
     </div>
   </div>
 </div> 
-
-
-
-
-
-
-
-
     </div>
   );
 };

@@ -105,3 +105,4 @@ E:\New_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.dll
 E:\New_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\refint\backend.Core.dll
 E:\New_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\backend.Core.pdb
 E:\New_eAbkari\eAbkari\Backend\backend.Core\obj\Debug\net9.0\ref\backend.Core.dll
+C:\New\eabkari\backend\backend.Core\obj\Debug\net9.0\backend.Core.csproj.AssemblyReference.cache

@@ -427,20 +427,22 @@ select {
   background: green;
   color: white;
 }
-
-
-
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-icon {
+  width: 20px;
+  height: 20px;
+  color: #2563eb;
+}
 /*apply_lic.jsx css*/
-
-
-
-
 .layout {
   display: flex;
   min-height: 100vh;
   font-family: Arial;
 }
-
 /* SIDEBAR */
 .sidebar {
   width: 250px;
@@ -522,7 +524,24 @@ button {
 
 
 /*applicant_detail.jsx css*/
+.input-with-icon {
+  position: relative;
+}
 
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #2563eb;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+}
 
 
 .premium-form {

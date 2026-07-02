@@ -1,15 +1,9 @@
 import React, { useEffect,useState } from "react";
-
 import ApplicantDetails from "../../../components/Applicant_Details";
 import WarehouseDetails from "../../../components/WarehouseDetails";
- import DirectorsList from "../../../components/DirectorsList";
- import DocumentUpload from "../../../components/DocumentsDetails";
-
-
+import DirectorsList from "../../../components/DirectorsList";
+import DocumentUpload from "../../../components/DocumentsDetails";
 import { createApplicant } from "../../../Model/Applicant";
-
-
-
 import {
   User,
   Building2,
@@ -32,43 +26,29 @@ import {
   Info,
   DollarSign,
   Printer,
-  Sparkles
+  Sparkles, 
+  ReceiptText
 } from "lucide-react";
 
-
-
 export default function L1AndL31License({ ownerType,
-  catCode,onBackToSelect, showToast }) {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const [applicant, setApplicant] = useState(createApplicant());
-
-
-
+catCode,onBackToSelect, showToast }) {
+const [currentStep, setCurrentStep] = useState(1);
+const [applicant, setApplicant] = useState(createApplicant());
 const [applicantDistricts, setApplicantDistricts] = useState([]);
 const [warehouseDistricts, setWarehouseDistricts] = useState([]);
-
-
 const [warehouseSubDivisions, setWarehouseSubDivisions] = useState([]);
 const [warehousePoliceStations, setWarehousePoliceStations] = useState([]);
-
 const [applicationId, setApplicationId] = useState(null);
-
   const [states, setStates] = useState([]);
-
   const [subDivisions, setSubDivisions] = useState([]);
   const [policeStations, setPoliceStations] = useState([]);
-
   const [documents, setDocuments] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({});
-
   const [innerStep, setInnerStep] = useState(1);
-
   const [fssai, setFssai] = useState({ FSSAILicenceNo: "", FSSAILicenceStartDate: "", FSSAILicenceEndDate: "" });
   const [vat, setVat] = useState({ VATGSTCertNo: "", VATGSTCertEnddate: "" });
   const [distillery, setDistillery] = useState({ DistilleryLicNo: "", DistilleryLicEnddate: "" });
   const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "" });
-
  const [nominee, setNominee] = useState({
     IsExciseNominee: "0",
     ExciseNomineeName: "",
@@ -79,12 +59,8 @@ const [applicationId, setApplicationId] = useState(null);
     ExciseNomineePanImage:"",
   });
 
-
 console.table(documents);
-
-
-  const [formData, setFormData] = useState({
-    // Step 1: Applicant Details
+  const [formData, setFormData] = useState({ // Step 1: Applicant Details
     applicantName: "VISHAL DEVILAL JAISWAL",
     companyName: "KRISTAL SPIRITS PVT LTD",
     dob: "1980-01-01",
@@ -100,7 +76,6 @@ console.table(documents);
     mobile: "9266024141",
     landline: "011-45672910",
     panNo: "AAFCM6267M",
-
     // Step 2: Warehouse Details
     warehouseName: "Kristal Mayapuri Bonded Depot",
     warehouseAddress: "B-96, Mayapuri Industrial Area, Phase-I, West Delhi, 110064",
@@ -109,7 +84,6 @@ console.table(documents);
     cctvProvider: "SecureVision CCTV Systems Ltd",
     lockerCount: "12",
     hasTemperatureControl: "Yes",
-
     // Step 3: Additional Details
     annualTurnover: "45.50", // Crores
     bankGuaranteeRef: "BG-2026-NCT-99120",
@@ -117,19 +91,16 @@ console.table(documents);
     pastExpYears: "8",
     deliveryVehicles: "6",
     priorLicensesDelhi: "Yes",
-
     // Step 4: Personal Documents (Files Status)
     personalPanUploaded: true,
     personalAadhaarUploaded: true,
     partnershipDeedUploaded: true,
     itrReturnUploaded: true,
-
     // Step 5: Site Documents (Files Status)
     leaseDeedUploaded: true,
     fireNocUploaded: true,
     mcdTradeLicenseUploaded: true,
     buildingPlanUploaded: true,
-
     // Step 6: Declaration
     undertakingAccept: false,
     signatureName: "VISHAL DEVILAL JAISWAL",
@@ -162,12 +133,9 @@ console.table(documents);
       }));
     }
   };
+/* ================= HANDLERS ================= */
 
-
-  /* ================= HANDLERS ================= */
-
-const handleApplicantChange = (field, value) => {
- // debugger;
+const handleApplicantChange = (field, value) => {// debugger;
   setApplicant((prev) => ({ ...prev, [field]: value }));
 
   if (field === "state") {
@@ -177,7 +145,6 @@ const handleApplicantChange = (field, value) => {
   if (field === "warehouseState") {
     fetchDistricts(value, "warehouse");
   }
-
   // if (field === "warehouseDistrict") {
   //   fetchWarehouseExtras(value); // ✅ ONLY THIS
   // }
@@ -249,9 +216,6 @@ const handleDeleteFile = (key) => {
     return updated;
   });
 };
-
-
-
   // useEffect(() => {
   //   fetch("http://localhost:5214/api/LGDiretory/getState")
   //     .then((r) => r.json())
@@ -286,8 +250,6 @@ const fetchDistricts = async (stateCode, type) => {
     setWarehouseDistricts(data);
   }
 };
-
-
 // const fetchSubdivisions = async (districtCode, type) => {
 //   debugger;
 //   const res = await fetch(
@@ -344,11 +306,6 @@ const fetchSubDivisions = async (districtCode) => {
   }
 };
 
-
-
-
-
-
 // useEffect(() => {
 //   debugger;
 //   const applicationIdNo = localStorage.getItem("applicationId");
@@ -380,14 +337,6 @@ useEffect(() => {
     .then((data) => setDocuments(data));
 
 }, [currentStep, catCode]);
-
-
-
-
-
-
-
-
 const handleStep1Next = async () => {
   const response = await fetch(
     "http://localhost:5214/api/Application/SaveApplicant",
@@ -469,10 +418,6 @@ console.log("catCode prop =", catCode);
   }
 };
 
-
-
-
-  
   const validateStep = (step) => {
     const errors = {};
     if (step === 1) {
@@ -770,14 +715,6 @@ if (currentStep === 4) {
     }
   });
 
-
-
-
-
-
-
-
-  
   const response = await fetch(
     "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
     {
@@ -837,14 +774,6 @@ if (currentStep === 5) {
     }
   });
 
-
-
-
-
-
-
-
-  
   const response = await fetch(
     "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
     {
@@ -857,9 +786,6 @@ if (currentStep === 5) {
 
   console.log(data);
 }
-
-
-
 
     if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
@@ -881,13 +807,6 @@ if (currentStep === 5) {
     }
   }
 };
-
-
-
-
-
-
-
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
@@ -1327,7 +1246,10 @@ if (currentStep === 5) {
     {/* ================= VAT ================= */}
     <div className="card">
       <div className="card-header">
-        <h3>VAT / GST</h3>
+        <h3 className="section-title">
+  <ReceiptText className="section-icon" />
+  VAT / GST
+</h3>
       </div>
 
       <div className="grid-2">

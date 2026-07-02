@@ -1,4 +1,19 @@
 import React from "react";
+import { 
+  User,
+  Calendar, 
+  UserRound, 
+  BriefcaseBusiness,
+  CreditCard,
+  MapPin,
+  House,
+  Globe,
+  Building2, 
+  MapPinned,
+  Phone,
+  Mail,
+  Smartphone
+ } from "lucide-react";
 
 // import "./../Style/ApplicantDetails.css";
 
@@ -30,7 +45,9 @@ districts?.forEach((d) =>
 
       {/* HEADER */}
       <div className="premium-header">
-        <div className="icon-box">👤</div>
+        <div className="icon-box">
+  <User className="w-5 h-5" />
+</div>
         <div>
           <h2>Applicant Details</h2>
           <p>Enter personal and contact information</p>
@@ -43,11 +60,11 @@ districts?.forEach((d) =>
 
         <div className="grid-3">
 
-          <Field icon="👤" label="Applicant Name *">
-        <input
-  value={applicant.applicantName || ""}
-  disabled
-/>
+  <Field icon={<User size={18} />} label="Applicant Name *">
+  <input
+    value={applicant.applicantName || ""}
+    disabled
+  />
           </Field>
 
           {/* <Field icon="🏢" label="Company / Firm Name *">
@@ -58,56 +75,71 @@ districts?.forEach((d) =>
             />
           </Field> */}
 
-          <Field icon="📅" label="Date of Birth *">
-            <input
-              type="date"
-              value={applicant.dateOfBirth || ""}
-              disabled
-            />
-          </Field>
+<Field
+  icon={<Calendar className="w-4 h-4 text-blue-600" />}
+  label="Date of Birth *"
+>
+  <input
+    type="date"
+    value={applicant.dateOfBirth || ""}
+    disabled
+  />
+</Field>
+<Field
+  icon={<UserRound className="w-4 h-4 text-blue-600" />}
+  label="Father / Husband Name *"
+>
+  <input
+    value={applicant.fatherHusbandName || ""}
+    disabled
+  />
+</Field>
 
-          <Field icon="👨" label="Father / Husband Name *">
-            <input
-              value={applicant.fatherHusbandName || ""}
-              disabled
-            />
-          </Field>
+<Field
+  icon={<BriefcaseBusiness className="w-4 h-4 text-blue-600" />}
+  label="Occupation"
+>
+  <input
+    placeholder=" "
+    value={applicant.occupation || ""}
+    disabled
+  />
+</Field>
 
-          <Field icon="💼" label="Occupation">
-            <input
-              placeholder=" "
-              value={applicant.occupation || ""}
-              disabled
-            />
-          </Field>
-
-          <Field icon="🪪" label="PAN No *">
-            <input
-              placeholder=" "
-              value={applicant.panNo || ""}
-              disabled
-               
-              
-            />
-          </Field>
+<Field
+  icon={<CreditCard className="w-4 h-4 text-blue-600" />}
+  label="PAN No *"
+>
+  <input
+    placeholder=" "
+    value={applicant.panNo || ""}
+    disabled
+  />
+</Field>
 
         </div>
       </div>
 
       {/* ================= ADDRESS ================= */}
       <div className="card-section address-box">
-        <h3>📍 Address Information</h3>
+        <h3 className="section-title">
+  <MapPin className="w-5 h-5" />
+  Address Information
+</h3>
 
         <div className="grid-1">
 
-          <Field icon="🏠" label="Address Line 1 *">
-            <input
-              value={applicant.addressLine1 || ""}
-              disabled
-            />
-          </Field>
+<Field
+  icon={<House className="w-4 h-4 text-blue-600" />}
+  label="Address Line 1 *"
+>
+  <input
+    value={applicant.addressLine1 || ""}
+    disabled
+  />
+</Field>
 
-          <Field icon="📍" label="Address Line 2">
+          <Field icon={<MapPin className="w-4 h-4 text-blue-600" />} label="Address Line 2">
             <input
               value={applicant.addressLine2 || ""}
               disabled
@@ -117,8 +149,10 @@ districts?.forEach((d) =>
         </div>
 
         <div className="grid-3">
-
-          <Field icon="🌏" label="State *">
+<Field
+  icon={<Globe className="w-4 h-4 text-blue-600" />}
+  label="State *"
+>
 {/* <select
   name="state"
   value={applicant.stateUT || ""}
@@ -155,7 +189,10 @@ districts?.forEach((d) =>
 
           </Field>
 
-          <Field icon="🏙️" label="District *">
+         <Field
+  icon={<Building2 className="w-4 h-4 text-blue-600" />}
+  label="District *"
+>
  {/* <select
   value={applicant.district || ""}
   disabled={!applicant.stateUT}
@@ -187,51 +224,60 @@ districts?.forEach((d) =>
 </select>
           </Field>
 
-          <Field icon="📮" label="PIN Code *">
-            <input
-              maxLength={6}
-              placeholder=" "
-              value={applicant.pin || ""}
-              disabled
-              
-            />
-          </Field>
+<Field
+  icon={<MapPinned className="w-4 h-4 text-blue-600" />}
+  label="PIN Code *"
+>
+  <input
+    maxLength={6}
+    placeholder=" "
+    value={applicant.pin || ""}
+    disabled
+  />
+</Field>
 
         </div>
       </div>
 
       {/* ================= CONTACT ================= */}
       <div className="card-section contact-box">
-        <h3>📞 Contact Information</h3>
+  <h3 className="section-title">
+  <Phone className="w-5 h-5" />
+  Contact Information
+</h3>
 
-        <div className="grid-3">
+<div className="grid-3">
 
-          <Field icon="📧" label="Email *">
-            <input
-              type="email"
-              placeholder=" "
-              value={applicant.email || ""}
-              disabled
-            />
-          </Field>
+  <Field
+    icon={<Mail className="w-4 h-4 text-blue-600" />}
+    label="Email *"
+  >
+    <input
+      type="email"
+      placeholder=" "
+      value={applicant.email || ""}
+      disabled
+    />
+  </Field>
 
-          <Field icon="📱" label="Mobile No *">
-            <input
-              maxLength={10}
-              placeholder=" "
-              value={applicant.mobile || ""}
-                disabled
-              
-            />
-          </Field>
+  <Field
+    icon={<Smartphone className="w-4 h-4 text-blue-600" />}
+    label="Mobile No *"
+  >
+    <input
+      maxLength={10}
+      placeholder=" "
+      value={applicant.mobile || ""}
+      disabled
+    />
+  </Field>
 
-          <Field icon="☎️" label="Landline">
+          <Field icon={<Phone className="section-icon" />}label="Landline">
             <input
               maxLength={10}
               placeholder=" "
               value={applicant.landline || ""}
               disabled
-              
             />
           </Field>
 

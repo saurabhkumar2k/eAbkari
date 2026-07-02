@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net9.0": {
       "Azure.Core/1.38.0": {
@@ -3071,45 +3071,39 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\HP\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\muska\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
+      "projectUniqueName": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
       "projectName": "backend.API",
-      "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\backend.API.csproj",
-      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.API\\obj\\",
+      "projectPath": "C:\\New\\eabkari\\backend\\backend.api\\backend.API.csproj",
+      "packagesPath": "C:\\Users\\muska\\.nuget\\packages\\",
+      "outputPath": "C:\\New\\eabkari\\backend\\backend.api\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\muska\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
+          "framework": "net9.0",
           "targetAlias": "net9.0",
           "projectReferences": {
-            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Application\\backend.Application.csproj": {
-              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Application\\backend.Application.csproj"
+            "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj": {
+              "projectPath": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj"
             },
-            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj": {
-              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Core\\backend.Core.csproj"
+            "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj": {
+              "projectPath": "C:\\New\\eabkari\\backend\\backend.Core\\backend.Core.csproj"
             },
-            "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
-              "projectPath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
+            "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj": {
+              "projectPath": "C:\\New\\eabkari\\backend\\backend.Infrastructure\\backend.Infrastructure.csproj"
             }
           }
         }
@@ -3124,10 +3118,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net9.0": {
+        "framework": "net9.0",
         "targetAlias": "net9.0",
         "dependencies": {
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
@@ -3154,6 +3149,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[9.0.16, 9.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[9.0.16, 9.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[9.0.16, 9.0.16]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[9.0.16, 9.0.16]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -3162,7 +3175,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
