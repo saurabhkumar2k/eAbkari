@@ -98,6 +98,29 @@
         "tags": [
           "LicenseDocument"
         ],
+        "parameters": [
+          {
+            "name": "applicationIdNo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "catCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "docStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -179,6 +202,428 @@
         }
       }
     },
+    "/api/LicenseeCategories/ApplyCompanydetails": {
+      "post": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FirmId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "ApplicationIdNo": {
+                    "type": "string"
+                  },
+                  "ConstitutionType": {
+                    "type": "string"
+                  },
+                  "CINNO": {
+                    "type": "string"
+                  },
+                  "RegistrationNo": {
+                    "type": "string"
+                  },
+                  "RegDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "CompanyPAN": {
+                    "type": "string"
+                  },
+                  "VATNO": {
+                    "type": "string"
+                  },
+                  "IsExciseNominee": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeName": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeAddress": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeEmailID": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeMobileNo": {
+                    "type": "string"
+                  },
+                  "ExciseNomineePAN": {
+                    "type": "string"
+                  },
+                  "ExciseNomineePanImage": {
+                    "type": "string"
+                  },
+                  "FSSAILicenceNo": {
+                    "type": "string"
+                  },
+                  "FSSAILicenceStartDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "FSSAILicenceEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "VATGSTCertNo": {
+                    "type": "string"
+                  },
+                  "VATGSTCertEnddate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "DistilleryLicNo": {
+                    "type": "string"
+                  },
+                  "DistilleryLicEnddate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "BWHInsuranceEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "BWHRentAgreementEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "LastYearIncomeTaxReturnOrAssessmentOrder": {
+                    "type": "string"
+                  },
+                  "PowerOfAttorney": {
+                    "type": "string"
+                  },
+                  "MobileNo": {
+                    "type": "string"
+                  },
+                  "LitreAppyingFor": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "CompanyPartnersDetails": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AdditionalCompanyPartnersDetailsDto"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "FirmId": {
+                  "style": "form"
+                },
+                "ApplicationIdNo": {
+                  "style": "form"
+                },
+                "ConstitutionType": {
+                  "style": "form"
+                },
+                "CINNO": {
+                  "style": "form"
+                },
+                "RegistrationNo": {
+                  "style": "form"
+                },
+                "RegDate": {
+                  "style": "form"
+                },
+                "CompanyPAN": {
+                  "style": "form"
+                },
+                "VATNO": {
+                  "style": "form"
+                },
+                "IsExciseNominee": {
+                  "style": "form"
+                },
+                "ExciseNomineeName": {
+                  "style": "form"
+                },
+                "ExciseNomineeAddress": {
+                  "style": "form"
+                },
+                "ExciseNomineeEmailID": {
+                  "style": "form"
+                },
+                "ExciseNomineeMobileNo": {
+                  "style": "form"
+                },
+                "ExciseNomineePAN": {
+                  "style": "form"
+                },
+                "ExciseNomineePanImage": {
+                  "style": "form"
+                },
+                "FSSAILicenceNo": {
+                  "style": "form"
+                },
+                "FSSAILicenceStartDate": {
+                  "style": "form"
+                },
+                "FSSAILicenceEndDate": {
+                  "style": "form"
+                },
+                "VATGSTCertNo": {
+                  "style": "form"
+                },
+                "VATGSTCertEnddate": {
+                  "style": "form"
+                },
+                "DistilleryLicNo": {
+                  "style": "form"
+                },
+                "DistilleryLicEnddate": {
+                  "style": "form"
+                },
+                "BWHInsuranceEndDate": {
+                  "style": "form"
+                },
+                "BWHRentAgreementEndDate": {
+                  "style": "form"
+                },
+                "LastYearIncomeTaxReturnOrAssessmentOrder": {
+                  "style": "form"
+                },
+                "PowerOfAttorney": {
+                  "style": "form"
+                },
+                "MobileNo": {
+                  "style": "form"
+                },
+                "LitreAppyingFor": {
+                  "style": "form"
+                },
+                "CompanyPartnersDetails": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LicenseeCategories": {
+      "post": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "FirmId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "ApplicationIdNo": {
+                    "type": "string"
+                  },
+                  "ConstitutionType": {
+                    "type": "string"
+                  },
+                  "CINNO": {
+                    "type": "string"
+                  },
+                  "RegistrationNo": {
+                    "type": "string"
+                  },
+                  "RegDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "CompanyPAN": {
+                    "type": "string"
+                  },
+                  "VATNO": {
+                    "type": "string"
+                  },
+                  "IsExciseNominee": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeName": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeAddress": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeEmailID": {
+                    "type": "string"
+                  },
+                  "ExciseNomineeMobileNo": {
+                    "type": "string"
+                  },
+                  "ExciseNomineePAN": {
+                    "type": "string"
+                  },
+                  "ExciseNomineePanImage": {
+                    "type": "string"
+                  },
+                  "FSSAILicenceNo": {
+                    "type": "string"
+                  },
+                  "FSSAILicenceStartDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "FSSAILicenceEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "VATGSTCertNo": {
+                    "type": "string"
+                  },
+                  "VATGSTCertEnddate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "DistilleryLicNo": {
+                    "type": "string"
+                  },
+                  "DistilleryLicEnddate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "BWHInsuranceEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "BWHRentAgreementEndDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "LastYearIncomeTaxReturnOrAssessmentOrder": {
+                    "type": "string"
+                  },
+                  "PowerOfAttorney": {
+                    "type": "string"
+                  },
+                  "MobileNo": {
+                    "type": "string"
+                  },
+                  "LitreAppyingFor": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "CompanyPartnersDetails": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AdditionalCompanyPartnersDetailsDto"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "FirmId": {
+                  "style": "form"
+                },
+                "ApplicationIdNo": {
+                  "style": "form"
+                },
+                "ConstitutionType": {
+                  "style": "form"
+                },
+                "CINNO": {
+                  "style": "form"
+                },
+                "RegistrationNo": {
+                  "style": "form"
+                },
+                "RegDate": {
+                  "style": "form"
+                },
+                "CompanyPAN": {
+                  "style": "form"
+                },
+                "VATNO": {
+                  "style": "form"
+                },
+                "IsExciseNominee": {
+                  "style": "form"
+                },
+                "ExciseNomineeName": {
+                  "style": "form"
+                },
+                "ExciseNomineeAddress": {
+                  "style": "form"
+                },
+                "ExciseNomineeEmailID": {
+                  "style": "form"
+                },
+                "ExciseNomineeMobileNo": {
+                  "style": "form"
+                },
+                "ExciseNomineePAN": {
+                  "style": "form"
+                },
+                "ExciseNomineePanImage": {
+                  "style": "form"
+                },
+                "FSSAILicenceNo": {
+                  "style": "form"
+                },
+                "FSSAILicenceStartDate": {
+                  "style": "form"
+                },
+                "FSSAILicenceEndDate": {
+                  "style": "form"
+                },
+                "VATGSTCertNo": {
+                  "style": "form"
+                },
+                "VATGSTCertEnddate": {
+                  "style": "form"
+                },
+                "DistilleryLicNo": {
+                  "style": "form"
+                },
+                "DistilleryLicEnddate": {
+                  "style": "form"
+                },
+                "BWHInsuranceEndDate": {
+                  "style": "form"
+                },
+                "BWHRentAgreementEndDate": {
+                  "style": "form"
+                },
+                "LastYearIncomeTaxReturnOrAssessmentOrder": {
+                  "style": "form"
+                },
+                "PowerOfAttorney": {
+                  "style": "form"
+                },
+                "MobileNo": {
+                  "style": "form"
+                },
+                "LitreAppyingFor": {
+                  "style": "form"
+                },
+                "CompanyPartnersDetails": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/LicenseeCategories/GetApplicantByRegId/{regId}": {
       "get": {
         "tags": [
@@ -195,6 +640,52 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/LicenseeCategories/UploadApplicationDocuments": {
+      "post": {
+        "tags": [
+          "LicenseeCategories"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ApplicationIdNo": {
+                    "type": "string"
+                  },
+                  "MobileNo": {
+                    "type": "string"
+                  },
+                  "Documents": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LicenseApplicationUploadedDocumentDto"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "ApplicationIdNo": {
+                  "style": "form"
+                },
+                "MobileNo": {
+                  "style": "form"
+                },
+                "Documents": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -596,6 +1087,112 @@
   },
   "components": {
     "schemas": {
+      "AdditionalCompanyPartnersDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "applicationIdNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "pName": {
+            "type": "string",
+            "nullable": true
+          },
+          "pPerShare": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "pPanNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "pExciseNominee": {
+            "type": "string",
+            "nullable": true
+          },
+          "dinNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoURLPanNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "panFile": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          },
+          "addressProofFile": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LicenseApplicationUploadedDocumentDto": {
+        "type": "object",
+        "properties": {
+          "applicantSl": {
+            "type": "string",
+            "nullable": true
+          },
+          "docId": {
+            "type": "string",
+            "nullable": true
+          },
+          "docSl": {
+            "type": "string",
+            "nullable": true
+          },
+          "documentFile": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
+          },
+          "docStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobileNoReleaseStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "isValid": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfValidity": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "documentvalidationYN": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseeIdNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "submitDate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LicenseApplicationUserDetailsDto": {
         "type": "object",
         "properties": {
@@ -777,6 +1374,18 @@
             "format": "int32"
           },
           "warehouseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationIdNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "regId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "catCode": {
             "type": "string",
             "nullable": true
           },

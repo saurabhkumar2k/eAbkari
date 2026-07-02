@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "KjCJj67cdQw=",
+  "dgSpecHash": "moMozi0RA68=",
   "success": true,
-  "projectFilePath": "C:\\New\\eabkari\\backend\\backend.Application\\backend.Application.csproj",
+  "projectFilePath": "E:\\New_eAbkari\\eAbkari\\Backend\\backend.Application\\backend.Application.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\muska\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.16\\microsoft.netcore.app.ref.9.0.16.nupkg.sha512",
-    "C:\\Users\\muska\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.16\\microsoft.windowsdesktop.app.ref.9.0.16.nupkg.sha512",
-    "C:\\Users\\muska\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.16\\microsoft.aspnetcore.app.ref.9.0.16.nupkg.sha512"
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "C:\\Users\\HP\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512"
   ],
   "logs": []
 }

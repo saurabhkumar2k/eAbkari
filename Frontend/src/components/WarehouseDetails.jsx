@@ -193,7 +193,7 @@ const WarehouseDetails = ({
 </select>
           </Field>
 
-          <Field icon="📍" label="Constituency">
+          {/* <Field icon="📍" label="Constituency">
             <input
               placeholder=" "
               value={applicant.warehouseConstituency || ""}
@@ -201,7 +201,7 @@ const WarehouseDetails = ({
                 onChange("warehouseConstituency", e.target.value)
               }
             />
-          </Field>
+          </Field> */}
 
           <Field icon="🏷️" label="Ward Name">
             <input
@@ -254,7 +254,7 @@ const WarehouseDetails = ({
             />
           </Field>
 
-          <Field icon="📠" label="FAX">
+          {/* <Field icon="📠" label="FAX">
             <input
               placeholder=" "
               value={applicant.warehouseFAX || ""}
@@ -262,7 +262,7 @@ const WarehouseDetails = ({
                 onChange("warehouseFAX", e.target.value.replace(/\D/g, ""))
               }
             />
-          </Field>
+          </Field> */}
 
         </div>
       </div>

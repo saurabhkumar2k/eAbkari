@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 
 
+
 export default function L1AndL31License({ ownerType,
   catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -63,21 +64,23 @@ const [applicationId, setApplicationId] = useState(null);
 
   const [innerStep, setInnerStep] = useState(1);
 
-  const [fssai, setFssai] = useState({ licenseNo: "", startDate: "", endDate: "" });
-  const [vat, setVat] = useState({ certNo: "", endDate: "" });
-  const [distillery, setDistillery] = useState({ licenceNo: "", endDate: "" });
-  const [bwh, setBwh] = useState({ insuranceNo: "", endDate: "" });
+  const [fssai, setFssai] = useState({ FSSAILicenceNo: "", FSSAILicenceStartDate: "", FSSAILicenceEndDate: "" });
+  const [vat, setVat] = useState({ VATGSTCertNo: "", VATGSTCertEnddate: "" });
+  const [distillery, setDistillery] = useState({ DistilleryLicNo: "", DistilleryLicEnddate: "" });
+  const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "" });
 
  const [nominee, setNominee] = useState({
-    isExciseNominee: "0",
-    name: "",
-    address: "",
-    email: "",
-    mobile: "",
-    panNo: "",
+    IsExciseNominee: "0",
+    ExciseNomineeName: "",
+    ExciseNomineeAddress: "",
+    ExciseNomineeEmailID: "",
+    ExciseNomineeMobileNo: "",
+    ExciseNomineePAN: "",
+    ExciseNomineePanImage:"",
   });
 
 
+console.table(documents);
 
 
   const [formData, setFormData] = useState({
@@ -346,17 +349,43 @@ const fetchSubDivisions = async (districtCode) => {
 
 
 
-useEffect(() => {
-  //debugger;
-  fetch("http://localhost:5214/api/LicenseDocument/documents")
-    .then((r) => r.json())
-    .then((data) => {
-      console.log("API Response:", data);
-      console.log("API isArray:", Array.isArray(data));
+// useEffect(() => {
+//   debugger;
+//   const applicationIdNo = localStorage.getItem("applicationId");
+//   const catCode = localStorage.getItem("catCode");
 
-      setDocuments(data);
-    });
-}, []);
+//   console.log("ApplicationId:", applicationIdNo);
+//   console.log("CatCode:", catCode);
+
+//   fetch(
+//     `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}`
+//   )
+//     .then((r) => r.json())
+//     .then((data) => setDocuments(data));
+// }, []);
+
+
+useEffect(() => {
+  if (currentStep !== 4 && currentStep !== 5) return;
+
+  const applicationIdNo = localStorage.getItem("applicationId");
+  if (!applicationIdNo || !catCode) return;
+
+  const docStatus = currentStep === 4 ? "A" : "S";
+
+  fetch(
+    `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}&docStatus=${docStatus}`
+  )
+    .then((r) => r.json())
+    .then((data) => setDocuments(data));
+
+}, [currentStep, catCode]);
+
+
+
+
+
+
 
 
 const handleStep1Next = async () => {
@@ -530,6 +559,7 @@ debugger;
 
 const payload = {
   RegId: Number(localStorage.getItem("regId")),
+  
 
   ApplicantName: applicant.applicantName,
   Dob: applicant.dateOfBirth,
@@ -569,7 +599,11 @@ debugger;
       setApplicationId(data.applicationId);
 
       console.log("Generated Id:", data.applicationId);
+      localStorage.setItem("applicationId", data.applicationId);
+      localStorage.setItem("catCode", data.catCode);
       alert(`Your Application Reference No. is ${data.applicationId}`);
+      
+
     }
 
 
@@ -579,6 +613,8 @@ debugger;
 const payload = {
   ...applicant,
   regId: localStorage.getItem("regId"),
+ ApplicationIdNo: localStorage.getItem("applicationId"),
+ CatCode:localStorage.getItem("catCode")
 };
 
 
@@ -599,8 +635,228 @@ const payload = {
 
 }
 
+if (currentStep === 3) {
+  debugger;
+
+  console.log("Directors:", applicant.directors);
+
+  const formData = new FormData();
+
+  // Merge all objects
+  const payload = {
+    ...applicant,
+    ...nominee,
+    ...fssai,
+    ...vat,
+    ...distillery,
+    ...bwh,
+    regId: localStorage.getItem("regId"),
+    ApplicationIdNo: localStorage.getItem("applicationId"),
+    CatCode: localStorage.getItem("catCode")
+  };
+
+  // Append normal fields
+  Object.keys(payload).forEach((key) => {
+    // Skip file and list
+    if (
+      key !== "ExciseNomineePanImage" &&
+      key !== "CompanyPartnersDetails"
+    ) {
+      formData.append(key, payload[key] ?? "");
+    }
+  });
+
+  // Append file
+  if (nominee.ExciseNomineePanImage) {
+    formData.append(
+      "ExciseNomineePanImage",
+      nominee.ExciseNomineePanImage
+    );
+  }
+
+applicant.directors.forEach((director, index) => {
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PName`,
+        director.PName || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PPerShare`,
+        director.PPerShare || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PPanNo`,
+        director.PPanNo || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PExciseNominee`,
+        director.PExciseNominee || ""
+    );
+
+    // PAN File
+    if (director.panFile) {
+        formData.append(
+            `CompanyPartnersDetails[${index}].PanFile`,
+            director.panFile
+        );
+    }
+        if (director.AddressProofFile) {
+        formData.append(
+            `CompanyPartnersDetails[${index}].AddressProofFile`,
+            director.AddressProofFile
+        );
+    }
+});
+
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  const data = await response.json();
+
+  console.log("Warehouse License Response:", data);
+}
 
 
+if (currentStep === 4) {
+  debugger;
+
+  const formData = new FormData();
+
+  formData.append(
+    "ApplicationIdNo",
+    localStorage.getItem("applicationId")
+  );
+
+  formData.append(
+    "MobileNo",
+    applicant.mobile
+  );
+
+  let index = 0;
+
+  documents.forEach((doc) => {
+    const uploaded = uploadedFiles[doc.docId];
+
+    if (uploaded?.file) {
+      formData.append(
+        `Documents[${index}].ApplicantSl`,
+        doc.applicantSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocId`,
+        doc.docId
+      );
+
+      formData.append(
+        `Documents[${index}].DocSl`,
+        doc.docSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocumentFile`,
+        uploaded.file
+      );
+
+      index++;
+    }
+  });
+
+
+
+
+
+
+
+
+  
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+}
+
+
+if (currentStep === 5) {
+  debugger;
+
+  const formData = new FormData();
+
+  formData.append(
+    "ApplicationIdNo",
+    localStorage.getItem("applicationId")
+  );
+
+  formData.append(
+    "MobileNo",
+    applicant.mobile
+  );
+
+  let index = 0;
+
+  documents.forEach((doc) => {
+    const uploaded = uploadedFiles[doc.docId];
+
+    if (uploaded?.file) {
+      formData.append(
+        `Documents[${index}].ApplicantSl`,
+        doc.applicantSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocId`,
+        doc.docId
+      );
+
+      formData.append(
+        `Documents[${index}].DocSl`,
+        doc.docSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocumentFile`,
+        uploaded.file
+      );
+
+      index++;
+    }
+  });
+
+
+
+
+
+
+
+
+  
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+}
 
 
 
@@ -667,6 +923,7 @@ const payload = {
   };
 
   return (
+     
     <div className="brand-registration-page select-none text-slate-800 animate-fade">
       
       {/* Top Banner Area with complete descriptive branding */}
@@ -783,9 +1040,9 @@ const payload = {
     <div className="form-item">
       <label>Constitution Type</label>
     <select
-  value={applicant.constitutionType || ""}
+  value={applicant.ConstitutionType || ""}
   onChange={(e) =>
-    handleApplicantChange("constitutionType", e.target.value)
+    handleApplicantChange("ConstitutionType", e.target.value)
   }
 >
         <option value="">Select</option>
@@ -801,27 +1058,29 @@ const payload = {
       <div className="form-item">
         <label>CIN No</label>
         <input
-          value={applicant.cinNo || ""}
-          onChange={(e) => onChange("cinNo", e.target.value)}
+          value={applicant.CINNO || ""}
+          onChange={(e) => handleApplicantChange("CINNO", e.target.value)}
         />
       </div>
     )}
 
     <div className="form-item">
       <label>Registration No</label>
-      <input
-        value={applicant.registrationFirm || ""}
-        onChange={(e) => onChange("registrationFirm", e.target.value)}
-      />
+     <input
+  value={applicant.RegistrationNo || ""}
+  onChange={(e) =>
+    handleApplicantChange("RegistrationNo", e.target.value)
+  }
+/>
     </div>
 
     <div className="form-item">
       <label>Registration Date</label>
       <input
         type="date"
-        value={applicant.registrationFirmDate || ""}
+        value={applicant.RegDate || ""}
         onChange={(e) =>
-          onChange("registrationFirmDate", e.target.value)
+          handleApplicantChange("RegDate", e.target.value)
         }
       />
     </div>
@@ -831,7 +1090,7 @@ const payload = {
       <input
         value={applicant.companyPan || ""}
         onChange={(e) =>
-          onChange("companyPan", e.target.value.toUpperCase())
+          handleApplicantChange("companyPan", e.target.value.toUpperCase())
         }
       />
     </div>
@@ -840,7 +1099,7 @@ const payload = {
       <label>VAT / TIN</label>
       <input
         value={applicant.vatNo || ""}
-        onChange={(e) => onChange("vatNo", e.target.value)}
+        onChange={(e) => handleApplicantChange("vatNo", e.target.value)}
       />
     </div>
 
@@ -910,9 +1169,9 @@ const payload = {
         <div className="grid-3">
           <input
             placeholder="Name"
-            value={nominee.name}
+            value={nominee.ExciseNomineeName}
             onChange={(e) =>
-              setNominee({ ...nominee, name: e.target.value })
+              setNominee({ ...nominee, ExciseNomineeName: e.target.value })
             }
           />
 
@@ -927,73 +1186,107 @@ const payload = {
           <input
             type="email"
             placeholder="Email"
-            value={nominee.email}
+            value={nominee.ExciseNomineeEmailID}
             onChange={(e) =>
-              setNominee({ ...nominee, email: e.target.value })
+              setNominee({ ...nominee, ExciseNomineeEmailID: e.target.value })
             }
           />
 
           <input
             placeholder="Mobile"
             maxLength={10}
-            value={nominee.mobile}
+            value={nominee.ExciseNomineeMobileNo}
             onChange={(e) =>
               setNominee({
                 ...nominee,
-                mobile: e.target.value.replace(/\D/g, "")
+                ExciseNomineeMobileNo: e.target.value.replace(/\D/g, "")
               })
             }
           />
 
-          <input
-            placeholder="PAN"
-            value={nominee.panNo}
-            onChange={(e) =>
-              setNominee({
-                ...nominee,
-                panNo: e.target.value.toUpperCase()
-              })
-            }
-          />
+    <input
+  placeholder="PAN"
+  value={nominee.ExciseNomineePAN || ""}
+  onChange={(e) =>
+    setNominee({
+      ...nominee,
+      ExciseNomineePAN: e.target.value.toUpperCase(),
+    })
+  }
+/>
 
-          {/* FILE */}
-          <div className="file-box">
+{/* FILE */}
+ <div className="form-item full">
+  <label>PAN Proof</label>
+
+  <div className="file-modern">
+    {!nominee.ExciseNomineePanImage ? (
+      <label className="upload-box">
+        📄 Upload
+        <input
+          type="file"
+          hidden
+          accept=".pdf,.jpg,.jpeg"
+          onChange={(e) =>
+            setNominee({
+              ...nominee,
+              ExciseNomineePanImage: e.target.files?.[0] || null,
+            })
+          }
+        />
+      </label>
+    ) : (
+      <>
+        <span className="file-name">
+          {nominee.ExciseNomineePanImage.name}
+        </span>
+
+        <div className="file-actions">
+          <button
+            type="button"
+            className="btn-view"
+            onClick={() =>
+              window.open(
+                URL.createObjectURL(nominee.ExciseNomineePanImage),
+                "_blank"
+              )
+            }
+          >
+            👁
+          </button>
+
+          <label className="btn-replace">
+            🔄
             <input
               type="file"
+              hidden
               accept=".pdf,.jpg,.jpeg"
               onChange={(e) =>
                 setNominee({
                   ...nominee,
-                  panFile: e.target.files[0]
+                  ExciseNomineePanImage: e.target.files?.[0] || null,
                 })
               }
             />
+          </label>
 
-            {nominee.panFile && (
-              <div className="file-actions">
-                <span>{nominee.panFile.name}</span>
-
-                <button
-                  onClick={() =>
-                    window.open(
-                      URL.createObjectURL(nominee.panFile),
-                      "_blank"
-                    )
-                  }
-                >
-                  View
-                </button>
-
-                <button
-                  onClick={() =>
-                    setNominee({ ...nominee, panFile: null })
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-          </div>
+          <button
+            type="button"
+            className="btn-delete"
+            onClick={() =>
+              setNominee({
+                ...nominee,
+                ExciseNomineePanImage: null,
+              })
+            }
+          >
+            ❌
+          </button>
+        </div>
+      </>
+    )}
+  </div>
+</div>
         </div>
       </div>
     )}
@@ -1007,25 +1300,25 @@ const payload = {
       <div className="grid-3">
         <input
           placeholder="Licence No"
-          value={fssai.licenseNo}
+          value={fssai.FSSAILicenceNo}
           onChange={(e) =>
-            setFssai({ ...fssai, licenseNo: e.target.value })
+            setFssai({ ...fssai, FSSAILicenceNo: e.target.value })
           }
         />
 
         <input
           type="date"
-          value={fssai.startDate}
+          value={fssai.FSSAILicenceStartDate}
           onChange={(e) =>
-            setFssai({ ...fssai, startDate: e.target.value })
+            setFssai({ ...fssai, FSSAILicenceStartDate: e.target.value })
           }
         />
 
         <input
           type="date"
-          value={fssai.endDate}
+          value={fssai.FSSAILicenceEndDate}
           onChange={(e) =>
-            setFssai({ ...fssai, endDate: e.target.value })
+            setFssai({ ...fssai, FSSAILicenceEndDate: e.target.value })
           }
         />
       </div>
@@ -1040,17 +1333,17 @@ const payload = {
       <div className="grid-2">
         <input
           placeholder="Certificate No"
-          value={vat.certNo}
+          value={vat.VATGSTCertNo}
           onChange={(e) =>
-            setVat({ ...vat, certNo: e.target.value })
+            setVat({ ...vat, VATGSTCertNo: e.target.value })
           }
         />
 
         <input
           type="date"
-          value={vat.endDate}
+          value={vat.VATGSTCertEnddate}
           onChange={(e) =>
-            setVat({ ...vat, endDate: e.target.value })
+            setVat({ ...vat, VATGSTCertEnddate: e.target.value })
           }
         />
       </div>
@@ -1065,17 +1358,17 @@ const payload = {
       <div className="grid-2">
         <input
           placeholder="Licence No"
-          value={distillery.licenceNo}
+          value={distillery.DistilleryLicNo}
           onChange={(e) =>
-            setDistillery({ ...distillery, licenceNo: e.target.value })
+            setDistillery({ ...distillery, DistilleryLicNo: e.target.value })
           }
         />
 
         <input
           type="date"
-          value={distillery.endDate}
+          value={distillery.DistilleryLicEnddate}
           onChange={(e) =>
-            setDistillery({ ...distillery, endDate: e.target.value })
+            setDistillery({ ...distillery, DistilleryLicEnddate: e.target.value })
           }
         />
       </div>
@@ -1098,9 +1391,9 @@ const payload = {
 
         <input
           type="date"
-          value={bwh.endDate}
+          value={bwh.BWHInsuranceEndDate}
           onChange={(e) =>
-            setBwh({ ...bwh, endDate: e.target.value })
+            setBwh({ ...bwh, BWHInsuranceEndDate: e.target.value })
           }
         />
 
@@ -1114,9 +1407,9 @@ const payload = {
 
         <input
           type="date"
-          value={bwh.leaseEndDate}
+          value={bwh.BWHRentAgreementEndDate}
           onChange={(e) =>
-            setBwh({ ...bwh, leaseEndDate: e.target.value })
+            setBwh({ ...bwh, BWHRentAgreementEndDate: e.target.value })
           }
         />
       </div>
@@ -1137,23 +1430,30 @@ const payload = {
        
 
             {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
-            {currentStep === 4 && (
+            {/* {currentStep === 4 && (
                   <DocumentUpload
             documents={documents}
             uploadedFiles={uploadedFiles}
             handleDocumentFileChange={handleFileChange}
             handleDeleteFile={handleDeleteFile}
           />
-            )}
+            )} */}
 
-
-
+  {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
+     {(currentStep === 4 || currentStep === 5) && (
+  <DocumentUpload
+    documents={documents}
+    uploadedFiles={uploadedFiles}
+    handleDocumentFileChange={handleFileChange}
+    handleDeleteFile={handleDeleteFile}
+  />
+)}
 
 
 
 
             {/* Step 6: STATUTORY DECLARATIONS & UNDERTAKING */}
-            {currentStep === 5 && (
+            {currentStep === 6 && (
               <div className="animate-fade text-left space-y-6">
                 <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
@@ -1174,7 +1474,10 @@ const payload = {
                       className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 focus:ring-2 border-slate-300 pointer-events-auto"
                     />
                     <label htmlFor="acceptCheck" className="text-xs text-slate-700 leading-relaxed font-semibold cursor-pointer">
-                      I/We hereby solemnly declare that the applicant company has not been declared guilty of any non-bailable offense locally. The warehouse parcel at <strong>{formData.warehouseAddress}</strong> corresponds exactly to registered lease clearances.
+                    
+                    I declare the information provided above is true to the best of my knowledge and believe if any information particulars furnished in the application is subsequently found to be false, inaccurate or incomplete, the license, if any, granted on the basis of the application, will be liable to instant withdrawal without prejudice to other action then may be taken.
+                    
+                    
                     </label>
                   </div>
                   {formErrors.undertakingAccept && (
@@ -1182,7 +1485,7 @@ const payload = {
                   )}
 
                   {/* Pre-filled sign box */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-100">
+                  {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-100">
                     <div className="form-group">
                       <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Digital signature Name *</label>
                       <input 
@@ -1205,7 +1508,7 @@ const payload = {
                         className="input-box border-slate-300"
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                 </div>
               </div>

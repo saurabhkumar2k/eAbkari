@@ -1,24 +1,26 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetails
 {
     [Key]
  public long FirmId { get; set; }
 
-    public string Application_Id { get; set; } = string.Empty;
+    public string ApplicationIdNo { get; set; } = string.Empty;
 
 
-    public string? Constitution_Type { get; set; }
+    public string? ConstitutionType { get; set; }
 
 
     public string? CINNO { get; set; }
 
 
-    public string? Registration_No { get; set; }
+    public string? RegistrationNo { get; set; }
 
     public DateTime? RegDate { get; set; }
 
 
-    public string? Company_PAN { get; set; }
+    public string? CompanyPAN { get; set; }
 
 
     public string? VATNO { get; set; }
@@ -45,13 +47,13 @@ public class LicenseCompanyDetails
     public string? IsExciseNominee { get; set; }
 
 
-    public string? FSSAI_Licence_No { get; set; }
+    public string? FSSAILicenceNo { get; set; }
 
 
-    public DateTime? FSSAI_Licence_Start_Date { get; set; }
+    public DateTime? FSSAILicenceStartDate { get; set; }
 
 
-    public DateTime? FSSAI_Licence_End_Date { get; set; }
+    public DateTime? FSSAILicenceEndDate { get; set; }
 
 
     public string? VATGSTCertNo { get; set; }
@@ -75,11 +77,38 @@ public class LicenseCompanyDetails
     public string? PowerOfAttorney { get; set; }
 
 
-    public string? Mobile_No { get; set; }
+    public string? MobileNo { get; set; }
 
     public int? LitreAppyingFor { get; set; }
 
-    
+
+    [ForeignKey(nameof(ApplicationIdNo))]
+    public List<AdditionalCompanyPartnersDetails>? CompanyPartnersDetails { get; set; } = [];
+
+}
+
+
+public class AdditionalCompanyPartnersDetails
+{
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int? ID { get; set; }
+
+    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? PName { get; set; }
+
+    public decimal? PPerShare { get; set; }
+
+    public string? PPanNo { get; set; }
+
+    public string? PExciseNominee { get; set; }
+
+    public string? DINNo { get; set; }
+
+    public string? PhotoURLPanNo { get; set; }
+
+    public string? PhotoURLAddressProof { get; set; }
+
+   
 }
 
 
