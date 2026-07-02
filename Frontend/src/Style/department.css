@@ -638,6 +638,153 @@
   display: block;
 }
 
+/* Admin Details Section Custom CSS */
+.admin-details-card {
+  background: white;
+  border-radius: 1.5rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .admin-details-grid {
+    grid-template-columns: 7fr 1px 4fr;
+    gap: 2rem;
+  }
+}
+
+.admin-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.admin-detail-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.admin-detail-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background-color: #f0f7ff;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.admin-detail-info {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.admin-detail-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94a3b8;
+  width: 7rem;
+}
+
+.admin-detail-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.admin-detail-link {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.admin-detail-link:hover {
+  color: #1d4ed8;
+}
+
+.admin-details-divider {
+  display: none;
+  background-color: #e2e8f0;
+  width: 1px;
+  height: 7rem;
+}
+
+@media (min-width: 768px) {
+  .admin-details-divider {
+    display: block;
+  }
+}
+
+.admin-login-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-login-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background-color: #f0f7ff;
+  color: #2563eb;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.admin-login-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-login-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.admin-login-time {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .admin-login-time {
+    font-size: 1.125rem;
+  }
+}
+
 .dept-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
