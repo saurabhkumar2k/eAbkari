@@ -23,7 +23,7 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5214';
 const ORIGIN_LABELS = {
-  I: 'In India',
+  I: 'India',
   N: 'Nepal',
   B: 'Bhutan',
   W: 'West Bengal',

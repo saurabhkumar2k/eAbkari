@@ -32,7 +32,7 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
         return BadRequest(ModelState);
 
             //generate application id
-            string? lastappid = await _context.LicenseApplication
+            string? lastappid = await _context.LicenseApplications
                 .OrderByDescending(x => x.ApplicationIdNo)
                 .Select(x => x.ApplicationIdNo)
                 .FirstOrDefaultAsync();
