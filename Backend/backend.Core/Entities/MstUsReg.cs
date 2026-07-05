@@ -21,8 +21,8 @@ public class MstUsReg
     public string? AddressLine1 { get; set; }
    
     public string? AddressLine2 { get; set; }
-    [Required]
-    public string? City { get; set; }
+    
+ 
     [Required]
     public string? StateUT { get; set; }
     [Required]
@@ -59,6 +59,16 @@ public class MstUsReg
      public DateTime? RefreshTokenExpiry { get; set; }
 public string? Password { get; set; }
 
-    //public bool? IsPunishableOffence { get; set; }
+    // public bool? IsPunishableOffence { get; set; }
+
+    public string? IsPunishableOffence { get; set; }
+
+    [Required]
+    public string? SubDivision { get; set; }
+    [Required]
+    [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN number format.")]
+    public string? PanNo { get; set; }
+
+    public string? Landline { get; set; }
 }
 

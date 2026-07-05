@@ -222,47 +222,43 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
   ];
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-6 py-4 shadow-sm">
-      <div className="max-w-7xl mx-auto flex flex-col gap-4">
-        {/* Tier 1: Brand & User Actions */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-4">
-          <div 
-            onClick={onNavigateToHome}
-            className="flex items-center gap-4 py-1 cursor-pointer hover:opacity-95 transition"
-          >
+   <header className="dashboard-header">
+    <div className="header-container" style={{ padding: "7px 20px 7px 20px" }} >
+    {/* Tier 1: Brand & User Actions */}
+    <div className="header-top-row">
+      <div
+        onClick={onNavigateToHome}
+        className="header-brand"
+      >
             <img 
               src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
               alt="Emblem of India"
-              className="h-12 sm:h-14 w-auto object-contain"
+              className="header-logo"
               referrerPolicy="no-referrer"
             />
-            <div className="h-10 sm:h-12 w-[1px] bg-slate-200"></div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">
-                Department of Excise
-              </h1>
-              <p className="text-[10px] sm:text-xs text-slate-500 font-extrabold uppercase tracking-widest leading-none mt-1">
-                Government of NCT of Delhi
-              </p>
+           <div className="header-divider"></div>
+           <div className="header-title-section">
+            <h1 className="header-main-title"> Department of Excise </h1>
+            <p className="header-tagline"> Government of NCT of Delhi </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Portal Back Button */}
-            <button
-              onClick={onNavigateToHome}
-              className="flex items-center gap-1.5 text-xs font-extrabold text-slate-600 hover:text-blue-600 uppercase tracking-widest py-2 px-3 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl cursor-pointer transition select-none"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Portal</span>
-            </button>
+         <div className="header-actions">
+  {/* Portal Back Button */}
+  <button
+    onClick={onNavigateToHome}
+    className="portal-back-btn"
+  >
+    <ArrowLeft className="portal-back-icon" />
+    <span className="portal-back-text">Portal</span>
+  </button>
           </div>
         </div>
 
         {/* Tier 2: Beautiful Centered Horizontal Navigation with exact button size */}
         <div className="w-full py-1">
-          <div className="flex items-center justify-center gap-3 mx-auto" style={{ width: "max-content", minWidth: "100%" }}>
-            <div className="flex items-center gap-3 justify-center w-full">
+          <div className="header-menu-wrapper">
+           <div className="header-menu">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.id === "License" 
@@ -290,12 +286,13 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
                         className={`sidebar-btn ${isActive ? "active" : ""}`}
                         style={{ width: "190px", flexShrink: 0 }}
                       >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="text-[15px] font-semibold">{item.label}</span>
+                        <div className="menu-item-content">
+                        <Icon className="menu-item-icon" />
+                        <span className="menu-item-label"> {item.label}
+                        </span>
                         </div>
 
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${licenseDropdownOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown className={`dropdown-arrow ${ licenseDropdownOpen ? "dropdown-arrow-open" : "" }`} />
                       </button>
 
                       {licenseDropdownOpen && (
@@ -874,22 +871,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
       {/* TOAST SYSTEM */}
       {toastMessage && (
-        <div 
-          className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 px-5 py-3.5 rounded-2xl shadow-xl border ${
-            toastMessage.type === "success" 
-              ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
-              : "bg-red-50 border-red-100 text-red-800"
-          } transition-all transform scale-100 animate-fade-in`}
-        >
-          {toastMessage.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          ) : (
-            <ShieldAlert className="w-5 h-5 text-red-600 shrink-0" />
-          )}
-          <span className="text-xs font-bold font-sans">{toastMessage.msg}</span>
-        </div>
-      )}
+  <div
+    className={`toast-message ${
+      toastMessage.type === "success"
+        ? "toast-success"
+        : "toast-error"
+    }`}
+  >
+    {toastMessage.type === "success" ? (
+      <CheckCircle2 className="toast-icon success-icon" />
+    ) : (
+      <ShieldAlert className="toast-icon error-icon" />
+    )}
 
+    <span className="toast-text">{toastMessage.msg}</span>
+  </div>
+)}
       {/* PAGE CONTENT */}
       {activeTab === "New License" ? (
         <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
@@ -932,7 +929,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               </div>
 
               {/* STATS */}
-              <section className="stats-grid mt-6">
+              <section className="stats-grid">
                 {statsData.map((item, index) => (
                   <StatCard key={index} item={item} />
                 ))}
@@ -949,7 +946,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   />
 
                   <div className="search-wrapper">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-4 top-4" />
+                   <Search className="search-icon" />
 
                     <input
                       type="text"
@@ -981,7 +978,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
                   <div className="profile-wrapper">
                     <div className="profile-avatar-large">
-                      <User className="w-14 h-14 text-white" />
+                     <User className="user-icon" />
                     </div>
 
                     <h3 className="profile-name">
@@ -1034,90 +1031,93 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 title="Applied Licenses" 
                 subtitle="Track the real-time processing status of your submitted applications" 
               />
-              <div className="dashboard-card p-6 space-y-4 bg-white">
-                <div className="flex justify-between items-center gap-4 flex-wrap pb-4 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-800 text-lg">Active Applications</h3>
-                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">3 Applications Total</span>
-                </div>
+             <div className="dashboard-card active-applications-card">
+              <div className="applications-header">
+              <h3 className="applications-title">Active Applications</h3>
+              <span className="applications-badge"> 3 Applications Total </span>
+              </div>
+             </div>
                 
                 {/* App 1 */}
-                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
-                  <div className="flex justify-between items-start gap-3 flex-wrap">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
-                        <span className="text-sm font-bold text-slate-700">AP-2026-88021</span>
-                      </div>
-                      <h4 className="font-bold text-slate-800 text-base mt-1">L-1 Wholesale Vend of Indian Liquor</h4>
-                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 14/05/2026</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-100">
-                      Scrutiny in Progress
-                    </span>
+                <div className="application-card">
+                  <div className="application-header">
+                  <div>
+                  <div className="application-id-row">
+                    <span className="application-id-label"> Application ID: </span>
+                    <span className="application-id-value"> AP-2026-88021 </span>
                   </div>
+                  <h4 className="application-title"> L-1 Wholesale Vend of Indian Liquor </h4>
+                  <p className="application-date"> Submitted Date: 14/05/2026 </p>
+                  </div>
+                  <span className="application-status"> Scrutiny in Progress </span>
+                </div>
+
                   
                   {/* Stepper progress */}
-                  <div className="grid grid-cols-4 gap-2 pt-2">
-                    {[
+                  <div className="application-progress-grid">
+                     {[
                       { label: "Submission", active: true, done: true },
                       { label: "Scrutiny", active: true, done: false },
                       { label: "Inspection", active: false, done: false },
                       { label: "Grant", active: false, done: false }
                     ].map((st, idx) => (
-                      <div key={idx} className="space-y-1.5">
-                        <div className={`h-2 rounded-full ${st.done ? "bg-emerald-500" : st.active ? "bg-amber-500 animate-pulse" : "bg-slate-100"}`}></div>
-                        <p className="text-[10px] sm:text-xs font-semibold text-slate-500 text-center">{st.label}</p>
-                      </div>
-                    ))}
+                    <div key={idx} className="progress-step">
+                      <div className={`progress-bar ${ st.done
+                      ? "progress-done"
+                      : st.active
+                      ? "progress-active"
+                      : "progress-pending"
+                    }`}>                       
+                    </div> 
+                    <p className="progress-label">{st.label}</p>
+                    </div>
+                  ))}
                   </div>
-                </div>
+ 
 
                 {/* App 2 */}
-                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
-                  <div className="flex justify-between items-start gap-3 flex-wrap">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
-                        <span className="text-sm font-bold text-slate-700">AP-2026-44012</span>
-                      </div>
-                      <h4 className="font-bold text-slate-800 text-base mt-1">L-15 Hotel Bar License</h4>
-                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 02/04/2026</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
-                      Approved & Disbursed
-                    </span>
+                <div className="application-card">
+                  <div className="application-header">
+                  <div>
+                  <div className="application-id-row">
+                  <span className="application-id-label"> Application ID: </span>
+                  <span className="application-id-value"> AP-2026-44012 </span>
                   </div>
-                  
-                  <div className="grid grid-cols-4 gap-2 pt-2">
+                  <h4 className="application-title"> L-15 Hotel Bar License </h4>
+                  <p className="application-date"> Submitted Date: 02/04/2026 </p> 
+                  </div>
+                  <span className="application-status application-status-success"> Approved &amp; Disbursed </span>
+                  </div>
+                 
+                  <div className="application-progress-grid">
                     {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, idx) => (
-                      <div key={idx} className="space-y-1.5">
-                        <div className="h-2 rounded-full bg-emerald-500"></div>
-                        <p className="text-[10px] sm:text-xs font-semibold text-slate-500 text-center">{label}</p>
+                      <div key={idx} className="progress-step">
+                      <div className="progress-bar progress-done"></div>
+                      <p className="progress-label"> {label} </p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* App 3 */}
-                <div className="border border-slate-100 rounded-2xl p-5 hover:border-slate-200 transition bg-white space-y-4">
-                  <div className="flex justify-between items-start gap-3 flex-wrap">
+             {/* App 3 */}
+             <div className="application-card">
+              <div className="application-header">
+              <div>
+              <div className="application-id-row">
+              <span className="application-id-label"> Application ID: </span>
+              <span className="application-id-value"> AP-2026-30219</span>
+              </div>
+              <h4 className="application-title"> L-22 Club Bar License </h4>
+              <p className="application-date"> Submitted Date: 29/03/2026 </p>
+              </div>
+              <span className="application-status application-status-clarification"> Clarification Needed </span>
+              </div>
+                               
+                  <div className="officer-remarks-box">
+                    <ShieldAlert className="officer-remarks-icon" />
                     <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-400 uppercase">Application ID:</span>
-                        <span className="text-sm font-bold text-slate-700">AP-2026-30219</span>
-                      </div>
-                      <h4 className="font-bold text-slate-800 text-base mt-1">L-22 Club Bar License</h4>
-                      <p className="text-xs text-slate-400 mt-0.5">Submitted Date: 29/03/2026</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-bold border border-rose-100 animate-pulse">
-                      Clarification Needed
-                    </span>
-                  </div>
-                  
-                  <div className="bg-rose-50/70 border border-rose-100 rounded-xl p-3 flex items-start gap-2.5 text-xs text-rose-800 font-semibold mb-2">
-                    <ShieldAlert className="w-4.5 h-4.5 text-rose-600 shrink-0 mt-0.5" />
-                    <div>
-                      <span className="font-bold">Officer Remarks:</span> Fire Safety NOC is near-expiry. Please submit an updated certified copy in the <span className="underline cursor-pointer text-blue-600 font-bold" onClick={() => setActiveTab("Document Revalidate")}>Document Revalidate</span> tab to resume scrutiny.
+                      <span className="font-bold">Officer Remarks:</span> Fire Safety NOC is near-expiry. Please submit an updated certified copy in the 
+                      <span className="document-revalidate-link"onClick={() => setActiveTab("Document Revalidate")}>Document Revalidate</span> tab to resume scrutiny.
                     </div>
                   </div>
                 </div>
@@ -1136,33 +1136,31 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 {licenses.map((lic) => {
                   const isRenewed = renewedList[lic.id];
                   return (
-                    <div key={lic.id} className="dashboard-card p-6 flex flex-col justify-between hover:shadow-md transition bg-white">
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-600">{lic.id}</span>
-                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${isRenewed ? "bg-emerald-50 text-emerald-700 border border-emerald-100" : "bg-blue-50 text-blue-700 border border-blue-100"}`}>
-                            {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-slate-800 text-lg mt-2">{lic.type}</h4>
-                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Valid till: <span className="font-bold text-slate-700">{isRenewed ? "31st March 2028" : "31st March 2027"}</span></span>
-                        </div>
+                    <div key={lic.id} className="license-card">
+                      <div className="license-card-content">
+                      <div className="license-card-header">
+                        <span className="license-id"> {lic.id} </span>
+                        <span className={`license-status ${ isRenewed ? "license-status-renewed" : "license-status-active" }`} >
+                        {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
+                        </span>
                       </div>
+                       <h4 className="license-title">{lic.type}</h4>
+                       <div className="license-validity">
+                      <Calendar className="license-calendar-icon" />
+                      <span> Valid till:{" "} <span className="license-validity-date">
+                      {isRenewed ? "31st March 2028" : "31st March 2027"}
+                      </span>
+                      </span>
+                    </div>
+                    </div>
                       
-                      <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-xs text-slate-400 font-bold uppercase">Renewal Fee: ₹ 45,000</span>
-                        <button 
-                          onClick={() => handleRenew(lic.id)}
-                          disabled={isRenewed}
-                          className={`px-4 py-2 rounded-xl text-xs font-bold border-none cursor-pointer transition ${
-                            isRenewed ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
-                          }`}
-                        >
-                          {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
-                        </button>
-                      </div>
+                    <div className="renewal-footer">
+                      <span className="renewal-fee">Renewal Fee: ₹ 45,000 </span>
+                      <button onClick={() => handleRenew(lic.id)} disabled={isRenewed}
+                      className={`renewal-btn ${ isRenewed ? "renewal-btn-disabled" : "renewal-btn-active" }`} >
+                      {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
+                      </button>
+                    </div>
                     </div>
                   );
                 })}
@@ -1172,138 +1170,183 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
           {/* LICENSE TRANSFER VIEW */}
           {activeTab === "License Transfer" && (
-            <div className="space-y-6 max-w-3xl mx-auto">
-              <SectionTitle 
-                title="License Transfer Portal" 
-                subtitle="Apply for change of licensee ownership, management structure, or premises relocation" 
-              />
-              
+            <div className="license-transfer-container">
+            <SectionTitle title="License Transfer Portal" 
+            subtitle="Apply for change of licensee ownership, management structure, or premises relocation"/>
               {transferSuccess ? (
-                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
-                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800">Transfer Filed Successfully</h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                    Your application for <span className="font-semibold text-slate-700">{transferForm.type} Transfer</span> has been registered under Transaction ID <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">TR-2026-90812</span>. The scrutinizing officer will verify transferee credentials within 7 business days.
-                  </p>
-                  <button 
-                    onClick={() => {
-                      setTransferSuccess(false);
-                      setTransferForm({ lic: "ND-25-L10023", type: "Ownership", transferee: "", remarks: "" });
-                    }}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
-                  >
-                    Create Another Request
+               <div className="license-transfer-container">
+                   <SectionTitle title="License Transfer Portal" 
+                   subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
+
+                <h3 className="transfer-success-title"> Transfer Filed Successfully </h3>
+                <p className="transfer-success-message"> Your application for{" "}
+                <span className="transfer-type"> {transferForm.type} Transfer </span>{" "} has been registered under Transaction ID{" "}
+                <span className="transaction-id"> TR-2026-90812 </span>. The scrutinizing officer will verify transferee credentials within 7 business days.
+                </p>
+                  <button onClick={() => {
+                  setTransferSuccess(false); setTransferForm({ lic: "ND-25-L10023", type: "Ownership",transferee: "", remarks: "", });
+                  }} className="transfer-new-request-btn">Create Another Request
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmitTransfer} className="dashboard-card p-6 space-y-5 bg-white">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">Select License</label>
-                    <select 
-                      value={transferForm.lic}
-                      onChange={(e) => setTransferForm({ ...transferForm, lic: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700"
-                    >
-                      {licenses.map(l => <option key={l.id} value={l.id}>{l.id} - {l.type}</option>)}
-                    </select>
-                  </div>
+                <form onSubmit={handleSubmitTransfer} className="dashboard-card transfer-form">
+                  <div className="transfer-form-group">
+                  <label className="transfer-form-label"> Select License </label>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">Transfer Type</label>
-                    <div className="grid grid-cols-2 gap-3 mt-1">
-                      {["Ownership", "Premises Relocation"].map(type => (
-                        <button
-                          type="button"
-                          key={type}
-                          onClick={() => setTransferForm({ ...transferForm, type })}
-                          className={`p-3 rounded-xl border font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-2 ${
-                            transferForm.type === type ? "bg-blue-50 border-blue-400 text-blue-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                          }`}
-                        >
-                          <RefreshCw className="w-3.5 h-3.5" />
-                          <span>{type}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+    <select
+      value={transferForm.lic}
+      onChange={(e) =>
+        setTransferForm({ ...transferForm, lic: e.target.value })
+      }
+      className="transfer-form-select"
+    >
+      {licenses.map((l) => (
+        <option key={l.id} value={l.id}>
+          {l.id} - {l.type}
+        </option>
+      ))}
+    </select>
+  </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">
-                      {transferForm.type === "Ownership" ? "New Transferee Entity Registered Name" : "Proposed New Premises Complete Address"}
-                    </label>
-                    <input 
-                      type="text"
-                      placeholder={transferForm.type === "Ownership" ? "Legal Name of the Transferee entity" : "Enter complete new premise layout address"}
-                      value={transferForm.transferee}
-                      onChange={(e) => setTransferForm({ ...transferForm, transferee: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700"
-                    />
-                  </div>
+                 <div className="transfer-form-group">
+  <label className="transfer-form-label">
+    Transfer Type
+  </label>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">Justification for Transfer</label>
-                    <textarea 
-                      rows="3"
-                      placeholder="Provide a legal brief of reasons for the transfer..."
-                      value={transferForm.remarks}
-                      onChange={(e) => setTransferForm({ ...transferForm, remarks: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-slate-700 resize-none"
-                    />
+  <div className="transfer-type-grid">
+    {["Ownership", "Premises Relocation"].map(type => (
+      <button
+        type="button"
+        key={type}
+        onClick={() => setTransferForm({ ...transferForm, type })}
+        className={`transfer-type-btn ${
+          transferForm.type === type
+            ? "transfer-type-btn-active"
+            : "transfer-type-btn-inactive"
+        }`}
+      >
+        <RefreshCw className="transfer-type-icon" />
+        <span>{type}</span>
+      </button>
+    ))}
                   </div>
+</div>
+                  <div className="transfer-form-group">
+  <label className="transfer-form-label">
+    {transferForm.type === "Ownership"
+      ? "New Transferee Entity Registered Name"
+      : "Proposed New Premises Complete Address"}
+  </label>
 
-                  <div className="flex gap-4 p-4 bg-amber-50 rounded-xl border border-amber-100/70 text-xs text-amber-800 font-semibold leading-relaxed">
-                    <Info className="w-5 h-5 text-amber-600 shrink-0" />
-                    <p>
-                      Note: A non-refundable transfer processing fee of <span className="font-bold">₹ 15,000</span> will be applicable upon submission of this application.
-                    </p>
-                  </div>
+  <input
+    type="text"
+    placeholder={
+      transferForm.type === "Ownership"
+        ? "Legal Name of the Transferee entity"
+        : "Enter complete new premise layout address"
+    }
+    value={transferForm.transferee}
+    onChange={(e) =>
+      setTransferForm({
+        ...transferForm,
+        transferee: e.target.value,
+      })
+    }
+    className="transfer-form-input"
+  />
+</div>
 
-                  <button 
-                    type="submit"
-                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition hover:scale-[1.01]"
-                  >
-                    File Transfer Application
-                  </button>
-                </form>
-              )}
-            </div>
+                  <div className="transfer-form-group">
+  <label className="transfer-form-label">
+    Justification for Transfer
+  </label>
+
+  <textarea
+    rows="3"
+    placeholder="Provide a legal brief of reasons for the transfer..."
+    value={transferForm.remarks}
+    onChange={(e) =>
+      setTransferForm({
+        ...transferForm,
+        remarks: e.target.value,
+      })
+    }
+    className="transfer-form-textarea"
+  />
+</div>
+
+               <div className="transfer-note-box">
+  <Info className="transfer-note-icon" />
+  <p>
+    Note: A non-refundable transfer processing fee of{" "}
+    <span className="transfer-note-fee">₹ 15,000</span> will be applicable
+    upon submission of this application.
+  </p>
+</div>
+
+<button
+  type="submit"
+  className="transfer-submit-btn"
+>
+  File Transfer Application
+</button>
+</form>
+)}
+</div>
           )}
 
           {/* DOCUMENT REVALIDATE VIEW */}
           {activeTab === "Document Revalidate" && (
-            <div className="space-y-6 max-w-4xl mx-auto">
-              <SectionTitle 
-                title="Document Revalidation" 
-                subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses" 
-              />
+           <div className="document-revalidation-container">
+           <SectionTitle title="Document Revalidation"
+           subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses"/>
               
-              <div className="dashboard-card p-6 space-y-4 bg-white">
-                <h3 className="font-bold text-slate-800 text-base">Clearance Document Checklist</h3>
+              <div className="dashboard-card checklist-card">
+  <h3 className="checklist-title">
+    Clearance Document Checklist
+  </h3>
                 
-                <div className="space-y-3 pt-2">
-                  {Object.entries(docs).map(([key, item]) => {
-                    return (
-                      <div key={key} className="border border-slate-100 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white hover:border-slate-200 transition">
-                        <div className="flex items-start gap-3">
-                          <div className={`p-2.5 rounded-xl ${
-                            item.type === "verified" ? "bg-emerald-50 text-emerald-600" :
-                            item.type === "expired" ? "bg-red-50 text-red-600" :
-                            item.type === "uploading" ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
-                          }`}>
-                            <FileText className={`w-5 h-5 ${item.type === "uploading" ? "animate-spin" : ""}`} />
-                          </div>
+<div className="checklist-items">
+  {Object.entries(docs).map(([key, item]) => {
+    return (
+      <div key={key} className="document-card">
+        <div className="document-info">
+          <div
+            className={`document-icon-wrapper ${
+              item.type === "verified"
+                ? "document-icon-verified"
+                : item.type === "expired"
+                ? "document-icon-expired"
+                : item.type === "uploading"
+                ? "document-icon-uploading"
+                : "document-icon-pending"
+            }`}
+          >
+            <FileText
+              className={`document-icon ${
+                item.type === "uploading" ? "document-icon-spin" : ""
+              }`}
+            />
+          </div>
                           <div>
-                            <h4 className="font-bold text-slate-800 text-sm sm:text-base">{item.name}</h4>
-                            <span className={`inline-block text-[11px] font-bold mt-1 px-2.5 py-0.5 rounded-full ${
-                              item.type === "verified" ? "bg-emerald-50 text-emerald-700" :
-                              item.type === "expired" ? "bg-red-50 text-red-700 animate-pulse" :
-                              item.type === "uploading" ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-700"
-                            }`}>
-                              {item.status}
-                            </span>
-                          </div>
+  <h4 className="document-name">
+    {item.name}
+  </h4>
+
+  <span
+    className={`document-status-badge ${
+      item.type === "verified"
+        ? "document-status-verified"
+        : item.type === "expired"
+        ? "document-status-expired"
+        : item.type === "uploading"
+        ? "document-status-uploading"
+        : "document-status-pending"
+    }`}
+  >
+    {item.status}
+  </span>
+</div>
                         </div>
 
                         <div>
@@ -1311,20 +1354,20 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                             <button 
                               onClick={() => handleUpload(key)}
                               disabled={item.type === "uploading"}
-                              className="px-4 py-2 bg-[#0f2a52] hover:bg-slate-900 border-none text-white text-xs font-bold rounded-xl cursor-pointer transition flex items-center gap-1.5"
+                              className="document-action-btn"
                             >
                               {item.type === "uploading" ? (
                                 <>Processing...</>
                               ) : (
                                 <>
-                                  <Upload className="w-3.5 h-3.5" />
+                                  <Upload className="document-action-icon" />
                                   <span>Re-upload Document</span>
                                 </>
                               )}
                             </button>
                           )}
                           {item.type === "verified" && (
-                            <span className="text-xs text-emerald-700 font-bold bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-xl flex items-center gap-1 font-sans">
+                           <span className="verified-status-badge">
                               ✓ Compliance Validated
                             </span>
                           )}
@@ -1339,73 +1382,99 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
           {/* USER PROFILE TAB */}
           {activeTab === "UserProfile" && (
-            <div className="space-y-6 max-w-2xl mx-auto">
-              <SectionTitle 
-                title="Account Profile" 
-                subtitle="Manage user information, contact details, and registered authorization credentials" 
-              />
-              <div className="dashboard-card p-6 sm:p-8 bg-white space-y-6">
-                <div className="flex flex-col sm:flex-row items-center gap-5 border-b border-slate-100 pb-6">
-                  <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-md shrink-0">
-                    DU
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <h3 className="text-lg font-bold text-slate-800">Demo User</h3>
-                    <p className="text-xs text-slate-400 font-medium font-sans">System Administrator • Active since Feb 2026</p>
-                  </div>
-                </div>
+            <div className="profile-container">
+  <SectionTitle
+    title="Account Profile"
+    subtitle="Manage user information, contact details, and registered authorization credentials"
+  />
+              <div className="dashboard-card profile-card">
+  <div className="profile-header">
+    <div className="profile-avatar">
+      DU
+    </div>
+                  <div className="profile-user-info">
+  <h3 className="profile-user-name">
+    Demo User
+  </h3>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">contact person name</label>
-                    <input 
-                      type="text" 
-                      defaultValue="Demo User" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">official email ID</label>
-                    <input 
-                      type="email" 
-                      defaultValue="demo@email.com" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">mobile number</label>
-                    <input 
-                      type="text" 
-                      defaultValue="+91 9876543210" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">Excise Dealer Code</label>
-                    <input 
-                      type="text" 
-                      defaultValue="DL-RETAIL-990-26" 
-                      disabled
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm cursor-not-allowed font-mono font-bold text-slate-500"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase">registered organization address</label>
-                    <textarea 
-                      rows="2"
-                      defaultValue="Plot 104, Okhla Industrial Area, Phase-III, New Delhi, Pin: 110020" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
-                    />
-                  </div>
-                </div>
+  <p className="profile-user-role">
+    System Administrator • Active since Feb 2026
+  </p>
+</div>
+</div>
 
-                <div className="pt-4 border-t border-slate-100 flex justify-end">
-                  <button 
-                    onClick={() => showToast("Profile details updated successfully under security reference log!")}
-                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition font-sans"
-                  >
-                    Save Changes
-                  </button>
+                <div className="profile-form-grid">
+  <div className="profile-form-group">
+    <label className="profile-form-label">
+      contact person name
+    </label>
+
+    <input
+      type="text"
+      defaultValue="Demo User"
+      className="profile-form-input"
+    />
+                  </div>
+<div className="profile-form-group">
+  <label className="profile-form-label">
+    official email ID
+  </label>
+
+  <input
+    type="email"
+    defaultValue="demo@email.com"
+    className="profile-form-input"
+  />
+</div>
+                  <div className="profile-form-group">
+  <label className="profile-form-label">
+    mobile number
+  </label>
+
+  <input
+    type="text"
+    defaultValue="+91 9876543210"
+    className="profile-form-input"
+  />
+</div>
+
+<div className="profile-form-group">
+  <label className="profile-form-label">
+    Excise Dealer Code
+  </label>
+
+  <input
+    type="text"
+    defaultValue="DL-RETAIL-990-26"
+    disabled
+    className="profile-form-input-disabled"
+  />
+                  </div>
+                  <div className="profile-form-group profile-form-full-width">
+  <label className="profile-form-label">
+    registered organization address
+  </label>
+
+  <textarea
+    rows="2"
+    defaultValue="Plot 104, Okhla Industrial Area, Phase-III, New Delhi, Pin: 110020"
+    className="profile-form-textarea"
+  />
+</div>
+
+</div>
+
+<div className="profile-actions">
+  <button
+    onClick={() =>
+      showToast(
+        "Profile details updated successfully under security reference log!"
+      )
+    }
+    className="profile-save-btn"
+  >
+    Save Changes
+  </button>
                 </div>
               </div>
             </div>
@@ -1413,70 +1482,62 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
           {/* CHANGE PASSWORD TAB */}
           {activeTab === "ChangePassword" && (
-            <div className="space-y-6 max-w-xl mx-auto">
-              <SectionTitle 
-                title="Change Password" 
-                subtitle="Update your system password regularly to maintain compliant login security standards" 
-              />
-              <div className="dashboard-card p-6 sm:p-8 bg-white space-y-5">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase">current password</label>
-                  <input 
-                    type="password" 
-                    placeholder="••••••••••••" 
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase">new password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Enter strong characters (min 8)" 
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase">confirm new password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Re-type new password" 
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
-                  />
+            <div className="password-container">
+            <SectionTitle title="Change Password" 
+            subtitle="Update your system password regularly to maintain compliant login security standards" />
+            <div className="dashboard-card password-card">
+            <div className="password-form-group">
+            <label className="password-form-label"> current password </label>
+            <input type="password" placeholder="••••••••••••" className="password-form-input" />
+            </div>
+            <div className="password-form-group">
+            <label className="password-form-label"> new password </label>
+            <input type="password" placeholder="Enter strong characters (min 8)" className="password-form-input" />
+            </div>
+            <div className="password-form-group">
+              <label className="password-form-label"> confirm new password </label>
+              <input type="password" placeholder="Re-type new password" className="password-form-input" />
                 </div>
 
                 {/* Password strength list */}
-                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/60 space-y-2">
-                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Security Recommendations</span>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 font-semibold font-sans">
-                    <div className="flex items-center gap-1.5 text-emerald-600">
-                      <span>✓</span>
-                      <span>Min 8 characters long</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-emerald-600">
-                      <span>✓</span>
-                      <span>1+ Alpha character</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <span>○</span>
-                      <span>1+ Special char (!,@,#)</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <span>○</span>
-                      <span>1+ Numeric value</span>
-                    </div>
+                <div className="security-recommendations">
+  <span className="security-recommendations-title">
+    Security Recommendations
+  </span>
+
+  <div className="security-recommendations-grid">
+    <div className="security-recommendation-item security-recommendation-success">
+      <span>✓</span>
+      <span>Min 8 characters long</span>
+    </div>
+                    <div className="security-recommendation-item security-recommendation-success">
+  <span>✓</span>
+  <span>1+ Alpha character</span>
+</div>
+
+<div className="security-recommendation-item security-recommendation-pending">
+  <span>○</span>
+  <span>1+ Special char (!,@,#)</span>
+</div>
+
+<div className="security-recommendation-item security-recommendation-pending">
+  <span>○</span>
+  <span>1+ Numeric value</span>
+</div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100">
-                  <button 
-                    onClick={() => {
-                      showToast("Password changed successfully! Please use new credentials on next login.");
-                      setActiveTab("Home");
-                    }}
-                    className="w-full py-3 bg-[#0f2a52] hover:bg-slate-900 border-none text-white text-xs font-bold rounded-xl cursor-pointer transition font-sans"
-                  >
-                    Confirm & Update Password
-                  </button>
+                <div className="password-action-section">
+  <button
+    onClick={() => {
+      showToast("Password changed successfully! Please use new credentials on next login.");
+      setActiveTab("Home");
+    }}
+    className="password-update-btn"
+  >
+    Confirm & Update Password
+  </button>
+
                 </div>
               </div>
             </div>
@@ -1484,21 +1545,33 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
           {/* NEW M&TP TAB */}
           {activeTab === "New M&TP" && (
-            <div className="space-y-6 max-w-3xl mx-auto">
-              <SectionTitle 
-                title="Medicinal & Toilet Preparations (M&TP) License" 
-                subtitle="Apply for a new license to manufacture or store products under the Medicinal and Toilet Preparations (Excise Duties) Act" 
-              />
+            <div className="mtp-license-container">
+  <SectionTitle
+    title="Medicinal & Toilet Preparations (M&TP) License"
+    subtitle="Apply for a new license to manufacture or store products under the Medicinal and Toilet Preparations (Excise Duties) Act"
+  />
 
               {mtpSubmissionCompleted ? (
-                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
-                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800">M&TP Application Filed</h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                    Your formulation licensing request for <span className="font-semibold text-slate-700">{newMtpData.formulationName}</span> has been registered under Application Reference <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">MTP-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. Technical scrutiny and chemical sample verification has been scheduled.
-                  </p>
+                <div className="dashboard-card mtp-success-card">
+  <div className="mtp-success-icon-wrapper">
+    <CheckCircle2 className="mtp-success-icon" />
+  </div>
+
+  <h3 className="mtp-success-title">
+    M&TP Application Filed
+  </h3>
+
+  <p className="mtp-success-message">
+    Your formulation licensing request for{" "}
+    <span className="mtp-formulation-name">
+      {newMtpData.formulationName}
+    </span>{" "}
+    has been registered under Application Reference{" "}
+    <span className="mtp-reference-id">
+      MTP-2026-{Math.floor(1000 + Math.random() * 9000)}
+    </span>.
+    Technical scrutiny and chemical sample verification has been scheduled.
+  </p>
                   <button 
                     onClick={() => {
                       setMtpSubmissionCompleted(false);
@@ -1512,7 +1585,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         declarationsChecked: false
                       });
                     }}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
+                    className="mtp-reset-btn"
                   >
                     File Another Formulation Application
                   </button>
@@ -1548,21 +1621,28 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     setMtpSubmissionCompleted(true);
                     showToast(`M&TP application ${newAppId} successfully processed!`);
                   }}
-                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
+                 className="mtp-form-card"
                 >
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Registered Unit / Manufactory Name *</label>
-                      <input 
-                        type="text" 
-                        value={newMtpData.unitName}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, unitName: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                        placeholder="e.g. Delhi Laboratories Pvt Ltd"
-                        required
-                      />
-                    </div>
+                  <div className="mtp-form-grid">
+  <div className="mtp-form-group">
+    <label className="mtp-form-label">
+      Registered Unit / Manufactory Name *
+    </label>
 
+    <input
+      type="text"
+      value={newMtpData.unitName}
+      onChange={(e) =>
+        setNewMtpData((p) => ({
+          ...p,
+          unitName: e.target.value,
+        }))
+      }
+      className="mtp-form-input"
+      placeholder="e.g. Delhi Laboratories Pvt Ltd"
+      required
+    />
+  </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Drug License State Reference No. *</label>
                       <input 

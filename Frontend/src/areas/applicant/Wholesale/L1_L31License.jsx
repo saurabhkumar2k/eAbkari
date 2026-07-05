@@ -1,4 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
+
+import ApplicantDetails from "../../../components/Applicant_Details";
+import WarehouseDetails from "../../../components/WarehouseDetails";
+ import DirectorsList from "../../../components/DirectorsList";
+ import DocumentUpload from "../../../components/DocumentsDetails";
+
+
+import { createApplicant } from "../../../Model/Applicant";
+
+
+
 import {
   User,
   Building2,
@@ -24,8 +35,54 @@ import {
   Sparkles
 } from "lucide-react";
 
-export default function L1AndL31License({ onBackToSelect, showToast }) {
+
+
+export default function L1AndL31License({ ownerType,
+  catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [applicant, setApplicant] = useState(createApplicant());
+
+
+
+const [applicantDistricts, setApplicantDistricts] = useState([]);
+const [warehouseDistricts, setWarehouseDistricts] = useState([]);
+
+
+const [warehouseSubDivisions, setWarehouseSubDivisions] = useState([]);
+const [warehousePoliceStations, setWarehousePoliceStations] = useState([]);
+
+const [applicationId, setApplicationId] = useState(null);
+
+  const [states, setStates] = useState([]);
+
+  const [subDivisions, setSubDivisions] = useState([]);
+  const [policeStations, setPoliceStations] = useState([]);
+
+  const [documents, setDocuments] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState({});
+
+  const [innerStep, setInnerStep] = useState(1);
+
+  const [fssai, setFssai] = useState({ FSSAILicenceNo: "", FSSAILicenceStartDate: "", FSSAILicenceEndDate: "" });
+  const [vat, setVat] = useState({ VATGSTCertNo: "", VATGSTCertEnddate: "" });
+  const [distillery, setDistillery] = useState({ DistilleryLicNo: "", DistilleryLicEnddate: "" });
+  const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "" });
+
+ const [nominee, setNominee] = useState({
+    IsExciseNominee: "0",
+    ExciseNomineeName: "",
+    ExciseNomineeAddress: "",
+    ExciseNomineeEmailID: "",
+    ExciseNomineeMobileNo: "",
+    ExciseNomineePAN: "",
+    ExciseNomineePanImage:"",
+  });
+
+
+console.table(documents);
+
+
   const [formData, setFormData] = useState({
     // Step 1: Applicant Details
     applicantName: "VISHAL DEVILAL JAISWAL",
@@ -106,6 +163,316 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
     }
   };
 
+
+  /* ================= HANDLERS ================= */
+
+const handleApplicantChange = (field, value) => {
+ // debugger;
+  setApplicant((prev) => ({ ...prev, [field]: value }));
+
+  if (field === "state") {
+    fetchDistricts(value, "applicant");
+  }
+
+  if (field === "warehouseState") {
+    fetchDistricts(value, "warehouse");
+  }
+
+  // if (field === "warehouseDistrict") {
+  //   fetchWarehouseExtras(value); // ✅ ONLY THIS
+  // }
+
+if (field === "warehouseDistrict") {
+    fetchSubDivisions(value);   // 👈 Add this
+  }
+
+if (field === "WarehouseSubDivision") {
+fetchPoliceStations(applicant.warehouseDistrict);   // 👈 Add this
+
+}
+
+ if (field === "constitutionType") {
+    console.log("Selected:", value);
+  }
+
+};
+
+
+// Applicant
+useEffect(() => {
+  if (applicant.StateUT) {
+    fetchDistricts(applicant.StateUT, "applicant");
+  }
+}, [applicant.StateUT]);
+
+// Warehouse
+useEffect(() => {
+  if (applicant.warehouseState) {
+    fetchDistricts(applicant.warehouseState, "warehouse");
+  }
+}, [applicant.warehouseState]);
+
+
+
+  const handleDirectorChange = (i, f, v) => {
+    const d = [...(applicant.directors || [])];
+    d[i][f] = v;
+    setApplicant({ ...applicant, directors: d });
+  };
+
+  const addRow = () =>
+    setApplicant((p) => ({
+      ...p,
+      directors: [...(p.directors || []), { name: "", panNo: "" }]
+    }));
+
+  const deleteRow = (i) =>
+    setApplicant((p) => ({
+      ...p,
+      directors: p.directors.filter((_, x) => x !== i)
+    }));
+
+const handleFileChange = (key, file) => {
+  setUploadedFiles((prev) => ({
+    ...prev,
+    [key]: {
+      file,
+      previewUrl: URL.createObjectURL(file)
+    }
+  }));
+};
+
+const handleDeleteFile = (key) => {
+  setUploadedFiles((prev) => {
+    const updated = { ...prev };
+    delete updated[key];
+    return updated;
+  });
+};
+
+
+
+  // useEffect(() => {
+  //   fetch("http://localhost:5214/api/LGDiretory/getState")
+  //     .then((r) => r.json())
+  //     .then(setStates);
+  // }, []);
+
+
+useEffect(() => {
+  debugger;
+  fetch("http://localhost:5214/api/LGDiretory/getState")
+    .then((r) => r.json())
+    .then((data) => {
+      console.log("API Response:", data);
+      console.log("API isArray:", Array.isArray(data));
+
+      setStates(data);
+    });
+}, []);
+
+
+const fetchDistricts = async (stateCode, type) => {
+  debugger;
+  const res = await fetch(
+    `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`
+  );
+
+  const data = await res.json();
+
+  if (type === "applicant") {
+    setApplicantDistricts(data);
+  } else {
+    setWarehouseDistricts(data);
+  }
+};
+
+
+// const fetchSubdivisions = async (districtCode, type) => {
+//   debugger;
+//   const res = await fetch(
+//     `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+//   );
+
+//   const data = await res.json();
+
+//   if (type === "applicant") {
+//     setApplicantSubdivisions(data);
+//   } else {
+//     setWarehouseSubdivisions(data);
+//   }
+// };
+
+
+
+const fetchPoliceStations = async (districtCode) => {
+  try {
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+    );
+
+    console.log("Status:", res.status);
+
+    const text = await res.text();
+    console.log("Response:", text);
+
+    if (!text) {
+      console.log("Empty response received");
+      return;
+    }
+
+    const data = JSON.parse(text);
+
+    setWarehousePoliceStations(data);
+  } catch (err) {
+    console.log(err);s
+  }
+};
+
+
+const fetchSubDivisions = async (districtCode) => {
+  try {
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+    );
+
+    const data = await res.json();
+
+    setWarehouseSubDivisions(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+
+
+// useEffect(() => {
+//   debugger;
+//   const applicationIdNo = localStorage.getItem("applicationId");
+//   const catCode = localStorage.getItem("catCode");
+
+//   console.log("ApplicationId:", applicationIdNo);
+//   console.log("CatCode:", catCode);
+
+//   fetch(
+//     `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}`
+//   )
+//     .then((r) => r.json())
+//     .then((data) => setDocuments(data));
+// }, []);
+
+
+useEffect(() => {
+  if (currentStep !== 4 && currentStep !== 5) return;
+
+  const applicationIdNo = localStorage.getItem("applicationId");
+  if (!applicationIdNo || !catCode) return;
+
+  const docStatus = currentStep === 4 ? "A" : "S";
+
+  fetch(
+    `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}&docStatus=${docStatus}`
+  )
+    .then((r) => r.json())
+    .then((data) => setDocuments(data));
+
+}, [currentStep, catCode]);
+
+
+
+
+
+
+
+
+const handleStep1Next = async () => {
+  const response = await fetch(
+    "http://localhost:5214/api/Application/SaveApplicant",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(applicant),
+    }
+  );
+
+  const data = await response.json();
+
+  setApplicationId(data.applicationId);
+
+  setCurrentStep(2);
+};
+
+
+useEffect(() => {
+  const regId = localStorage.getItem("regId");
+
+  if (regId) {
+    loadApplicantData(regId);
+  }
+}, []);
+
+
+
+const loadApplicantData = async (regId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+    );
+
+    if (!response.ok) {
+      console.log("API Error:", response.status);
+      return;
+    }
+
+    const data = await response.json();
+  debugger;
+    console.log(data);
+console.log("ownerType prop =", ownerType);
+console.log("catCode prop =", catCode);
+
+// 👇 Pehle state ke basis par district list load karo
+  await fetchDistricts(data.stateUT, "applicant");
+
+
+ setApplicant((prev) => ({
+
+  ...prev,
+  // firstName: data.firstName,
+  // lastName: data.lastName,
+  applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
+  fatherHusbandName: data.fatherHusbandName,
+    dateOfBirth: data.dateOfBirth
+    ? data.dateOfBirth.split("T")[0]
+    : "",
+    panNo: data.panNo,
+    constitutionType: data.constitutionType,
+    occupation: data.occupation,
+    addressLine1: data.addressLine1,
+    addressLine2: data.addressLine2,
+    stateUT: data.stateUT,
+    district: data.district,
+    pin: data.pin,
+    email: data.email,
+    mobile: data.mobile,
+    landline: data.landline,
+  ownerType: ownerType,   // prop se
+  catCode: catCode        // prop se
+
+}));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+
+  
   const validateStep = (step) => {
     const errors = {};
     if (step === 1) {
@@ -157,19 +524,370 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
     return Object.keys(errors).length === 0;
   };
 
-  const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < 6) {
-        setCurrentStep(currentStep + 1);
-        if (showToast) showToast(`Step ${currentStep} completed successfully!`);
-      } else {
-        // Trigger final submit
-        handleFinalSubmission();
+  // const handleNextStep = () => {
+  //   if (validateStep(currentStep)) {
+  //     if (currentStep < 6) {
+  //       setCurrentStep(currentStep + 1);
+  //       if (showToast) showToast(`Step ${currentStep} completed successfully!`);
+  //     } else {
+  //       // Trigger final submit
+  //       handleFinalSubmission();
+  //     }
+  //   } else {
+  //     if (showToast) showToast("Please review marked fields before advancing.", "error");
+  //   }
+  // };
+
+
+const handleNextStep = async () => {
+
+  if (!validateStep(currentStep)) {
+    if (showToast) {
+      showToast(
+        "Please review marked fields before advancing.",
+        "error"
+      );
+    }
+    return;
+  }
+
+  try {
+
+    // STEP 1 SAVE
+    if (currentStep === 1 && !applicationId) {
+debugger;
+
+const payload = {
+  RegId: Number(localStorage.getItem("regId")),
+  
+
+  ApplicantName: applicant.applicantName,
+  Dob: applicant.dateOfBirth,
+  FatherHusbandName: applicant.fatherHusbandName,
+  Occupation: applicant.occupation,
+  PanNo: applicant.panNo,
+
+  PresentAddress: applicant.addressLine1,
+  PermanentAddress: applicant.addressLine2,
+
+  StateUT: applicant.stateUT,
+  District: applicant.district,
+  PIN: applicant.pin,
+
+  Email: applicant.email,
+  Mobile: applicant.mobile,
+  LandLine: applicant.landline,
+  CinNo: applicant.cinNo,
+  OwnerType: applicant.ownerType,
+  CatCode: applicant.catCode
+};
+
+
+      const response = await fetch(
+        "http://localhost:5214/api/LicenseeCategories/ApplyLicense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await response.json();
+debugger;
+      setApplicationId(data.applicationId);
+
+      console.log("Generated Id:", data.applicationId);
+      localStorage.setItem("applicationId", data.applicationId);
+      localStorage.setItem("catCode", data.catCode);
+      alert(`Your Application Reference No. is ${data.applicationId}`);
+      
+
+    }
+
+
+if (currentStep === 2 ) {
+debugger;
+
+const payload = {
+  ...applicant,
+  regId: localStorage.getItem("regId"),
+ ApplicationIdNo: localStorage.getItem("applicationId"),
+ CatCode:localStorage.getItem("catCode")
+};
+
+
+      const response = await fetch(
+        "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("Warehouse License Response:", data);
+
+}
+
+if (currentStep === 3) {
+  debugger;
+
+  console.log("Directors:", applicant.directors);
+
+  const formData = new FormData();
+
+  // Merge all objects
+  const payload = {
+    ...applicant,
+    ...nominee,
+    ...fssai,
+    ...vat,
+    ...distillery,
+    ...bwh,
+    regId: localStorage.getItem("regId"),
+    ApplicationIdNo: localStorage.getItem("applicationId"),
+    CatCode: localStorage.getItem("catCode")
+  };
+
+  // Append normal fields
+  Object.keys(payload).forEach((key) => {
+    // Skip file and list
+    if (
+      key !== "ExciseNomineePanImage" &&
+      key !== "CompanyPartnersDetails"
+    ) {
+      formData.append(key, payload[key] ?? "");
+    }
+  });
+
+  // Append file
+  if (nominee.ExciseNomineePanImage) {
+    formData.append(
+      "ExciseNomineePanImage",
+      nominee.ExciseNomineePanImage
+    );
+  }
+
+applicant.directors.forEach((director, index) => {
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PName`,
+        director.PName || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PPerShare`,
+        director.PPerShare || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PPanNo`,
+        director.PPanNo || ""
+    );
+
+    formData.append(
+        `CompanyPartnersDetails[${index}].PExciseNominee`,
+        director.PExciseNominee || ""
+    );
+
+    // PAN File
+    if (director.panFile) {
+        formData.append(
+            `CompanyPartnersDetails[${index}].PanFile`,
+            director.panFile
+        );
+    }
+        if (director.AddressProofFile) {
+        formData.append(
+            `CompanyPartnersDetails[${index}].AddressProofFile`,
+            director.AddressProofFile
+        );
+    }
+});
+
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  const data = await response.json();
+
+  console.log("Warehouse License Response:", data);
+}
+
+
+if (currentStep === 4) {
+  debugger;
+
+  const formData = new FormData();
+
+  formData.append(
+    "ApplicationIdNo",
+    localStorage.getItem("applicationId")
+  );
+
+  formData.append(
+    "MobileNo",
+    applicant.mobile
+  );
+
+  let index = 0;
+
+  documents.forEach((doc) => {
+    const uploaded = uploadedFiles[doc.docId];
+
+    if (uploaded?.file) {
+      formData.append(
+        `Documents[${index}].ApplicantSl`,
+        doc.applicantSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocId`,
+        doc.docId
+      );
+
+      formData.append(
+        `Documents[${index}].DocSl`,
+        doc.docSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocumentFile`,
+        uploaded.file
+      );
+
+      index++;
+    }
+  });
+
+
+
+
+
+
+
+
+  
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+}
+
+
+if (currentStep === 5) {
+  debugger;
+
+  const formData = new FormData();
+
+  formData.append(
+    "ApplicationIdNo",
+    localStorage.getItem("applicationId")
+  );
+
+  formData.append(
+    "MobileNo",
+    applicant.mobile
+  );
+
+  let index = 0;
+
+  documents.forEach((doc) => {
+    const uploaded = uploadedFiles[doc.docId];
+
+    if (uploaded?.file) {
+      formData.append(
+        `Documents[${index}].ApplicantSl`,
+        doc.applicantSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocId`,
+        doc.docId
+      );
+
+      formData.append(
+        `Documents[${index}].DocSl`,
+        doc.docSl || 1
+      );
+
+      formData.append(
+        `Documents[${index}].DocumentFile`,
+        uploaded.file
+      );
+
+      index++;
+    }
+  });
+
+
+
+
+
+
+
+
+  
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+}
+
+
+
+
+    if (currentStep < 6) {
+      setCurrentStep(currentStep + 1);
+
+      if (showToast) {
+        showToast(
+          `Step ${currentStep} completed successfully!`
+        );
       }
     } else {
-      if (showToast) showToast("Please review marked fields before advancing.", "error");
+      handleFinalSubmission();
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+
+    if (showToast) {
+      showToast("Unable to save applicant data", "error");
+    }
+  }
+};
+
+
+
+
+
+
+
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
@@ -205,6 +923,7 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
   };
 
   return (
+     
     <div className="brand-registration-page select-none text-slate-800 animate-fade">
       
       {/* Top Banner Area with complete descriptive branding */}
@@ -284,593 +1003,454 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
             
             {/* Step 1: APPLICANT DETAILS FORM BLOCK */}
             {currentStep === 1 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  {/* Applicant Name (ReadOnly style as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Applicant Name</label>
-                    <input 
-                      type="text" 
-                      value={formData.applicantName} 
-                      readOnly
-                      disabled
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Name of Company/Firm/LLP/Society/Individual * (Required editable) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">
-                      Name of Company/Firm/LLP/Society/Individual <span className="text-red-500 font-black">*</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. KRISTAL SPIRITS PVT LTD"
-                      value={formData.companyName}
-                      onChange={(e) => handleInputChange("companyName", e.target.value)}
-                      className={`input-box ${formErrors.companyName ? "border-red-500 focus:border-red-500 focus:shadow-red-50" : ""}`}
-                    />
-                    {formErrors.companyName && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.companyName}</span>
-                    )}
-                  </div>
-
-                  {/* Date of Birth (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Date of Birth</label>
-                    <input 
-                      type="text" 
-                      value="01/01/1980" 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Father/Husband Name (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Father/Husband Name</label>
-                    <input 
-                      type="text" 
-                      value={formData.fatherName} 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Occupation (ReadOnly as per image) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Occupation</label>
-                    <input 
-                      type="text" 
-                      value={formData.occupation} 
-                      disabled
-                      readOnly
-                      className="input-box bg-slate-100 text-slate-700 font-semibold cursor-not-allowed border-slate-200"
-                    />
-                  </div>
-
-                  {/* Address 1 (Editable with long pre-filled text) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Address 1</label>
-                    <input 
-                      type="text" 
-                      value={formData.address1}
-                      onChange={(e) => handleInputChange("address1", e.target.value)}
-                      className={`input-box ${formErrors.address1 ? "border-red-500 focus:border-red-500" : ""}`}
-                    />
-                    {formErrors.address1 && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.address1}</span>
-                    )}
-                  </div>
-
-                  {/* Address 2 */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Address 2</label>
-                    <input 
-                      type="text" 
-                      placeholder="Line 2 of Address"
-                      value={formData.address2}
-                      onChange={(e) => handleInputChange("address2", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* State (Select list with prefilled Delhi) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">State</label>
-                    <select 
-                      value={formData.state} 
-                      onChange={(e) => handleInputChange("state", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Delhi">Delhi</option>
-                      <option value="Haryana">Haryana</option>
-                      <option value="Uttar Pradesh">Uttar Pradesh</option>
-                      <option value="Punjab">Punjab</option>
-                    </select>
-                  </div>
-
-                  {/* District (Select list with default West) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">District</label>
-                    <select 
-                      value={formData.district} 
-                      onChange={(e) => handleInputChange("district", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="West">West</option>
-                      <option value="North West">North West</option>
-                      <option value="South Delhi">South Delhi</option>
-                      <option value="Central Delhi">Central Delhi</option>
-                      <option value="East Delhi">East Delhi</option>
-                    </select>
-                  </div>
-
-                  {/* Sub Division (Select list with default Rajouri Garden) */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Sub Division</label>
-                    <select 
-                      value={formData.subDivision} 
-                      onChange={(e) => handleInputChange("subDivision", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Rajouri Garden">Rajouri Garden</option>
-                      <option value="Punjabi Bagh">Punjabi Bagh</option>
-                      <option value="Patel Nagar">Patel Nagar</option>
-                      <option value="Dwarka">Dwarka</option>
-                    </select>
-                  </div>
-
-                  {/* PIN */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">PIN</label>
-                    <input 
-                      type="text" 
-                      value={formData.pin}
-                      maxLength={6}
-                      onChange={(e) => handleInputChange("pin", e.target.value)}
-                      className={`input-box ${formErrors.pin ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.pin && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.pin}</span>
-                    )}
-                  </div>
-
-                  {/* Email */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Email</label>
-                    <input 
-                      type="email" 
-                      value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      className={`input-box ${formErrors.email ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.email && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.email}</span>
-                    )}
-                  </div>
-
-                  {/* Mobile */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Mobile</label>
-                    <input 
-                      type="text" 
-                      value={formData.mobile}
-                      maxLength={12}
-                      onChange={(e) => handleInputChange("mobile", e.target.value)}
-                      className={`input-box ${formErrors.mobile ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.mobile && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.mobile}</span>
-                    )}
-                  </div>
-
-                  {/* Landline */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Landline</label>
-                    <input 
-                      type="text" 
-                      value={formData.landline}
-                      onChange={(e) => handleInputChange("landline", e.target.value)}
-                      className="input-box"
-                      placeholder="e.g. 011-23348812"
-                    />
-                  </div>
-
-                  {/* PAN NO */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">PAN No</label>
-                    <input 
-                      type="text" 
-                      value={formData.panNo}
-                      maxLength={10}
-                      onChange={(e) => handleInputChange("panNo", e.target.value.toUpperCase())}
-                      className={`input-box font-mono ${formErrors.panNo ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.panNo && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.panNo}</span>
-                    )}
-                  </div>
-
-                </div>
-              </div>
+                 <ApplicantDetails
+            applicant={applicant}
+            states={states}
+              districts={applicantDistricts}   // ✅ FIX HERE
+            onChange={handleApplicantChange}
+          />
             )}
 
             {/* Step 2: WAREHOUSE DETAILS FORM BLOCK */}
             {currentStep === 2 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="bg-blue-50/70 border border-blue-100 p-4 rounded-xl flex items-start gap-3">
-                  <Info className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
-                  <p className="text-xs text-blue-800 font-semibold leading-relaxed">
-                    Under L-31 guidelines, standard commercial warehouses inside municipal zones of Delhi must pass structural and temperature parameters to ensure standard shelf stability of spirits.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Warehouse Name */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Warehouse Trading Name *</label>
-                    <input 
-                      type="text" 
-                      value={formData.warehouseName}
-                      onChange={(e) => handleInputChange("warehouseName", e.target.value)}
-                      className={`input-box ${formErrors.warehouseName ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseName && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseName}</span>
-                    )}
-                  </div>
-
-                  {/* Physical Area Sq.Ft */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Total Area (In Square Feet) *</label>
-                    <input 
-                      type="number" 
-                      value={formData.warehouseSize}
-                      onChange={(e) => handleInputChange("warehouseSize", e.target.value)}
-                      className={`input-box ${formErrors.warehouseSize ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseSize && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseSize}</span>
-                    )}
-                  </div>
-
-                  {/* Warehouse address */}
-                  <div className="form-group md:col-span-2">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Bonded Warehouse Physical Address *</label>
-                    <textarea 
-                      value={formData.warehouseAddress}
-                      onChange={(e) => handleInputChange("warehouseAddress", e.target.value)}
-                      className={`textarea-box ${formErrors.warehouseAddress ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.warehouseAddress && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.warehouseAddress}</span>
-                    )}
-                  </div>
-
-                  {/* Fire Sprinklers Fitted */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Automatic Fire Sprinklers Fitted?</label>
-                    <select 
-                      value={formData.hasFireSprinklers}
-                      onChange={(e) => handleInputChange("hasFireSprinklers", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, compliant with DFS norms</option>
-                      <option value="No">No / Pending Audit Inspection</option>
-                    </select>
-                  </div>
-
-                  {/* CCTV Vendor */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">CCTV Safety System Provider</label>
-                    <input 
-                      type="text" 
-                      value={formData.cctvProvider}
-                      onChange={(e) => handleInputChange("cctvProvider", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* Locker Count */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Storage Vaults / High-Security Dry Bays</label>
-                    <input 
-                      type="number" 
-                      value={formData.lockerCount}
-                      onChange={(e) => handleInputChange("lockerCount", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
-
-                  {/* AC Temperature controls */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">HVAC System installed (Cool Cellar Mode)</label>
-                    <select 
-                      value={formData.hasTemperatureControl}
-                      onChange={(e) => handleInputChange("hasTemperatureControl", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, Constant temperature maintained </option>
-                      <option value="No">No, Standard thermal circulation only</option>
-                    </select>
-                  </div>
-
-                </div>
-              </div>
+                  <WarehouseDetails
+              applicant={applicant}
+              states={states}
+               districts={warehouseDistricts}   // ✅ correct
+  subDivisions={warehouseSubDivisions}
+  
+  policeStations={warehousePoliceStations}
+              onChange={handleApplicantChange}
+            />
             )}
 
             {/* Step 3: ADDITIONAL DETAILS FORM BLOCK */}
             {currentStep === 3 && (
-              <div className="animate-fade text-left space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                  {/* Annual Turn over */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Anticipated Excise Turnover (INR in Crores) *</label>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      value={formData.annualTurnover}
-                      onChange={(e) => handleInputChange("annualTurnover", e.target.value)}
-                      className={`input-box ${formErrors.annualTurnover ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.annualTurnover && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.annualTurnover}</span>
-                    )}
-                  </div>
+ <>
+      
 
-                  {/* Security Bank BG Ref */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Excise Security Guarantee Reference No *</label>
-                    <input 
-                      type="text" 
-                      value={formData.bankGuaranteeRef}
-                      onChange={(e) => handleInputChange("bankGuaranteeRef", e.target.value)}
-                      className={`input-box ${formErrors.bankGuaranteeRef ? "border-red-500" : ""}`}
-                    />
-                    {formErrors.bankGuaranteeRef && (
-                      <span className="text-xs text-red-500 font-semibold mt-1">{formErrors.bankGuaranteeRef}</span>
-                    )}
-                  </div>
+{/* ================= ADDITIONAL WAREHOUSE DETAILS ================= */}
 
-                  {/* Security amount */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Guarantee Bond Amount (INR)</label>
-                    <select 
-                      value={formData.bankGuaranteeAmount}
-                      onChange={(e) => handleInputChange("bankGuaranteeAmount", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="5000000">₹ 50,00,000 (standard limit)</option>
-                      <option value="10000000">₹ 1,00,00,000 (extended limit)</option>
-                      <option value="25000000">₹ 2,50,00,000 (premium merchant status)</option>
-                    </select>
-                  </div>
+<div className="section-card">
+  <h3 className="section-title">Company / Firm Details</h3>
 
-                  {/* Past Exp years */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Years of Active Spirits Import/Supply Experience</label>
-                    <input 
-                      type="number" 
-                      value={formData.pastExpYears}
-                      onChange={(e) => handleInputChange("pastExpYears", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
+  <div className="form-row">
 
-                  {/* Delivery Vehicles */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Fleet size of Insured Delivery Carriers (Excise Permit Registered)</label>
-                    <input 
-                      type="number" 
-                      value={formData.deliveryVehicles}
-                      onChange={(e) => handleInputChange("deliveryVehicles", e.target.value)}
-                      className="input-box"
-                    />
-                  </div>
+    <div className="form-item">
+      <label>Constitution Type</label>
+    <select
+  value={applicant.ConstitutionType || ""}
+  onChange={(e) =>
+    handleApplicantChange("ConstitutionType", e.target.value)
+  }
+>
+        <option value="">Select</option>
+        <option value="Company">Company</option>
+        <option value="Partnership">Partnership</option>
+        <option value="LLP">LLP</option>
+        <option value="Proprietorship">Proprietorship</option>
+        <option value="Society">Society</option>
+      </select>
+    </div>
 
-                  {/* Prior Delhi Licenses held */}
-                  <div className="form-group">
-                    <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Previously held Licenses under Delhi Excise Act 2010?</label>
-                    <select 
-                      value={formData.priorLicensesDelhi}
-                      onChange={(e) => handleInputChange("priorLicensesDelhi", e.target.value)}
-                      className="select-box"
-                    >
-                      <option value="Yes">Yes, non-revoked track record</option>
-                      <option value="No">No / Fresh Corporate Applicant</option>
-                    </select>
-                  </div>
+    {applicant.constitutionType === "Company" && (
+      <div className="form-item">
+        <label>CIN No</label>
+        <input
+          value={applicant.CINNO || ""}
+          onChange={(e) => handleApplicantChange("CINNO", e.target.value)}
+        />
+      </div>
+    )}
 
-                </div>
-              </div>
-            )}
+    <div className="form-item">
+      <label>Registration No</label>
+     <input
+  value={applicant.RegistrationNo || ""}
+  onChange={(e) =>
+    handleApplicantChange("RegistrationNo", e.target.value)
+  }
+/>
+    </div>
 
-            {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
-            {currentStep === 4 && (
-              <div className="personal-doc-container text-left space-y-6">
-                <div className="document-info-banner">
-                  <Bookmark className="w-5 h-5" />
-                  <p>
-                    Please map and endorse your core personal identification proofs. Attach certified PDF documents (file sizes must remain below 10MB per document).
-                  </p>
-                </div>
+    <div className="form-item">
+      <label>Registration Date</label>
+      <input
+        type="date"
+        value={applicant.RegDate || ""}
+        onChange={(e) =>
+          handleApplicantChange("RegDate", e.target.value)
+        }
+      />
+    </div>
 
-                <div className="document-list">
-                  {/* File 1: Personal PAN */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">PAN Card of Board Directors / Applicant *</h4>
-                      <p className="document-description">Acceptable formats: PDF, JPEG (Color scan mandatory)</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: pan_card_full.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("File pan_card_full.pdf re-uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+    <div className="form-item">
+      <label>PAN No</label>
+      <input
+        value={applicant.companyPan || ""}
+        onChange={(e) =>
+          handleApplicantChange("companyPan", e.target.value.toUpperCase())
+        }
+      />
+    </div>
 
-                  {/* File 2: Aadhaar Card */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Aadhaar Card Identifications *</h4>
-                      <p className="document-description">E-Aadhaar PDF certified by UIDAI seal</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: aadhaar_signed.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Aadhaar proof updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+    <div className="form-item">
+      <label>VAT / TIN</label>
+      <input
+        value={applicant.vatNo || ""}
+        onChange={(e) => handleApplicantChange("vatNo", e.target.value)}
+      />
+    </div>
 
-                  {/* File 3: Partnership Deed */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Partnership Deed / Board Resolution Certificate *</h4>
-                      <p className="document-description">Corporate certificate mapping authorizations under directors board approval</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: resolution_board_delhi.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Deed file modified."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+  </div>
+</div> 
 
-                  {/* File 4: Income Tax Return */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Income Tax Return Acknowledgment Receipts (Past 3 FY)</h4>
-                      <p className="document-description">Combined PDF containing certified filings filed with ITR departments</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: itr_returns_3_yr_combined.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("ITR files uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
 
-                </div>
-              </div>
-            )}
+<DirectorsList
+  directors={applicant.directors || []}
+  constitutionType={applicant.constitutionType}
+  onChange={handleDirectorChange}
+  onAdd={addRow}
+  onDelete={deleteRow}
+/>
+
+ {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
+
+
+               <div className="form-container">
+
+    {/* ================= NOMINEE ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>Excise Nominee</h3>
+      </div>
+
+      <div className="card-body">
+        <label className="label">
+          Is Excise Nominee other than applicant?
+        </label>
+
+        <div className="radio-group">
+          <label>
+            <input
+              type="radio"
+              value="1"
+              checked={nominee.isExciseNominee === "1"}
+              onChange={(e) =>
+                setNominee({ ...nominee, isExciseNominee: e.target.value })
+              }
+            />
+            Yes
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              value="0"
+              checked={nominee.isExciseNominee === "0"}
+              onChange={(e) =>
+                setNominee({ ...nominee, isExciseNominee: e.target.value })
+              }
+            />
+            No
+          </label>
+        </div>
+      </div>
+    </div>
+
+    {/* ================= NOMINEE DETAILS ================= */}
+    {nominee.isExciseNominee === "1" && (
+      <div className="card">
+        <div className="card-header">
+          <h3>Nominee Details</h3>
+        </div>
+
+        <div className="grid-3">
+          <input
+            placeholder="Name"
+            value={nominee.ExciseNomineeName}
+            onChange={(e) =>
+              setNominee({ ...nominee, ExciseNomineeName: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Address"
+            value={nominee.address}
+            onChange={(e) =>
+              setNominee({ ...nominee, address: e.target.value })
+            }
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={nominee.ExciseNomineeEmailID}
+            onChange={(e) =>
+              setNominee({ ...nominee, ExciseNomineeEmailID: e.target.value })
+            }
+          />
+
+          <input
+            placeholder="Mobile"
+            maxLength={10}
+            value={nominee.ExciseNomineeMobileNo}
+            onChange={(e) =>
+              setNominee({
+                ...nominee,
+                ExciseNomineeMobileNo: e.target.value.replace(/\D/g, "")
+              })
+            }
+          />
+
+    <input
+  placeholder="PAN"
+  value={nominee.ExciseNomineePAN || ""}
+  onChange={(e) =>
+    setNominee({
+      ...nominee,
+      ExciseNomineePAN: e.target.value.toUpperCase(),
+    })
+  }
+/>
+
+{/* FILE */}
+ <div className="form-item full">
+  <label>PAN Proof</label>
+
+  <div className="file-modern">
+    {!nominee.ExciseNomineePanImage ? (
+      <label className="upload-box">
+        📄 Upload
+        <input
+          type="file"
+          hidden
+          accept=".pdf,.jpg,.jpeg"
+          onChange={(e) =>
+            setNominee({
+              ...nominee,
+              ExciseNomineePanImage: e.target.files?.[0] || null,
+            })
+          }
+        />
+      </label>
+    ) : (
+      <>
+        <span className="file-name">
+          {nominee.ExciseNomineePanImage.name}
+        </span>
+
+        <div className="file-actions">
+          <button
+            type="button"
+            className="btn-view"
+            onClick={() =>
+              window.open(
+                URL.createObjectURL(nominee.ExciseNomineePanImage),
+                "_blank"
+              )
+            }
+          >
+            👁
+          </button>
+
+          <label className="btn-replace">
+            🔄
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg"
+              onChange={(e) =>
+                setNominee({
+                  ...nominee,
+                  ExciseNomineePanImage: e.target.files?.[0] || null,
+                })
+              }
+            />
+          </label>
+
+          <button
+            type="button"
+            className="btn-delete"
+            onClick={() =>
+              setNominee({
+                ...nominee,
+                ExciseNomineePanImage: null,
+              })
+            }
+          >
+            ❌
+          </button>
+        </div>
+      </>
+    )}
+  </div>
+</div>
+        </div>
+      </div>
+    )}
+
+    {/* ================= FSSAI ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>FSSAI Licence</h3>
+      </div>
+
+      <div className="grid-3">
+        <input
+          placeholder="Licence No"
+          value={fssai.FSSAILicenceNo}
+          onChange={(e) =>
+            setFssai({ ...fssai, FSSAILicenceNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={fssai.FSSAILicenceStartDate}
+          onChange={(e) =>
+            setFssai({ ...fssai, FSSAILicenceStartDate: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={fssai.FSSAILicenceEndDate}
+          onChange={(e) =>
+            setFssai({ ...fssai, FSSAILicenceEndDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= VAT ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>VAT / GST</h3>
+      </div>
+
+      <div className="grid-2">
+        <input
+          placeholder="Certificate No"
+          value={vat.VATGSTCertNo}
+          onChange={(e) =>
+            setVat({ ...vat, VATGSTCertNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={vat.VATGSTCertEnddate}
+          onChange={(e) =>
+            setVat({ ...vat, VATGSTCertEnddate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= DISTILLERY ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>Distillery Licence</h3>
+      </div>
+
+      <div className="grid-2">
+        <input
+          placeholder="Licence No"
+          value={distillery.DistilleryLicNo}
+          onChange={(e) =>
+            setDistillery({ ...distillery, DistilleryLicNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={distillery.DistilleryLicEnddate}
+          onChange={(e) =>
+            setDistillery({ ...distillery, DistilleryLicEnddate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+    {/* ================= BWH ================= */}
+    <div className="card">
+      <div className="card-header">
+        <h3>BWH Details</h3>
+      </div>
+
+      <div className="grid-4">
+        <input
+          placeholder="Insurance No"
+          value={bwh.insuranceNo}
+          onChange={(e) =>
+            setBwh({ ...bwh, insuranceNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={bwh.BWHInsuranceEndDate}
+          onChange={(e) =>
+            setBwh({ ...bwh, BWHInsuranceEndDate: e.target.value })
+          }
+        />
+
+        <input
+          placeholder="Lease No"
+          value={bwh.leaseNo}
+          onChange={(e) =>
+            setBwh({ ...bwh, leaseNo: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          value={bwh.BWHRentAgreementEndDate}
+          onChange={(e) =>
+            setBwh({ ...bwh, BWHRentAgreementEndDate: e.target.value })
+          }
+        />
+      </div>
+    </div>
+
+  </div>
+         
+
+</>
+
+
+ )}
+
+        {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
+          
+
+
+       
 
             {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
-            {currentStep === 5 && (
-              <div className="personal-doc-container text-left space-y-6">
-                <div className="document-info-banner">
-                  <Warehouse className="w-5 h-5" />
-                  <p>
-                    Warehouse Premises Deeds are inspected under Delhi Fire Services & Municipal Excise laws. Please upload certified blueprint surveys.
-                  </p>
-                </div>
+            {/* {currentStep === 4 && (
+                  <DocumentUpload
+            documents={documents}
+            uploadedFiles={uploadedFiles}
+            handleDocumentFileChange={handleFileChange}
+            handleDeleteFile={handleDeleteFile}
+          />
+            )} */}
 
-                <div className="document-list">
-                  {/* Deed 1: Registered Lease Deed */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Registered Warehouse Lease Deed / Ownership Papers *</h4>
-                      <p className="document-description">Registered deed papers showing full possession details</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: registered_lease_mayapuri.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Lease deed updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
+  {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
+     {(currentStep === 4 || currentStep === 5) && (
+  <DocumentUpload
+    documents={documents}
+    uploadedFiles={uploadedFiles}
+    handleDocumentFileChange={handleFileChange}
+    handleDeleteFile={handleDeleteFile}
+  />
+)}
 
-                  {/* Deed 2: Fire Safety NOC */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Delhi Fire Services NOC (No Objection Certificate) *</h4>
-                      <p className="document-description">NOC affirming safety exits and automatic fire suppression controls</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: dfs_noc_clearance_2026.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Fire safety NOC updated."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* Deed 3: MCD Trade License */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">MCD Commercial Trade License *</h4>
-                      <p className="document-description">Approval for operations of commercial storage depot</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: mcd_commercial_license.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("MCD copy re-uploaded."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* Deed 4: Approved Site layout plan map */}
-                  <div className="document-row">
-                    <div className="document-content">
-                      <h4 className="document-title">Licensed Premise Blue Site Layout Blueprint *</h4>
-                      <p className="document-description">Detailed architect-signed architectural drawing detailing dry stack bays</p>
-                    </div>
-                    <div className="document-actions">
-                      <span className="document-status animate-fade">
-                        <Check className="w-4 h-4 text-emerald-700 font-bold" /> <span>Mapped: arch_layout_stamps_2026.pdf</span>
-                      </span>
-                      <button 
-                        onClick={() => { if (showToast) showToast("Site plan blueprint replaced."); }}
-                        className="btn-replace"
-                      >
-                        <Upload className="w-3.5 h-3.5" /> <span>Replace</span>
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            )}
 
             {/* Step 6: STATUTORY DECLARATIONS & UNDERTAKING */}
             {currentStep === 6 && (
@@ -894,7 +1474,10 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
                       className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 focus:ring-2 border-slate-300 pointer-events-auto"
                     />
                     <label htmlFor="acceptCheck" className="text-xs text-slate-700 leading-relaxed font-semibold cursor-pointer">
-                      I/We hereby solemnly declare that the applicant company has not been declared guilty of any non-bailable offense locally. The warehouse parcel at <strong>{formData.warehouseAddress}</strong> corresponds exactly to registered lease clearances.
+                    
+                    I declare the information provided above is true to the best of my knowledge and believe if any information particulars furnished in the application is subsequently found to be false, inaccurate or incomplete, the license, if any, granted on the basis of the application, will be liable to instant withdrawal without prejudice to other action then may be taken.
+                    
+                    
                     </label>
                   </div>
                   {formErrors.undertakingAccept && (
@@ -902,7 +1485,7 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
                   )}
 
                   {/* Pre-filled sign box */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-100">
+                  {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-100">
                     <div className="form-group">
                       <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Digital signature Name *</label>
                       <input 
@@ -925,7 +1508,7 @@ export default function L1AndL31License({ onBackToSelect, showToast }) {
                         className="input-box border-slate-300"
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                 </div>
               </div>

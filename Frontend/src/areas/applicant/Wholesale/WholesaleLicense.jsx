@@ -24,6 +24,12 @@ import {
   Tag as TagIcon
 } from "lucide-react";
 import SelectWholesaleType from "./SelectWholesale";
+import ApplicantDetails from "../../../components/Applicant_Details";
+import { createApplicant } from "../../../Model/Applicant";
+
+
+//import { SelectWholesaleType } from "./SelectWholesale";
+
 import L1AndL31License from "./L1_L31License";
 
 const brandCodeOptions = [
@@ -73,11 +79,11 @@ const liquorTypeOptions = {
 
 export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, rootData = {} }) {
   const [currentStep, setCurrentStep] = useState(3);
-  const [selectedLicenseId, setSelectedLicenseId] = useState("L-1");
+  const [selectedLicenseId, setSelectedLicenseId] = useState("");
   const [associatedBrands, setAssociatedBrands] = useState([]);
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);
-
+  const [applicant, setApplicant] = useState(createApplicant());
   // Brand form state
   const [brandForm, setBrandForm] = useState({
     category: 'Indian Liquor',
@@ -92,6 +98,8 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
   const [searchTerm, setSearchTerm] = useState('');
   const [sortColumn, setSortColumn] = useState('brandName');
   const [sortDirection, setSortDirection] = useState('asc');
+
+  const [licenseGroups, setLicenseGroups] = useState([]);
 
   // Warehouse physical premise details
   const [premisesForm, setPremisesForm] = useState({
@@ -112,6 +120,44 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
     incorporationCertificate: null,
     exciseBondReceipt: null
   });
+
+
+const handleApplicantChange = (field, value) => {
+  setApplicant((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
+useEffect(() => {
+  fetchLicenseCategories();
+}, []);
+
+const fetchLicenseCategories = async () => {
+  debugger;
+  try {
+    const res = await fetch(
+      "http://localhost:5214/api/LiquorMaster/GetWholesaleLicenseeCategory"
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    setLicenseGroups(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+console.log("OwnerType:", applicant?.ownerType);
+console.log("SelectedLicenseId:", selectedLicenseId);
+
+
+
+
+
+
 
   useEffect(() => {
     if (toast) {
@@ -259,18 +305,24 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
     setCurrentStep(7);
     showToast("Wholesale Vend Privileges application docket registered!");
   };
-
-  if (selectedLicenseId === "L-1-L-31" && currentStep > 3) {
-    return (
-      <L1AndL31License 
-        onBackToSelect={() => { setSelectedLicenseId("L-1"); setCurrentStep(3); }} 
-        showToast={showToast || triggerToast} 
-      />
-    );
-  }
+console.log("Parent ownerType:", applicant.ownerType);
+console.log("Parent catCode:", selectedLicenseId);
+if (selectedLicenseId === "10" && currentStep > 3) {
+  return (
+<L1AndL31License
+  ownerType={applicant.ownerType}
+  catCode={selectedLicenseId}
+  onBackToSelect={() => {
+    setSelectedLicenseId("");
+    setCurrentStep(3);
+  }}
+  showToast={showToast || triggerToast}
+/>
+  );
+}
 
   return (
-    <div className="brand-registration-page select-none text-slate-800">
+    <div className="wholesale-page">
       
       {/* Internal Custom Toast */}
       {toast && (
@@ -288,12 +340,12 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto w-full flex-grow">
+      <div className="wholesale-container">
         
         {/* Step Wizard Row */}
         {currentStep < 7 && (
-          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 mb-8 overflow-x-auto">
-            <div className="flex items-center justify-between min-w-[700px] relative">
+          <div className="wizard-container">
+            <div className="wizard-step">
               
               {/* Connector line */}
               <div className="absolute top-5 left-0 right-0 -translate-y-1/2 h-[2px] bg-slate-100 z-0 px-12">
@@ -335,28 +387,48 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
           {/* STEP 3: SELECT WHOLESALE LICENSE TYPE */}
           {currentStep === 3 && (
             <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-              <SelectWholesaleType 
-                selectedType={selectedLicenseId}
-                onSelectType={(id) => setSelectedLicenseId(id)}
-                onBack={onBackToDashboard}
-              />
+<SelectWholesaleType
+  applicant={applicant}
+  onChange={handleApplicantChange}
+  licenseGroups={licenseGroups}
+  selectedType={selectedLicenseId}
+  onSelectType={(id) => {
+  setSelectedLicenseId(id);
+  setCurrentStep(4);
+}}
+  onBack={onBackToDashboard}
+/>
               
               {/* Continue button row */}
               <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="btn btn-primary bg-purple-700 hover:bg-purple-800 px-8 py-3.5"
-                >
-                  <span>Continue Application</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
-                </button>
+<div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+  <button
+    onClick={() => {
+      if (!applicant?.ownerType) {
+        alert("Please select Owner Type");
+        return;
+      }
+
+      if (!selectedLicenseId) {
+        alert("Please select License Type");
+        return;
+      }
+
+      setCurrentStep(4);
+    }}
+    className="btn btn-primary bg-purple-700 hover:bg-purple-800 px-8 py-3.5"
+  >
+    <span>Continue Application</span>
+    <ArrowRight className="w-4 h-4 ml-1.5" />
+  </button>
+</div>
               </div>
             </div>
           )}
 
           {/* STEP 4: WHOLESALE BRAND ASSOCIATION */}
           {currentStep === 4 && (
-            <div className="space-y-8 animate-fade text-left">
+            <div className="text-left">
               
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200">
                 <div>
@@ -490,7 +562,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
                         measure: '750 Ml',
                         brandName: ''
                       })}
-                      className="btn btn-secondary"
+                      className="secondary-btn"
                     >
                       <RotateCcw className="w-4 h-4" />
                       <span>Reset Form</span>
@@ -594,7 +666,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
                 <button
                   type="button"
                   onClick={() => setCurrentStep(3)}
-                  className="btn btn-secondary"
+                  className="secondary-btn"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1.5" />
                   <span>Go Back</span>
@@ -619,7 +691,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
 
           {/* STEP 5: WAREHOUSE DETAILS */}
           {currentStep === 5 && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div className="wizard-content">
               <div className="border-b border-slate-100 pb-4 mb-6 text-left">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <Warehouse className="w-5 h-5 text-purple-700" />
@@ -721,7 +793,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
                   <button
                     type="button"
                     onClick={() => setCurrentStep(4)}
-                    className="btn btn-secondary"
+                    className="secondary-btn"
                   >
                     <ChevronLeft className="w-4 h-4 mr-1.5" />
                     <span>Go Back</span>
@@ -740,7 +812,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
 
           {/* STEP 6: DOCUMENTS & FILE UPLOADS */}
           {currentStep === 6 && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div className="wizard-content">
               <div className="border-b border-slate-100 pb-4 mb-6 text-left">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <Upload className="w-5 h-5 text-purple-700" />
@@ -805,7 +877,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
                 <button
                   type="button"
                   onClick={() => setCurrentStep(5)}
-                  className="btn btn-secondary"
+                  className="continue-btn-icon"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1.5" />
                   <span>Go Back</span>
@@ -824,65 +896,81 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
 
           {/* STEP 7: RECEIPTS OR FINALS MATCHING HIGH END DESIGN */}
           {currentStep === 7 && successReceipt && (
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8 animate-fade text-slate-800 select-none">
-              <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse">
-                <Check className="w-10 h-10 stroke-[3]" />
-                <span className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-25"></span>
+              <div className="success-container">
+                <div className="success-icon-wrapper">
+                <Check className="success-check-icon" />
+                <span className="success-ring"></span>
               </div>
               
-              <div className="space-y-3">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              <div className="success-header">
+                <h2 className="success-title">
                   Wholesale Privilege Filed Successfully
                 </h2>
-                <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed font-semibold">
-                  Excise bulk supply docket generated for category <span className="font-extrabold text-slate-800">{successReceipt.licenseId}</span>. Warehouse coordinates have been registered.
+              <p className="success-description">
+                  Excise bulk supply docket generated for category 
+              <span className="success-license">{successReceipt.licenseId}</span>. Warehouse coordinates have been registered.
                 </p>
               </div>
 
               {/* Structured Docket summary */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-left space-y-4 shadow-sm max-w-lg mx-auto">
-                <div className="flex justify-between items-center text-xs border-b border-slate-100 pb-3">
-                  <span className="font-bold text-slate-400 uppercase tracking-widest font-mono">Dossier Docket Record</span>
-                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase">PENDING INSPECT</span>
+               <div className="docket-card">
+                  <div className="docket-header">
+                  <span className="docket-title">Dossier Docket Record</span>
+                  <span className="docket-status"> PENDING INSPECT </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-y-4 gap-x-3 text-xs">
+                <div className="docket-grid">
                   <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">File Reference No</span>
-                    <span className="font-mono font-black text-slate-800 text-sm select-all">{successReceipt.applicationNo}</span>
-                  </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">License Class</span>
-                    <span className="font-bold text-purple-700 text-sm">{successReceipt.licenseId} Wholesale</span>
+                    <span className="docket-label">File Reference No</span>
+                    <span className="docket-value docket-mono">{successReceipt.applicationNo}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Filing Timestamp</span>
-                    <span className="font-bold text-slate-800 text-sm">{successReceipt.date}</span>
+                    <span className="docket-label">License Class</span>
+                    <span className="docket-license"> {successReceipt.licenseId} Wholesale </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Linked Liquor Brands</span>
-                    <span className="font-extrabold text-purple-600 text-sm">{successReceipt.brandsCount} Registered</span>
+                    <span className="docket-label">Filing Timestamp</span>
+                    <span className="docket-value">{successReceipt.date}</span>
                   </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Warehouse Size</span>
-                    <span className="font-bold text-slate-800 text-sm">{successReceipt.sqFeet} Sq. Ft</span>
-                  </div>
-                  <div>
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Initial Deposit Fee</span>
-                    <span className="font-extrabold text-slate-900 text-sm">{successReceipt.fee}</span>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="block text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">Facility Layout Location</span>
-                    <span className="font-semibold text-slate-600 text-xs block leading-relaxed">{successReceipt.address} (Pincode: {successReceipt.pincode})</span>
-                  </div>
+                          <div>
+          <span className="docket-label">Linked Liquor Brands</span>
+          <span className="docket-brand-count">
+            {successReceipt.brandsCount} Registered
+          </span>
+        </div>
+
+        <div>
+          <span className="docket-label">Warehouse Size</span>
+          <span className="docket-value">
+            {successReceipt.sqFeet} Sq. Ft
+          </span>
+        </div>
+
+        <div>
+          <span className="docket-label">Initial Deposit Fee</span>
+          <span className="docket-fee">
+            {successReceipt.fee}
+          </span>
+        </div>
+
+        <div className="full-width">
+          <span className="docket-label">
+            Facility Layout Location
+          </span>
+
+          <span className="docket-address">
+            {successReceipt.address}
+            (Pincode: {successReceipt.pincode})
+          </span>
+        </div>
                 </div>
               </div>
 
               {/* Actions row */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <div className="receipt-actions">
                 <button
                   onClick={onBackToDashboard}
-                  className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer border-none"
+                  className="btn-home"
                 >
                   Return to Portal Home
                 </button>
@@ -890,7 +978,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
                   onClick={() => {
                     showToast("Excise Wholesale Docket summary report saved!");
                   }}
-                  className="px-6 py-3 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-xs transition cursor-pointer border-none shadow-md"
+                    className="btn-download"
                 >
                   Download Corporate Docket Receipt
                 </button>

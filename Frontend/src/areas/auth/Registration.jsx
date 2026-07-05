@@ -26,6 +26,7 @@ export default function Registration({ onNavigateToLogin }) {
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("");
 const [districts, setDistricts] = useState([]);
+const [subDivisions, setSubDivisions] = useState([]);
 const [questions, setQuestions] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState("");
@@ -116,6 +117,23 @@ const fetchDistricts = async (stateCode) => {
 };
 
 
+const fetchSubDivisions = async (districtCode) => {
+  try {
+    const res = await axios.get(
+      "http://localhost:5214/api/LGDiretory/GetSubDivision",
+      {
+        params: { DistrictCode: districtCode }
+      }
+    );
+
+    setSubDivisions(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
 const handlePhotoChange = (e) => {
     const file = e.target.files[0];
 
@@ -144,11 +162,17 @@ const handleChange = (e) => {
   }));
 };
 
+
 const handleSubmit = async (e) => {
   debugger;
   e.preventDefault();
 
   const formDataToSend = new FormData(e.target);
+
+formDataToSend.set(
+  "IsPunishableOffence",
+  formData.IsPunishableOffence
+);
 
 // Check all values being sent
 for (const [key, value] of formDataToSend.entries()) {
@@ -180,9 +204,10 @@ for (const [key, value] of formDataToSend.entries()) {
       Mobile: "",
       Email: "",
       Photo:"",
+      PanNo: "",
       SecretQuestionId: "",
       SecretAnswer: "",
-      IsPunishableOffence: false
+      IsPunishableOffence: "N"
     });
 
     // Optional: clear dependent dropdown data if you use them
@@ -436,15 +461,22 @@ for (const [key, value] of formDataToSend.entries()) {
                 </select> */}
 
 
-<select className="reg-select"
+<select
+  className="reg-select"
   name="District"
   value={formData.District}
-  onChange={handleChange}
+  onChange={(e) => {
+    handleChange(e);
+    fetchSubDivisions(e.target.value);
+  }}
 >
   <option value="">Select District</option>
 
   {districts.map((item) => (
-    <option key={item.districtCode} value={item.districtCode}>
+    <option
+      key={item.districtCode}
+      value={item.districtCode}
+    >
       {item.districtName}
     </option>
   ))}
@@ -457,6 +489,50 @@ for (const [key, value] of formDataToSend.entries()) {
   <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.District[0]} </span>)}
               
             </div>
+
+<div className="reg-field">
+  <label className="reg-label">
+    Sub Division <span className="reg-required">*</span>
+  </label>
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <MapPinSvg className="icon-xs" />
+    </div>
+
+    <select
+      className="reg-select"
+      name="SubDivision"
+      value={formData.SubDivision}
+      onChange={handleChange}
+    >
+      <option value="">Select Sub Division</option>
+
+      {subDivisions.map((item) => (
+        <option
+          key={item.subDivisionCode}
+          value={item.subDivisionCode}
+        >
+          {item.subDivisionName}
+        </option>
+      ))}
+    </select>
+
+    <div className="reg-input-icon-right">
+      <ChevronDownSvg className="icon-xs" />
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
             <div className="reg-field">
               <label className="reg-label">PIN Code <span className="reg-required">*</span></label>
@@ -491,7 +567,29 @@ for (const [key, value] of formDataToSend.entries()) {
 
 
 
+<div className="reg-field">
+  <label className="reg-label">
+    PAN No <span className="reg-required">*</span>
+  </label>
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <LockSvg className="icon-xs" />
+    </div>
+    <input
+      type="text"
+      name="PanNo"
+      value={formData.PanNo}
+      onChange={handleChange}
+      placeholder="ABCDE1234F"
+      className="reg-input"
+    />
+  </div>
+</div>
+
+
+
             <div className="reg-field">
+              
               <label className="reg-label">Secret Question <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><ShieldCheckSvg className="icon-xs" /></div>
@@ -582,12 +680,11 @@ for (const [key, value] of formDataToSend.entries()) {
   type="checkbox"
   name="IsPunishableOffence"
   className="reg-checkbox"
-  checked={formData.IsPunishableOffence}
-  value="true"
+  checked={formData.IsPunishableOffence === "Y"}
   onChange={(e) =>
     setFormData({
       ...formData,
-      IsPunishableOffence: e.target.checked
+      IsPunishableOffence: e.target.checked ? "Y" : "N"
     })
   }
 />

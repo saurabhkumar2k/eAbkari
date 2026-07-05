@@ -33,8 +33,6 @@ public class MstLiquorType
     [StringLength(50)]
     public string LiquorTypeDesc { get; set; } = string.Empty;
 
-    [StringLength(2)]
-    public string? LiquorTypeCodeOld { get; set; } = string.Empty;
 
     [StringLength(1)]
     public string DeleteStatus { get; set; } = string.Empty;
@@ -61,7 +59,8 @@ public class MstLiquorType
    public class MstLiquorBottler
 {    
     public string? LiquorBottlerOrigin { get; set; } = string.Empty;
-    public string LiquorBottlerCode { get; set; } = string.Empty;
+        [Key]
+        public string LiquorBottlerCode { get; set; } = string.Empty;
   
     public string? LiquorBottlerCountry { get; set; } = string.Empty;
    
@@ -93,7 +92,7 @@ public class MstLicenseeCategory
     public string? RetailerFlag { get; set; } = string.Empty;
     public string? RenewalPaymentMode { get; set; } = string.Empty;
     public string? VisibilityStatus { get; set; } = string.Empty;
-    public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
+    //public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
     public bool? IsPayment { get; set; }
     public int? Amount { get; set; }
     public string? LicenseTypeFlag { get; set; } = string.Empty;
@@ -122,6 +121,27 @@ public class MstLiquorMeasure
     public string? DeleteStatus { get; set; } = string.Empty;
 }
 
+public class MstLiquorBrand
+{
+    public string? LiquorCatCode { get; set; }
 
+    public string? LiquorKindCode { get; set; }
+
+    public string?  LiquorTypeCode { get; set; }
+
+    public string? LiquorBrandCode { get; set; }
+
+    public string? LiquorBrandDesc { get; set; }
+
+    public string? LiquorTypeCodeOld { get; set; }
+
+    public string? EntryFlag { get; set; }
+
+    public string? BrandNameAlias { get; set; }
+
+    public decimal? QuartsMeasure { get; set; }
+
+    public string? DeleteStatus { get; set; }
+}
 
 }

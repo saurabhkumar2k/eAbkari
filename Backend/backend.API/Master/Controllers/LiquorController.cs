@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Core.Interfaces;
 using backend.Infrastructure.Repositories;
 using backend.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.API.Controllers
 {
@@ -103,9 +104,25 @@ public LiquorMasterController(ILiquorMasterRepository liquorKindRepository
 
   }
 
-  
-     
-   [HttpGet("LiquorMeasure")]
+        [HttpGet("GetWholesaleLicenseeCategory")]
+        public async Task<IActionResult> GetWholesaleLicenseeCategory()
+        {
+            var data = await _LiquorMasterRepository.GetWholesaleLicenseeCategoryAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No wholesale license category found" });
+            }
+
+            return Ok(data);
+        }
+
+
+
+
+
+
+        [HttpGet("LiquorMeasure")]
   public async Task<IActionResult> GetLiquorMeasure()
   {
     

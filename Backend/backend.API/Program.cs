@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.API.Services;
-
+using backend.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +33,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 // Database Connection
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(
+//        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+
+    options.EnableSensitiveDataLogging();
+    options.LogTo(Console.WriteLine, LogLevel.Information);
+});
 
 // Dependency Injection
 
@@ -44,6 +53,11 @@ builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
 builder.Services.AddScoped<ILGDiretoryRepository, LGDiretoryRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IMstUsRegRepository, MstUsRegRepository>();
+builder.Services.AddScoped<ILiquorBrandRepository,LiquorBrandRepository>();
+builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepository>();
+
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

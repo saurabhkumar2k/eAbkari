@@ -57,6 +57,7 @@ import {
   ArrowUpRight, 
   Users,
   Monitor,
+  LogOut
 } from 'lucide-react';
 
 export const ChevronDownSvg = ({ className, style }) => <ChevronDown className={className} style={style} />;
@@ -119,4 +120,26 @@ export const ArrowSvg = ({ className }) => (
 );
 export const ArrowRightSvg = ({ className }) => (
   <ArrowRight className={className} />
+);
+export const LogOutSvg = (props) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <path
+      d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16 17l5-5-5-5"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M21 12H9"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );

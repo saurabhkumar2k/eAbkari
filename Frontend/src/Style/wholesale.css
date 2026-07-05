@@ -1,0 +1,492 @@
+/* Wholesale.css */
+.wholesale-page {
+  color: #1e293b;
+  user-select: none;
+}
+
+.wholesale-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.justify-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-8-custom {
+  margin-top: 32px;
+}
+
+.mb-6-custom {
+  margin-bottom: 24px;
+}
+
+.pt-6-custom {
+  padding-top: 24px;
+}
+
+.border-top {
+  border-top: 1px solid #e2e8f0;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.primary-btn {
+  background: #6d28d9;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.primary-btn:hover {
+  background: #5b21b6;
+}
+
+.secondary-btn {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 24px;
+}
+
+.full-width {
+  grid-column: 1/-1;
+}
+
+.input-box,
+.select-box,
+.textarea-box,
+.search-box {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-box:focus,
+.select-box:focus,
+.textarea-box:focus,
+.search-box:focus {
+  border-color: #6d28d9;
+}
+
+.brand-card,
+.table-card,
+.wizard-content {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container th {
+  background: #f8fafc;
+  padding: 12px;
+  text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-container td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.success-card {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 40px;
+}
+
+.wizard-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 32px; /* Space between stepper and content */
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+/* Steps Wrapper */
+
+.wizard-steps {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 700px;
+}
+
+/* Progress Line */
+
+.wizard-progress-line {
+  position: absolute;
+  top: 25px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.wizard-progress-fill {
+  height: 100%;
+  background: #7c3aed;
+  transition: width 0.3s ease;
+}
+
+/* Step Item */
+
+.wizard-step {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Step Circle */
+
+.step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #ffffff;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  transition: all 0.3s ease;
+}
+
+.step-circle.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.step-circle.completed {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+/* Labels */
+
+.step-title {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  color: #64748b;
+}
+
+.step-title.active {
+  color: #7c3aed;
+}
+
+.step-title.completed {
+  color: #059669;
+}
+
+.step-subtitle {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* Main Content Card */
+
+.wizard-content {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 28px;
+  padding: 32px;
+  margin-top: 24px; /* Creates gap below stepper */
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+/* Wholesale License Type */
+.license-selection-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 32px;
+}
+
+.license-page-title {
+  font-size: 42px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.license-page-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 28px;
+}
+
+.license-note {
+  display: flex;
+  gap: 12px;
+  max-width: 650px;
+  padding: 16px 18px;
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 16px;
+  margin-bottom: 28px;
+}
+
+.license-note-title {
+  font-weight: 700;
+  color: #6b21a8;
+}
+
+.license-note-text {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.license-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d4ed8;
+  border-bottom: 1px solid #dbeafe;
+  padding-bottom: 10px;
+}
+
+.license-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 24px;
+}
+
+.license-selection-container .license-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 20px;
+  min-height: 320px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.license-selection-container .license-card:hover {
+  transform: translateY(-4px);
+  border-color: #2563eb;
+  box-shadow: 0 10px 25px rgba(37,99,235,.08);
+}
+
+.license-selection-container .license-card.selected {
+  border: 2px solid #7c3aed;
+  box-shadow: 0 0 0 4px rgba(124,58,237,.08);
+}
+
+.license-selection-container .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.license-selection-container .card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.license-selection-container .card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.license-selection-container .card-radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.license-selection-container .card-radio.active {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.license-selection-container .card-code {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7c3aed;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-family: monospace;
+  text-align: left;
+}
+
+.license-selection-container .card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.license-selection-container .card-description {
+  font-size: 14px;
+  color: #64748b;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.license-selection-container .card-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.license-selection-container .card-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 8px 14px;
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 999px;
+}
+
+.stepper-container {
+  margin-bottom: 32px;
+}
+
+.stepper-item {
+  min-width: 150px;
+}
+
+.stepper-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stepper-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .license-grid {
+    grid-template-columns: 1fr;
+  }
+  .license-selection-container .license-card {
+  min-height: 340px;
+  height: auto;
+  max-height: none;
+  }
+  .license-page-title {
+    font-size: 30px;
+  }
+}
+
