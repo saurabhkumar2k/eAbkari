@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import axios from "axios";
 import { 
   Plus, 
   Trash2, 
@@ -20,49 +21,18 @@ import {
   Clock
 } from 'lucide-react';
 
-const originOptions = [
-  { value: 'In India', label: 'In India' },
-  { value: 'Outside India', label: 'Outside India' }
-];
-
-const stateOptions = [
-  { value: 'Delhi', label: 'Delhi' },
-  { value: 'Haryana', label: 'Haryana' },
-  { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
-  { value: 'Punjab', label: 'Punjab' },
-  { value: 'Karnataka', label: 'Karnataka' },
-  { value: 'Maharashtra', label: 'Maharashtra' },
-  { value: 'Tamil Nadu', label: 'Tamil Nadu' },
-  { value: 'West Bengal', label: 'West Bengal' }
-];
-
-const bottlerCodeOptions = [
-  { value: 'BOT-DEL-001', label: 'BOT-DEL-001 (Delhi Distilleries Ltd.)' },
-  { value: 'BOT-DEL-002', label: 'BOT-DEL-002 (NCT Bottlers Corp.)' },
-  { value: 'BOT-HAR-102', label: 'BOT-HAR-102 (Haryana Spirits & Bottling)' },
-  { value: 'BOT-MUM-401', label: 'BOT-MUM-401 (Maharashtra Breweries Ltd.)' },
-  { value: 'BOT-BLR-502', label: 'BOT-BLR-502 (Karnataka Distillers Group)' }
-];
-
-const INITIAL_BOTTLERS_POOL = [
-  { id: 'BTR-1001', origin: 'In India', state: 'Delhi', oldBottlerId: 'OLD-BOT-9811', bottlerCode: 'BOT-DEL-001', country: 'India', bottlerName: 'DELHI DISTILLERIES & BOTTLERS PVT. LTD.', address: 'Plot No. 44, Okhla Industrial Area Phase-III, New Delhi', pinCode: '110020', timestamp: 1711213010000 },
-  { id: 'BTR-1002', origin: 'In India', state: 'Maharashtra', oldBottlerId: 'OLD-BOT-4412', bottlerCode: 'BOT-MUM-401', country: 'India', bottlerName: 'UNITED BREWERIES & BOTTLING SOLUTIONS', address: 'Plot 12, MIDC Industrial Area, Andheri East, Mumbai', pinCode: '400093', timestamp: 1711213123000 },
-  { id: 'BTR-1003', origin: 'Outside India', state: '', oldBottlerId: 'OLD-BOT-7711', bottlerCode: 'BOT-BLR-502', country: 'France', bottlerName: 'CHATEAU DE VERSAILLES FINE SPIRITS', address: '12 Rue de la Chapelle, Bordeaux', pinCode: '33000', timestamp: 1711213233000 }
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5214';
+const ORIGIN_LABELS = {
+  I: 'India',
+  N: 'Nepal',
+  B: 'Bhutan',
+  W: 'West Bengal',
+  R: 'Rest of World',
+  A: 'All'
+};
 
 export default function BottlerMaster({ onNavigateHome }) {
-  // Local storage state
-  const [bottlersList, setBottlersList] = useState(() => {
-    const saved = localStorage.getItem('excise_bottler_registry');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return INITIAL_BOTTLERS_POOL;
-      }
-    }
-    return INITIAL_BOTTLERS_POOL;
-  });
+  const [bottlersList, setBottlersList] = useState([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -84,11 +54,118 @@ export default function BottlerMaster({ onNavigateHome }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
+  const [originOptions, setOriginOptions] = useState([]);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [bottlerCodeOptions, setBottlerCodeOptions] = useState([]);
+  const [gridBottlers, setGridBottlers] = useState([]);
+  const [useGridApi, setUseGridApi] = useState(false);
+  const [gridLoading, setGridLoading] = useState(false);
+
+  const getOrigins = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/Bottler/origins`);
+      setOriginOptions(
+        res.data.map(x => ({ value: x, label: x }))
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getStates = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/Bottler/states`);
+      setStateOptions(
+        res.data.map(x => ({ value: x.stateCode, label: x.stateDesc }))
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getBottlerCodes = async (origin = '', stateCode = '') => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/Bottler/codes`, {
+        params: {
+          origin: origin || undefined,
+          stateCode: stateCode || undefined
+        }
+      });
+
+      const options = res.data.map(x => ({ value: x, label: x }));
+      const finalOptions = origin ? [{ value: '-New-', label: '-New-' }, ...options] : options;
+      setBottlerCodeOptions(finalOptions);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const mapBackendBottlerToUi = (item) => ({
+    id: item.LiquorBottlerCode ?? item.liquorBottlerCode ?? item.code ?? `btr-${Math.random().toString(36).slice(2)}`,
+    bottlerName: item.LiquorBottlerName ?? item.liquorBottlerName ?? item.bottler ?? '',
+    bottlerCode: item.LiquorBottlerCode ?? item.liquorBottlerCode ?? item.code ?? '',
+    origin: item.LiquorBottlerOrigin ?? item.liquorBottlerOrigin ?? item.origin ?? '',
+    country: item.LiquorBottlerCountry ?? item.liquorBottlerCountry ?? item.originStateCountry ?? '',
+    state: item.LiquorBottlerState ?? item.liquorBottlerState ?? item.originStateCountry ?? '',
+    address: item.LiquorBottlerAddress ?? item.liquorBottlerAddress ?? '',
+    oldBottlerId: item.OldBottlerId ?? item.oldBottlerId ?? ''
+  });
+
+  const fetchAllBottlers = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/Bottler`);
+      setBottlersList(res.data.map(mapBackendBottlerToUi));
+      setUseGridApi(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchGridData = async (origin, stateCode) => {
+    if (!origin) {
+      setGridBottlers([]);
+      setUseGridApi(false);
+      return;
+    }
+
+    try {
+      setGridLoading(true);
+      const res = await axios.get(`${API_BASE_URL}/api/Bottler/grid`, {
+        params: { origin, stateCode }
+      });
+      const mapped = res.data.map(item => ({
+        id: item.code || item.bottler || item.originStateCountry || Math.random().toString(36).slice(2),
+        bottlerName: item.bottler || '',
+        bottlerCode: item.code || '',
+        origin: item.origin || '',
+        country: item.originStateCountry || '',
+        state: item.originStateCountry || '',
+        address: '',
+        oldBottlerId: '',
+        timestamp: Date.now()
+      }));
+      setGridBottlers(mapped);
+      setUseGridApi(true);
+    } catch (err) {
+      console.log(err);
+      setGridBottlers([]);
+      setUseGridApi(false);
+    } finally {
+      setGridLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllBottlers();
+    getOrigins();
+    getStates();
+    getBottlerCodes();
+  }, []);
   // Auto-set country when origin is "In India"
   useEffect(() => {
-    if (formData.origin === 'In India') {
+    if (formData.origin === 'I') {
       setFormData(prev => ({ ...prev, country: 'India' }));
-    } else if (formData.origin === 'Outside India') {
+    } else {
       setFormData(prev => ({ ...prev, state: '', country: prev.country === 'India' ? '' : prev.country }));
     }
   }, [formData.origin]);
@@ -100,18 +177,74 @@ export default function BottlerMaster({ onNavigateHome }) {
     }
   }, [toast]);
 
-  const saveToLocalStorage = (list) => {
-    localStorage.setItem('excise_bottler_registry', JSON.stringify(list));
-  };
-
   const showToastMsg = (message, type = 'success') => {
     setToast({ message, type });
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = async (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (formErrors[field]) {
       setFormErrors(prev => ({ ...prev, [field]: '' }));
+    }
+
+    if (field === 'origin') {
+      const stateCode = value === 'I' ? formData.state : undefined;
+      setFormData(prev => ({
+        ...prev,
+        state: value === 'I' ? prev.state : '',
+        bottlerCode: '',
+        bottlerName: '',
+        address: '',
+        pinCode: '',
+        oldBottlerId: ''
+      }));
+      fetchGridData(value, stateCode);
+      getBottlerCodes(value, stateCode);
+      return;
+    }
+
+    if (field === 'state' && formData.origin) {
+      setFormData(prev => ({
+        ...prev,
+        bottlerCode: '',
+        bottlerName: '',
+        address: '',
+        pinCode: '',
+        oldBottlerId: ''
+      }));
+      fetchGridData(formData.origin, value);
+      getBottlerCodes(formData.origin, value);
+      return;
+    }
+
+    if (field === 'bottlerCode') {
+      if (!value) {
+        setFormData(prev => ({
+          ...prev,
+          bottlerName: '',
+          address: '',
+          pinCode: '',
+          oldBottlerId: ''
+        }));
+        return;
+      }
+
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/Bottler/${encodeURIComponent(value)}`);
+        const data = res.data;
+
+        setFormData(prev => ({
+          ...prev,
+          country: prev.origin === 'I' ? 'India' : data.LiquorBottlerCountry ?? '',
+          state: prev.origin === 'I' ? data.LiquorBottlerState ?? prev.state : prev.state,
+          bottlerName: data.LiquorBottlerName ?? '',
+          address: data.LiquorBottlerAddress ?? '',
+          pinCode: data.LiquorBottlerPinCode ?? '',
+          oldBottlerId: data.OldBottlerId ?? ''
+        }));
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -130,11 +263,11 @@ export default function BottlerMaster({ onNavigateHome }) {
     showToastMsg('Form cleared.', 'info');
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     const errors = {};
     if (!formData.origin) errors.origin = 'Origin is required';
-    if (formData.origin === 'In India' && !formData.state) errors.state = 'State is required';
+    if (formData.origin === 'I' && !formData.state) errors.state = 'State is required';
     if (!formData.bottlerCode) errors.bottlerCode = 'Bottler Code selection is required';
     if (!formData.country) errors.country = 'Country is required';
     if (!formData.bottlerName.trim()) errors.bottlerName = 'Bottler Name is required';
@@ -147,55 +280,57 @@ export default function BottlerMaster({ onNavigateHome }) {
       return;
     }
 
-    const isDuplicate = bottlersList.some(
-      b => b.bottlerCode === formData.bottlerCode && b.bottlerName.toLowerCase() === formData.bottlerName.trim().toLowerCase()
-    );
+    const payload = {
+      LiquorBottlerOrigin: formData.origin,
+      LiquorBottlerCode: formData.bottlerCode,
+      LiquorBottlerCountry: formData.origin === 'I' ? 'India' : formData.country,
+      LiquorBottlerState: formData.origin === 'I' ? formData.state : formData.state || '',
+      LiquorBottlerName: formData.bottlerName.trim().toUpperCase(),
+      LiquorBottlerAddress: formData.address.trim().toUpperCase(),
+      LiquorBottlerPinCode: formData.pinCode.trim(),
+      OldBottlerId: formData.oldBottlerId.trim(),
+      LicenseeIdNo: ''
+    };
 
-    if (isDuplicate) {
-      showToastMsg('A bottler with this name and code already exists.', 'error');
+    try {
+      await axios.post(`${API_BASE_URL}/api/Bottler`, payload);
+      showToastMsg('Bottler profile registered successfully!');
+      await fetchAllBottlers();
+      setFormData({
+        origin: '',
+        state: '',
+        oldBottlerId: '',
+        bottlerCode: '',
+        country: '',
+        bottlerName: '',
+        address: '',
+        pinCode: ''
+      });
+      setFormErrors({});
+    } catch (err) {
+      const message = err?.response?.data || 'Unable to save bottler record.';
+      showToastMsg(message, 'error');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this Bottler master entry?')) {
       return;
     }
 
-    const newBottler = {
-      id: `BTR-${Math.floor(1000 + Math.random() * 9000)}`,
-      ...formData,
-      bottlerName: formData.bottlerName.trim().toUpperCase(),
-      address: formData.address.trim().toUpperCase(),
-      timestamp: Date.now()
-    };
-
-    const updated = [newBottler, ...bottlersList];
-    setBottlersList(updated);
-    saveToLocalStorage(updated);
-    showToastMsg('Bottler profile registered successfully!');
-    
-    // Clear form
-    setFormData({
-      origin: '',
-      state: '',
-      oldBottlerId: '',
-      bottlerCode: '',
-      country: '',
-      bottlerName: '',
-      address: '',
-      pinCode: ''
-    });
-    setFormErrors({});
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this Bottler master entry?')) {
-      const updated = bottlersList.filter(b => b.id !== id);
-      setBottlersList(updated);
-      saveToLocalStorage(updated);
+    try {
+      await axios.delete(`${API_BASE_URL}/api/Bottler/${encodeURIComponent(id)}`);
       showToastMsg('Bottler record removed successfully.', 'info');
+      await fetchAllBottlers();
+    } catch (err) {
+      showToastMsg('Unable to delete bottler record.', 'error');
     }
   };
 
-  const loadDefaultSamples = () => {
-    setBottlersList(INITIAL_BOTTLERS_POOL);
-    saveToLocalStorage(INITIAL_BOTTLERS_POOL);
-    showToastMsg('Default sample dataset reloaded successfully!', 'info');
+  const loadDefaultSamples = async () => {
+    await fetchAllBottlers();
+    setUseGridApi(false);
+    showToastMsg('Bottler list refreshed from backend.', 'info');
   };
 
   const handleSort = (column) => {
@@ -208,7 +343,8 @@ export default function BottlerMaster({ onNavigateHome }) {
   };
 
   const processedBottlers = useMemo(() => {
-    let filtered = bottlersList;
+    const dataSource = useGridApi ? gridBottlers : bottlersList;
+    let filtered = dataSource;
 
     if (searchTerm.trim() !== '') {
       const query = searchTerm.toLowerCase();
@@ -236,7 +372,7 @@ export default function BottlerMaster({ onNavigateHome }) {
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [bottlersList, searchTerm, sortColumn, sortDirection]);
+  }, [bottlersList, gridBottlers, useGridApi, searchTerm, sortColumn, sortDirection]);
 
   const totalItems = processedBottlers.length;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
@@ -244,6 +380,17 @@ export default function BottlerMaster({ onNavigateHome }) {
   const paginatedBottlers = useMemo(() => {
     return processedBottlers.slice(startIndex, startIndex + pageSize);
   }, [processedBottlers, startIndex, pageSize]);
+
+  const groupedBottlers = useMemo(() => {
+    return paginatedBottlers.reduce((groups, item) => {
+      const groupKey = item.country || item.state || item.origin || 'Unknown';
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(item);
+      return groups;
+    }, {});
+  }, [paginatedBottlers]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -306,44 +453,41 @@ export default function BottlerMaster({ onNavigateHome }) {
             <div className="bottler-form-grid">    
             {/* Origin field */}
             <div className="form-row">
-                <label className="form-label">
-                Origin <span className="required">*</span>
-                </label>
-                <div className="form-field">
-                <select
-                  value={formData.origin}
-                  onChange={(e) => handleInputChange('origin', e.target.value)}
-                 className={`form-input ${formErrors.origin ? "form-input-error" : ""}`}
-                >
-                  <option value="">--Select--</option>
-                  {originOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+                  <label className="form-label">
+                    Origin <span className="required">*</span>
+                  </label>
+                  <div className="form-field">
+                    <select
+                      value={formData.origin}
+                      onChange={(e) => handleInputChange('origin', e.target.value)}
+                      className={`form-input ${formErrors.origin ? "form-input-error" : ""}`}
+                    >
+                      <option value="">--Select--</option>
+                      {originOptions.map(opt => (
+                        <option key={opt.value} value={opt.value}>{ORIGIN_LABELS[opt.value] || opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            {/* State field */}
-            <div className="form-row">
-                <label className="form-label">
-                State{" "}
-                {formData.origin === "In India" && ( <span className="required">*</span> )}
-                </label>
-                <div className="form-field">
-                <select
-                  value={formData.state}
-                  onChange={(e) => handleInputChange('state', e.target.value)}
-                  disabled={formData.origin === 'Outside India'}
-                  className={`w-full px-3 py-2 text-sm bg-white disabled:bg-slate-100 disabled:text-slate-400 border ${formErrors.state ? 'border-rose-400' : 'border-slate-300'} rounded shadow-inner focus:outline-none focus:ring-1 focus:ring-[#2b9ec3]`}
-                >
-                  <option value="">--Select--</option>
-                  {stateOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
+                <div className="form-row">
+                  <label className="form-label">
+                    State {formData.origin === 'I' && (<span className="required">*</span>)}
+                  </label>
+                  <div className="form-field">
+                    <select
+                      value={formData.state}
+                      onChange={(e) => handleInputChange('state', e.target.value)}
+                      disabled={formData.origin !== 'I'}
+                      className={`w-full px-3 py-2 text-sm bg-white disabled:bg-slate-100 disabled:text-slate-400 border ${formErrors.state ? 'border-rose-400' : 'border-slate-300'} rounded shadow-inner focus:outline-none focus:ring-1 focus:ring-[#2b9ec3]`}
+                    >
+                      <option value="">--Select--</option>
+                      {stateOptions.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
             {/* Old Bottler Id */}
 <div className="form-row">
   <label className="form-label">
@@ -393,11 +537,11 @@ export default function BottlerMaster({ onNavigateHome }) {
     type="text"
     value={formData.country}
     onChange={(e) => handleInputChange("country", e.target.value)}
-    disabled={formData.origin === "In India"}
+    disabled={formData.origin === 'I'}
     placeholder="e.g. France, Scotland"
     className={`form-input ${
-      formData.origin === "In India" ? "form-input-disabled" : ""
-    } ${formErrors.country ? "form-input-error" : ""}`}
+      formData.origin === 'I' ? 'form-input-disabled' : ''
+    } ${formErrors.country ? 'form-input-error' : ''}`}
   />
 </div>
 
@@ -496,56 +640,34 @@ export default function BottlerMaster({ onNavigateHome }) {
           </div>
         ) : (
             <div className="table-container">
-              <table className="bottler-table">
-              <thead>
-                <tr className="table-header-row">
-                <th className="table-header-cell" onClick={() => handleSort("id")} > ID </th>
-                <th className="table-header-cell" onClick={() => handleSort("bottlerName")}> Bottler Name / Address </th>
-                <th className="table-header-cell" onClick={() => handleSort("bottlerCode")} > Bottler Code </th>
-                <th className="table-header-cell" onClick={() => handleSort("origin")}> Origin </th>
-                <th className="table-header-cell" onClick={() => handleSort("state")} > Location </th>
-                <th className="table-header-cell" onClick={() => handleSort("oldBottlerId")}> Old Bottler ID </th>
-                <th className="table-header-action"> Action </th>
-                </tr>
-              </thead>
-              <tbody className="table-body">
-                {paginatedBottlers.map((b) => (
-                    <tr key={b.id} className="table-row">
-                    <td className="table-id-cell">{b.id}</td>
-                    <td className="table-bottler-cell">
-                    <div className="table-bottler-name">{b.bottlerName}</div>
-                     <div className="table-bottler-address" title={b.address} >
-                        {b.address}
-                      </div>
-                    </td>
-                    <td className="table-code-cell">
-                      <span className="table-code-badge">
-                        {b.bottlerCode}
-                      </span>
-                    </td>
-                    <td className="table-origin-cell">
-                    <span className={`table-origin-badge ${ b.origin === "In India" ? "table-origin-india" : "table-origin-import" }`} >
-                        {b.origin}
-                      </span>
-                    </td>
-                    <td className="table-country-cell">
-                    <div className="table-country-name">{b.country}</div>
-                    {b.state && ( <div className="table-country-state">{b.state}</div> )}
-                    </td>
-                      <td className="table-old-id-cell"> {b.oldBottlerId || "N/A"} </td>
-                      <td className="table-action-cell">
-                      <button
-                        onClick={() => handleDelete(b.id)}
-                        className="table-delete-button"
-                        title="Delete Bottler Entry"
-                      >
-                        <Trash2 className="table-delete-icon" />
-                      </button>
-                    </td>
+              <table className="bottler-grid-table">
+                <thead>
+                  <tr className="table-header-row">
+                    <th className="table-header-cell">Origin/State/Country</th>
+                    <th className="table-header-cell">Bottle</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="table-body">
+                  {Object.entries(groupedBottlers).map(([group, bottlers]) => (
+                    <React.Fragment key={group}>
+                      <tr className="table-group-row">
+                        <td colSpan={2} className="table-origin-cell">
+                          <strong>{group}</strong>
+                        </td>
+                      </tr>
+
+                      {bottlers.map((b) => (
+                        <tr key={b.id || b.bottlerCode} className="table-row">
+                          <td></td>
+                          <td className="table-bottle-cell">
+                            <div className="table-bottle-name">{b.bottlerName || b.Bottler || 'Unknown Bottler'}</div>
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
 
             {/* Pagination Controls */}
         <div className="table-footer">

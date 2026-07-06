@@ -4,7 +4,21 @@ import React from "react";
 
 //import "../Style/ApplyLicense.css";
 
-
+import { 
+  User,
+  Building2,
+  Calendar,
+  Backpack,
+  CreditCard,
+  Home,
+  MapPin,
+  Mail,
+  Smartphone,
+  Phone,
+  Globe,
+  MapPinned, 
+  Mail as MailIcon
+ } from "lucide-react";
 
 const ApplicantDetails = ({
   applicant,
@@ -46,7 +60,7 @@ subDivisions?.forEach((s) =>
 
       {/* HEADER */}
       <div className="premium-header">
-        <div className="icon-box">👤</div>
+        <div className="icon-box"><User classname='field-icon'/></div>
         <div>
           <h2>Applicant Details</h2>
           <p>Enter personal and contact information</p>
@@ -59,14 +73,16 @@ subDivisions?.forEach((s) =>
 
         <div className="grid-3">
 
-          <Field icon="👤" label="Applicant Name *">
+<Field
+  icon={<User size={18} className="field-icon" />}
+  label="Applicant Name *"
+/>
         <input
   value={applicant.applicantName || ""}
   disabled
 />
-          </Field>
 
-          {/* <Field icon="🏢" label="Company / Firm Name *">
+          {/* <Field icon={<Building2 size={18} className="field-icon" />}label="Company / Firm Name *">
             <input
               placeholder=" "
               value={applicant.CompanyName || ""}
@@ -74,7 +90,7 @@ subDivisions?.forEach((s) =>
             />
           </Field> */}
 
-          <Field icon="📅" label="Date of Birth *">
+          <Field icon={<Calender size={18} className="field-icon" />} label="Date of Birth *">
             <input
               type="date"
               value={applicant.dateOfBirth || ""}
@@ -82,14 +98,14 @@ subDivisions?.forEach((s) =>
             />
           </Field>
 
-          <Field icon="👨" label="Father / Husband Name *">
+          <Field icon={<User size={18} className="field-icon" />} label="Father / Husband Name *">
             <input
               value={applicant.fatherHusbandName || ""}
               disabled
             />
           </Field>
 
-          <Field icon="💼" label="Occupation">
+          <Field icon={<Backpack size={18} className="field-icon" />} label="Occupation">
             <input
               placeholder=" "
               value={applicant.occupation || ""}
@@ -97,13 +113,11 @@ subDivisions?.forEach((s) =>
             />
           </Field>
 
-          <Field icon="🪪" label="PAN No *">
+          <Field icon={<CreditCard size={18} className="field-icon" />} label="PAN No *">
             <input
               placeholder=" "
               value={applicant.panNo || ""}
               disabled
-               
-              
             />
           </Field>
 
@@ -112,18 +126,18 @@ subDivisions?.forEach((s) =>
 
       {/* ================= ADDRESS ================= */}
       <div className="card-section address-box">
-        <h3>📍 Address Information</h3>
+        <h3><MapPin className="field-icon"/> Address Information</h3>
 
         <div className="grid-1">
 
-          <Field icon="🏠" label="Address Line 1 *">
+          <Field icon={<Home size={18} className="field-icon" />} label="Address Line 1 *">
             <input
               value={applicant.addressLine1 || ""}
               disabled
             />
           </Field>
 
-          <Field icon="📍" label="Address Line 2">
+          <Field icon={<MapPin size={18} className="field-icon" />} label="Address Line 2">
             <input
               value={applicant.addressLine2 || ""}
               disabled
@@ -134,7 +148,7 @@ subDivisions?.forEach((s) =>
 
         <div className="grid-3">
 
-          <Field icon="🌏" label="State *">
+          <Field icon={<Globe size={18} className="field-icon" />} label="State *">
 {/* <select
   name="state"
   value={applicant.stateUT || ""}
@@ -164,14 +178,9 @@ subDivisions?.forEach((s) =>
     </option>
   ))}
 </select>
-
-
-
-
-
           </Field>
 
-          <Field icon="🏙️" label="District *">
+          <Field icon={<Building2 size={18} className="field-icon" />} label="District *">
  {/* <select
   value={applicant.district || ""}
   disabled={!applicant.stateUT}
@@ -203,6 +212,7 @@ subDivisions?.forEach((s) =>
 </select>
           </Field>
 
+<<<<<<< HEAD
 
 
 
@@ -228,6 +238,9 @@ subDivisions?.forEach((s) =>
 
           </Field>
           <Field icon="📮" label="PIN Code *">
+=======
+          <Field icon={<MapPinned size={18} className="field-icon" />} label="PIN Code *">
+>>>>>>> a5de74fcad76ce16bd415f4c41a7e1b30cbb8315
             <input
               maxLength={6}
               placeholder=" "
@@ -242,11 +255,11 @@ subDivisions?.forEach((s) =>
 
       {/* ================= CONTACT ================= */}
       <div className="card-section contact-box">
-        <h3>📞 Contact Information</h3>
+        <h3><Phone size={18} className="field-icon" /> Contact Information</h3>
 
         <div className="grid-3">
 
-          <Field icon="📧" label="Email *">
+          <Field icon={<Mail size={18} className="field-icon" />} label="Email *">
             <input
               type="email"
               placeholder=" "
@@ -255,7 +268,7 @@ subDivisions?.forEach((s) =>
             />
           </Field>
 
-          <Field icon="📱" label="Mobile No *">
+          <Field icon={<Smartphone size={18} className="field-icon" />} label="Mobile No *">
             <input
               maxLength={10}
               placeholder=" "
@@ -265,7 +278,7 @@ subDivisions?.forEach((s) =>
             />
           </Field>
 
-          <Field icon="☎️" label="Landline">
+          <Field icon={<Phone size={18} className="field-icon" />} label="Landline">
             <input
               maxLength={10}
               placeholder=" "

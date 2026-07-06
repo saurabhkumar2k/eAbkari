@@ -59,7 +59,8 @@ public class MstLiquorType
    public class MstLiquorBottler
 {    
     public string? LiquorBottlerOrigin { get; set; } = string.Empty;
-    public string LiquorBottlerCode { get; set; } = string.Empty;
+        [Key]
+        public string LiquorBottlerCode { get; set; } = string.Empty;
   
     public string? LiquorBottlerCountry { get; set; } = string.Empty;
    

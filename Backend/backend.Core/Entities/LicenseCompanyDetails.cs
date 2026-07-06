@@ -84,7 +84,6 @@ public class LicenseCompanyDetails
     public int? LitreAppyingFor { get; set; }
 
 
-    [ForeignKey(nameof(ApplicationIdNo))]
     public List<AdditionalCompanyPartnersDetails>? CompanyPartnersDetails { get; set; } = [];
 
 }
@@ -92,9 +91,11 @@ public class LicenseCompanyDetails
 
 public class AdditionalCompanyPartnersDetails
 {
+    [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int? ID { get; set; }
+    public int ID { get; set; }
 
+    [Required]
     public string ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 

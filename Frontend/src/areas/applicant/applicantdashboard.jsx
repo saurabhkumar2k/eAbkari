@@ -139,10 +139,10 @@ const StatCard = ({ item }) => {
 const LicenseCard = ({ license }) => {
   return (
     <div className="license-card">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="header-container">
 
         <div className="space-y-2">
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="card-header">
             <span className="license-badge badge-blue">
               {license.id}
             </span>
@@ -158,16 +158,16 @@ const LicenseCard = ({ license }) => {
             </span>
           </div>
 
-          <h3 className="text-lg font-semibold text-slate-800" style={{ marginTop: "12px" }}>
+          <h3  className="section-title" style={{ marginTop: "12px" }}>
             {license.type}
           </h3>
 
-          <p className="text-sm text-slate-500">
+          <p className="description">
             {license.location}
           </p>
         </div>
 
-        <button className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition border-none cursor-pointer">
+        <button className="primary-btn">
           View Details
         </button>
       </div>
@@ -364,7 +364,7 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
                           <span className="text-[15px] font-semibold">{item.label}</span>
                         </div>
 
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${mtpDropdownOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown className={`dropdown-icon  ${mtpDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
                       {mtpDropdownOpen && (

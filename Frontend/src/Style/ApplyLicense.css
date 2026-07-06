@@ -228,13 +228,12 @@ select {
   margin: 0 auto;
   padding: 0 16px;
 }
-
-
-
-
-
-
-
+.field-icon {
+  color: #64748b; /* Same as Tailwind text-slate-500 */
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
 .layout {
   display: flex;
   font-family: Arial;
