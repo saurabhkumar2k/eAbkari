@@ -37,7 +37,7 @@ import {
 
 
 
-export default function L1AndL31License({ ownerType,catCode,onBackToSelect, showToast }) {
+export default function L1FAndL32License({ ownerType,catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicant, setApplicant] = useState(createApplicant());

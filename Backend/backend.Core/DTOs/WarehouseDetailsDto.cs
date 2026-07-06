@@ -34,11 +34,13 @@ public string? WarehouseSubDivision { get; set; }
 
     public string? WarehouseConstituency { get; set; }
 
-    public string? WarehouseWardName { get; set; }
+   // public string? WarehouseWardName { get; set; }
 
     public string? WarehouseFAX { get; set; }
 
     public string? LeaseRegistration { get; set; }
+
+    public string? LeasePremise { get; set; }
 
     public DateTime? LeaseRegistrationDate { get; set; }
 

@@ -31,6 +31,10 @@ import { createApplicant } from "../../../Model/Applicant";
 //import { SelectWholesaleType } from "./SelectWholesale";
 
 import L1AndL31License from "./L1_L31License";
+import L1FAndL31License from "./L1F_L31License";
+
+
+
 
 const brandCodeOptions = [
   { value: 'BC-WS-IMFL-101', label: 'BC-WS-IMFL-101 (Import Class)' },
@@ -84,6 +88,7 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);
   const [applicant, setApplicant] = useState(createApplicant());
+  const [ownerTypes, setOwnerTypes] = useState([]);
   // Brand form state
   const [brandForm, setBrandForm] = useState({
     category: 'Indian Liquor',
@@ -130,8 +135,10 @@ const handleApplicantChange = (field, value) => {
 };
 
 useEffect(() => {
+  if (!applicant.ownerType) return;
+
   fetchLicenseCategories();
-}, []);
+}, [applicant.ownerType]);
 
 const fetchLicenseCategories = async () => {
   debugger;
@@ -154,7 +161,20 @@ console.log("OwnerType:", applicant?.ownerType);
 console.log("SelectedLicenseId:", selectedLicenseId);
 
 
+useEffect(() => {
+  console.log("Calling OwnerType API...");
 
+  fetch("http://localhost:5214/api/LGDiretory/GetOwnerTypes")
+    .then((res) => {
+      console.log("Status:", res.status);
+      return res.json();
+    })
+    .then((data) => {
+      console.log("OwnerTypes:", data);
+      setOwnerTypes(data);
+    })
+    .catch((err) => console.error("API Error:", err));
+}, []);
 
 
 
@@ -321,6 +341,29 @@ if (selectedLicenseId === "10" && currentStep > 3) {
   );
 }
 
+if (selectedLicenseId === "16" && currentStep > 3) {
+  return (
+<L1FAndL31License
+  ownerType={applicant.ownerType}
+  catCode={selectedLicenseId}
+  onBackToSelect={() => {
+    setSelectedLicenseId("");
+    setCurrentStep(3);
+  }}
+  showToast={showToast || triggerToast}
+/>
+  );
+}
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="wholesale-page">
       
@@ -392,6 +435,7 @@ if (selectedLicenseId === "10" && currentStep > 3) {
   onChange={handleApplicantChange}
   licenseGroups={licenseGroups}
   selectedType={selectedLicenseId}
+  ownerTypes={ownerTypes}
   onSelectType={(id) => {
   setSelectedLicenseId(id);
   setCurrentStep(4);

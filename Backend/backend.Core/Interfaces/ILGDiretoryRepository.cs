@@ -18,6 +18,11 @@ namespace backend.Core.Interfaces
                 
 
                 Task<IEnumerable<MstPoliceStation>> GetPoliceStationsAsync(string district_code);
+        Task<IEnumerable<MstConstitutionType>> GetConstitutionType();
+
+        Task<IEnumerable<MstOwnerType>> GetOwnerTypes();
+
+
     }
 
 }

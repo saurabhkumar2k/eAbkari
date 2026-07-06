@@ -1,13 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetails
 {
     [Key]
- public long FirmId { get; set; }
+ public long Id { get; set; }
 
     public string ApplicationIdNo { get; set; } = string.Empty;
 
+    public string? CompanyName { get; set; }
 
     public string? ConstitutionType { get; set; }
 
@@ -70,11 +72,11 @@ public class LicenseCompanyDetails
 
     public DateTime? BWHRentAgreementEndDate { get; set; }
 
+     
+    public string? BWHInsuranceNo { get; set; }
 
-    public string? LastYearIncomeTaxReturnOrAssessmentOrder { get; set; }
 
-
-    public string? PowerOfAttorney { get; set; }
+    public string? BWHLeaseRentAgreementNo { get; set; }
 
 
     public string? MobileNo { get; set; }

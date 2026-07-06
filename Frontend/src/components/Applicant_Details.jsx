@@ -10,17 +10,33 @@ const ApplicantDetails = ({
   applicant,
   states = [],
   districts = [],
+  subDivisions = [],
   onChange,
 }) => {
 
 
 console.log("Applicant District:", applicant.district);
 console.log("Districts:", districts);
+console.log("SubDivisions:", subDivisions);
+
+{console.log("Applicant SubDivision:", applicant.subDivision)}
+{console.log("SubDivisions:", subDivisions)}
+
+console.log(typeof applicant.subDivision, applicant.subDivision);
+console.log(typeof subDivisions[0]?.subDivisionCode, subDivisions[0]?.subDivisionCode);
+
 
 districts?.forEach((d) =>
   console.log(
     typeof d.districtCode,
     d.districtCode
+  )
+);
+
+subDivisions?.forEach((s) =>
+  console.log(
+    typeof s.subDivisionCode,
+    s.subDivisionCode
   )
 );
 
@@ -187,6 +203,30 @@ districts?.forEach((d) =>
 </select>
           </Field>
 
+
+
+
+          <Field icon="🏘️" label="Subdivision *">
+
+<select
+  value={String(applicant.subDivision ?? "").trim()}
+  disabled
+>
+  <option value="">Select Subdivision</option>
+
+  {subDivisions.map((s) => (
+    <option
+      key={s.dvid}
+      value={String(s.subDivisionCode).trim()}
+    >
+      {s.subDivisionName}
+    </option>
+  ))}
+</select>
+
+
+
+          </Field>
           <Field icon="📮" label="PIN Code *">
             <input
               maxLength={6}

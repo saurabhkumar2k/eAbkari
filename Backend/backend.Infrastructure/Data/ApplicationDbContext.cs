@@ -54,7 +54,9 @@ namespace backend.Infrastructure.Data
 
 public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
 
+        public DbSet<MstConstitutionType> MstConstitutionType { get; set; }
 
+        public DbSet<MstOwnerType> MstOwnerType { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -207,7 +209,7 @@ public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
 
 
             modelBuilder.Entity<LicenseCompanyDetails>()
-     .HasKey(x => x.FirmId);
+     .HasKey(x => x.Id);
 
             modelBuilder.Entity<LicenseCompanyDetails>()
                 .HasAlternateKey(x => x.ApplicationIdNo);
@@ -247,6 +249,16 @@ public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
                       x.LiquorBrandCode
         }); 
              
+
+            modelBuilder.Entity<MstConstitutionType>()
+   .ToTable("MstConstitutionType");
+
+            modelBuilder.Entity<MstOwnerType>()
+   .ToTable("MstOwnerType");
+
+
+
+
 
         }
     }

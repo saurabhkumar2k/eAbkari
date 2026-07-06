@@ -81,7 +81,9 @@ public class MstLiquorType
 
 public class MstLicenseeCategory
 {
-    public string LicenseeCatCode { get; set; } = string.Empty;
+        public int? ID { get; set; }
+
+        public string LicenseeCatCode { get; set; } = string.Empty;
     public string LicenseeCatDesc { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
     public DateTime? OprDate { get; set; }
@@ -93,7 +95,7 @@ public class MstLicenseeCategory
     public string? VisibilityStatus { get; set; } = string.Empty;
     //public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
     public bool? IsPayment { get; set; }
-    public int? Amount { get; set; }
+    //public int? Amount { get; set; }
     public string? LicenseTypeFlag { get; set; } = string.Empty;
     public string? MultipleAllowedYN { get; set; } = string.Empty;
     public string? RenewalAllowedYN { get; set; } = string.Empty;

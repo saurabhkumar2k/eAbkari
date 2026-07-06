@@ -103,7 +103,27 @@ public LGDiretoryController(ILGDiretoryRepository  lGDiretoryRepository)
             return Ok(data);
         }
 
- 
+        [HttpGet("GetOwnerTypes")]
+        public async Task<IActionResult> GetOwnerTypes()
+        {
+            var data = await _LiquorMasterRepository.GetOwnerTypes();
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No Questions found" });
+            }
+            return Ok(data);
+        }
+
+        [HttpGet("ConstitutionType")]
+        public async Task<IActionResult> GetConstitutionType()
+        {
+            var data = await _LiquorMasterRepository.GetConstitutionType();
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No Questions found" });
+            }
+            return Ok(data);
+        }
 
 
 

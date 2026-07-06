@@ -63,11 +63,24 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<IEnumerable<MstLicenseeCategory>> GetWholesaleLicenseeCategoryAsync()
         {
-            var wholesaleCodes = new[] { "10", "15", "16", "37", "90", "92" };
 
-            return await _context.MstLicenseeCategory
-                .Where(x => wholesaleCodes.Contains(x.LicenseeCatCode.Trim()))
-                .ToListAsync();
+            try
+            {
+
+
+                var wholesaleCodes = new[] { "10", "15", "16", "37", "90", "92" };
+
+                return await _context.MstLicenseeCategory
+                    .Where(x => wholesaleCodes.Contains(x.LicenseeCatCode.Trim()))
+                    .ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
         }
 
 

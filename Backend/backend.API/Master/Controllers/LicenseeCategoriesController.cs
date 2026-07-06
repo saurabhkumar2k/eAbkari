@@ -68,6 +68,7 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
         PermanentAddress = dto.PermanentAddress??"",
         StateUT = dto.StateUT??"",
         District = dto.District??"",
+        SubDivision=dto.SubDivision??"",
         PIN = dto.PIN??"",
         //PoliceStation = dto.PoliceStation ??"",
         Email = dto.Email??"",
@@ -134,9 +135,10 @@ if (!ModelState.IsValid)
                     WarehouseSubDivision = dto.WarehouseSubDivision,
                     WarehousePoliceStation = dto.WarehousePoliceStation,
                   //  WarehouseConstituency = dto.WarehouseConstituency,
-                    WarehouseWardName = dto.WarehouseWardName,
+                   // WarehouseWardName = dto.WarehouseWardName,
                    /// WarehouseFAX = dto.WarehouseFAX,
                     LeaseRegistration = dto.LeaseRegistration,
+                LeasePremise=dto.LeasePremise,
                     LeaseRegistrationDate = dto.LeaseRegistrationDate,
                     LeaseRegistrationExpiryDate = dto.LeaseRegistrationExpiryDate,
                     ArchitectRegistrationNo = dto.ArchitectRegistrationNo,
@@ -173,9 +175,12 @@ if (!ModelState.IsValid)
                 {
                     ApplicationIdNo = dto.ApplicationIdNo,
                     RegistrationNo = dto.RegistrationNo,
+                    CompanyName=dto.CompanyName,
+                    ConstitutionType=dto.ConstitutionType,
                     RegDate = dto.RegDate,
                     CompanyPAN = dto.CompanyPAN,
                     VATNO = dto.VATNO,
+                    CINNO=dto.CINNO,
                     IsExciseNominee = dto.IsExciseNominee,
                     ExciseNomineeName = dto.ExciseNomineeName,
                     ExciseNomineeAddress = dto.ExciseNomineeAddress,
@@ -191,7 +196,9 @@ if (!ModelState.IsValid)
                     DistilleryLicNo = dto.DistilleryLicNo,
                     DistilleryLicEnddate = dto.DistilleryLicEnddate,
                     BWHInsuranceEndDate = dto.BWHInsuranceEndDate,
-                    BWHRentAgreementEndDate = dto.BWHRentAgreementEndDate
+                    BWHRentAgreementEndDate = dto.BWHRentAgreementEndDate,
+                    BWHLeaseRentAgreementNo=dto.BWHLeaseRentAgreementNo,
+                    BWHInsuranceNo=dto.BWHInsuranceNo
 
 
                 };
@@ -264,10 +271,10 @@ if (!ModelState.IsValid)
 
                     string? AddressFileName = null;
 
-                    if (director.AddressProofFile != null)
+                    if (director.addressFile != null)
                     {
                         AddressFileName = Guid.NewGuid() +
-                                      Path.GetExtension(director.AddressProofFile.FileName);
+                                      Path.GetExtension(director.addressFile.FileName);
 
                         var folder = Path.Combine(
         Directory.GetCurrentDirectory(),
@@ -281,13 +288,13 @@ if (!ModelState.IsValid)
                         }
 
                         var fileName = Guid.NewGuid().ToString() +
-                                       Path.GetExtension(director.AddressProofFile.FileName);
+                                       Path.GetExtension(director.addressFile.FileName);
 
                         var filePath = Path.Combine(folder, fileName);
 
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await director.AddressProofFile.CopyToAsync(stream);
+                            await director.addressFile.CopyToAsync(stream);
                         }
                     }
 
@@ -303,6 +310,7 @@ if (!ModelState.IsValid)
                         DINNo = director.DINNo,
                         PhotoURLPanNo = panFileName,
                         PhotoURLAddressProof = AddressFileName
+                        
                     };
 
                     _context.AdditionalCompanyPartnersDetails.Add(partnerEntity);
@@ -380,7 +388,7 @@ if (!ModelState.IsValid)
                     DocId = doc.DocId,
                     DocSl = doc.DocSl,
                     //DocStatus = doc.DocStatus,
-                    MobileNoReleaseStatus = doc.MobileNoReleaseStatus,
+                    //MobileNoReleaseStatus = doc.MobileNoReleaseStatus,
                     //IsValid = doc.IsValid,
                     Remarks = doc.Remarks,
                     DateOfValidity = doc.DateOfValidity,
