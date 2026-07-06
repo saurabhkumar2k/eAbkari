@@ -48,6 +48,18 @@ namespace backend.Infrastructure.Repositories
         {
             return await _context.MstPoliceStation.ToListAsync();
         }
+
+
+
+        public async Task<IEnumerable<MstOwnerType>> GetOwnerTypes()
+        {
+            return await _context.MstOwnerType.ToListAsync();
+        }
+
+        public async Task<IEnumerable<MstConstitutionType>> GetConstitutionType()
+        {
+            return await _context.MstConstitutionType.ToListAsync();
+        }
     }
 
 }

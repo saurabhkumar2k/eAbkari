@@ -4,37 +4,39 @@ import React from "react";
 
 //import "../Style/ApplyLicense.css";
 
-import { 
-  User,
-  Building2,
-  Calendar,
-  Backpack,
-  CreditCard,
-  Home,
-  MapPin,
-  Mail,
-  Smartphone,
-  Phone,
-  Globe,
-  MapPinned, 
-  Mail as MailIcon
- } from "lucide-react";
+
 
 const ApplicantDetails = ({
   applicant,
   states = [],
   districts = [],
+  subDivisions = [],
   onChange,
 }) => {
 
 
 console.log("Applicant District:", applicant.district);
 console.log("Districts:", districts);
+console.log("SubDivisions:", subDivisions);
+
+{console.log("Applicant SubDivision:", applicant.subDivision)}
+{console.log("SubDivisions:", subDivisions)}
+
+console.log(typeof applicant.subDivision, applicant.subDivision);
+console.log(typeof subDivisions[0]?.subDivisionCode, subDivisions[0]?.subDivisionCode);
+
 
 districts?.forEach((d) =>
   console.log(
     typeof d.districtCode,
     d.districtCode
+  )
+);
+
+subDivisions?.forEach((s) =>
+  console.log(
+    typeof s.subDivisionCode,
+    s.subDivisionCode
   )
 );
 
@@ -44,7 +46,7 @@ districts?.forEach((d) =>
 
       {/* HEADER */}
       <div className="premium-header">
-        <div className="icon-box"><User classname='field-icon'/></div>
+        <div className="icon-box">👤</div>
         <div>
           <h2>Applicant Details</h2>
           <p>Enter personal and contact information</p>
@@ -57,16 +59,14 @@ districts?.forEach((d) =>
 
         <div className="grid-3">
 
-<Field
-  icon={<User size={18} className="field-icon" />}
-  label="Applicant Name *"
-/>
+          <Field icon="👤" label="Applicant Name *">
         <input
   value={applicant.applicantName || ""}
   disabled
 />
+          </Field>
 
-          {/* <Field icon={<Building2 size={18} className="field-icon" />}label="Company / Firm Name *">
+          {/* <Field icon="🏢" label="Company / Firm Name *">
             <input
               placeholder=" "
               value={applicant.CompanyName || ""}
@@ -74,7 +74,7 @@ districts?.forEach((d) =>
             />
           </Field> */}
 
-          <Field icon={<Calender size={18} className="field-icon" />} label="Date of Birth *">
+          <Field icon="📅" label="Date of Birth *">
             <input
               type="date"
               value={applicant.dateOfBirth || ""}
@@ -82,14 +82,14 @@ districts?.forEach((d) =>
             />
           </Field>
 
-          <Field icon={<User size={18} className="field-icon" />} label="Father / Husband Name *">
+          <Field icon="👨" label="Father / Husband Name *">
             <input
               value={applicant.fatherHusbandName || ""}
               disabled
             />
           </Field>
 
-          <Field icon={<Backpack size={18} className="field-icon" />} label="Occupation">
+          <Field icon="💼" label="Occupation">
             <input
               placeholder=" "
               value={applicant.occupation || ""}
@@ -97,11 +97,13 @@ districts?.forEach((d) =>
             />
           </Field>
 
-          <Field icon={<CreditCard size={18} className="field-icon" />} label="PAN No *">
+          <Field icon="🪪" label="PAN No *">
             <input
               placeholder=" "
               value={applicant.panNo || ""}
               disabled
+               
+              
             />
           </Field>
 
@@ -110,18 +112,18 @@ districts?.forEach((d) =>
 
       {/* ================= ADDRESS ================= */}
       <div className="card-section address-box">
-        <h3><MapPin className="field-icon"/> Address Information</h3>
+        <h3>📍 Address Information</h3>
 
         <div className="grid-1">
 
-          <Field icon={<Home size={18} className="field-icon" />} label="Address Line 1 *">
+          <Field icon="🏠" label="Address Line 1 *">
             <input
               value={applicant.addressLine1 || ""}
               disabled
             />
           </Field>
 
-          <Field icon={<MapPin size={18} className="field-icon" />} label="Address Line 2">
+          <Field icon="📍" label="Address Line 2">
             <input
               value={applicant.addressLine2 || ""}
               disabled
@@ -132,7 +134,7 @@ districts?.forEach((d) =>
 
         <div className="grid-3">
 
-          <Field icon={<Globe size={18} className="field-icon" />} label="State *">
+          <Field icon="🌏" label="State *">
 {/* <select
   name="state"
   value={applicant.stateUT || ""}
@@ -162,9 +164,14 @@ districts?.forEach((d) =>
     </option>
   ))}
 </select>
+
+
+
+
+
           </Field>
 
-          <Field icon={<Building2 size={18} className="field-icon" />} label="District *">
+          <Field icon="🏙️" label="District *">
  {/* <select
   value={applicant.district || ""}
   disabled={!applicant.stateUT}
@@ -196,7 +203,31 @@ districts?.forEach((d) =>
 </select>
           </Field>
 
-          <Field icon={<MapPinned size={18} className="field-icon" />} label="PIN Code *">
+
+
+
+          <Field icon="🏘️" label="Subdivision *">
+
+<select
+  value={String(applicant.subDivision ?? "").trim()}
+  disabled
+>
+  <option value="">Select Subdivision</option>
+
+  {subDivisions.map((s) => (
+    <option
+      key={s.dvid}
+      value={String(s.subDivisionCode).trim()}
+    >
+      {s.subDivisionName}
+    </option>
+  ))}
+</select>
+
+
+
+          </Field>
+          <Field icon="📮" label="PIN Code *">
             <input
               maxLength={6}
               placeholder=" "
@@ -211,11 +242,11 @@ districts?.forEach((d) =>
 
       {/* ================= CONTACT ================= */}
       <div className="card-section contact-box">
-        <h3><Phone size={18} className="field-icon" /> Contact Information</h3>
+        <h3>📞 Contact Information</h3>
 
         <div className="grid-3">
 
-          <Field icon={<Mail size={18} className="field-icon" />} label="Email *">
+          <Field icon="📧" label="Email *">
             <input
               type="email"
               placeholder=" "
@@ -224,7 +255,7 @@ districts?.forEach((d) =>
             />
           </Field>
 
-          <Field icon={<Smartphone size={18} className="field-icon" />} label="Mobile No *">
+          <Field icon="📱" label="Mobile No *">
             <input
               maxLength={10}
               placeholder=" "
@@ -234,7 +265,7 @@ districts?.forEach((d) =>
             />
           </Field>
 
-          <Field icon={<Phone size={18} className="field-icon" />} label="Landline">
+          <Field icon="☎️" label="Landline">
             <input
               maxLength={10}
               placeholder=" "

@@ -38,8 +38,10 @@ namespace backend.API.Controllers
                    && (b.LicenseeTypeFlag == "A" || b.LicenseeTypeFlag == "I")
 
                 join c in _context.LicenseApplicationUploadedDocument
-                    .Where(x => x.ApplicationIdNo == applicationIdNo &&
-                                x.MobileNoReleaseStatus == "N")
+                     //.Where(x => x.ApplicationIdNo == applicationIdNo &&
+                     //            x.MobileNoReleaseStatus == "N")
+                     .Where(x => x.ApplicationIdNo == applicationIdNo )
+                               
                     on a.DocId equals c.DocId into gj
 
                 from c in gj.DefaultIfEmpty()

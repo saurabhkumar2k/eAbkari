@@ -42,7 +42,20 @@ namespace backend.Infrastructure.Data
 
         public DbSet<DocumentDto> DocumentDtos { get; set; }
 
-        public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
+
+        
+
+            public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
+
+
+//public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
+
+        public DbSet<MstConstitutionType> MstConstitutionType { get; set; }
+
+        public DbSet<MstOwnerType> MstOwnerType { get; set; }
+
+
+        
 
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottlers { get; set; }
@@ -185,7 +198,7 @@ namespace backend.Infrastructure.Data
 
 
             modelBuilder.Entity<LicenseCompanyDetails>()
-     .HasKey(x => x.FirmId);
+     .HasKey(x => x.Id);
 
             modelBuilder.Entity<LicenseCompanyDetails>()
                 .HasAlternateKey(x => x.ApplicationIdNo);
@@ -223,6 +236,16 @@ namespace backend.Infrastructure.Data
 
             base.OnModelCreating(modelBuilder);
              
+
+            modelBuilder.Entity<MstConstitutionType>()
+   .ToTable("MstConstitutionType");
+
+            modelBuilder.Entity<MstOwnerType>()
+   .ToTable("MstOwnerType");
+
+
+
+
 
         }
     }

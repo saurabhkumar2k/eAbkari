@@ -203,7 +203,7 @@ const WarehouseDetails = ({
             />
           </Field> */}
 
-          <Field icon="🏷️" label="Ward Name">
+          {/* <Field icon="🏷️" label="Ward Name">
             <input
               placeholder=" "
               value={applicant.WarehouseWardName || ""}
@@ -211,7 +211,7 @@ const WarehouseDetails = ({
                 onChange("WarehouseWardName", e.target.value)
               }
             />
-          </Field>
+          </Field> */}
 
         </div>
       </div>
@@ -276,8 +276,8 @@ const WarehouseDetails = ({
     <div className="form-item">
       <label>Whether License Premise is</label>
       <select
-        value={applicant.licensePremise || ""}
-        onChange={(e) => onChange("licensePremise", e.target.value)}
+        value={applicant.LeasePremise || ""}
+        onChange={(e) => onChange("LeasePremise", e.target.value)}
       >
         <option value="">Select</option>
         <option value="Owned">Owned</option>

@@ -9,15 +9,16 @@ export default function DirectorRow({
   onChange,
   onDelete,
   disableDelete,
-  constitutionType
+  ConstitutionType
 }) {
 
 
 // console.log("DirectorsList:", applicant?.constitutionType);
-console.log("DirectorsList:", constitutionType);
-console.log("DirectorRow:", constitutionType);
- console.log("constitutionType:", constitutionType); // 👈 ADD HERE
-console.log("DirectorRow constitutionType:", constitutionType);
+console.log("DirectorsList:", ConstitutionType);
+console.log("DirectorRow:", ConstitutionType);
+ console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
+console.log("DirectorRow ConstitutionType:", ConstitutionType);
+console.log(director);
   return (
 
 
@@ -83,16 +84,16 @@ console.log("DirectorRow constitutionType:", constitutionType);
           <div style={{ display: "flex", gap: 5 }}>
             <button
               type="button"
-              className={director.exciseNominee === "1" ? "red-button" : ""}
-              onClick={() => onChange(index, "exciseNominee", "1")}
+              className={director.PExciseNominee === "1" ? "red-button" : ""}
+              onClick={() => onChange(index, "PExciseNominee", "1")}
             >
               Yes
             </button>
 
             <button
               type="button"
-              className={director.exciseNominee === "0" ? "red-button" : ""}
-              onClick={() => onChange(index, "exciseNominee", "0")}
+              className={director.PExciseNominee === "0" ? "red-button" : ""}
+              onClick={() => onChange(index, "PExciseNominee", "0")}
             >
               No
             </button>
@@ -105,13 +106,13 @@ console.log("DirectorRow constitutionType:", constitutionType);
             
             
             
-            {constitutionType === "Company" && (
+            {ConstitutionType === "1" && (
   <input
-    value={director.dinNo || ""}
+    value={director.DINNo || ""}
     label="DIN No"
     placeholder="DIN No"
     onChange={(e) =>
-      onChange(index, "dinNo", e.target.value)
+      onChange(index, "DINNo", e.target.value)
     }
   />
 )}</div>

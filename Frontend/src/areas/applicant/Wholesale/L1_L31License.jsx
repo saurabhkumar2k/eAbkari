@@ -37,8 +37,7 @@ import {
 
 
 
-export default function L1AndL31License({ ownerType,
-  catCode,onBackToSelect, showToast }) {
+export default function L1AndL31License({ ownerType,catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicant, setApplicant] = useState(createApplicant());
@@ -48,7 +47,7 @@ export default function L1AndL31License({ ownerType,
 const [applicantDistricts, setApplicantDistricts] = useState([]);
 const [warehouseDistricts, setWarehouseDistricts] = useState([]);
 
-
+const [constitutionTypes, setConstitutionTypes] = useState([]);
 const [warehouseSubDivisions, setWarehouseSubDivisions] = useState([]);
 const [warehousePoliceStations, setWarehousePoliceStations] = useState([]);
 
@@ -67,10 +66,10 @@ const [applicationId, setApplicationId] = useState(null);
   const [fssai, setFssai] = useState({ FSSAILicenceNo: "", FSSAILicenceStartDate: "", FSSAILicenceEndDate: "" });
   const [vat, setVat] = useState({ VATGSTCertNo: "", VATGSTCertEnddate: "" });
   const [distillery, setDistillery] = useState({ DistilleryLicNo: "", DistilleryLicEnddate: "" });
-  const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "" });
+  const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "",BWHInsuranceNo: "",BWHLeaseRentAgreementNo:"" });
 
  const [nominee, setNominee] = useState({
-    IsExciseNominee: "0",
+     isExciseNominee: "0",
     ExciseNomineeName: "",
     ExciseNomineeAddress: "",
     ExciseNomineeEmailID: "",
@@ -167,7 +166,7 @@ console.table(documents);
   /* ================= HANDLERS ================= */
 
 const handleApplicantChange = (field, value) => {
- // debugger;
+  debugger;
   setApplicant((prev) => ({ ...prev, [field]: value }));
 
   if (field === "state") {
@@ -191,7 +190,7 @@ fetchPoliceStations(applicant.warehouseDistrict);   // 👈 Add this
 
 }
 
- if (field === "constitutionType") {
+ if (field === "ConstitutionType") {
     console.log("Selected:", value);
   }
 
@@ -215,6 +214,7 @@ useEffect(() => {
 
 
   const handleDirectorChange = (i, f, v) => {
+    debugger;
     const d = [...(applicant.directors || [])];
     d[i][f] = v;
     setApplicant({ ...applicant, directors: d });
@@ -249,6 +249,29 @@ const handleDeleteFile = (key) => {
     return updated;
   });
 };
+
+
+const fetchConstitutionTypes = async () => {
+  try {
+    const res = await fetch(
+      "http://localhost:5214/api/LGDiretory/ConstitutionType"
+    );
+
+    const data = await res.json();
+
+    console.log("Constitution Types:", data);
+
+    setConstitutionTypes(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+useEffect(() => {
+  fetchConstitutionTypes();
+}, []);
+
+
 
 
 
@@ -288,21 +311,19 @@ const fetchDistricts = async (stateCode, type) => {
 };
 
 
-// const fetchSubdivisions = async (districtCode, type) => {
-//   debugger;
-//   const res = await fetch(
-//     `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
-//   );
+const fetchApplicantSubdivisions = async (districtCode) => {
+  console.log("DistrictCode sent:", districtCode);
 
-//   const data = await res.json();
+  const res = await fetch(
+    `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+  );
 
-//   if (type === "applicant") {
-//     setApplicantSubdivisions(data);
-//   } else {
-//     setWarehouseSubdivisions(data);
-//   }
-// };
+  const data = await res.json();
 
+  console.log("SubDivision API Response:", data);
+
+  setSubDivisions(data);
+};
 
 
 const fetchPoliceStations = async (districtCode) => {
@@ -339,6 +360,9 @@ const fetchSubDivisions = async (districtCode) => {
     const data = await res.json();
 
     setWarehouseSubDivisions(data);
+
+
+
   } catch (err) {
     console.log(err);
   }
@@ -434,28 +458,30 @@ const loadApplicantData = async (regId) => {
     console.log(data);
 console.log("ownerType prop =", ownerType);
 console.log("catCode prop =", catCode);
-
+console.log("SubDivision from API:", data.subDivision);
 // 👇 Pehle state ke basis par district list load karo
   await fetchDistricts(data.stateUT, "applicant");
-
+await fetchApplicantSubdivisions(data.district);
 
  setApplicant((prev) => ({
 
   ...prev,
   // firstName: data.firstName,
   // lastName: data.lastName,
+
   applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
   fatherHusbandName: data.fatherHusbandName,
     dateOfBirth: data.dateOfBirth
     ? data.dateOfBirth.split("T")[0]
     : "",
     panNo: data.panNo,
-    constitutionType: data.constitutionType,
+    ConstitutionType: data.ConstitutionType,
     occupation: data.occupation,
     addressLine1: data.addressLine1,
     addressLine2: data.addressLine2,
     stateUT: data.stateUT,
     district: data.district,
+    subDivision: String(data.subDivision).trim(),
     pin: data.pin,
     email: data.email,
     mobile: data.mobile,
@@ -572,6 +598,7 @@ const payload = {
 
   StateUT: applicant.stateUT,
   District: applicant.district,
+  subDivision: applicant.subDivision,
   PIN: applicant.pin,
 
   Email: applicant.email,
@@ -675,7 +702,7 @@ if (currentStep === 3) {
   }
 
 applicant.directors.forEach((director, index) => {
-
+debugger;
     formData.append(
         `CompanyPartnersDetails[${index}].PName`,
         director.PName || ""
@@ -696,6 +723,12 @@ applicant.directors.forEach((director, index) => {
         director.PExciseNominee || ""
     );
 
+formData.append(
+        `CompanyPartnersDetails[${index}].DINNo`,
+        director.DINNo || ""
+    );
+
+
     // PAN File
     if (director.panFile) {
         formData.append(
@@ -703,10 +736,10 @@ applicant.directors.forEach((director, index) => {
             director.panFile
         );
     }
-        if (director.AddressProofFile) {
+        if (director.addressFile) {
         formData.append(
-            `CompanyPartnersDetails[${index}].AddressProofFile`,
-            director.AddressProofFile
+            `CompanyPartnersDetails[${index}].addressFile`,
+            director.addressFile
         );
     }
 });
@@ -1007,6 +1040,7 @@ if (currentStep === 5) {
             applicant={applicant}
             states={states}
               districts={applicantDistricts}   // ✅ FIX HERE
+             subDivisions={subDivisions} 
             onChange={handleApplicantChange}
           />
             )}
@@ -1033,36 +1067,57 @@ if (currentStep === 5) {
 {/* ================= ADDITIONAL WAREHOUSE DETAILS ================= */}
 
 <div className="section-card">
-  <h3 className="section-title">Company / Firm Details</h3>
+  <h3 className="section-title">Company / Firm Details </h3>
 
   <div className="form-row">
 
     <div className="form-item">
+      <label>Company Name</label>
+      <input
+        value={applicant.CompanyName || ""}
+        onChange={(e) =>
+          handleApplicantChange("CompanyName", e.target.value)
+        }
+      />
+    </div>
+
+
+
+
+    <div className="form-item">
       <label>Constitution Type</label>
-    <select
+
+
+<select
   value={applicant.ConstitutionType || ""}
   onChange={(e) =>
     handleApplicantChange("ConstitutionType", e.target.value)
   }
 >
-        <option value="">Select</option>
-        <option value="Company">Company</option>
-        <option value="Partnership">Partnership</option>
-        <option value="LLP">LLP</option>
-        <option value="Proprietorship">Proprietorship</option>
-        <option value="Society">Society</option>
-      </select>
+  <option value="">Select</option>
+
+  {constitutionTypes.map((item) => (
+    <option
+      key={item.id}
+      value={item.ctid}
+    >
+      {item.constitutionTypeName}
+    </option>
+  ))}
+</select>
     </div>
 
-    {applicant.constitutionType === "Company" && (
-      <div className="form-item">
-        <label>CIN No</label>
-        <input
-          value={applicant.CINNO || ""}
-          onChange={(e) => handleApplicantChange("CINNO", e.target.value)}
-        />
-      </div>
-    )}
+ {applicant.ConstitutionType === "01" && (
+  <div className="form-item">
+    <label>CIN No</label>
+    <input
+      value={applicant.CINNO || ""}
+      onChange={(e) =>
+        handleApplicantChange("CINNO", e.target.value)
+      }
+    />
+  </div>
+)}
 
     <div className="form-item">
       <label>Registration No</label>
@@ -1109,7 +1164,7 @@ if (currentStep === 5) {
 
 <DirectorsList
   directors={applicant.directors || []}
-  constitutionType={applicant.constitutionType}
+  ConstitutionType={applicant.ConstitutionType}
   onChange={handleDirectorChange}
   onAdd={addRow}
   onDelete={deleteRow}
@@ -1132,29 +1187,37 @@ if (currentStep === 5) {
         </label>
 
         <div className="radio-group">
-          <label>
-            <input
-              type="radio"
-              value="1"
-              checked={nominee.isExciseNominee === "1"}
-              onChange={(e) =>
-                setNominee({ ...nominee, isExciseNominee: e.target.value })
-              }
-            />
-            Yes
-          </label>
+<label>
+  <input
+    type="radio"
+    name="isExciseNominee"
+    value="1"
+    checked={nominee.isExciseNominee === "1"}
+    onChange={(e) =>
+      setNominee({
+        ...nominee,
+        isExciseNominee: e.target.value,
+      })
+    }
+  />
+  Yes
+</label>
 
-          <label>
-            <input
-              type="radio"
-              value="0"
-              checked={nominee.isExciseNominee === "0"}
-              onChange={(e) =>
-                setNominee({ ...nominee, isExciseNominee: e.target.value })
-              }
-            />
-            No
-          </label>
+<label>
+  <input
+    type="radio"
+    name="isExciseNominee"
+    value="0"
+    checked={nominee.isExciseNominee === "0"}
+    onChange={(e) =>
+      setNominee({
+        ...nominee,
+        isExciseNominee: e.target.value,
+      })
+    }
+  />
+  No
+</label>
         </div>
       </div>
     </div>
@@ -1383,9 +1446,9 @@ if (currentStep === 5) {
       <div className="grid-4">
         <input
           placeholder="Insurance No"
-          value={bwh.insuranceNo}
+          value={bwh.BWHInsuranceNo}
           onChange={(e) =>
-            setBwh({ ...bwh, insuranceNo: e.target.value })
+            setBwh({ ...bwh, BWHInsuranceNo: e.target.value })
           }
         />
 
@@ -1399,9 +1462,9 @@ if (currentStep === 5) {
 
         <input
           placeholder="Lease No"
-          value={bwh.leaseNo}
+          value={bwh.BWHLeaseRentAgreementNo}
           onChange={(e) =>
-            setBwh({ ...bwh, leaseNo: e.target.value })
+            setBwh({ ...bwh, BWHLeaseRentAgreementNo: e.target.value })
           }
         />
 

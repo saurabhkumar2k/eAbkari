@@ -8,7 +8,7 @@ public class LicenseCompanyDetailsDto
 
     public string ApplicationIdNo { get; set; } = string.Empty;
 
-
+    public string? CompanyName { get; set; }
     public string? ConstitutionType { get; set; }
 
 
@@ -73,10 +73,10 @@ public string? IsExciseNominee { get; set; }
     public DateTime? BWHRentAgreementEndDate { get; set; }
 
 
-    public string? LastYearIncomeTaxReturnOrAssessmentOrder { get; set; }
+    public string? BWHInsuranceNo { get; set; }
 
 
-    public string? PowerOfAttorney { get; set; }
+    public string? BWHLeaseRentAgreementNo { get; set; }
 
 
     public string? MobileNo { get; set; }
@@ -111,7 +111,7 @@ public class AdditionalCompanyPartnersDetailsDto
 
     public IFormFile? PanFile { get; set; }
 
-    public IFormFile? AddressProofFile { get; set; }
+    public IFormFile? addressFile { get; set; }
 }
 
 

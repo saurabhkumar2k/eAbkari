@@ -3,7 +3,7 @@ import DirectorRow from "./DirectorRow";
 
 import "../Style/ApplyLicense.css";
 
-const DirectorsList = ({ directors, onChange, onAdd, onDelete,constitutionType }) => {
+const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType }) => {
   return (
     <div style={{ marginTop: 30 }}>
       <h3 style={{ textAlign: "center", marginBottom: 20 }}>
@@ -18,7 +18,7 @@ const DirectorsList = ({ directors, onChange, onAdd, onDelete,constitutionType }
           index={index}
           onChange={onChange}
           onDelete={onDelete}
-          constitutionType={constitutionType} // 👈 ADD HERE
+          ConstitutionType={ConstitutionType} // 👈 ADD HERE
           disableDelete={directors.length === 1}
         />
       ))}

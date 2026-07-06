@@ -51,6 +51,28 @@ public class MstUserSQ
 
 }
 
+    public class MstConstitutionType
+    {
+    
+      public int ID { get; set; }
+
+        public string? CTID { get; set; }
+
+        public string? ConstitutionTypeName { get; set; }
+
+    }
+
+    public class MstOwnerType
+    {
+
+        public int ID { get; set; }
+
+        public string? OTID { get; set; }
+
+        public string? OwnerTypeName { get; set; }
+
+    }
+
 
 
 }

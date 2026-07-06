@@ -8,11 +8,18 @@ import { ArrowLeft, Info } from "lucide-react";
 const SelectWholesaleType = ({
   applicant,
   onChange,
+  ownerTypes=[],
   licenseGroups = [],
   selectedType,
   onSelectType,
   onBack,
+  constitutionTypes=[],
 }) => {
+
+console.log(applicant);
+console.log(ownerTypes);
+
+
 return (
   <div className="license-selection-container text-left animate-fade">
 
@@ -37,7 +44,7 @@ return (
     Owner Type <span>*</span>
   </label>
 
-<select
+{/* <select
   value={applicant?.ownerType || ""}
   onChange={(e) => onChange("ownerType", e.target.value)}
 >
@@ -49,7 +56,23 @@ return (
     <option value="S">Cooperative Society</option>
     <option value="R">Proprietorship</option>
     <option value="O">Other Entity</option>
-  </select>
+  </select> */}
+
+<select
+  value={applicant.ownerType || ""}
+  onChange={(e) => onChange("ownerType", e.target.value)}
+>
+  <option value="">Select Owner Type</option>
+
+  {ownerTypes.map((item) => (
+    <option key={item.id} value={item.otid}>
+      {item.ownerTypeName}
+    </option>
+  ))}
+</select>
+
+
+
 </div>
 
     {/* License Cards */}
