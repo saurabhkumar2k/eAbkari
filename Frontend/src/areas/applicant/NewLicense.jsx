@@ -22,7 +22,7 @@ import {
   FileCheck
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
-import HcrLicenseWizard from "./HCR/HcrLicense" // Import the HCR license wizard components
+import HcrLicenseWizard from "./HCR/HcrLicense";// Import the HCR license wizard components
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 
 export default function NewLicense({ setActiveTab, showToast }) {
