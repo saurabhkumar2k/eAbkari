@@ -42,21 +42,20 @@ namespace backend.Infrastructure.Data
 
         public DbSet<DocumentDto> DocumentDtos { get; set; }
 
-<<<<<<< HEAD
+
         
 
             public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
 
 
-public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
+//public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
 
         public DbSet<MstConstitutionType> MstConstitutionType { get; set; }
 
         public DbSet<MstOwnerType> MstOwnerType { get; set; }
 
-=======
-        public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
->>>>>>> a5de74fcad76ce16bd415f4c41a7e1b30cbb8315
+
+        
 
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottlers { get; set; }
