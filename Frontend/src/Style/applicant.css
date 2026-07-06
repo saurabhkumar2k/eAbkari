@@ -9,8 +9,35 @@ body {
   background: linear-gradient( 135deg, #eef2ff 0%,#f8fafc 40%, #f1f5f9 100% );
   color: #1e293b;
 }
+.header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* gap-4 */
+}
 
-/* ===== MAIN CONTAINER ===== */
+/* md breakpoint (768px and above) */
+@media (min-width: 768px) {
+  .header-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;      /* gap-3 */
+  flex-wrap: wrap;
+}
+.section-title {
+  font-size: 1.125rem;   /* text-lg = 18px */
+  font-weight: 600;      /* font-semibold */
+  color: #1e293b;        /* text-slate-800 */
+}
+.description {
+  font-size: 0.875rem; /* text-sm = 14px */
+  color: #64748b;      /* text-slate-500 */
+}
 .dashboard-wrapper {
   min-height: 100vh;
   padding: 32px;
@@ -2072,11 +2099,35 @@ HCR License
 .btn-secondary:hover {
   background: #e2e8f0;
 }
+.primary-btn {
+  padding: 8px 20px;            /* py-2 px-5 */
+  background-color: #2563eb;    /* bg-blue-600 */
+  color: #ffffff;               /* text-white */
+  border: none;                 /* border-none */
+  border-radius: 12px;          /* rounded-xl */
+  font-size: 0.875rem;          /* text-sm = 14px */
+  font-weight: 500;             /* font-medium */
+  cursor: pointer;              /* cursor-pointer */
+  transition: background-color 0.3s ease,
+              color 0.3s ease,
+              transform 0.2s ease,
+              box-shadow 0.3s ease;
+}
 
-/* =========================
-   TABLE
-========================= */
+.primary-btn:hover {
+  background-color: #1d4ed8;    /* hover:bg-blue-700 */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+}
 
+.primary-btn:active {
+  transform: translateY(0);
+}
+
+.primary-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -2084,25 +2135,21 @@ HCR License
   margin-bottom: 24px;
   gap: 16px;
 }
-
 .table-container {
   overflow-x: auto;
   border: 1px solid #e2e8f0;
   border-radius: 18px;
 }
-
 .table-container table {
   width: 100%;
   border-collapse: collapse;
   min-width: 900px;
 }
-
 .table-container thead {
   background: #eff6ff;
   position: sticky;
   top: 0;
 }
-
 .table-container th {
   text-align: left;
   padding: 16px;
@@ -2111,21 +2158,14 @@ HCR License
   color: #1e3a8a;
   text-transform: uppercase;
 }
-
 .table-container td {
   padding: 16px;
   border-top: 1px solid #e2e8f0;
   font-size: 13px;
 }
-
 .table-container tbody tr:hover {
   background: #f8fafc;
 }
-
-/* =========================
-   EMPTY STATE
-========================= */
-
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -2133,11 +2173,6 @@ HCR License
   border-radius: 18px;
   background: #fafafa;
 }
-
-/* =========================
-   INFO ALERT
-========================= */
-
 .blue-info-alert {
   display: flex;
   align-items: flex-start;
