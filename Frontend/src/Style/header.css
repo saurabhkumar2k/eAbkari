@@ -1,0 +1,313 @@
+/* ==========================================================================
+   CONSOLIDATED HEADER & NAVIGATION STYLES (Department & Applicant Dashboards)
+   ========================================================================== */
+
+/* Header Main Outer Wrapper */
+.admin-header-wrapper {
+  background: #ffffff;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Header Container */
+.dept-dash-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+}
+
+/* Container for Header Contents */
+.dept-dash-container {
+  width: 92%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Branding Layout Row */
+.dept-dash-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo Block with Emblem and Titles */
+.dept-dash-logo-block {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* State Emblem of India */
+.dept-emblem {
+  height: 3.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Group of Header Titles */
+.dept-dash-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Main Display Typography */
+.dept-main-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #012a52; /* var(--brand-blue) */
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.caps {
+  text-transform: uppercase;
+}
+
+.semibold {
+  font-weight: 600;
+}
+
+/* Secondary Subtitles */
+.dept-sub-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Right Side Action Items */
+.dept-dash-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Navigation Menu Bar Row */
+.dept-dash-nav {
+  background: #012a52; /* var(--brand-blue) */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+}
+
+/* Department Navigation List */
+.dept-nav-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.dept-nav-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.dept-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.875rem 0.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  width: 100%;
+}
+
+.dept-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   APPLICANT HEADER SPECIFIC OVERLAYS & NAVIGATION (Horizontal Scroll Row)
+   ========================================================================== */
+
+.header-nav-row {
+  width: 100%;
+  padding: 4px 0;
+}
+
+.header-nav-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+  width: max-content;
+  min-width: 100%;
+}
+
+.header-nav-list-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.nav-item-wrapper {
+  position: relative;
+  display: block;
+}
+
+/* License Dropdown Styles */
+.license-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  width: 360px;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+  z-index: 999;
+}
+
+.license-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: transparent;
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px 14px;
+  border-bottom: 1px solid #eef2f7;
+  margin-bottom: 12px;
+}
+
+.dropdown-header-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #012a52, #00172e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.dropdown-header-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.dropdown-header-subtitle {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.dropdown-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f5f9;
+  transform: translateX(2px);
+}
+
+.active-submenu {
+  background: linear-gradient(135deg, #012a52, #00172e) !important;
+}
+
+.active-submenu .dropdown-label,
+.active-submenu .dropdown-description,
+.active-submenu .dropdown-arrow {
+  color: #ffffff !important;
+}
+
+.dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-item-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #012a52;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.active-submenu .dropdown-item-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.dropdown-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.dropdown-description {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.dropdown-arrow {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+}
+
+/* Specific Dropdown Offsets */
+.mtp-dropdown { left: 0; }
+.dealer-dropdown { left: 0; }
+.premise-dropdown { left: 0; }
+.profile-dropdown { left: auto; right: 0; }

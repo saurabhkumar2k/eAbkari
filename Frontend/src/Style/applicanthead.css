@@ -14,7 +14,6 @@
   font-size: 14px;
   color: #64748b;
 }
-/*======Header=======*/
 
 .dashboard-header {
   background-color: #ffffff; /* bg-white */
@@ -88,6 +87,38 @@
   letter-spacing: 0.1em; /* tracking-widest */
   line-height: 1; /* leading-none */
   color: #64748b; /* slate-500 */
+}
+
+.header {
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-top-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+@media (min-width: 768px) {
+  .header-top-area {
+    padding: 1.25rem 0;
+  }
+}
+.header-brand-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .header-brand-box {
+    gap: 1.5rem;
+  }
 }
 
 @media (min-width: 640px) {
