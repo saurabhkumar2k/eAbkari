@@ -9,6 +9,7 @@
 
 @import "./applicant.css";
 @import "./applicanthead.css";
+@import "./header.css";
 
 :root {
   --brand-blue: #012a52;

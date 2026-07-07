@@ -139,10 +139,10 @@ const StatCard = ({ item }) => {
 const LicenseCard = ({ license }) => {
   return (
     <div className="license-card">
-      <div className="header-container">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
         <div className="space-y-2">
-          <div className="card-header">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="license-badge badge-blue">
               {license.id}
             </span>
@@ -158,16 +158,16 @@ const LicenseCard = ({ license }) => {
             </span>
           </div>
 
-          <h3  className="section-title" style={{ marginTop: "12px" }}>
+          <h3 className="text-lg font-semibold text-slate-800" style={{ marginTop: "12px" }}>
             {license.type}
           </h3>
 
-          <p className="description">
+          <p className="text-sm text-slate-500">
             {license.location}
           </p>
         </div>
 
-        <button className="primary-btn">
+        <button className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition border-none cursor-pointer">
           View Details
         </button>
       </div>
@@ -176,13 +176,6 @@ const LicenseCard = ({ license }) => {
 };
 
 const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
-  const [licenseDropdownOpen, setLicenseDropdownOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [mtpDropdownOpen, setMtpDropdownOpen] = useState(false);
-  const [dealerDropdownOpen, setDealerDropdownOpen] = useState(false);
-  const [premiseDropdownOpen, setPremiseDropdownOpen] = useState(false);
-  const [notifyDropdownOpen, setNotifyDropdownOpen] = useState(false);
-
   const isLicenseActive = activeTab === "License" || [
     "New License",
     "Applied License",
@@ -220,438 +213,158 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
     "License Transfer",
     "Document Revalidate"
   ];
-
-  return (
-   <header className="dashboard-header">
-    <div className="header-container" style={{ padding: "7px 20px 7px 20px" }} >
-    {/* Tier 1: Brand & User Actions */}
-    <div className="header-top-row">
-      <div
-        onClick={onNavigateToHome}
-        className="header-brand"
-      >
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
-              alt="Emblem of India"
-              className="header-logo"
-              referrerPolicy="no-referrer"
-            />
-           <div className="header-divider"></div>
-           <div className="header-title-section">
-            <h1 className="header-main-title"> Department of Excise </h1>
-            <p className="header-tagline"> Government of NCT of Delhi </p>
+ const navItems = [
+    { 
+      label: "Home", 
+      id: "Home", 
+      icon: <Home className="dept-nav-icon" />, 
+      active: activeTab === "Home" 
+    },
+    { 
+      label: "License", 
+      id: "License", 
+      icon: <Award className="dept-nav-icon" />, 
+      active: isLicenseActive,
+      hasDropdown: true,
+      items: [
+        { id: "New License", label: "New License" },
+        { id: "Applied License", label: "Applied License" },
+        { id: "Renewal License", label: "Renewal License" },
+        { id: "License Transfer", label: "License Transfer" },
+        { id: "Document Revalidate", label: "Document Revalidate" }
+      ]
+    },
+    { 
+      label: "M&TP", 
+      id: "MTP", 
+      icon: <FlaskConical className="dept-nav-icon" />, 
+      active: isMtpActive,
+      hasDropdown: true,
+      items: [
+        { id: "New M&TP", label: "New M&TP" },
+        { id: "Applied M&TP", label: "Applied M&TP" }
+      ]
+    },
+    { 
+      label: "Dealer", 
+      id: "Dealer", 
+      icon: <Store className="dept-nav-icon" />, 
+      active: isDealerActive,
+      hasDropdown: true,
+      items: [
+        { id: "Dealer Registration", label: "Dealer Registration" },
+        { id: "Applied Dealers", label: "Applied Dealers" }
+      ]
+    },
+    { 
+      label: "Premise", 
+      id: "Premise", 
+      icon: <Building className="dept-nav-icon" />, 
+      active: isPremiseActive,
+      hasDropdown: true,
+      items: [
+        { id: "Register Premise", label: "Register Premise" },
+        { id: "Applied Premise", label: "Applied Premise" },
+        { id: "New Permit", label: "New Permit" },
+        { id: "Applied Permit", label: "Applied Permit" }
+      ]
+    },
+    { 
+      label: "Profile", 
+      id: "Profile", 
+      icon: <Settings className="dept-nav-icon" />, 
+      active: isProfileActive,
+      hasDropdown: true,
+      items: [
+        { id: "UserProfile", label: "Profile" },
+        { id: "ChangePassword", label: "Change Password" }
+      ]
+    },
+    { 
+      label: "Logout", 
+      id: "Logout", 
+      icon: <LogOut className="dept-nav-icon text-rose-300" />, 
+      isLogout: true 
+    }
+  ];
+return (
+    <div className="admin-header-wrapper">
+      <header className="dept-dash-header">
+        <div className="dept-dash-container">
+          <div className="dept-dash-brand-row">
+            <div 
+              onClick={onNavigateToHome}
+              className="dept-dash-logo-block"
+              style={{ cursor: "pointer" }}
+            >
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
+                alt="Emblem" 
+                className="dept-emblem"
+                referrerPolicy="no-referrer"
+              />
+              <div className="dept-dash-titles">
+                <h1 className="dept-main-title caps">DEPARTMENT OF EXCISE</h1>
+                <p className="dept-sub-title semibold">OFFICE OF THE EXCISE COMMISSIONER</p>
+                <p className="dept-sub-title semibold">GOVERNMENT OF NCT OF DELHI</p>
+              </div>
             </div>
           </div>
-
-         <div className="header-actions">
-  {/* Portal Back Button */}
-  <button
-    onClick={onNavigateToHome}
-    className="portal-back-btn"
-  >
-    <ArrowLeft className="portal-back-icon" />
-    <span className="portal-back-text">Portal</span>
-  </button>
-          </div>
         </div>
+      </header>
 
-        {/* Tier 2: Beautiful Centered Horizontal Navigation with exact button size */}
-        <div className="w-full py-1">
-          <div className="header-menu-wrapper">
-           <div className="header-menu">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = item.id === "License" 
-                  ? isLicenseActive 
-                  : item.id === "Profile"
-                    ? isProfileActive
-                    : item.id === "MTP"
-                      ? isMtpActive
-                      : item.id === "Dealer"
-                        ? isDealerActive
-                        : item.id === "Premise"
-                          ? isPremiseActive
-                          : activeTab === item.id;
-
-                if (item.id === "License") {
-                  return (
-                    <div 
-                      key={item.id} 
-                      className="relative block"
-                      onMouseEnter={() => setLicenseDropdownOpen(true)}
-                      onMouseLeave={() => setLicenseDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setLicenseDropdownOpen(!licenseDropdownOpen)}
-                        className={`sidebar-btn ${isActive ? "active" : ""}`}
-                        style={{ width: "190px", flexShrink: 0 }}
-                      >
-                        <div className="menu-item-content">
-                        <Icon className="menu-item-icon" />
-                        <span className="menu-item-label"> {item.label}
-                        </span>
-                        </div>
-
-                        <ChevronDown className={`dropdown-arrow ${ licenseDropdownOpen ? "dropdown-arrow-open" : "" }`} />
-                      </button>
-
-                      {licenseDropdownOpen && (
-                        <div className="license-dropdown">
-                          <div className="dropdown-header">
-                            <div className="dropdown-header-icon">
-                              <ShieldCheck className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="dropdown-text-group">
-                              <h4 className="dropdown-header-title">Excise Licensing Services</h4>
-                              <p className="dropdown-header-subtitle">Apply, renew, transfer, or revalidate</p>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-menu-list">
-                            {[
-                              { id: "New License", label: "New License", desc: "File a new privilege permit", num: "01" },
-                              { id: "Applied License", label: "Applied License", desc: "Track status of pending filings", num: "02" },
-                              { id: "Renewal License", label: "Renewal License", desc: "Extend tenure and clear fee dues", num: "03" },
-                              { id: "License Transfer", label: "License Transfer", desc: "Transfer authority or relocate shop", num: "04" },
-                              { id: "Document Revalidate", label: "Document Revalidate", desc: "Validate expiring NOC documents", num: "05" }
-                            ].map((subOption) => {
-                              const isSubActive = activeTab === subOption.id;
-                              return (
-                                <button
-                                  key={subOption.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTab(subOption.id);
-                                    setLicenseDropdownOpen(false);
-                                  }}
-                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
-                                >
-                                  <div className="dropdown-item-left">
-                                    <div className="dropdown-item-badge">
-                                      {subOption.num}
-                                    </div>
-                                    <div className="dropdown-text-group">
-                                      <span className="dropdown-label">{subOption.label}</span>
-                                      <span className="dropdown-description">{subOption.desc}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="dropdown-arrow" />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                if (item.id === "MTP") {
-                  return (
-                    <div 
-                      key={item.id} 
-                      className="relative block"
-                      onMouseEnter={() => setMtpDropdownOpen(true)}
-                      onMouseLeave={() => setMtpDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setMtpDropdownOpen(!mtpDropdownOpen)}
-                        className={`sidebar-btn ${isActive ? "active" : ""}`}
-                        style={{ width: "190px", flexShrink: 0 }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="text-[15px] font-semibold">{item.label}</span>
-                        </div>
-
-                        <ChevronDown className={`dropdown-icon  ${mtpDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
-
-                      {mtpDropdownOpen && (
-                        <div className="license-dropdown" style={{ left: "-85px" }}>
-                          <div className="dropdown-header">
-                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #0d9488, #0f766e)" }}>
-                              <FlaskConical className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="dropdown-text-group">
-                              <h4 className="dropdown-header-title">M&TP Services</h4>
-                              <p className="dropdown-header-subtitle">Medicinal & Toilet Preparations</p>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-menu-list">
-                            {[
-                              { id: "New M&TP", label: "New M&TP", desc: "Apply for a new M&TP unit license", num: "01" },
-                              { id: "Applied M&TP", label: "Applied M&TP", desc: "Track medical unit formulation and filings", num: "02" }
-                            ].map((subOption) => {
-                              const isSubActive = activeTab === subOption.id;
-                              return (
-                                <button
-                                  key={subOption.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTab(subOption.id);
-                                    setMtpDropdownOpen(false);
-                                  }}
-                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
-                                >
-                                  <div className="dropdown-item-left">
-                                    <div className="dropdown-item-badge">
-                                      {subOption.num}
-                                    </div>
-                                    <div className="dropdown-text-group">
-                                      <span className="dropdown-label">{subOption.label}</span>
-                                      <span className="dropdown-description">{subOption.desc}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="dropdown-arrow" />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                if (item.id === "Dealer") {
-                  return (
-                    <div 
-                      key={item.id} 
-                      className="relative block"
-                      onMouseEnter={() => setDealerDropdownOpen(true)}
-                      onMouseLeave={() => setDealerDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setDealerDropdownOpen(!dealerDropdownOpen)}
-                        className={`sidebar-btn ${isActive ? "active" : ""}`}
-                        style={{ width: "190px", flexShrink: 0 }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="text-[15px] font-semibold">{item.label}</span>
-                        </div>
-
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${dealerDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
-
-                      {dealerDropdownOpen && (
-                        <div className="license-dropdown" style={{ left: "-40px" }}>
-                          <div className="dropdown-header">
-                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #4f46e5, #4338ca)" }}>
-                              <Store className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="dropdown-text-group">
-                              <h4 className="dropdown-header-title">Dealer Services</h4>
-                              <p className="dropdown-header-subtitle">Excise registration & status</p>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-menu-list">
-                            {[
-                              { id: "Dealer Registration", label: "Dealer Registration", desc: "Register a new excise trade dealer account", num: "01" },
-                              { id: "Applied Dealers", label: "Applied Dealers", desc: "Track status of pending trade dealer applications", num: "02" }
-                            ].map((subOption) => {
-                              const isSubActive = activeTab === subOption.id;
-                              return (
-                                <button
-                                  key={subOption.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTab(subOption.id);
-                                    setDealerDropdownOpen(false);
-                                  }}
-                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
-                                >
-                                  <div className="dropdown-item-left">
-                                    <div className="dropdown-item-badge">
-                                      {subOption.num}
-                                    </div>
-                                    <div className="dropdown-text-group">
-                                      <span className="dropdown-label">{subOption.label}</span>
-                                      <span className="dropdown-description">{subOption.desc}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="dropdown-arrow" />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                if (item.id === "Premise") {
-                  return (
-                    <div 
-                      key={item.id} 
-                      className="relative block"
-                      onMouseEnter={() => setPremiseDropdownOpen(true)}
-                      onMouseLeave={() => setPremiseDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setPremiseDropdownOpen(!premiseDropdownOpen)}
-                        className={`sidebar-btn ${isActive ? "active" : ""}`}
-                        style={{ width: "190px", flexShrink: 0 }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="text-[15px] font-semibold">{item.label}</span>
-                        </div>
-
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${premiseDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
-
-                      {premiseDropdownOpen && (
-                        <div className="license-dropdown" style={{ left: "-50px" }}>
-                          <div className="dropdown-header">
-                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #d97706, #b45309)" }}>
-                              <Building className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="dropdown-text-group">
-                              <h4 className="dropdown-header-title">Premise & Permits</h4>
-                              <p className="dropdown-header-subtitle">Manage premises and local trade permits</p>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-menu-list">
-                            {[
-                              { id: "Register Premise", label: "Register Premise", desc: "Register a physical store, depot or warehouse", num: "01" },
-                              { id: "Applied Premise", label: "Applied Premise", desc: "Track pending premise verification status", num: "02" },
-                              { id: "New Permit", label: "New Permit", desc: "Apply for shipping, transport, or event permits", num: "03" },
-                              { id: "Applied Permit", label: "Applied Permit", desc: "View approved transport pass permits", num: "04" }
-                            ].map((subOption) => {
-                              const isSubActive = activeTab === subOption.id;
-                              return (
-                                <button
-                                  key={subOption.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTab(subOption.id);
-                                    setPremiseDropdownOpen(false);
-                                  }}
-                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
-                                >
-                                  <div className="dropdown-item-left">
-                                    <div className="dropdown-item-badge">
-                                      {subOption.num}
-                                    </div>
-                                    <div className="dropdown-text-group">
-                                      <span className="dropdown-label">{subOption.label}</span>
-                                      <span className="dropdown-description">{subOption.desc}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="dropdown-arrow" />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                if (item.id === "Profile") {
-                  return (
-                    <div 
-                      key={item.id} 
-                      className="relative block"
-                      onMouseEnter={() => setProfileDropdownOpen(true)}
-                      onMouseLeave={() => setProfileDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                        className={`sidebar-btn ${isActive ? "active" : ""}`}
-                        style={{ width: "190px", flexShrink: 0 }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="text-[15px] font-semibold">{item.label}</span>
-                        </div>
-
-                        <ChevronDown className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${profileDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
-
-                      {profileDropdownOpen && (
-                        <div className="license-dropdown" style={{ left: "auto", right: 0 }}>
-                          <div className="dropdown-header">
-                            <div className="dropdown-header-icon" style={{ background: "linear-gradient(135deg, #1e293b, #0f172a)" }}>
-                              <User className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="dropdown-text-group">
-                              <h4 className="dropdown-header-title">Profile & Settings</h4>
-                              <p className="dropdown-header-subtitle">Manage account & password</p>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-menu-list">
-                            {[
-                              { id: "UserProfile", label: "Profile", desc: "View & edit your profile details", num: "01" },
-                              { id: "ChangePassword", label: "Change Password", desc: "Update account access password", num: "02" }
-                            ].map((subOption) => {
-                              const isSubActive = activeTab === subOption.id;
-                              return (
-                                <button
-                                  key={subOption.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTab(subOption.id);
-                                    setProfileDropdownOpen(false);
-                                  }}
-                                  className={`dropdown-item ${isSubActive ? "active-submenu" : ""}`}
-                                >
-                                  <div className="dropdown-item-left">
-                                    <div className="dropdown-item-badge">
-                                      {subOption.num}
-                                    </div>
-                                    <div className="dropdown-text-group">
-                                      <span className="dropdown-label">{subOption.label}</span>
-                                      <span className="dropdown-description">{subOption.desc}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="dropdown-arrow" />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
+      <nav className="dept-dash-nav">
+        <div className="dept-dash-container">
+          <ul className="dept-nav-list" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+            {navItems.map((item, idx) => (
+              <li 
+                key={idx} 
+                className={`dept-nav-item ${item.active ? 'is-active' : ''} ${item.hasDropdown ? 'has-dropdown' : ''}`}
+                style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative" }}
+              >
+                <a 
+                  href="#" 
+                  className={`dept-nav-link ${item.isLogout ? 'hover:bg-red-700/40 hover:text-red-200 text-rose-300 transition-colors duration-200' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (item.isLogout) {
+                      onLogout();
+                    } else if (!item.hasDropdown) {
                       setActiveTab(item.id);
-                      setLicenseDropdownOpen(false);
-                    }}
-                    className={`sidebar-btn ${isActive ? "active" : ""}`}
-                    style={{ width: "190px", flexShrink: 0 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span className="text-[15px] font-semibold">{item.label}</span>
-                    </div>
-
-                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                    }
+                  }}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem", width: "100%", textTransform: "uppercase" }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                  {item.hasDropdown && <ChevronDown className="w-3 h-3 ml-1" />}
+                </a>
+                {item.items && (
+                  <div className="dept-dropdown-menu">
+                    {item.items.map((subItem, sIdx) => (
+                      <div key={sIdx} className="dept-dropdown-item">
+                        <a 
+                          href="#" 
+                          className={`dept-dropdown-link ${activeTab === subItem.id ? 'bg-slate-100 text-brand-blue font-bold border-l-3 border-[#012a52]' : ''}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setActiveTab(subItem.id);
+                          }}
+                        >
+                          <span>{subItem.label}</span>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
-
-      </div>
-    </header>
+      </nav>
+    </div>
   );
 };
-
 
 export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const [activeTab, setActiveTab] = useState("Home");
