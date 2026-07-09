@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
 using backend.Core.Entities.Licence;
+using backend.Core.Entities.Department;
 
 namespace backend.Infrastructure.Data
 {
@@ -60,6 +61,13 @@ namespace backend.Infrastructure.Data
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottlers { get; set; }
         public DbSet<MstLiquorState> MstLiquorStates { get; set; }
+        public DbSet<DepartmentUsers> DepartmentUsers { get; set; }
+        public DbSet<MstRoles> MstRoles { get; set; }
+
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
@@ -233,6 +241,33 @@ namespace backend.Infrastructure.Data
                     x.LiquorTypeCode,
                     x.LiquorBrandCode
                 });
+
+            modelBuilder.Entity<DeptUserRoles>().ToTable("DeptUserRoles");
+            modelBuilder.Entity<DeptUserRoles>()
+                .HasIndex(x => new { x.UserId, x.RoleId })
+                .IsUnique();
+            modelBuilder.Entity<DeptUserRoles>().ToTable("DeptUserRoles");
+            modelBuilder.Entity<DeptUserRoles>()
+                .HasOne(x => x.DepartmentUsers)
+                .WithMany(x => x.DeptUserRoles)
+                .HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<DeptUserRoles>().ToTable("DeptUserRoles");
+            modelBuilder.Entity<DeptUserRoles>()
+                .HasOne(x => x.MstRoles)
+                .WithMany(x => x.DeptUserRoles)
+                .HasForeignKey(x => x.RoleId);
+            modelBuilder.Entity<DepartmentUsers>().ToTable("DepartmentUsers");
+            modelBuilder.Entity<DepartmentUsers>()
+                .HasIndex(x => x.UserId)
+                .IsUnique();
+            modelBuilder.Entity<DepartmentUsers>().ToTable("DepartmentUsers");
+            modelBuilder.Entity<DepartmentUsers>()
+                .HasIndex(x => x.Email)
+                .IsUnique();
+            modelBuilder.Entity<MstRoles>().ToTable("MstRoles");
+            modelBuilder.Entity<MstRoles>()
+                .HasIndex(x => x.RoleName)
+                .IsUnique();
 
             base.OnModelCreating(modelBuilder);
              
