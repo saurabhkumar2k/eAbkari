@@ -19,9 +19,11 @@ namespace backend.Core.Entities.Licence
         [Column(TypeName = "VARCHAR(50)")]
         public string? IPAddress { get; set; }
 
-        [StringLength(50)]
-        [Column(TypeName = "NVARCHAR(50)")]
-        public string? Regnumber { get; set; }
+        // [StringLength(50)]
+        // [Column(TypeName = "NVARCHAR(50)")]
+        // public string? RegId { get; set; }
+        [Column(TypeName = "INT")]
+        public int RegId { get; set; }
 
         [Key]
         [Required]
@@ -140,7 +142,7 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(1)]
         [Column(TypeName = "CHAR(1)")]
-        public string? LicenseGenerate { get; set; }
+        public string? IsLicenseGenerated { get; set; }
 
         [StringLength(1)]
         [Column(TypeName = "CHAR(1)")]
@@ -178,7 +180,7 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(1)]
         [Column(TypeName = "CHAR(1)")]
-        public string? LicenseApplicationSubmitYN { get; set; }
+        public string? IsApplicationCompleted { get; set; }
 
         public int? HoursofSale { get; set; }
 
