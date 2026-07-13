@@ -578,7 +578,7 @@ await fetchApplicantSubdivisions(data.district);
 
 
 const handleNextStep = async () => {
-
+debugger;
   if (!validateStep(currentStep)) {
     if (showToast) {
       showToast(
