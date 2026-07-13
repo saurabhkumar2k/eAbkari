@@ -102,8 +102,11 @@ public class LiquorBrandController : ControllerBase
     }
 
     // Liquor Measure Dropdown
-   [HttpGet("LiquorMeasure/{catCode}/{kindCode}/{typeCode}")]
-public async Task<IActionResult> GetLiquorMeasure(string catCode,string kindCode,string typeCode)
+  [HttpGet("LiquorMeasure/{catCode}/{kindCode}/{typeCode}")]
+public async Task<IActionResult> GetLiquorMeasure(
+    string catCode,
+    string kindCode,
+    string typeCode)
 {
     var data = await _repository.GetLiquorMeasureAsync(
         catCode,
@@ -118,6 +121,10 @@ public async Task<IActionResult> GetLiquorMeasure(string catCode,string kindCode
         });
     }
 
-    return Ok(data);
+    var measures = data
+        .Select(x => x.MeasureLower?.Trim())
+        .ToList();
+
+    return Ok(measures);
 }
 }

@@ -33,6 +33,20 @@ namespace backend.API.Controllers
             return Ok(data);
         }
 
+        [HttpGet("lookup")]
+        public async Task<IActionResult> GetByCodeQuery([FromQuery] string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+                return BadRequest("code is required");
+
+            var data = await _repository.GetByCodeAsync(code);
+
+            if (data == null)
+                return NotFound();
+
+            return Ok(data);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Save(MstLiquorBottler model)
         {

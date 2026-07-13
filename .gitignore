@@ -33,3 +33,8 @@ Thumbs.db
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Core.dll
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Core.dll
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Core.pdb
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Infrastructure.dll
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Infrastructure.pdb

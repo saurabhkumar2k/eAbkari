@@ -61,6 +61,7 @@ namespace backend.Infrastructure.Data
         public DbSet<MstLiquorBottler> MstLiquorBottler { get; set; }
         public DbSet<MstLiquorBottler> MstLiquorBottlers { get; set; }
         public DbSet<MstLiquorState> MstLiquorStates { get; set; }
+        public DbSet<MstLiquorStateIpValidity> MstLiquorStateIpValidities { get; set; }
         public DbSet<DepartmentUsers> DepartmentUsers { get; set; }
         public DbSet<MstRoles> MstRoles { get; set; }
 
@@ -91,7 +92,7 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
 
             modelBuilder.Entity<MstLiquorKind>()
-                    .HasKey(x => x.LiquorCatCode);
+                    .HasKey(x => x.ID);
 
 
 
@@ -103,20 +104,29 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<MstLiquorBottler>().ToTable("MstLiquorBottler");
             modelBuilder.Entity<MstLiquorBottler>().HasKey(x => x.LiquorBottlerCode);
+            modelBuilder.Entity<MstLiquorBottler>().Ignore(x => x.OldBottlerId);
+
+            modelBuilder.Entity<MstLiquorStateIpValidity>().ToTable("MstLiquorStateIPValidity");
+            modelBuilder.Entity<MstLiquorStateIpValidity>().HasKey(x => x.ID);
 
             modelBuilder.Entity<MstLicenseeCategory>().ToTable("MstLicenseeCategory");
             modelBuilder.Entity<MstLicenseeCategory>()
                     .HasKey(x => x.LicenseeCatCode);
 
                     
-            modelBuilder.Entity<MstLiquorMeasure>().ToTable("MstLiquorMeasure");
-            modelBuilder.Entity<MstLiquorMeasure>()
-                    .HasKey(x => x.LiquorCatCode);
+        modelBuilder.Entity<MstLiquorMeasure>()
+    .HasKey(x => new
+    {
+        x.LiquorCatCode,
+        x.LiquorKindCode,
+        x.LiquorTypeCode,
+        x.MeasureCode
+    });
 
 
-            modelBuilder.Entity<MstLiquorType>().ToTable("MstLiquorType");
+            //modelBuilder.Entity<MstLiquorType>().ToTable("MstLiquorType");
             modelBuilder.Entity<MstLiquorType>()
-                    .HasKey(x => x.LiquorCatCode);
+                    .HasKey(x => x.ID);
 
 
                 modelBuilder.Entity<MstUsReg>().ToTable("MstUsReg");
