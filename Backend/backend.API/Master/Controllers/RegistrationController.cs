@@ -92,7 +92,8 @@ model.Photo = Path.Combine("Photo_", fileName);
     {
         Success = true,
         RegId = regId,
-        PhotoPath = model.Photo
+        PhotoPath = model.Photo,
+        userId = model.UserId
     });
 }
 

@@ -1,7 +1,7 @@
 
 
 import React, { useState,useRef, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
  import { 
    UserSvg, 
@@ -31,7 +31,7 @@ const [questions, setQuestions] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState("");
   const [errors, setErrors] = useState({});
- 
+ const navigate = useNavigate();
   const fileRef = useRef(null);
   const [formData, setFormData] = useState({
     FirstName: '',
@@ -51,7 +51,7 @@ const [questions, setQuestions] = useState([]);
     photo: '',
     SecretQuestionId: '',
     SecretAnswer: '',
-    IsPunishableOffence: false
+    IsPunishableOffence: 'N'
   });
 
 
@@ -172,6 +172,7 @@ const handleSubmit = async (e) => {
 formDataToSend.set(
   "IsPunishableOffence",
   formData.IsPunishableOffence
+  
 );
 
 // Check all values being sent
@@ -185,7 +186,20 @@ for (const [key, value] of formDataToSend.entries()) {
       formDataToSend
     );
 
-    alert(`Registration successful! Reg ID: ${response.data.regId}`);
+//     alert(`Registration successful! Reg ID: ${response.data.regId}`);
+
+// alert(`Registration successful! Reg ID: ${response.data.regId}, User ID: ${response.data.userId}`);
+
+
+alert(
+  `Registration Successful!\n\n Your Registration ID: ${response.data.regId},\n\n Your User ID: ${response.data.userId}`
+);
+
+// navigate("/login");
+
+setTimeout(() => {
+  navigate("/Login");
+}, 2000);
 
     // Reset all fields to blank/default values
     setFormData({
@@ -207,7 +221,8 @@ for (const [key, value] of formDataToSend.entries()) {
       PanNo: "",
       SecretQuestionId: "",
       SecretAnswer: "",
-      IsPunishableOffence: "N"
+      IsPunishableOffence: "N",
+      UserId: "",
     });
 
     // Optional: clear dependent dropdown data if you use them

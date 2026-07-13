@@ -1,6 +1,30 @@
 import React from "react";
 import "../Style/ApplyLicense.css";
 
+import {
+  Warehouse,
+  Building2,
+  Home,
+  User,
+  ChevronDown,
+  MapPinned,
+
+  Hash,
+  Map,
+  Shield,
+  Mail, Phone, PhoneCall,
+  FileText,
+  Calendar,
+  Clock3
+
+
+
+ 
+} from "lucide-react";
+
+
+
+
 const WarehouseDetails = ({
   applicant,
   states = [],
@@ -22,363 +46,586 @@ const WarehouseDetails = ({
       </div>
 
       {/* ================= BASIC ================= */}
-      <div className="card-section">
-        <h3>Basic Details</h3>
 
-        <div className="grid-3">
+<div className="card-section">
+  <h3>Basic Details</h3>
 
-          <Field icon="🏬" label="Warehouse Name *">
-            <input
-              placeholder=" "
-              value={applicant.warehouseName || ""}
-              onChange={(e) => onChange("warehouseName", e.target.value)}
-            />
-          </Field>
+  <div className="form-grid">
 
-          <Field icon="🏠" label="Address Line 1 *">
-            <input
-              placeholder=" "
-              value={applicant.warehouseAddress1 || ""}
-              onChange={(e) => onChange("warehouseAddress1", e.target.value)}
-            />
-          </Field>
+    <div className="reg-field">
+      <label className="reg-label">
+        Warehouse Name <span className="required">*</span>
+      </label>
 
-          <Field icon="📍" label="Address Line 2">
-            <input
-              placeholder=" "
-              value={applicant.warehouseAddress2 || ""}
-              onChange={(e) => onChange("warehouseAddress2", e.target.value)}
-            />
-          </Field>
-
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Warehouse className="w-4 h-4 text-blue-600" />
         </div>
+
+        <input
+          className="reg-input"
+          value={applicant.warehouseName || ""}
+          onChange={(e) => onChange("warehouseName", e.target.value)}
+        />
       </div>
+    </div>
+
+<div className="reg-field">
+  <label className="reg-label">
+    Address Line 1 <span className="required">*</span>
+  </label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <Home className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      type="text"
+      className="reg-input"
+      value={applicant.warehouseAddress1 || ""}
+      onChange={(e) => onChange("warehouseAddress1", e.target.value)}
+      placeholder="Enter Address Line 1"
+    />
+  </div>
+</div>
+
+<div className="reg-field">
+  <label className="reg-label">
+    Address Line 2 <span className="required">*</span>
+  </label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <Home className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      type="text"
+      className="reg-input"
+      value={applicant.warehouseAddress2 || ""}
+      onChange={(e) => onChange("warehouseAddress2", e.target.value)}
+      placeholder="Enter Address Line 2"
+    />
+  </div>
+</div>
+
+    
+  </div>
+</div>
+
+
+
+
+
 
       {/* ================= LOCATION ================= */}
-      <div className="card-section address-box">
-        <h3>📍 Location Details</h3>
+      <div className="card-section">
+  <h3>Location Details</h3>
 
-        <div className="grid-3">
+  <div className="form-grid">
 
-          <Field icon="🌏" label="State *">
-            {/* <select
-              value={applicant.warehouseState || ""}
-              onChange={(e) => {
-                onChange("warehouseState", e.target.value);
-                onChange("warehouseDistrict", "");
-              }}
-            >
-              <option value=""></option>
-              {states.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select> */}
+    {/* State */}
+    <div className="reg-field">
+      <label className="reg-label">
+        State <span className="required">*</span>
+      </label>
 
-<select
-  name="state"
-  value={applicant.warehouseState || ""}
-  onChange={(e) => onChange("warehouseState", e.target.value)}
->
-  <option value="">Select State</option>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <MapPinned className="w-4 h-4 text-blue-600" />
+        </div>
 
-  {states.map((state) => (
-    <option key={state.sid} value={state.stateCode}>
-      {state.stateName}
-    </option>
-  ))}
-</select>
+        <select
+          className="reg-select"
+          name="state"
+          value={applicant.warehouseState || ""}
+          onChange={(e) => onChange("warehouseState", e.target.value)}
+        >
+          <option value="">Select State</option>
 
+          {states.map((state) => (
+            <option key={state.sid} value={state.stateCode}>
+              {state.stateName}
+            </option>
+          ))}
+        </select>
 
-
-          </Field>
-
-          <Field icon="🏙️" label="District *">
-            {/* <select
-              value={applicant.warehouseDistrict || ""}
-              onChange={(e) =>
-                onChange("warehouseDistrict", e.target.value)
-              }
-            >
-              <option value=""></option>
-              {districts.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))}
-            </select> */}
-
-
- <select
-  value={applicant.warehouseDistrict || ""}
-  disabled={!applicant.warehouseState}
-  onChange={(e) => onChange("warehouseDistrict", e.target.value)}
-   //onChange={(e) => { handleChange(e);fetchSubDivisions(e.target.value)}}
->
-  <option value="">Select District</option>
-
-  {(districts || []).map((d) => (
-  <option key={d.did} value={d.districtCode}>
-  {d.districtName}
-</option>
-  ))}
-</select>
-
-
-
-
-
-          </Field>
-
-          <Field icon="📮" label="PIN Code *">
-            <input
-              maxLength={6}
-              placeholder=" "
-              value={applicant.warehousePin || ""}
-              onChange={(e) =>
-                onChange("warehousePin", e.target.value.replace(/\D/g, ""))
-              }
-            />
-          </Field>
-
-  <Field icon="🏢" label="Sub Division">
-
-  {/* <select
-    value={applicant.warehouseSubDivision || ""}
-    onChange={(e) =>
-      onChange("warehouseSubDivision", e.target.value)
-    }
-  >
-    <option value="">Select Sub Division</option>
-
-    {subDivisions.map((s) => (
-      <option key={s.id} value={s.id}>
-        {s.name}
-      </option>
-    ))}
-  </select> */}
-
-
- <select
-  value={applicant.WarehouseSubDivision || ""}
-  onChange={(e) => onChange("WarehouseSubDivision", e.target.value)}
->
-  <option value="">Select Sub Division</option>
-
-  {(subDivisions || []).map((s) => (
-    <option
-      key={s.subDivisionCode}
-      value={s.subDivisionCode}
-    >
-      {s.subDivisionName}
-    </option>
-  ))}
-</select>
-
-</Field>
-
-          <Field icon="🚓" label="Police Station">
-<select
-  value={applicant.WarehousePoliceStation || ""}
-  onChange={(e) => onChange("WarehousePoliceStation", e.target.value)}
->
-  <option value="">Select Police Station</option>
-
-  {(policeStations || []).map((p) => (
-    <option key={p.psCode} value={p.psCode}>
-      {p.psName}
-    </option>
-  ))}
-</select>
-          </Field>
-
-          {/* <Field icon="📍" label="Constituency">
-            <input
-              placeholder=" "
-              value={applicant.warehouseConstituency || ""}
-              onChange={(e) =>
-                onChange("warehouseConstituency", e.target.value)
-              }
-            />
-          </Field> */}
-
-          {/* <Field icon="🏷️" label="Ward Name">
-            <input
-              placeholder=" "
-              value={applicant.WarehouseWardName || ""}
-              onChange={(e) =>
-                onChange("WarehouseWardName", e.target.value)
-              }
-            />
-          </Field> */}
-
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+    </div>
+
+    {/* District */}
+    <div className="reg-field">
+      <label className="reg-label">
+        District <span className="required">*</span>
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building2 className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <select
+          className="reg-select"
+          value={applicant.warehouseDistrict || ""}
+          disabled={!applicant.warehouseState}
+          onChange={(e) => onChange("warehouseDistrict", e.target.value)}
+        >
+          <option value="">Select District</option>
+
+          {(districts || []).map((d) => (
+            <option key={d.did} value={d.districtCode}>
+              {d.districtName}
+            </option>
+          ))}
+        </select>
+
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
+    </div>
+
+    {/* PIN */}
+    <div className="reg-field">
+      <label className="reg-label">
+        PIN Code <span className="required">*</span>
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Hash className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          maxLength={6}
+          value={applicant.warehousePin || ""}
+          onChange={(e) =>
+            onChange("warehousePin", e.target.value.replace(/\D/g, ""))
+          }
+          placeholder="Enter PIN Code"
+        />
+      </div>
+    </div>
+
+    {/* Sub Division */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Sub Division
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Map className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <select
+          className="reg-select"
+          value={applicant.WarehouseSubDivision || ""}
+          onChange={(e) => onChange("WarehouseSubDivision", e.target.value)}
+        >
+          <option value="">Select Sub Division</option>
+
+          {(subDivisions || []).map((s) => (
+            <option
+              key={s.subDivisionCode}
+              value={s.subDivisionCode}
+            >
+              {s.subDivisionName}
+            </option>
+          ))}
+        </select>
+
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
+    </div>
+
+    {/* Police Station */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Police Station
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Shield className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <select
+          className="reg-select"
+          value={applicant.WarehousePoliceStation || ""}
+          onChange={(e) => onChange("WarehousePoliceStation", e.target.value)}
+        >
+          <option value="">Select Police Station</option>
+
+          {(policeStations || []).map((p) => (
+            <option key={p.psCode} value={p.psCode}>
+              {p.psName}
+            </option>
+          ))}
+        </select>
+
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
       {/* ================= CONTACT ================= */}
-      <div className="card-section contact-box">
-        <h3>📞 Contact Details</h3>
+     <div className="card-section">
+  <h3>Contact Details</h3>
 
-        <div className="grid-3">
+  <div className="form-grid">
 
-          <Field icon="📧" label="Email">
-            <input
-              type="email"
-              placeholder=" "
-              value={applicant.warehouseEmail || ""}
-              onChange={(e) =>
-                onChange("warehouseEmail", e.target.value)
-              }
-            />
-          </Field>
+    {/* Email */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Email
+      </label>
 
-          <Field icon="📱" label="Mobile">
-            <input
-              maxLength={10}
-              placeholder=" "
-              value={applicant.warehouseMobile || ""}
-              onChange={(e) =>
-                onChange("warehouseMobile", e.target.value.replace(/\D/g, ""))
-              }
-            />
-          </Field>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Mail className="w-4 h-4 text-blue-600" />
+        </div>
 
-          <Field icon="☎️" label="Landline">
-            <input
-              placeholder=" "
-              value={applicant.warehouseLandline || ""}
-              onChange={(e) =>
-                onChange("warehouseLandline", e.target.value.replace(/\D/g, ""))
-              }
-            />
-          </Field>
+        <input
+          type="email"
+          className="reg-input"
+          placeholder="Enter Email"
+          value={applicant.warehouseEmail || ""}
+          onChange={(e) =>
+            onChange("warehouseEmail", e.target.value)
+          }
+        />
+      </div>
+    </div>
 
-          {/* <Field icon="📠" label="FAX">
-            <input
-              placeholder=" "
-              value={applicant.warehouseFAX || ""}
-              onChange={(e) =>
-                onChange("warehouseFAX", e.target.value.replace(/\D/g, ""))
-              }
-            />
-          </Field> */}
+    {/* Mobile */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Mobile
+      </label>
 
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Phone className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          maxLength={10}
+          placeholder="Enter Mobile Number"
+          value={applicant.warehouseMobile || ""}
+          onChange={(e) =>
+            onChange(
+              "warehouseMobile",
+              e.target.value.replace(/\D/g, "")
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* Landline */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Landline
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <PhoneCall className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          placeholder="Enter Landline Number"
+          value={applicant.warehouseLandline || ""}
+          onChange={(e) =>
+            onChange(
+              "warehouseLandline",
+              e.target.value.replace(/\D/g, "")
+            )
+          }
+        />
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div className="card-section">
+  <h3>Additional Details of Warehouse</h3>
+
+  <div className="form-grid">
+
+    {/* Whether License Premise */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Whether License Premise is
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building2 className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <select
+          className="reg-select"
+          value={applicant.LeasePremise || ""}
+          onChange={(e) => onChange("LeasePremise", e.target.value)}
+        >
+          <option value="">Select</option>
+          <option value="Owned">Owned</option>
+          <option value="Leased">Leased</option>
+          <option value="Rented">Rented</option>
+        </select>
+
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
         </div>
       </div>
-
-
-
- <div className="section-card">
-  <h3 className="section-title">Additional Details of Warehouse</h3>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Whether License Premise is</label>
-      <select
-        value={applicant.LeasePremise || ""}
-        onChange={(e) => onChange("LeasePremise", e.target.value)}
-      >
-        <option value="">Select</option>
-        <option value="Owned">Owned</option>
-        <option value="Leased">Leased</option>
-        <option value="Rented">Rented</option>
-      </select>
     </div>
 
-    <div className="form-item">
-      <label>Lease / Sale / Rent Registration No</label>
-      <input
-        value={applicant.LeaseRegistration || ""}
-        onChange={(e) => onChange("LeaseRegistration", e.target.value)}
-      />
+    {/* Lease Registration */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Lease / Sale / Rent Registration No
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileText className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          className="reg-input"
+          value={applicant.LeaseRegistration || ""}
+          onChange={(e) =>
+            onChange("LeaseRegistration", e.target.value)
+          }
+        />
+      </div>
     </div>
 
-    <div className="form-item">
-      <label>Registration Date</label>
-      <input
-        type="date"
-        value={applicant.LeaseRegistrationDate || ""}
-        onChange={(e) => onChange("LeaseRegistrationDate", e.target.value)}
-      />
+    {/* Registration Date */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Registration Date
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={applicant.LeaseRegistrationDate || ""}
+          onChange={(e) =>
+            onChange("LeaseRegistrationDate", e.target.value)
+          }
+        />
+      </div>
     </div>
+
+    {/* Expiration Date */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Expiration Date
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={applicant.LeaseRegistrationExpiryDate || ""}
+          onChange={(e) =>
+            onChange("LeaseRegistrationExpiryDate", e.target.value)
+          }
+        />
+      </div>
+    </div>
+
+    {/* Architect Registration */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Architect Reg. No
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileText className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          className="reg-input"
+          value={applicant.ArchitectRegistrationNo || ""}
+          onChange={(e) =>
+            onChange("ArchitectRegistrationNo", e.target.value)
+          }
+        />
+      </div>
+    </div>
+
+    {/* Architect Valid Upto */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Architect Valid Upto
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={applicant.ArchitectRegistrationNoValidUpto || ""}
+          onChange={(e) =>
+            onChange(
+              "ArchitectRegistrationNoValidUpto",
+              e.target.value
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* Super Area */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Super Area (sq ft)
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building2 className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          placeholder="Enter Super Area"
+          value={applicant.SuperAreaofLicensePremise || ""}
+          onChange={(e) =>
+            onChange(
+              "SuperAreaofLicensePremise",
+              e.target.value.replace(/\D/g, "")
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* Carpet Area */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Carpet Area (sq ft)
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building2 className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          placeholder="Enter Carpet Area"
+          value={applicant.CarpetAreaofLicensePremise || ""}
+          onChange={(e) =>
+            onChange(
+              "CarpetAreaofLicensePremise",
+              e.target.value.replace(/\D/g, "")
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* Distance */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Distance from CP (KM)
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <MapPinned className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          placeholder="Enter Distance"
+          value={applicant.DistanceofDistillery || ""}
+          onChange={(e) =>
+            onChange(
+              "DistanceofDistillery",
+              e.target.value.replace(/\D/g, "")
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* Hours of Sale */}
+    <div className="reg-field">
+      <label className="reg-label">
+        Hours of Sale
+      </label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Clock3 className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <select
+          className="reg-select"
+          value={applicant.HoursofSale || ""}
+          onChange={(e) => onChange("HoursOfSale", e.target.value)}
+        >
+          <option value="">Select</option>
+          <option value="9-5">9 AM - 5 PM</option>
+          <option value="8-8">8 AM - 8 PM</option>
+          <option value="10-6">10 AM - 6 PM</option>
+        </select>
+
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <div className="form-row">
-    <div className="form-item">
-      <label>Expiration Date</label>
-      <input
-        type="date"
-        value={applicant.LeaseRegistrationExpiryDate || ""}
-        onChange={(e) => onChange("LeaseRegistrationExpiryDate", e.target.value)}
-      />
-    </div>
 
-    <div className="form-item">
-      <label>Architect Reg. No</label>
-      <input
-        value={applicant.ArchitectRegistrationNo || ""}
-        onChange={(e) => onChange("ArchitectRegistrationNo", e.target.value)}
-      />
-    </div>
 
-    <div className="form-item">
-      <label>Architect Valid Upto</label>
-      <input
-        type="date"
-        value={applicant.ArchitectRegistrationNoValidUpto || ""}
-        onChange={(e) => onChange("ArchitectRegistrationNoValidUpto", e.target.value)}
-      />
-    </div>
-  </div>
 
-  <div className="form-row">
-    <div className="form-item">
-      <label>Super Area (sq ft)</label>
-      <input
-        value={applicant.SuperAreaofLicensePremise || ""}
-        onChange={(e) =>
-          onChange("SuperAreaofLicensePremise", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
 
-    <div className="form-item">
-      <label>Carpet Area (sq ft)</label>
-      <input
-        value={applicant.CarpetAreaofLicensePremise || ""}
-        onChange={(e) =>
-          onChange("CarpetAreaofLicensePremise", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
 
-    <div className="form-item">
-      <label>Distance from CP (KM)</label>
-      <input
-        value={applicant.DistanceofDistillery || ""}
-        onChange={(e) =>
-          onChange("DistanceofDistillery", e.target.value.replace(/\D/g, ""))
-        }
-      />
-    </div>
-  </div>
-
-  <div className="form-row">
-    <div className="form-item">
-      <label>Hours of Sale</label>
-      <select
-        value={applicant.HoursofSale || ""}
-        onChange={(e) => onChange("HoursOfSale", e.target.value)}
-      >
-        <option value="">Select</option>
-        <option value="9-5">9 AM - 5 PM</option>
-        <option value="8-8">8 AM - 8 PM</option>
-        <option value="10-6">10 AM - 6 PM</option>
-      </select>
-    </div>
-  </div>
-</div> 
 
 
 

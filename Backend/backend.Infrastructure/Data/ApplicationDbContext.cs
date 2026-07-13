@@ -37,7 +37,7 @@ namespace backend.Infrastructure.Data
         public DbSet<LicenseCompanyDetails> LicenseCompanyDetails { get; set; }
         public DbSet<LicenseApplication> LicenseApplications { get; set; }
 
-        public DbSet<AdditionalCompanyPartnersDetails> AdditionalCompanyPartnersDetails { get; set; }
+        public DbSet<ApplicantLicensePartnersDetails> ApplicantLicensePartnersDetails { get; set; }
 
         public DbSet<LicenseApplicationUploadedDocument> LicenseApplicationUploadedDocument { get; set; }
 
@@ -174,9 +174,9 @@ namespace backend.Infrastructure.Data
 
 
 
-            modelBuilder.Entity<AdditionalCompanyPartnersDetails>()
-                .ToTable("AdditionalCompanyPartnersDetails");
-            modelBuilder.Entity<AdditionalCompanyPartnersDetails>()
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+                .ToTable("ApplicantLicensePartnersDetails");
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
                 .HasKey(x => x.ID);
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()

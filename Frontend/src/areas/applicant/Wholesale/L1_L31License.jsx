@@ -32,7 +32,19 @@ import {
   Info,
   DollarSign,
   Printer,
-  Sparkles
+  Sparkles,
+  Building,
+  FileText,
+  Hash,
+  FileBadge,
+  ReceiptText,
+  ChevronDown,
+ Shield ,
+  Eye,
+  RefreshCw,
+  Trash2
+  
+ 
 } from "lucide-react";
 
 
@@ -1066,100 +1078,167 @@ if (currentStep === 5) {
 
 {/* ================= ADDITIONAL WAREHOUSE DETAILS ================= */}
 
-<div className="section-card">
-  <h3 className="section-title">Company / Firm Details </h3>
+<div className="card-section">
+  <h3>Company / Firm Details</h3>
 
-  <div className="form-row">
+  <div className="form-grid">
 
-    <div className="form-item">
-      <label>Company Name</label>
-      <input
-        value={applicant.CompanyName || ""}
-        onChange={(e) =>
-          handleApplicantChange("CompanyName", e.target.value)
-        }
-      />
+    {/* Company Name */}
+    <div className="reg-field">
+      <label className="reg-label">Company Name</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building2 className="w-4 h-4 text-blue-600" />
+        </div>
+        <input
+          type="text"
+          className="reg-input"
+          value={applicant.CompanyName || ""}
+          onChange={(e) =>
+            handleApplicantChange("CompanyName", e.target.value)
+          }
+        />
+      </div>
     </div>
 
+    {/* Constitution Type */}
+    <div className="reg-field">
+      <label className="reg-label">Constitution Type</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Building className="w-4 h-4 text-blue-600" />
+        </div>
 
+        <select
+          className="reg-select"
+          value={applicant.ConstitutionType || ""}
+          onChange={(e) =>
+            handleApplicantChange("ConstitutionType", e.target.value)
+          }
+        >
+          <option value="">Select</option>
 
+          {constitutionTypes.map((item) => (
+            <option
+              key={item.id}
+              value={item.ctid}
+            >
+              {item.constitutionTypeName}
+            </option>
+          ))}
+        </select>
 
-    <div className="form-item">
-      <label>Constitution Type</label>
-
-
-<select
-  value={applicant.ConstitutionType || ""}
-  onChange={(e) =>
-    handleApplicantChange("ConstitutionType", e.target.value)
-  }
->
-  <option value="">Select</option>
-
-  {constitutionTypes.map((item) => (
-    <option
-      key={item.id}
-      value={item.ctid}
-    >
-      {item.constitutionTypeName}
-    </option>
-  ))}
-</select>
+        <div className="reg-input-icon-right">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
     </div>
 
- {applicant.ConstitutionType === "01" && (
-  <div className="form-item">
-    <label>CIN No</label>
-    <input
-      value={applicant.CINNO || ""}
-      onChange={(e) =>
-        handleApplicantChange("CINNO", e.target.value)
-      }
-    />
+    {/* CIN */}
+    {applicant.ConstitutionType === "01" && (
+      <div className="reg-field">
+        <label className="reg-label">CIN No</label>
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <FileText className="w-4 h-4 text-blue-600" />
+          </div>
+
+          <input
+            type="text"
+            className="reg-input"
+            value={applicant.CINNO || ""}
+            onChange={(e) =>
+              handleApplicantChange("CINNO", e.target.value)
+            }
+          />
+        </div>
+      </div>
+    )}
+
+    {/* Registration No */}
+    <div className="reg-field">
+      <label className="reg-label">Registration No</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Hash className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          value={applicant.RegistrationNo || ""}
+          onChange={(e) =>
+            handleApplicantChange("RegistrationNo", e.target.value)
+          }
+        />
+      </div>
+    </div>
+
+    {/* Registration Date */}
+    <div className="reg-field">
+      <label className="reg-label">Registration Date</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={applicant.RegDate || ""}
+          onChange={(e) =>
+            handleApplicantChange("RegDate", e.target.value)
+          }
+        />
+      </div>
+    </div>
+
+    {/* PAN */}
+    <div className="reg-field">
+      <label className="reg-label">PAN No</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <CreditCard className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          value={applicant.companyPan || ""}
+          onChange={(e) =>
+            handleApplicantChange(
+              "companyPan",
+              e.target.value.toUpperCase()
+            )
+          }
+        />
+      </div>
+    </div>
+
+    {/* VAT */}
+    <div className="reg-field">
+      <label className="reg-label">VAT / TIN</label>
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <ReceiptText className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          value={applicant.vatNo || ""}
+          onChange={(e) =>
+            handleApplicantChange("vatNo", e.target.value)
+          }
+        />
+      </div>
+    </div>
+
   </div>
-)}
+</div>
 
-    <div className="form-item">
-      <label>Registration No</label>
-     <input
-  value={applicant.RegistrationNo || ""}
-  onChange={(e) =>
-    handleApplicantChange("RegistrationNo", e.target.value)
-  }
-/>
-    </div>
 
-    <div className="form-item">
-      <label>Registration Date</label>
-      <input
-        type="date"
-        value={applicant.RegDate || ""}
-        onChange={(e) =>
-          handleApplicantChange("RegDate", e.target.value)
-        }
-      />
-    </div>
 
-    <div className="form-item">
-      <label>PAN No</label>
-      <input
-        value={applicant.companyPan || ""}
-        onChange={(e) =>
-          handleApplicantChange("companyPan", e.target.value.toUpperCase())
-        }
-      />
-    </div>
-
-    <div className="form-item">
-      <label>VAT / TIN</label>
-      <input
-        value={applicant.vatNo || ""}
-        onChange={(e) => handleApplicantChange("vatNo", e.target.value)}
-      />
-    </div>
-
-  </div>
-</div> 
 
 
 <DirectorsList
@@ -1171,6 +1250,7 @@ if (currentStep === 5) {
 />
 
  {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
+
 
 
                <div className="form-container">
@@ -1224,68 +1304,143 @@ if (currentStep === 5) {
 
     {/* ================= NOMINEE DETAILS ================= */}
     {nominee.isExciseNominee === "1" && (
-      <div className="card">
-        <div className="card-header">
-          <h3>Nominee Details</h3>
-        </div>
 
-        <div className="grid-3">
-          <input
-            placeholder="Name"
-            value={nominee.ExciseNomineeName}
-            onChange={(e) =>
-              setNominee({ ...nominee, ExciseNomineeName: e.target.value })
-            }
-          />
 
-          <input
-            placeholder="Address"
-            value={nominee.address}
-            onChange={(e) =>
-              setNominee({ ...nominee, address: e.target.value })
-            }
-          />
+  <div className="card-section">
+  <h3>Nominee Details</h3>
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={nominee.ExciseNomineeEmailID}
-            onChange={(e) =>
-              setNominee({ ...nominee, ExciseNomineeEmailID: e.target.value })
-            }
-          />
+  <div className="form-grid">
 
-          <input
-            placeholder="Mobile"
-            maxLength={10}
-            value={nominee.ExciseNomineeMobileNo}
-            onChange={(e) =>
-              setNominee({
-                ...nominee,
-                ExciseNomineeMobileNo: e.target.value.replace(/\D/g, "")
-              })
-            }
-          />
+<div className="reg-field">
+  <label className="reg-label">Name</label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <User className="w-4 h-4 text-blue-600" />
+    </div>
 
     <input
-  placeholder="PAN"
-  value={nominee.ExciseNomineePAN || ""}
-  onChange={(e) =>
-    setNominee({
-      ...nominee,
-      ExciseNomineePAN: e.target.value.toUpperCase(),
-    })
-  }
-/>
+      className="reg-input"
+      value={nominee.ExciseNomineeName}
+      onChange={(e) =>
+        setNominee({
+          ...nominee,
+          ExciseNomineeName: e.target.value,
+        })
+      }
+    />
+  </div>
+</div>
 
-{/* FILE */}
- <div className="form-item full">
-  <label>PAN Proof</label>
+<div className="reg-field">
+  <label className="reg-label">Address</label>
 
-  <div className="file-modern">
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <MapPin className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      className="reg-input"
+      value={nominee.address}
+      onChange={(e) =>
+        setNominee({
+          ...nominee,
+          address: e.target.value,
+        })
+      }
+    />
+  </div>
+</div>
+
+<div className="reg-field">
+  <label className="reg-label">Email</label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <Mail className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      type="email"
+      className="reg-input"
+      value={nominee.ExciseNomineeEmailID}
+      onChange={(e) =>
+        setNominee({
+          ...nominee,
+          ExciseNomineeEmailID: e.target.value,
+        })
+      }
+    />
+  </div>
+</div>
+
+
+<div className="reg-field">
+  <label className="reg-label">Mobile</label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <Phone className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      className="reg-input"
+      maxLength={10}
+      value={nominee.ExciseNomineeMobileNo}
+      onChange={(e) =>
+        setNominee({
+          ...nominee,
+          ExciseNomineeMobileNo: e.target.value.replace(/\D/g, ""),
+        })
+      }
+    />
+  </div>
+</div>
+
+
+<div className="reg-field">
+  <label className="reg-label">PAN</label>
+
+  <div className="reg-input-group">
+    <div className="reg-input-icon">
+      <CreditCard className="w-4 h-4 text-blue-600" />
+    </div>
+
+    <input
+      className="reg-input"
+      value={nominee.ExciseNomineePAN || ""}
+      onChange={(e) =>
+        setNominee({
+          ...nominee,
+          ExciseNomineePAN: e.target.value.toUpperCase(),
+        })
+      }
+    />
+  </div>
+</div>
+
+<div className="reg-field">
+  <label className="reg-label">PAN Proof</label>
+
+  <div className="reg-input-group">
+
+    <div className="reg-input-icon">
+      <Upload className="w-4 h-4 text-blue-600" />
+    </div>
+
     {!nominee.ExciseNomineePanImage ? (
-      <label className="upload-box">
-        📄 Upload
+      <label
+        className="reg-input"
+        style={{
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          color: "#64748b",
+        }}
+      >
+        Choose File
+
         <input
           type="file"
           hidden
@@ -1300,14 +1455,22 @@ if (currentStep === 5) {
       </label>
     ) : (
       <>
-        <span className="file-name">
-          {nominee.ExciseNomineePanImage.name}
-        </span>
+        <input
+          className="reg-input"
+          value={nominee.ExciseNomineePanImage.name}
+          readOnly
+        />
 
-        <div className="file-actions">
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginLeft: "10px",
+          }}
+        >
           <button
             type="button"
-            className="btn-view"
+            className="btn btn-light"
             onClick={() =>
               window.open(
                 URL.createObjectURL(nominee.ExciseNomineePanImage),
@@ -1315,11 +1478,12 @@ if (currentStep === 5) {
               )
             }
           >
-            👁
+            <Eye size={16} />
           </button>
 
-          <label className="btn-replace">
-            🔄
+          <label className="btn btn-light" style={{ margin: 0 }}>
+            <RefreshCw size={16} />
+
             <input
               type="file"
               hidden
@@ -1335,7 +1499,7 @@ if (currentStep === 5) {
 
           <button
             type="button"
-            className="btn-delete"
+            className="btn btn-danger"
             onClick={() =>
               setNominee({
                 ...nominee,
@@ -1343,140 +1507,311 @@ if (currentStep === 5) {
               })
             }
           >
-            ❌
+            <Trash2 size={16} />
           </button>
         </div>
       </>
     )}
+
   </div>
 </div>
+
+
+
+
+       
         </div>
       </div>
     )}
 
     {/* ================= FSSAI ================= */}
-    <div className="card">
-      <div className="card-header">
-        <h3>FSSAI Licence</h3>
-      </div>
+   <div className="card-section">
+  <h3>FSSAI Licence</h3>
 
-      <div className="grid-3">
+  <div className="form-grid">
+
+    {/* Licence No */}
+    <div className="reg-field">
+      <label className="reg-label">Licence No</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileText className="w-4 h-4 text-blue-600" />
+        </div>
+
         <input
-          placeholder="Licence No"
+          type="text"
+          className="reg-input"
           value={fssai.FSSAILicenceNo}
           onChange={(e) =>
-            setFssai({ ...fssai, FSSAILicenceNo: e.target.value })
+            setFssai({
+              ...fssai,
+              FSSAILicenceNo: e.target.value,
+            })
           }
         />
+      </div>
+    </div>
+
+    {/* Start Date */}
+    <div className="reg-field">
+      <label className="reg-label">Start Date</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
 
         <input
           type="date"
+          className="reg-input"
           value={fssai.FSSAILicenceStartDate}
           onChange={(e) =>
-            setFssai({ ...fssai, FSSAILicenceStartDate: e.target.value })
+            setFssai({
+              ...fssai,
+              FSSAILicenceStartDate: e.target.value,
+            })
           }
         />
+      </div>
+    </div>
+
+    {/* End Date */}
+    <div className="reg-field">
+      <label className="reg-label">End Date</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
 
         <input
           type="date"
+          className="reg-input"
           value={fssai.FSSAILicenceEndDate}
           onChange={(e) =>
-            setFssai({ ...fssai, FSSAILicenceEndDate: e.target.value })
+            setFssai({
+              ...fssai,
+              FSSAILicenceEndDate: e.target.value,
+            })
           }
         />
       </div>
     </div>
+
+  </div>
+</div>
 
     {/* ================= VAT ================= */}
-    <div className="card">
-      <div className="card-header">
-        <h3>VAT / GST</h3>
-      </div>
+  <div className="card-section">
+  <h3>VAT / GST</h3>
 
-      <div className="grid-2">
+  <div className="form-grid">
+
+    {/* Certificate No */}
+    <div className="reg-field">
+      <label className="reg-label">Certificate No</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileText className="w-4 h-4 text-blue-600" />
+        </div>
+
         <input
-          placeholder="Certificate No"
+          type="text"
+          className="reg-input"
           value={vat.VATGSTCertNo}
           onChange={(e) =>
-            setVat({ ...vat, VATGSTCertNo: e.target.value })
+            setVat({
+              ...vat,
+              VATGSTCertNo: e.target.value,
+            })
           }
         />
+      </div>
+    </div>
+
+    {/* Expiry Date */}
+    <div className="reg-field">
+      <label className="reg-label">Expiry Date</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
 
         <input
           type="date"
+          className="reg-input"
           value={vat.VATGSTCertEnddate}
           onChange={(e) =>
-            setVat({ ...vat, VATGSTCertEnddate: e.target.value })
+            setVat({
+              ...vat,
+              VATGSTCertEnddate: e.target.value,
+            })
           }
         />
       </div>
     </div>
+
+  </div>
+</div>
 
     {/* ================= DISTILLERY ================= */}
-    <div className="card">
-      <div className="card-header">
-        <h3>Distillery Licence</h3>
-      </div>
+   <div className="card-section">
+  <h3>Distillery Licence</h3>
 
-      <div className="grid-2">
+  <div className="form-grid">
+
+    {/* Licence No */}
+    <div className="reg-field">
+      <label className="reg-label">Licence No</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileBadge className="w-4 h-4 text-blue-600" />
+        </div>
+
         <input
-          placeholder="Licence No"
+          type="text"
+          className="reg-input"
           value={distillery.DistilleryLicNo}
           onChange={(e) =>
-            setDistillery({ ...distillery, DistilleryLicNo: e.target.value })
+            setDistillery({
+              ...distillery,
+              DistilleryLicNo: e.target.value,
+            })
           }
         />
+      </div>
+    </div>
+
+    {/* Expiry Date */}
+    <div className="reg-field">
+      <label className="reg-label">Expiry Date</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
 
         <input
           type="date"
+          className="reg-input"
           value={distillery.DistilleryLicEnddate}
           onChange={(e) =>
-            setDistillery({ ...distillery, DistilleryLicEnddate: e.target.value })
+            setDistillery({
+              ...distillery,
+              DistilleryLicEnddate: e.target.value,
+            })
           }
         />
       </div>
     </div>
+
+  </div>
+</div>
 
     {/* ================= BWH ================= */}
-    <div className="card">
-      <div className="card-header">
-        <h3>BWH Details</h3>
-      </div>
+  <div className="card-section">
+  <h3>BWH Details</h3>
 
-      <div className="grid-4">
+  <div className="form-grid">
+
+    {/* Insurance No */}
+    <div className="reg-field">
+      <label className="reg-label">Insurance No</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Shield className="w-4 h-4 text-blue-600" />
+        </div>
+
         <input
-          placeholder="Insurance No"
+          type="text"
+          className="reg-input"
           value={bwh.BWHInsuranceNo}
           onChange={(e) =>
-            setBwh({ ...bwh, BWHInsuranceNo: e.target.value })
-          }
-        />
-
-        <input
-          type="date"
-          value={bwh.BWHInsuranceEndDate}
-          onChange={(e) =>
-            setBwh({ ...bwh, BWHInsuranceEndDate: e.target.value })
-          }
-        />
-
-        <input
-          placeholder="Lease No"
-          value={bwh.BWHLeaseRentAgreementNo}
-          onChange={(e) =>
-            setBwh({ ...bwh, BWHLeaseRentAgreementNo: e.target.value })
-          }
-        />
-
-        <input
-          type="date"
-          value={bwh.BWHRentAgreementEndDate}
-          onChange={(e) =>
-            setBwh({ ...bwh, BWHRentAgreementEndDate: e.target.value })
+            setBwh({
+              ...bwh,
+              BWHInsuranceNo: e.target.value,
+            })
           }
         />
       </div>
     </div>
+
+    {/* Insurance Expiry */}
+    <div className="reg-field">
+      <label className="reg-label">Insurance Expiry</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={bwh.BWHInsuranceEndDate}
+          onChange={(e) =>
+            setBwh({
+              ...bwh,
+              BWHInsuranceEndDate: e.target.value,
+            })
+          }
+        />
+      </div>
+    </div>
+
+    {/* Lease Agreement No */}
+    <div className="reg-field">
+      <label className="reg-label">Lease Agreement No</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <FileText className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="text"
+          className="reg-input"
+          value={bwh.BWHLeaseRentAgreementNo}
+          onChange={(e) =>
+            setBwh({
+              ...bwh,
+              BWHLeaseRentAgreementNo: e.target.value,
+            })
+          }
+        />
+      </div>
+    </div>
+
+    {/* Lease Expiry */}
+    <div className="reg-field">
+      <label className="reg-label">Lease Expiry</label>
+
+      <div className="reg-input-group">
+        <div className="reg-input-icon">
+          <Calendar className="w-4 h-4 text-blue-600" />
+        </div>
+
+        <input
+          type="date"
+          className="reg-input"
+          value={bwh.BWHRentAgreementEndDate}
+          onChange={(e) =>
+            setBwh({
+              ...bwh,
+              BWHRentAgreementEndDate: e.target.value,
+            })
+          }
+        />
+      </div>
+    </div>
+
+  </div>
+</div>
 
   </div>
          

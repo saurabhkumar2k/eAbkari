@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
   Home,
   Award,
@@ -47,6 +48,10 @@ const menuItems = [
   { id: "Premise", label: "Premise", icon: Building },
   { id: "Profile", label: "Profile & Settings", icon: Settings },
 ];
+
+
+
+
 
 const statsData = [
   {
@@ -106,8 +111,14 @@ const SectionTitle = ({ title, subtitle }) => {
   );
 };
 
+
+
+
 const StatCard = ({ item }) => {
   const Icon = item.icon;
+
+
+  
 
   return (
     <div className="dashboard-card stat-card">
@@ -370,7 +381,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const [activeTab, setActiveTab] = useState("Home");
   const [search, setSearch] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
-
+ const [profile, setProfile] = useState({});   // <-- Yahan
   // States for sub-level views
   const [renewedList, setRenewedList] = useState({});
   const [docs, setDocs] = useState({
@@ -565,6 +576,46 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     showToast("License Transfer request submitted for departmental review!");
   };
 
+// useEffect(() => {
+//   const regId = localStorage.getItem("regId");
+
+//   if (!regId) return;
+
+//   axios
+//     .get(`http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`)
+//     .then((res) => {
+//       setProfile(res.data);
+//     })
+//     .catch((err) => {
+//       console.error("Error fetching profile:", err);
+//     });
+// }, []);
+
+
+const regId = localStorage.getItem("regId");
+
+useEffect(() => {
+  if (regId) {
+    loadApplicantData(regId);
+  }
+}, []);
+
+const loadApplicantData = async (regId) => {
+  const response = await fetch(
+    `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+  );
+
+  if (!response.ok) return;
+
+  const data = await response.json();
+  setProfile(data);
+};
+
+
+
+
+
+
   const filteredLicenses = licenses.filter(
     (item) =>
       item.type.toLowerCase().includes(search.toLowerCase()) ||
@@ -689,7 +740,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     subtitle="User account information"
                   />
 
-                  <div className="profile-wrapper">
+                  {/* <div className="profile-wrapper">
                     <div className="profile-avatar-large">
                      <User className="user-icon" />
                     </div>
@@ -714,7 +765,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         },
                         {
                           label: "State",
-                          value: "Delhi",
+                          value: "Delhi F",
                         },
                       ].map((item, index) => (
                         <div
@@ -731,7 +782,37 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
+
+<div className="profile-details">
+   <div className="profile-avatar-large">
+                     <User className="user-icon" />
+                    </div>
+    <div className="profile-row">
+    <span className="profile-label">Name</span>
+    <span className="profile-value">{profile.firstName} {profile.lastName}</span>
+  </div>
+  <div className="profile-row">
+    <span className="profile-label">Email</span>
+    <span className="profile-value">{profile.email}</span>
+  </div>
+
+  <div className="profile-row">
+    <span className="profile-label">Mobile</span>
+    <span className="profile-value">{profile.mobile}</span>
+  </div>
+
+  {/* <div className="profile-row">
+    <span className="profile-label">State</span>
+    <span className="profile-value">{profile.stateUT}</span>
+  </div> */}
+</div>
+
+
+
+
+
+
                 </div>
               </div>
             </>
