@@ -56,6 +56,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IMstUsRegRepository, MstUsRegRepository>();
 builder.Services.AddScoped<ILiquorBrandRepository,LiquorBrandRepository>();
 builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepository>();
+builder.Services.AddScoped<IPermitPassValidityRepository,PermitPassValidityRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 
 // Swagger

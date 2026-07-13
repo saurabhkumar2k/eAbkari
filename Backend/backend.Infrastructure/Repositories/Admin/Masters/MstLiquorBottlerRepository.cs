@@ -17,15 +17,17 @@ namespace backend.Infrastructure.Repositories
         public async Task<IEnumerable<MstLiquorBottler>> GetAllAsync()
         {
             return await _context.MstLiquorBottlers
-                .Where(x => x.DeleteStatus == "N")
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y")
                 .OrderBy(x => x.LiquorBottlerName)
                 .ToListAsync();
         }
 
         public async Task<MstLiquorBottler?> GetByCodeAsync(string code)
         {
+            var normalizedCode = (code ?? string.Empty).Trim();
+
             return await _context.MstLiquorBottlers
-                .FirstOrDefaultAsync(x => x.LiquorBottlerCode == code);
+                .FirstOrDefaultAsync(x => (x.LiquorBottlerCode ?? string.Empty).Trim() == normalizedCode);
         }
 
         public async Task<bool> SaveAsync(MstLiquorBottler bottler)
@@ -92,8 +94,9 @@ namespace backend.Infrastructure.Repositories
         public async Task<IEnumerable<string>> GetOriginsAsync()
         {
             return await _context.MstLiquorBottlers
-                .Where(x => x.DeleteStatus == "N")
-                .Select(x => x.LiquorBottlerOrigin)
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y")
+                .Select(x => (x.LiquorBottlerOrigin ?? string.Empty).Trim())
+                .Where(x => x != string.Empty)
                 .Distinct()
                 .OrderBy(x => x)
                 .ToListAsync();
@@ -102,23 +105,35 @@ namespace backend.Infrastructure.Repositories
         public async Task<IEnumerable<string>> GetBottlerCodesAsync(string? origin = null, string? stateCode = null)
         {
             var query = _context.MstLiquorBottlers
-                .Where(x => x.DeleteStatus == "N");
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y");
 
             if (!string.IsNullOrWhiteSpace(origin))
             {
                 if (origin == "A")
                 {
-                    query = query.Where(x => x.LiquorBottlerOrigin == "R" || x.LiquorBottlerOrigin == "B" || x.LiquorBottlerOrigin == "N" || x.LiquorBottlerOrigin == "A");
+                    query = query.Where(x =>
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "R" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "B" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "N" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "A");
+                }
+                else if (origin == "I")
+                {
+                    // Legacy data stores Indian owners across I/O/W origins.
+                    query = query.Where(x =>
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "I" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "O" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "W");
                 }
                 else
                 {
-                    query = query.Where(x => x.LiquorBottlerOrigin == origin);
+                    query = query.Where(x => (x.LiquorBottlerOrigin ?? string.Empty).Trim() == origin);
                 }
             }
 
             if (!string.IsNullOrWhiteSpace(stateCode) && origin == "I")
             {
-                query = query.Where(x => x.LiquorBottlerState == stateCode);
+                query = query.Where(x => (x.LiquorBottlerState ?? string.Empty).Trim() == stateCode);
             }
 
             return await query
@@ -140,8 +155,14 @@ namespace backend.Infrastructure.Repositories
         case "I":
             var query = from b in _context.MstLiquorBottlers
                         join s in _context.MstLiquorStates
-                            on b.LiquorBottlerState equals s.StateCode
-                        where b.LiquorBottlerOrigin == "I"
+                            on (b.LiquorBottlerState ?? string.Empty).Trim() equals (s.StateCode ?? string.Empty).Trim()
+                        where
+                            (b.DeleteStatus ?? "N").Trim() != "Y" &&
+                            (
+                                (b.LiquorBottlerOrigin ?? string.Empty).Trim() == "I" ||
+                                (b.LiquorBottlerOrigin ?? string.Empty).Trim() == "O" ||
+                                (b.LiquorBottlerOrigin ?? string.Empty).Trim() == "W"
+                            )
                         select new
                         {
                             Bottler = b,
@@ -150,7 +171,7 @@ namespace backend.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(stateCode))
             {
-                query = query.Where(x => x.State.StateCode == stateCode);
+                query = query.Where(x => (x.State.StateCode ?? string.Empty).Trim() == stateCode);
             }
 
             return await query
@@ -168,7 +189,7 @@ namespace backend.Infrastructure.Repositories
         case "N":
 
             return await _context.MstLiquorBottlers
-                .Where(x => x.LiquorBottlerOrigin == "N")
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y" && (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "N")
                 .OrderBy(x => x.LiquorBottlerCode)
                 .Select(x => new BottlerGridDto
                 {
@@ -181,7 +202,7 @@ namespace backend.Infrastructure.Repositories
         case "B":
 
             return await _context.MstLiquorBottlers
-                .Where(x => x.LiquorBottlerOrigin == "B")
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y" && (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "B")
                 .OrderBy(x => x.LiquorBottlerCode)
                 .Select(x => new BottlerGridDto
                 {
@@ -194,7 +215,7 @@ namespace backend.Infrastructure.Repositories
         case "W":
 
             return await _context.MstLiquorBottlers
-                .Where(x => x.LiquorBottlerOrigin == "W")
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y" && (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "W")
                 .OrderBy(x => x.LiquorBottlerCode)
                 .Select(x => new BottlerGridDto
                 {
@@ -207,7 +228,7 @@ namespace backend.Infrastructure.Repositories
         case "R":
 
             return await _context.MstLiquorBottlers
-                .Where(x => x.LiquorBottlerOrigin == "R")
+                .Where(x => (x.DeleteStatus ?? "N").Trim() != "Y" && (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "R")
                 .OrderBy(x => x.LiquorBottlerCountry)
                 .ThenBy(x => x.LiquorBottlerCode)
                 .Select(x => new BottlerGridDto
@@ -222,10 +243,13 @@ namespace backend.Infrastructure.Repositories
 
             return await _context.MstLiquorBottlers
                 .Where(x =>
-                    x.LiquorBottlerOrigin == "R" ||
-                    x.LiquorBottlerOrigin == "B" ||
-                    x.LiquorBottlerOrigin == "N" ||
-                    x.LiquorBottlerOrigin == "A")
+                    (x.DeleteStatus ?? "N").Trim() != "Y" &&
+                    (
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "R" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "B" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "N" ||
+                        (x.LiquorBottlerOrigin ?? string.Empty).Trim() == "A"
+                    ))
                 .OrderBy(x => x.LiquorBottlerCountry)
                 .ThenBy(x => x.LiquorBottlerCode)
                 .Select(x => new BottlerGridDto

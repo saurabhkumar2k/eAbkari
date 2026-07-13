@@ -30,6 +30,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5214
 const API = `${API_BASE_URL}/api/LiquorBrand`;
 const LIQUOR_MASTER_API = `${API_BASE_URL}/api/LiquorMaster`;
 const routeValue = (value) => encodeURIComponent(value);
+const normalizeCode = (value) => String(value ?? '').trim().toLowerCase();
 
 const getValue = (item, ...keys) => {
   for (const key of keys) {
@@ -41,6 +42,7 @@ const getValue = (item, ...keys) => {
 };
 
 const toArray = (data) => Array.isArray(data) ? data : [];
+const MAX_VISIBLE_PAGES = 10;
 
 export default function LiquorBrandRegistration({ onNavigateHome }) {
 
@@ -340,8 +342,8 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
       }
     }
 
-    if (formData.measure && Number.isNaN(Number(formData.measure))) {
-      errors.measure = 'Quarts Measure must be a number';
+    if (formData.measure && !Number.isInteger(Number(formData.measure))) {
+      errors.measure = 'Quarts Measure must be a whole number';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -356,28 +358,40 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
       liquorTypeCode: formData.liquorType,
       liquorBrandDesc: formData.brandName.trim().toUpperCase(),
       brandNameAlias: formData.oldBrandId.trim() || null,
-      quartsMeasure: formData.measure ? Number(formData.measure) : null
+      quartsMeasure: formData.measure ? parseInt(formData.measure, 10) : null
     };
 
     setIsSaving(true);
     try {
+      const selectedCategory = formData.category;
+      const selectedKind = formData.kindOfLiquor;
+      const selectedType = formData.liquorType;
+
       const response = await axios.post(API, payload);
-      const savedBrand = mapBrand(response.data);
+      showToastMsg('Brand saved successfully.', 'success');
+      window.alert('Brand saved successfully.');
+      const responseData = response?.data ?? {};
+      const savedBrand = mapBrand({
+        ...responseData,
+        liquorCatCode: getValue(responseData, 'liquorCatCode', 'LiquorCatCode') || payload.liquorCatCode,
+        liquorKindCode: getValue(responseData, 'liquorKindCode', 'LiquorKindCode') || payload.liquorKindCode,
+        liquorTypeCode: getValue(responseData, 'liquorTypeCode', 'LiquorTypeCode') || payload.liquorTypeCode,
+        liquorBrandDesc: getValue(responseData, 'liquorBrandDesc', 'LiquorBrandDesc') || payload.liquorBrandDesc,
+        brandNameAlias: getValue(responseData, 'brandNameAlias', 'BrandNameAlias') || payload.brandNameAlias,
+        quartsMeasure: getValue(responseData, 'quartsMeasure', 'QuartsMeasure') || payload.quartsMeasure
+      });
       setBrandsList(prev => [savedBrand, ...prev.filter(item => item.key !== savedBrand.key)]);
-      showToastMsg(`New Brand "${savedBrand.brandName}" registered with code ${savedBrand.brandCode}.`);
       
       setFormData({
-        category: '',
-        kindOfLiquor: '',
-        liquorType: '',
+        category: selectedCategory,
+        kindOfLiquor: selectedKind,
+        liquorType: selectedType,
         oldBrandId: '',
-        brandCode: '',
+        brandCode: savedBrand.brandCode || '',
         measure: '',
         brandName: ''
       });
       setFormErrors({});
-      setKinds([]);
-      setTypes([]);
       setMeasures([]);
       setCurrentPage(1);
     } catch (error) {
@@ -429,17 +443,17 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
       return [];
     }
 
-    let filtered = brandsList.filter(item => item.category === currentCategoryFilter);
+    let filtered = brandsList.filter(item => normalizeCode(item.category) === normalizeCode(currentCategoryFilter));
 
     // Apply search filter
     if (searchTerm.trim() !== '') {
       const query = searchTerm.toLowerCase();
       filtered = filtered.filter(item => 
-        item.brandName.toLowerCase().includes(query) ||
-        item.id.toLowerCase().includes(query) ||
-        item.brandCode.toLowerCase().includes(query) ||
-        getTypeDesc(item.liquorType).toLowerCase().includes(query) ||
-        getKindDesc(item.kindOfLiquor).toLowerCase().includes(query)
+        String(item.brandName ?? '').toLowerCase().includes(query) ||
+        String(item.id ?? '').toLowerCase().includes(query) ||
+        String(item.brandCode ?? '').toLowerCase().includes(query) ||
+        String(getTypeDesc(item.liquorType) ?? '').toLowerCase().includes(query) ||
+        String(getKindDesc(item.kindOfLiquor) ?? '').toLowerCase().includes(query)
       );
     }
 
@@ -470,14 +484,32 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
 
   // Pagination calculation
   const totalItems = processedBrands.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedBrands = useMemo(() => {
     return processedBrands.slice(startIndex, startIndex + pageSize);
   }, [processedBrands, startIndex, pageSize]);
 
+  const visiblePageNumbers = useMemo(() => {
+    if (totalPages <= 0) return [];
+
+    let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2));
+    let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
+
+    if (endPage - startPage + 1 < MAX_VISIBLE_PAGES) {
+      startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
+  }, [currentPage, totalPages]);
+
   // Keep page index within bounds on data change
   useEffect(() => {
+    if (totalPages === 0) {
+      setCurrentPage(1);
+      return;
+    }
+
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
@@ -773,13 +805,13 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                         formErrors.measure ? 'border-red-500' : ''
                       }`}
                     >
-                      <option value="">Select Measure</option>
-                      {measures.map(measure => {
-                        const code = getValue(measure, 'measureCode', 'MeasureCode');
-                        const value = getMeasureValue(measure);
-                        const label = getMeasureLabel(measure);
-                        return <option key={code || value} value={value}>{label}</option>;
-                      })}
+                     <option value="">Select Measure</option>
+
+{measures.map((measure) => (
+  <option key={measure} value={measure}>
+    {measure}
+  </option>
+))}
                     </select>
                     <div className="select-arrow">
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
@@ -1115,7 +1147,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
             )}
 
             {/* Pagination Controls Footer - 1-10 Pages as requested */}
-            {totalPages > 0 && (
+            {totalItems > 0 && (
               <div className="pagination-bar flex-col sm:flex-row gap-4 select-none">
                 
                 {/* Progress metadata */}
@@ -1137,7 +1169,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
 
                   {/* Discrete page numbers up to 1-10 pages constraint */}
                   <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((val) => (
+                    {visiblePageNumbers.map((val) => (
                       <button
                         key={val}
                         onClick={() => setCurrentPage(val)}

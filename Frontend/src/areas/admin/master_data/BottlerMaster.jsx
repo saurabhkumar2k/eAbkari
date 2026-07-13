@@ -489,7 +489,7 @@ export default function BottlerMaster({ onNavigateHome }) {
                   </div>
                 </div>
             {/* Old Bottler Id */}
-<div className="form-row">
+{/* <div className="form-row">
   <label className="form-label">
     Old Bottler Id
   </label>
@@ -501,7 +501,7 @@ export default function BottlerMaster({ onNavigateHome }) {
     placeholder="e.g. OLD-BOT-1044"
     className="form-input"
   />
-</div>
+</div> */}
 
             {/* Bottler Code */}
 <div className="form-row">

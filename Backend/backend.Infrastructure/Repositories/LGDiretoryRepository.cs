@@ -23,8 +23,15 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<IEnumerable<MstState>> GetStateAsync()
         {
-            return await _context.MstStates
-                .OrderBy(x => x.StateName)
+            return await _context.MstLiquorStates
+                .Where(x => x.DeleteStatus == "N" && x.StateType == "I")
+                .OrderBy(x => x.StateDesc)
+                .Select(x => new MstState
+                {
+                    SID = 0,
+                    StateCode = (x.StateCode ?? string.Empty).Trim(),
+                    StateName = x.StateDesc ?? string.Empty
+                })
                 .ToListAsync();
         }
 

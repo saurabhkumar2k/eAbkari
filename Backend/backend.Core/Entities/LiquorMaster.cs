@@ -6,6 +6,8 @@ namespace backend.Core.Entities
 
 public class MstLiquorKind
 {
+    [Key]
+    public int ID { get; set; }
     public string LiquorKindCode { get; set; } = string.Empty;
 
     public string LiquorCatCode { get; set; } = string.Empty;
@@ -20,13 +22,15 @@ public class MstLiquorKind
 
 public class MstLiquorType
 {
+    [Key]
+    public int ID { get; set; }
     [StringLength(50)]
     public string LiquorCatCode { get; set; } = string.Empty;
 
     [StringLength(50)]
     public string LiquorKindCode { get; set; } = string.Empty;
 
-    [Key]
+    
     [StringLength(50)]
     public string LiquorTypeCode { get; set; } = string.Empty;
 
@@ -134,14 +138,10 @@ public class MstLiquorBrand
     public string? LiquorBrandCode { get; set; }
 
     public string? LiquorBrandDesc { get; set; }
-
-    public string? LiquorTypeCodeOld { get; set; }
-
-    public string? EntryFlag { get; set; }
-
+   
     public string? BrandNameAlias { get; set; }
 
-    public decimal? QuartsMeasure { get; set; }
+    public int? QuartsMeasure { get; set; }
 
     public string? DeleteStatus { get; set; }
 }

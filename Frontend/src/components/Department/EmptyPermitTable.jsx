@@ -1,31 +1,42 @@
 import React, { useState } from 'react';
 import { 
-  Printer, 
-  Download, 
-  FileSearch, 
+  FileSearch,
   ChevronLeft, 
   ChevronRight, 
   Search,
   Filter,
-  MoreVertical,
   Activity
 } from 'lucide-react';
 
-const EmptyPermitTable = () => {
+const EmptyPermitTable = ({ rows, onEdit, onDelete, onRefresh }) => {
   const [activePage, setActivePage] = useState(1);
+  const [search, setSearch] = useState('');
+  const pageSize = 10;
 
   const headers = [
     "State Name",
-    "Registration ID",
-    "Applicant Name",
-    "Bulk Spirit Type",
-    "Permit Issue Date",
-    "Validity Period",
-    "Status",
+    "State Code",
+    "IP Issue Days",
+    "EO Issue Days",
+    "IP Receipt Days",
+    "EO Required",
     "Actions"
   ];
 
-  const pages = Array.from({ length: 10 }, (_, i) => i + 1);
+  const filteredRows = (Array.isArray(rows) ? rows : []).filter((row) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      String(row.stateName || '').toLowerCase().includes(q) ||
+      String(row.stateCode || '').toLowerCase().includes(q)
+    );
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
+  const safePage = Math.min(activePage, totalPages);
+  const start = (safePage - 1) * pageSize;
+  const pagedRows = filteredRows.slice(start, start + pageSize);
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="modern-table-card glass-card animate-up delay-200">
@@ -34,7 +45,16 @@ const EmptyPermitTable = () => {
         <div className="toolbar-left">
           <div className="search-box-modern">
             <Search className="search-icon" size={18} />
-            <input type="text" placeholder="Search permits..." className="search-input" />
+            <input
+              type="text"
+              placeholder="Search state..."
+              className="search-input"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setActivePage(1);
+              }}
+            />
           </div>
           <button className="btn-toolbar-icon">
             <Filter size={18} />
@@ -42,13 +62,9 @@ const EmptyPermitTable = () => {
           </button>
         </div>
         <div className="toolbar-right">
-          <button className="btn-export-gradient">
-            <Download size={18} />
-            <span>Export CSV</span>
-          </button>
-          <button className="btn-print-styled">
-            <Printer size={18} />
-            <span>Print Report</span>
+          <button className="btn-print-styled" onClick={onRefresh}>
+            <Activity size={18} />
+            <span>Refresh</span>
           </button>
         </div>
       </div>
@@ -64,34 +80,38 @@ const EmptyPermitTable = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Empty State Row */}
-            <tr>
-              <td colSpan={headers.length} className="empty-state-cell">
-                <div className="empty-state-content">
-                  <div className="empty-illustration">
-                    <div className="pulse-circle">
-                      <FileSearch size={64} className="empty-icon" />
+            {pagedRows.length === 0 ? (
+              <tr>
+                <td colSpan={headers.length} className="empty-state-cell">
+                  <div className="empty-state-content">
+                    <div className="empty-illustration">
+                      <div className="pulse-circle">
+                        <FileSearch size={64} className="empty-icon" />
+                      </div>
                     </div>
-                    <div className="floating-elements">
-                      <div className="float-dot dot-1" />
-                      <div className="float-dot dot-2" />
-                      <div className="float-dot dot-3" />
+                    <h3 className="empty-title">No Records Found</h3>
+                    <p className="empty-message">Try adjusting your search terms.</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              pagedRows.map((row) => (
+                <tr key={row.stateCode}>
+                  <td>{row.stateName}</td>
+                  <td>{row.stateCode}</td>
+                  <td>{row.daysIpValidity}</td>
+                  <td>{row.daysIpValidityEoIssue}</td>
+                  <td>{row.daysIpValidityIpRecv}</td>
+                  <td>{row.eoRequired === 'Y' ? 'EO Required' : 'EO Not Required'}</td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button className="btn-toolbar-icon" onClick={() => onEdit(row)}>Edit</button>
+                      <button className="btn-toolbar-icon" onClick={() => onDelete(row.stateCode)}>Delete</button>
                     </div>
-                  </div>
-                  <h3 className="empty-title">No Records Found</h3>
-                  <p className="empty-message">
-                    We couldn't find any permit records for the selected criteria.<br />
-                    Try adjusting your filters or search terms.
-                  </p>
-                  <div className="empty-actions">
-                    <button className="btn-refresh-data">
-                      <Activity size={16} />
-                      Refresh Data
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -99,24 +119,24 @@ const EmptyPermitTable = () => {
       {/* Modern Pagination */}
       <div className="modern-pagination-container">
         <div className="pagination-info">
-          Showing <span className="fw-bold">0</span> to <span className="fw-bold">0</span> of <span className="fw-bold">0</span> entries
+          Showing <span className="fw-bold">{filteredRows.length === 0 ? 0 : start + 1}</span> to <span className="fw-bold">{Math.min(start + pageSize, filteredRows.length)}</span> of <span className="fw-bold">{filteredRows.length}</span> entries
         </div>
         <div className="pagination-controls">
-          <button className="pagination-nav-btn prev" disabled>
+          <button className="pagination-nav-btn prev" disabled={safePage <= 1} onClick={() => setActivePage((p) => Math.max(1, p - 1))}>
             <ChevronLeft size={20} />
           </button>
           <div className="pagination-pages">
             {pages.map((page) => (
               <button 
                 key={page}
-                className={`pagination-page-btn ${activePage === page ? 'active' : ''}`}
+                className={`pagination-page-btn ${safePage === page ? 'active' : ''}`}
                 onClick={() => setActivePage(page)}
               >
                 {page}
               </button>
             ))}
           </div>
-          <button className="pagination-nav-btn next">
+          <button className="pagination-nav-btn next" disabled={safePage >= totalPages} onClick={() => setActivePage((p) => Math.min(totalPages, p + 1))}>
             <ChevronRight size={20} />
           </button>
         </div>

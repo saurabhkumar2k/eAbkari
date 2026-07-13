@@ -8,5 +8,5 @@ public class CreateLiquorBrandDto
 
     public string? BrandNameAlias { get; set; }
 
-    public decimal? QuartsMeasure { get; set; }
+    public int? QuartsMeasure { get; set; }
 }
