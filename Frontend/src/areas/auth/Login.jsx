@@ -57,8 +57,9 @@ navigate("/applicantdashboard");
     return;
   }
 
- alert("Login Successful");
+//  alert("Login Successful");
 localStorage.setItem("regId", data.regId);
+
  if (onLoginSuccess) {
 
   onLoginSuccess(data);

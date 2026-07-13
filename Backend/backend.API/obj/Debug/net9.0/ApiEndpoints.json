@@ -1,0 +1,1103 @@
+[
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetAll",
+    "RelativePath": "api/Bottler",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "Save",
+    "RelativePath": "api/Bottler",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "backend.Core.Entities.MstLiquorBottler",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "Update",
+    "RelativePath": "api/Bottler",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "backend.Core.Entities.MstLiquorBottler",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetByCode",
+    "RelativePath": "api/Bottler/{code}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "Delete",
+    "RelativePath": "api/Bottler/{code}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetCodes",
+    "RelativePath": "api/Bottler/codes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "origin",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "stateCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetGrid",
+    "RelativePath": "api/Bottler/grid",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "origin",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "stateCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetOrigins",
+    "RelativePath": "api/Bottler/origins",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.BottlerController",
+    "Method": "GetStates",
+    "RelativePath": "api/Bottler/states",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetConstitutionType",
+    "RelativePath": "api/LGDiretory/ConstitutionType",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetDistrict",
+    "RelativePath": "api/LGDiretory/GetDistrict",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Statecode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetOwnerTypes",
+    "RelativePath": "api/LGDiretory/GetOwnerTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetState",
+    "RelativePath": "api/LGDiretory/getState",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetSubDivision",
+    "RelativePath": "api/LGDiretory/getSubDivision",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "districtCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetPoliceStations",
+    "RelativePath": "api/LGDiretory/PoliceStations/{district_code}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "district_code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LGDiretoryController",
+    "Method": "GetQuestions",
+    "RelativePath": "api/LGDiretory/Question",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseDocumentController",
+    "Method": "GetDocuments",
+    "RelativePath": "api/LicenseDocument/documents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "applicationIdNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "catCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "docStatus",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseDocumentController",
+    "Method": "Test",
+    "RelativePath": "api/LicenseDocument/test",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateCompanydetails",
+    "RelativePath": "api/LicenseeCategories",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FirmId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "ApplicationIdNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConstitutionType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CINNO",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegistrationNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyPAN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATNO",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsExciseNominee",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeAddress",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeEmailID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeMobileNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineePAN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineePanImage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceStartDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATGSTCertNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATGSTCertEnddate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DistilleryLicNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DistilleryLicEnddate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHInsuranceEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHRentAgreementEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHInsuranceNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHLeaseRentAgreementNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MobileNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LitreAppyingFor",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyPartnersDetails",
+        "Type": "System.Collections.Generic.List\u00601[[AdditionalCompanyPartnersDetailsDto, backend.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateCompanydetails",
+    "RelativePath": "api/LicenseeCategories/ApplyCompanydetails",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FirmId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "ApplicationIdNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConstitutionType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CINNO",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegistrationNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyPAN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATNO",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsExciseNominee",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeAddress",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeEmailID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineeMobileNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineePAN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExciseNomineePanImage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceStartDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "FSSAILicenceEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATGSTCertNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "VATGSTCertEnddate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DistilleryLicNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DistilleryLicEnddate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHInsuranceEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHRentAgreementEndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHInsuranceNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BWHLeaseRentAgreementNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MobileNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LitreAppyingFor",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CompanyPartnersDetails",
+        "Type": "System.Collections.Generic.List\u00601[[AdditionalCompanyPartnersDetailsDto, backend.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateApplyLicense",
+    "RelativePath": "api/LicenseeCategories/ApplyLicense",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "backend.Core.DTOs.LicenseApplicationUserDetailsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "CreateWarehouseLicense",
+    "RelativePath": "api/LicenseeCategories/ApplyWarehouseLicense",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WarehouseDetailsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "GetApplicantByRegId",
+    "RelativePath": "api/LicenseeCategories/GetApplicantByRegId/{regId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LicenseeCategoriesController",
+    "Method": "UploadApplicationDocuments",
+    "RelativePath": "api/LicenseeCategories/UploadApplicationDocuments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ApplicationIdNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MobileNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Documents",
+        "Type": "System.Collections.Generic.List\u00601[[backend.Core.DTOs.LicenseApplicationUploadedDocumentDto, backend.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "GetBrands",
+    "RelativePath": "api/LiquorBrand",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "SaveBrand",
+    "RelativePath": "api/LiquorBrand",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CreateLiquorBrandDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "UpdateBrand",
+    "RelativePath": "api/LiquorBrand",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "backend.Core.Entities.MstLiquorBrand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "DeleteBrand",
+    "RelativePath": "api/LiquorBrand",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "catCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "kindCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "typeCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "brandCode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "GetCategories",
+    "RelativePath": "api/LiquorBrand/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "GetKinds",
+    "RelativePath": "api/LiquorBrand/kinds/{catCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "catCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "GetLiquorMeasure",
+    "RelativePath": "api/LiquorBrand/LiquorMeasure/{catCode}/{kindCode}/{typeCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "catCode",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "kindCode",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "typeCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorBrandController",
+    "Method": "GetTypes",
+    "RelativePath": "api/LiquorBrand/types/{catCode}/{kindCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "catCode",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "kindCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetCategory",
+    "RelativePath": "api/LiquorMaster/Category",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetWholesaleLicenseeCategory",
+    "RelativePath": "api/LiquorMaster/GetWholesaleLicenseeCategory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetKind",
+    "RelativePath": "api/LiquorMaster/kind",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetLicenseeCategory",
+    "RelativePath": "api/LiquorMaster/LicenseeCategory",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetLiquorBottler",
+    "RelativePath": "api/LiquorMaster/LiquorBottler",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetLiquorMeasure",
+    "RelativePath": "api/LiquorMaster/LiquorMeasure",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LiquorMasterController",
+    "Method": "GetLiquorType",
+    "RelativePath": "api/LiquorMaster/LiquorType",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.LoginController",
+    "Method": "Login",
+    "RelativePath": "api/Login/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "backend.API.Controllers.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MstUsRegController",
+    "Method": "GetUser",
+    "RelativePath": "api/MstUsReg/{regId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regId",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MstUsRegDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "backend.API.Master.Controllers.RoleController",
+    "Method": "AddRole",
+    "RelativePath": "api/Role/AddRole",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "AddRoleDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Master.Controllers.RoleController",
+    "Method": "GetRole",
+    "RelativePath": "api/Role/getRole",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.API.Controllers.UserRegistrationController",
+    "Method": "Register",
+    "RelativePath": "api/UserRegistration/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RegId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "FirstName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LastName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FatherHusbandName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DateOfBirth",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Gender",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Occupation",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AddressLine1",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "AddressLine2",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "StateUT",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "District",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PIN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Mobile",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SecretQuestionId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SecretAnswer",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RegIP",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "UserId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Photo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Token",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Token_Generated_At",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "RefreshToken",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RefreshTokenExpiry",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IsPunishableOffence",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubDivision",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PanNo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Landline",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "photo",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

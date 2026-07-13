@@ -300,7 +300,7 @@ if (!ModelState.IsValid)
 
 
 
-                    var partnerEntity = new AdditionalCompanyPartnersDetails
+                    var partnerEntity = new ApplicantLicensePartnersDetails
                     {
                         ApplicationIdNo = dto.ApplicationIdNo,
                         PName = director.PName,
@@ -313,9 +313,9 @@ if (!ModelState.IsValid)
                         
                     };
 
-                    _context.AdditionalCompanyPartnersDetails.Add(partnerEntity);
+                    _context.ApplicantLicensePartnersDetails.Add(partnerEntity);
                 }
-                var entity = _context.Model.FindEntityType(typeof(AdditionalCompanyPartnersDetails));
+                var entity = _context.Model.FindEntityType(typeof(ApplicantLicensePartnersDetails));
 
                 foreach (var p in entity.GetProperties())
                 {

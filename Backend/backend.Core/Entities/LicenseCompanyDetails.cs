@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices;
+using backend.Core.Entities.Licence;
 using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetails
 {
@@ -84,12 +85,12 @@ public class LicenseCompanyDetails
     public int? LitreAppyingFor { get; set; }
 
 
-    public List<AdditionalCompanyPartnersDetails>? CompanyPartnersDetails { get; set; } = [];
+    public List<ApplicantLicensePartnersDetails>? CompanyPartnersDetails { get; set; } = [];
 
 }
 
 
-public class AdditionalCompanyPartnersDetails
+public class ApplicantLicensePartnersDetails
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
