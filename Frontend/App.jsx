@@ -17,6 +17,7 @@ import AdminHeader from './src/components/AdminHeader.jsx';
 import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
+import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
 
 import {
   ChevronDownSvg,
@@ -72,13 +73,16 @@ export default function App() {
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
         break;
+      case "IMPORT : PACKAGED FL":
+        window.location.href = "/importpackaged";
+        break;
 
       case "Home":
         window.location.href = "/departmentdashboard";
         break;
-case "LOGOUT":
-  window.location.href = "/";
-  break;
+      case "LOGOUT":
+      window.location.href = "/";
+      break;
 
       default:
         console.log("Unknown route:", view);
@@ -193,7 +197,20 @@ return (
           </div>
         }
       />
-
+      {/* Import Packaged */}
+     <Route
+        path="/importpackaged"  
+      element={
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader  
+          navItems={navItems}
+          currentView="IMPORT_PACKAGED"
+          onNavigate={handleAdminNavigate}
+          />
+          <ImportPackaged onNavigateHome={() => window.location.href = "/departmentdashboard"} />
+        </div>
+      }
+      />
       {/* Liquor Brand */}
       <Route
   path="/liquorbrand"
