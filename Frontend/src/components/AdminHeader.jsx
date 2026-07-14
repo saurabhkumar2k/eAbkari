@@ -11,9 +11,8 @@ import {
   TagSvg, 
   MessageSquareSvg, 
   PieChartSvg, 
-  SettingsSvg, 
-  ChevronDownSvg
-} from './icons/GlobalIcons.jsx';
+  SettingsSvg
+} from '../components/icons/GlobalIcons';
 
 const AdminHeader = ({ navItems, currentView, onNavigate }) => {
   return (
@@ -51,15 +50,15 @@ const AdminHeader = ({ navItems, currentView, onNavigate }) => {
               >
                 <a 
                   href="#" 
-                  className="dept-nav-link"
+                  className={`dept-nav-link ${item.isLogout ? 'hover:bg-red-700/40 hover:text-red-200 text-rose-300 transition-colors duration-200' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
                     if (!item.hasDropdown) onNavigate(item.label.toUpperCase());
                   }}
+                  title={item.label}
                 >
                   {item.icon}
                   <span>{item.label}</span>
-                  {item.hasDropdown && <ChevronDownSvg className="dash-icon-xs ml-1" />}
                 </a>
                 {item.items && (
                   <div className="dept-dropdown-menu">
