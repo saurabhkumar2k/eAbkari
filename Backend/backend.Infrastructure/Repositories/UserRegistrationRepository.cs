@@ -8,81 +8,77 @@ using System.Text;
 namespace backend.Infrastructure.Repositories
 {
 
-public class UserRegistrationRepository : IUserRegistrationRepository
-{
-    private readonly ApplicationDbContext _context;
-
-    public UserRegistrationRepository(ApplicationDbContext context)
+    public class UserRegistrationRepository : IUserRegistrationRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-//  public async Task<long> CreateAsync(MstUsReg model)
-// {
-//     try
-//     {
-//         _context.MstUsReg.Add(model);
-//         await _context.SaveChangesAsync();
-//         return model.RegId;
-//     }
-//     catch (Exception ex)
-//     {
-//         throw new Exception(ex.InnerException?.Message ?? ex.Message);
-//     }
-// }
-
-
-public async Task<long> CreateAsync(MstUsReg model)
-{
-    
-
-string? lastUid = await _context.MstUsReg
-    .OrderByDescending(x => x.RegId)
-    .Select(x => x.UserId)
-    .FirstOrDefaultAsync();
-
-if (string.IsNullOrEmpty(lastUid))
-{
-    // No record exists yet
-    model.UserId = "EXD00001";
-}
-else
-{
-   
-    int number = int.Parse(lastUid.Substring(3));
-
- 
-    model.UserId = "EXD" + (number + 1).ToString("D7");
-}
-
-    // 2. Default Password
-    string defaultPassword = "Test@123";
-
-    // 3. SHA256 Hash
-    using (var sha256 = SHA256.Create())
-    {
-        byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
-        byte[] hashBytes = sha256.ComputeHash(bytes);
-
-        StringBuilder sb = new StringBuilder();
-        foreach (byte b in hashBytes)
+        public UserRegistrationRepository(ApplicationDbContext context)
         {
-            sb.Append(b.ToString("X2"));
+            _context = context;
         }
 
-       
-        model.Password = sb.ToString();
+        //  public async Task<long> CreateAsync(MstUsReg model)
+        // {
+        //     try
+        //     {
+        //         _context.MstUsReg.Add(model);
+        //         await _context.SaveChangesAsync();
+        //         return model.RegId;
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         throw new Exception(ex.InnerException?.Message ?? ex.Message);
+        //     }
+        // }
+
+
+        public async Task<long> CreateAsync(MstUsReg model)
+        {
+
+
+            string? lastUid = await _context.MstUsReg
+                .OrderByDescending(x => x.RegId)
+                .Select(x => x.UserId)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(lastUid))
+            {
+                // No record exists yet
+                model.UserId = "EXD00001";
+            }
+            else
+            {
+
+                int number = int.Parse(lastUid.Substring(3));
+
+
+                model.UserId = "EXD" + (number + 1).ToString("D7");
+            }
+
+            // 2. Default Password
+            string defaultPassword = "Test@123";
+
+            // 3. SHA256 Hash
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("X2"));
+                }
+
+
+                model.Password = sb.ToString();
+            }
+
+            _context.MstUsReg.Add(model);
+            await _context.SaveChangesAsync();
+
+            return model.RegId;
+        }
     }
-
-
-
-
-
-    _context.MstUsReg.Add(model);
-    await _context.SaveChangesAsync();
-
-    return model.RegId;
-}
-}
 
 }

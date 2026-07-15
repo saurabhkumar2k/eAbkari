@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using backend.Core.DTOs;
 using backend.Core.Entities.Department;
 
 namespace backend.Core.Interfaces
 {
-    public interface IDepartmentUsersRepository
+    public interface IDepartmentUserRepository
     {
-        Task<long> CreateAsync(DepartmentUsers model);
-        Task<IEnumerable<DepartmentUsers>> GetLoginAsync();
-        Task<DepartmentUsers?> AuthenticateAsync(string userId, string password);
-
-        Task<DepartmentUsers?> LoginAuthenticateAsync(string userId, string password);
-        Task SaveTokenAsync(string userId, string token);
-        Task SaveTokenPairAsync(string userId, string accessToken, string refreshToken, DateTime refreshTokenExpiry);
-        Task<DepartmentUsers?> GetUserByRefreshTokenAsync(string refreshToken);
+        Task<IEnumerable<DepartmentUsers>> GetAllAsync();
+        Task<DepartmentUsers?> GetByIdAsync(string userId);
+        Task<bool> CreateAsync(DepartmentUserDto user);
+        Task<bool> UpdateAsync(DepartmentUserDto user);
+        //Task<bool> DeleteAsync(string userId);
+        //Task<DepartmentUsers?> LoginAsync(string email);
     }
 }
