@@ -31,7 +31,7 @@ import { createApplicant } from "../../../Model/Applicant";
 //import { SelectWholesaleType } from "./SelectWholesale";
 
 import L1AndL31License from "./L1_L31License";
-import L1FAndL31License from "./L1F_L31License";
+import L1FAndL31License from "./L1F_L32License";
 
 
 
@@ -84,6 +84,7 @@ const liquorTypeOptions = {
 export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, rootData = {} }) {
   const [currentStep, setCurrentStep] = useState(3);
   const [selectedLicenseId, setSelectedLicenseId] = useState("");
+  const [selectedLicense, setSelectedLicense] = useState(null);
   const [associatedBrands, setAssociatedBrands] = useState([]);
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);

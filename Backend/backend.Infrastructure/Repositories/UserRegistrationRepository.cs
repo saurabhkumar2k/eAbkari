@@ -74,6 +74,10 @@ else
         model.Password = sb.ToString();
     }
 
+
+
+
+
     _context.MstUsReg.Add(model);
     await _context.SaveChangesAsync();
 

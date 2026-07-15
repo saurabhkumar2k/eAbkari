@@ -73,6 +73,11 @@ public class MstUserSQ
 
     }
 
-
+    public class MstFinancialYear
+    {
+        public int Id { get; set; }
+        public string? FinYear { get; set; }
+        public string ActiveStatus { get; set; }
+    }
 
 }

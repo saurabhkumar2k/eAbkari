@@ -11,6 +11,7 @@ using backend.Application.Interfaces.License;
 using backend.Application.Services.License;
 using backend.Core.Interfaces.License;
 using backend.Infrastructure.Repositories.License;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,8 +96,28 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+    RequestPath = "/Documents"
+});
+
+
+
+
 app.UseRouting();
 app.UseCors("AllowReactApp");
+
+
+
+
+
+
+
 
 app.UseAuthorization();
 
