@@ -93,14 +93,8 @@ public class MstLicenseeCategory
     public string UserId { get; set; } = string.Empty;
     public DateTime? OprDate { get; set; }
     public string? DeleteStatus { get; set; } = "N";
-    public string? OfficerPosted { get; set; } = string.Empty;
-    public string? RelationFlag { get; set; } = string.Empty;
-    public string? RetailerFlag { get; set; } = string.Empty;
-    public string? RenewalPaymentMode { get; set; } = string.Empty;
-    public string? VisibilityStatus { get; set; } = string.Empty;
     //public string? BusinessFirstLicenseeCatCode { get; set; } = string.Empty;
     public bool? IsPayment { get; set; }
-    //public int? Amount { get; set; }
     public string? LicenseTypeFlag { get; set; } = string.Empty;
     public string? MultipleAllowedYN { get; set; } = string.Empty;
     public string? RenewalAllowedYN { get; set; } = string.Empty;
@@ -108,7 +102,6 @@ public class MstLicenseeCategory
     public string? DocumentRevalidationYN { get; set; } = string.Empty;
     public string? LiquorType { get; set; } = string.Empty;
     public string? BranchCode { get; set; } = string.Empty;
-    public string? IsMNTP { get; set; } = string.Empty;
 }
 
 
