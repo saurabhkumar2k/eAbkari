@@ -44,7 +44,7 @@ public class MstUsReg
 
    
     public string? SecretAnswer { get; set; }
-    public string? RegBy { get; set; }
+    //public string? RegBy { get; set; }
     public string? RegIP { get; set; }
 
     public string? UserId { get; set; }= string.Empty;

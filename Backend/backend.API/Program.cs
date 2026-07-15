@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.API.Services;
 using backend.Application.Interfaces;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,10 +89,30 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+    RequestPath = "/Documents"
+});
+
+
+
+
 app.UseRouting();
 app.UseCors("AllowReactApp");
 // 👇 MUST be here
 app.UseCors("AllowReactApp");
+
+
+
+
+
+
+
 
 app.UseAuthorization();
 
