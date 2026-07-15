@@ -1,17 +1,17 @@
+using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
-using backend.Core.Interfaces.License;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.API.Licence.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommonHCRController : ControllerBase
+    public class CommonLicenseController : ControllerBase
     {
-        private readonly ICommonHCRRepository _HCRrepository;    
-        public CommonHCRController(ICommonHCRRepository repository)
+        private readonly ICommonLicenseServices _LicenseService;    
+        public CommonLicenseController(ICommonLicenseServices services)
         {
-            _HCRrepository = repository;
+            _LicenseService = services;
         }
 
         [HttpPost]
@@ -23,7 +23,7 @@ namespace backend.API.Licence.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _HCRrepository.SaveApplicantDetails(dto);
+            var user = await _LicenseService.SaveApplicantDetails(dto);
 
             return Ok(user);
         }
