@@ -7,6 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using backend.API.Services;
 using backend.Application.Interfaces;
+using backend.Application.Interfaces.License;
+using backend.Application.Services.License;
+using backend.Core.Interfaces.License;
+using backend.Infrastructure.Repositories.License;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +63,9 @@ builder.Services.AddScoped<ILiquorBrandRepository,LiquorBrandRepository>();
 builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepository>();
 builder.Services.AddScoped<IPermitPassValidityRepository,PermitPassValidityRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<ICommonHCRRepository, CommonHCRRepositories>();
+builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
+builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -103,8 +110,6 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 app.UseRouting();
-app.UseCors("AllowReactApp");
-// 👇 MUST be here
 app.UseCors("AllowReactApp");
 
 
