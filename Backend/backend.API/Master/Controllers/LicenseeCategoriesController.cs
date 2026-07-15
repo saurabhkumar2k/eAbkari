@@ -52,7 +52,12 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
 
             var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
 
-    
+            var finYear = await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+
+
+
+
+
             var license = new LicenseApplicationUserDetails
     {
                 //ApplicationIdNo = newAppId,
@@ -84,7 +89,7 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
                 RegId = (int)dto.RegId,
                 ApplicationIdNo = newappid,
                 ApplicationDate = DateTime.Now,
-                FinYear = "2026-27",
+                FinYear = finYear,
                 ApplicationStatus = "P",
                 CatCode = dto.CatCode,
                 LicenseType = dto.OwnerType,

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Core.Interfaces;
 using backend.Infrastructure.Repositories;
 using backend.Core.Entities;
+using System.Net;
 
 namespace backend.API.Controllers
 {
@@ -83,10 +84,12 @@ using (var stream = new FileStream(filePath, FileMode.Create))
 
 // Save relative path in database
 model.Photo = Path.Combine("Photo_", fileName);
-
+                
     }
 
-    var regId = await _repository.CreateAsync(model);
+            model.RegIP = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var regId = await _repository.CreateAsync(model);
 
     return Ok(new
     {
