@@ -43,10 +43,10 @@ namespace backend.Infrastructure.Data
 
         public DbSet<DocumentDto> DocumentDtos { get; set; }
 
+        public DbSet<MstFinancialYear> MstFinancialYear { get; set; }
 
-        
 
-            public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
+        public DbSet<LicenseApplicationCategoryDocument> LicenseApplicationCategoryDocument { get; set; }
 
 
 //public DbSet<MstLiquorBrand> MstLiquorBrand { get; set; }
@@ -73,6 +73,10 @@ namespace backend.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
+
+            modelBuilder.Entity<MstFinancialYear>().ToTable("MstFinancialYear");
+
+            
 
             modelBuilder.Entity<MstState>()
                 .HasKey(x => x.SID);

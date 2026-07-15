@@ -13,6 +13,7 @@ const SelectWholesaleType = ({
   selectedType,
   onSelectType,
   onBack,
+  setSelectedLicense=[],
   constitutionTypes=[],
 }) => {
 
@@ -83,14 +84,24 @@ return (
         <button
           key={item.licenseeCatCode}
           type="button"
-          onClick={() => onSelectType(item.licenseeCatCode)}
+          // onClick={() => onSelectType(item.licenseeCatCode)}
+onClick={() => {
+  localStorage.setItem(
+    "selectedLicense",
+    JSON.stringify(item)
+  );
+
+  onSelectType(item.licenseeCatCode);
+}}
+
+
           className={`license-card ${
             selectedType === item.licenseeCatCode ? "selected" : ""
           }`}
         >
-          <div className="card-code">
+          {/* <div className="card-code">
             {item.licenseeCatCode}
-          </div>
+          </div> */}
 
           <h3 className="card-title">
             {item.licenseeCatDesc}

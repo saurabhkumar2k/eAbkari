@@ -397,6 +397,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     remarks: ""
   });
 
+console.log("Applicant:", profile);
+
   // M&TP states
   const [mtpApplications, setMtpApplications] = useState([
     {
@@ -666,7 +668,7 @@ const loadApplicantData = async (regId) => {
                   <div className="hero-content mx-auto max-w-7xl">
                     <div>
                       <h1 className="hero-title">
-                        Welcome back, Demo User 👋
+                        Welcome back,{profile.firstName} {profile.lastName} 👋
                       </h1>
 
                       <p className="hero-description">
@@ -1183,12 +1185,25 @@ const loadApplicantData = async (regId) => {
   />
               <div className="dashboard-card profile-card">
   <div className="profile-header">
-    <div className="profile-avatar">
-      DU
-    </div>
+<div className="profile-avatar">
+
+  {profile?.photo ? (
+<img
+  src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
+  alt="Profile"
+/>
+  ) : (
+    profile?.applicantName
+      ?.split(" ")
+      .map((x) => x[0])
+      .join("")
+      .toUpperCase()
+  )}
+
+</div>
                   <div className="profile-user-info">
   <h3 className="profile-user-name">
-    Demo User
+    {profile.firstName} {profile.lastName}
   </h3>
 
   <p className="profile-user-role">
@@ -1197,64 +1212,72 @@ const loadApplicantData = async (regId) => {
 </div>
 </div>
 
-                <div className="profile-form-grid">
+              <div className="profile-form-grid">
+
   <div className="profile-form-group">
     <label className="profile-form-label">
-      contact person name
+      Occuption
     </label>
 
     <input
       type="text"
-      defaultValue="Demo User"
+      value={profile?.occupation || ""}
+      readOnly
       className="profile-form-input"
     />
-                  </div>
-<div className="profile-form-group">
-  <label className="profile-form-label">
-    official email ID
-  </label>
+  </div>
 
-  <input
-    type="email"
-    defaultValue="demo@email.com"
-    className="profile-form-input"
-  />
-</div>
-                  <div className="profile-form-group">
-  <label className="profile-form-label">
-    mobile number
-  </label>
+  <div className="profile-form-group">
+    <label className="profile-form-label">
+      Official Email ID
+    </label>
 
-  <input
-    type="text"
-    defaultValue="+91 9876543210"
-    className="profile-form-input"
-  />
-</div>
+    <input
+      type="email"
+      value={profile?.email || ""}
+      readOnly
+      className="profile-form-input"
+    />
+  </div>
 
-<div className="profile-form-group">
-  <label className="profile-form-label">
-    Excise Dealer Code
-  </label>
+  <div className="profile-form-group">
+    <label className="profile-form-label">
+      Mobile Number
+    </label>
 
-  <input
-    type="text"
-    defaultValue="DL-RETAIL-990-26"
-    disabled
-    className="profile-form-input-disabled"
-  />
-                  </div>
-                  <div className="profile-form-group profile-form-full-width">
-  <label className="profile-form-label">
-    registered organization address
-  </label>
+    <input
+      type="text"
+      value={profile?.mobile || ""}
+      readOnly
+      className="profile-form-input"
+    />
+  </div>
 
-  <textarea
-    rows="2"
-    defaultValue="Plot 104, Okhla Industrial Area, Phase-III, New Delhi, Pin: 110020"
-    className="profile-form-textarea"
-  />
-</div>
+  <div className="profile-form-group">
+    <label className="profile-form-label">
+      Registration ID
+    </label>
+
+    <input
+      type="text"
+      value={profile?.userId || ""}
+      readOnly
+      className="profile-form-input-disabled"
+    />
+  </div>
+
+  <div className="profile-form-group profile-form-full-width">
+    <label className="profile-form-label">
+      Registered Organization Address
+    </label>
+
+    <textarea
+      rows="2"
+      value={`${profile?.addressLine1 || ""} ${profile?.addressLine2 || ""}, ${profile?.city || ""}`}
+      readOnly
+      className="profile-form-textarea"
+    />
+  </div>
 
 </div>
 
@@ -1512,7 +1535,7 @@ const loadApplicantData = async (regId) => {
                     <label htmlFor="mtp-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
                       I solemnly declare that the formulation ingredients, alcohol strength limits, and manufacturing procedures fulfill Delhi Excise and Drugs & Cosmetics Act rules. All samples will be placed to State Chemical Laboratories for compliance verification prior to dispatch.
                     </label>
-                  </div>
+                  </div>profile
 
                   <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                     <button 

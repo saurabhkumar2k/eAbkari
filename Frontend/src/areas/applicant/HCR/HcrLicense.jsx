@@ -160,7 +160,29 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     pan: ""
   });
 
+  const [AdditionalFrom, setAdditionalFrom] = useState({
+    ward: "",
+    restaurantArea: "",
+    noOfSeatCovers: "",
+    noOfDispensingCounter: "",
+    additionalArea: "0",
+    noOfManager: "",
+    noOfKitchenStaff: "",
+    utilityEmployees: "",
+    noOfRestaurantAttendent: "",
+
+    eduInsDistance: "Less than 100 Meters",
+    religiousPlaceDistance: "Less than 100 Meters",
+
+    hoursOfSale: ""
+  });
+
+  const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
+
   const [applicantErrors, setApplicantErrors] = useState({});
+  //const [siteFormErrors, setsiteFormErrors] = useState({});
+  //const [applicant, setApplicant] = useState(createApplicant());
+
 
   // L-20 Train Details State
   const [trainForm, setTrainForm] = useState({
@@ -252,7 +274,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     list.push({ num: nextNum++, id: "brand", label: "Restaurant Details", sub: "Site Address" });
 
     if (selectedLicenseId !== "L-20") {
-      list.push({ num: nextNum++, id: "premises", label: "Premise Details", sub: "Safety / Address" });
+      list.push({ num: nextNum++, id: "premises", label: "Additional Details", sub: "Additional Details" });
     }
 
     list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Uploads" });
@@ -298,13 +320,45 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     return true;
   };
 
-  const handelResturantDetails = () => {
+  	const handelResturantDetails = () => {
     const errors = {};
     if (!siteForm.restaurantName.trim()) {
       errors.restaurantName = "Resturant Name is required";
     }
-  }
+      if (!siteForm.state,trim()){
+      errors.state = "Resturant state is required";
+    }
+      if (!siteForm.district,trim()){
+      errors.district = "Resturant district is required";
+    }
+      if (!siteForm.subDivision,trim()){
+      errors.subDivision = "Resturant subDivision is required";
+    }
+      if (!siteForm.policeStation,trim()){
+      errors.policeStation = "Resturant policeStation is required";
+    }
+      if (!siteForm.pin,trim()){
+      errors.pin = "Resturant pin is required";
+    }
+      if (!siteForm.constituency,trim()){
+      errors.constituency = "Resturant constituency is required";
+    }
+      if (!siteForm.email,trim()){
+      errors.email = "Resturant email is required";
+    }
+         if (!siteForm.mobile,trim()){
+      errors.mobile = "Resturant mobile is required";
+    }
 
+      if (Object.keys(errors).length > 0) {
+      setApplicantErrors(errors);
+      triggerToast("Please verify required fields in primary applicant profile.", "error");
+      return false;
+    }
+    setApplicantErrors({});
+    return true;
+  }
+  
   // Train Submission validation helper
   const handleTrainSubmit = () => {
     const errors = {};
@@ -1195,98 +1249,363 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
               <div className="hcr-step-card-header">
                 <h3 className="hcr-step-card-title">
                   <Building className="hcr-step-card-icon" />
-                  <span className="font-sans">Step 6: Premise & Structural Layout Details</span>
+                  <span className="font-sans">Step 6: Resturant Additional Details</span>
                 </h3>
-                <p className="hcr-step-card-description font-sans">Specify layout dimensions, local authorities compliance, and physical location coordinates of Star Class premises.</p>
+                <p className="hcr-step-card-description font-sans">Specify layout dimensions, local authorities compliance.</p>
               </div>
 
               <form onSubmit={handlePremisesSubmit} className="hcr-premises-form">
                 <div className="hcr-form-grid">
-                  {/* Address Textarea */}
-                  <div className="form-group hcr-grid-span-2">
-                    <label className="hcr-form-label">Exact Premise Delivery Address *</label>
-                    <textarea
-                      rows="2"
-                      value={premisesForm.premiseAddress}
-                      onChange={(e) => setPremisesForm(prev => ({ ...prev, premiseAddress: e.target.value }))}
-                      className="textarea-box"
-                      placeholder="Enter licensed delivery area location"
-                    />
-                    {premisesErrors.premiseAddress && <span className="hcr-field-error"> {premisesErrors.premiseAddress}</span>}
-                  </div>
-
-                  {/* Pincode */}
+                  {/* Restaurant Area */}
                   <div className="form-group">
                     <label className="hcr-form-label">
-                      Delhi Area Pin Code *
+                      Restaurant Area (in Sq mtr.)
+                      <span className="required">*</span>
                     </label>
+
                     <input
                       type="text"
-                      maxLength="6"
-                      value={premisesForm.pincode}
-                      onChange={(e) => setPremisesForm(prev => ({ ...prev, pincode: e.target.value }))}
+                      placeholder="Restaurant Area"
+                      value={siteForm.restaurantArea}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        // Allow numbers with decimal
+                        if (/^\d*\.?\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            restaurantArea: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
                       className="input-box"
-                      placeholder="e.g. 110037"
                     />
-                    {premisesErrors.pincode && <span className="hcr-field-error">{premisesErrors.pincode}</span>}
                   </div>
 
-                  {/* MCD Certificate Id */}
+                  {/* No. of Seat Covers */}
                   <div className="form-group">
-                    <label className="hcr-form-label">MCD Trade Clearance Registration ID *</label>
+                    <label className="hcr-form-label">
+                      No. of Seat Covers
+                      <span className="required">*</span>
+                    </label>
+
                     <input
                       type="text"
-                      value={premisesForm.mcdTradeLicenseNum}
-                      onChange={(e) => setPremisesForm(prev => ({ ...prev, mcdTradeLicenseNum: e.target.value }))}
+                      placeholder="No. of Seat Covers"
+                      value={siteForm.noOfSeatCovers}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        // Allow numbers only
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            noOfSeatCovers: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
                       className="input-box"
-                      placeholder="e.g. MCD-889-HCR"
                     />
-                    {premisesErrors.mcdTradeLicenseNum && <span className="hcr-field-error">{premisesErrors.mcdTradeLicenseNum}</span>}
                   </div>
 
-                  {/* Affirmations toggles */}
-                  <div className="hcr-declaration-section">
-                    <div className="hcr-checkbox-row">
-                      <input
-                        id="nocFire"
-                        type="checkbox"
-                        checked={premisesForm.hasFireNoc}
-                        onChange={(e) => setPremisesForm(prev => ({ ...prev, hasFireNoc: e.target.checked }))}
-                        className="hcr-checkbox"
-                      />
-                      <label htmlFor="nocFire" className="hcr-checkbox-label">
-                        Certified Fire Security NOC: Confirm that local Fire Department audit and escape routes have been authorized for Star service class layout.
-                      </label>
-                    </div>
+                  {/* No. of Dispensing Counter */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      No. of Dispensing Counter
+                      <span className="required">*</span>
+                    </label>
 
-                    <div className="hcr-checkbox-row">
-                      <input
-                        id="taxAff"
-                        type="checkbox"
-                        checked={premisesForm.hasTaxCompliance}
-                        onChange={(e) => setPremisesForm(prev => ({ ...prev, hasTaxCompliance: e.target.checked }))}
-                        className="hcr-checkbox"
-                      />
-                      <label htmlFor="taxAff" className="hcr-checkbox-label">
-                        Pro-rata Tax Affirmation: Confirm that all municipal taxes, commercial levies, and excise excise dues for the property have been settled.
-                      </label>
-                    </div>
+                    <input
+                      type="text"
+                      placeholder="No. of Dispensing Counter"
+                      value={siteForm.noOfDispensingCounter}
+                      onChange={(e) => {
+                        const value = e.target.value;
 
-                    <div className="hcr-checkbox-row">
-                      <input
-                        id="policyChecked"
-                        type="checkbox"
-                        checked={premisesForm.declarationsChecked}
-                        onChange={(e) => setPremisesForm(prev => ({ ...prev, declarationsChecked: e.target.checked }))}
-                        className="hcr-checkbox"
-                      />
-                      <label htmlFor="policyChecked" className="hcr-checkbox-label hcr-checkbox-label-required">
-                        I hereby declare and affirm that the locations structural maps are verified, compliant with municipal norms and I accept absolute liability for regulatory deviation.
-                        <span className="hcr-required">*</span>
-                      </label>
-                    </div>
-                    {premisesErrors.declarationsChecked && <span className="hcr-field-error">{premisesErrors.declarationsChecked}</span>}
+                        // Allow numbers only
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            noOfDispensingCounter: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
+                      className="input-box"
+                    />
                   </div>
+
+                  {/* Additional Area */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      Additional Area
+                      <span className="required">*</span>
+                    </label>
+
+                    <div className="radio-group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="additionalArea"
+                          value="1"
+                          checked={siteForm.additionalArea === "1"}
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              additionalArea: e.target.value,
+                            }))
+                          }
+                        />
+                        Yes
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="additionalArea"
+                          value="0"
+                          checked={siteForm.additionalArea === "0"}
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              additionalArea: e.target.value,
+                            }))
+                          }
+                        />
+                        No
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* No. of Managers */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      No. of Managers
+                      <span className="required">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      placeholder="No. of Managers"
+                      value={siteForm.noOfManager}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            noOfManager: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
+                      className="input-box"
+                    />
+                  </div>
+
+                  {/* No. of Kitchen Staff */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      No. of Kitchen Staff
+                      <span className="required">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      placeholder="No. of Kitchen Staff"
+                      value={siteForm.noOfKitchenStaff}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            noOfKitchenStaff: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
+                      className="input-box"
+                    />
+                  </div>
+
+                  {/* Utility Employees */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      Utility Employees
+                      <span className="required">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      placeholder="Utility Employees"
+                      value={siteForm.utilityEmployees}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            utilityEmployees: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
+                      className="input-box"
+                    />
+                  </div>
+
+                  {/* No. of Restaurant Attendent */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      No. of Restaurant Attendent
+                      <span className="required">*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      placeholder="No. of Restaurant Attendent"
+                      value={siteForm.noOfRestaurantAttendent}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        if (/^\d*$/.test(value)) {
+                          setSiteForm((prev) => ({
+                            ...prev,
+                            noOfRestaurantAttendent: value,
+                          }));
+                        }
+                      }}
+                      maxLength={10}
+                      className="input-box"
+                    />
+                  </div>
+
+                  {/* Educational Institution Distance */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      Distance of Nearest Educational Institutions (Meters)
+                      <span className="required">*</span>
+                    </label>
+
+                    <div className="radio-group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="eduInsDistance"
+                          value="Less than 100 Meters"
+                          checked={
+                            siteForm.eduInsDistance === "Less than 100 Meters"
+                          }
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              eduInsDistance: e.target.value,
+                            }))
+                          }
+                        />
+                        Less than 100 Meters
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="eduInsDistance"
+                          value="Above 100 Meters"
+                          checked={
+                            siteForm.eduInsDistance === "Above 100 Meters"
+                          }
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              eduInsDistance: e.target.value,
+                            }))
+                          }
+                        />
+                        Above 100 Meters
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Religious Place Distance */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      Distance of Nearest Religious Places (Meters)
+                      <span className="required">*</span>
+                    </label>
+
+                    <div className="radio-group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="religiousPlaceDistance"
+                          value="Less than 100 Meters"
+                          checked={
+                            siteForm.religiousPlaceDistance ===
+                            "Less than 100 Meters"
+                          }
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              religiousPlaceDistance: e.target.value,
+                            }))
+                          }
+                        />
+                        Less than 100 Meters
+                      </label>
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="religiousPlaceDistance"
+                          value="Above 100 Meters"
+                          checked={
+                            siteForm.religiousPlaceDistance ===
+                            "Above 100 Meters"
+                          }
+                          onChange={(e) =>
+                            setSiteForm((prev) => ({
+                              ...prev,
+                              religiousPlaceDistance: e.target.value,
+                            }))
+                          }
+                        />
+                        Above 100 Meters
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Hour of Sale */}
+                  <div className="form-group">
+                    <label className="hcr-form-label">
+                      Hour of Sale
+                      <span className="required">*</span>
+                    </label>
+
+                    <select
+                      value={siteForm.hoursOfSale}
+                      onChange={(e) =>
+                        setSiteForm((prev) => ({
+                          ...prev,
+                          hoursOfSale: e.target.value,
+                        }))
+                      }
+                      className="input-box"
+                    >
+                      <option value="">Select Hour of Sale</option>
+
+                      {hoursOfSaleList.map((item) => (
+                        <option
+                          key={item.value}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>           
                 </div>
 
                 {/* Back and Continue */}
