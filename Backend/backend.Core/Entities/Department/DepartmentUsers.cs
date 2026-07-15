@@ -9,12 +9,10 @@ namespace backend.Core.Entities.Department
     [Table("DepartmentUsers")]
     public class DepartmentUsers
     {
-        [Key]
-        public int Id { get; set; }
 
-        [Required]
+        [Key]
         [StringLength(50)]
-        public string UserId { get; set; }
+        public string UserId { get; set; } 
 
         [Required]
         [StringLength(100)]
@@ -31,7 +29,7 @@ namespace backend.Core.Entities.Department
         [Required]
         public string PasswordHash { get; set; }
 
-        public bool IsActive { get; set; }
+        public string IsActive { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -57,10 +55,13 @@ namespace backend.Core.Entities.Department
         public int DeptUserRoleId { get; set; }
 
         [ForeignKey(nameof(DepartmentUsers))]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [ForeignKey(nameof(MstRoles))]
         public int RoleId { get; set; }
+
+        [StringLength(1)]
+        public string IsActive { get; set; }
 
         public virtual DepartmentUsers DepartmentUsers { get; set; }
 

@@ -12,12 +12,10 @@ namespace backend.API.Master.Controllers
     public class RoleController : Controller
     {
         private readonly IRolesRepository _repository;
-        private readonly ApplicationDbContext _context;
 
-        public RoleController(IRolesRepository repository, ApplicationDbContext context)
+        public RoleController(IRolesRepository repository)
         {
             _repository = repository;
-            _context = context;
         }
 
 
@@ -44,7 +42,7 @@ namespace backend.API.Master.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool exists = await _repository.RoleExistsAsync(model.RoleName.Trim());
+            bool exists = await _repository.RoleExistsByNameAsync(model.RoleName);
 
             if (exists)
             {
@@ -64,6 +62,61 @@ namespace backend.API.Master.Controllers
                 Data = role
             });
         }
+
+        [HttpPut("UpdateRole")]
+        public async Task<IActionResult> UpdateRole(UpdateRoleDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Check if the role exists
+            var existRole = await _repository.RoleExistsAsync(model.RoleId);
+
+            if (!existRole)
+            {
+                return NotFound(new
+                {
+                    Success = false,
+                    Message = "Role not found."
+                });
+            }
+
+            // Check if another role already has the same name
+
+            var updatedRole = await _repository.UpdateRoleAsync(model);
+
+            return Ok(new
+            {
+                Success = true,
+                Message = "Role updated successfully.",
+                Data = updatedRole
+            });
+        }
+
+        //[HttpDelete("DeleteRole/{roleId}")]
+        //public async Task<IActionResult> DeleteRole(int roleId)
+        //{
+        //    var role = await _repository.GetRoleByRoleId(roleId);
+
+        //    if (role == null)
+        //    {
+        //        return NotFound(new
+        //        {
+        //            Success = false,
+        //            Message = "Role not found."
+        //        });
+        //    }
+
+        //    await _repository.DeleteRoleAsync(roleId);
+
+        //    return Ok(new
+        //    {
+        //        Success = true,
+        //        Message = "Role deleted successfully."
+        //    });
+
+
+        //}
 
     }
 }

@@ -1,128 +1,160 @@
-using Microsoft.EntityFrameworkCore;
-using backend.Core.Entities.Department;
-using backend.Core.Interfaces;
-using backend.Infrastructure.Data;
-using System.Security.Cryptography;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using backend.Core.Interfaces;
+using backend.Core.Entities.Department;
+using backend.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using backend.Core.DTOs;
+using System.Security.Cryptography;
+
 
 namespace backend.Infrastructure.Repositories
 {
 
-    public class DepartmentUsersRepository : IDepartmentUsersRepository
+    using Microsoft.EntityFrameworkCore;
+
+    public class DepartmentUserRepository : IDepartmentUserRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public DepartmentUsersRepository(ApplicationDbContext context)
+        public DepartmentUserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-
-
-        public async Task<long> CreateAsync(DepartmentUsers model)
+        public async Task<IEnumerable<DepartmentUsers>> GetAllAsync()
         {
+            return await _context.DepartmentUsers
+                .Include(x => x.DeptUserRoles)
+                .ThenInclude(x => x.MstRoles)
+                .ToListAsync();
+        }
+
+        public async Task<DepartmentUsers?> GetByIdAsync(string userId)
+        {
+            return await _context.DepartmentUsers
+                .Include(x => x.DeptUserRoles)
+                .ThenInclude(x => x.MstRoles)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+        }
+        public async Task<string> GetRoleNameByRoleId(int roleId)
+        {
+            return await _context.MstRoles
+                .Where(r => r.RoleId == roleId)
+                .Select(r => r.RoleName)
+                .FirstOrDefaultAsync() ?? "";
+        }
+        public async Task<bool> CreateAsync(DepartmentUserDto user)
+        {
+            var roleName = await GetRoleNameByRoleId(user.RoleId);
+
+            var firstName = user.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+
+            var usrId = $"{roleName}-{firstName}";
+            var DepartmentUser = new DepartmentUsers
+            {
+                UserId = usrId,
+                UserName = user.UserName.Trim(),
+                UserDesignation = user.UserDesignation.Trim(),
+                Email = user.Email,
+                IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
+                CreatedDate = DateTime.Now
+            };
+
+            // 2. Default Password
+            string defaultPassword = "Test@123";
+
+            // 3. SHA256 Hash
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("X2"));
+                }
 
 
-            //string? lastUid = await _context.MstUsReg
-            //    .OrderByDescending(x => x.RegId)
-            //    .Select(x => x.UserId)
-            //    .FirstOrDefaultAsync();
+                DepartmentUser.PasswordHash = sb.ToString();
+            }
+            var DeptUserRoleId = await GetNextDeptUserRoleIdAsync();
+            var DeptUserRoles = new DeptUserRoles
+            {
+                 
+                DeptUserRoleId = DeptUserRoleId,
+                UserId = usrId,
+                RoleId = user.RoleId
+            };
 
-            //if (string.IsNullOrEmpty(lastUid))
+            await _context.DepartmentUsers.AddAsync(DepartmentUser);
+            
+            await _context.DeptUserRoles.AddAsync(DeptUserRoles);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+        public async Task<int> GetNextDeptUserRoleIdAsync()
+        {
+            int maxId = await _context.DeptUserRoles
+                .MaxAsync(r => (int?)r.DeptUserRoleId) ?? 0;
+
+            return maxId + 1;
+        }
+        public async Task<bool> UpdateAsync(DepartmentUserDto user )
+        {
+            var existingUser = await _context.DepartmentUsers
+                .Include(x => x.DeptUserRoles)
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId);
+
+            if (existingUser == null)
+                return false;
+
+            existingUser.UserName = user.UserName;
+            existingUser.UserDesignation = user.UserDesignation;
+            existingUser.Email = user.Email;
+            existingUser.IsActive = user.IsActive;
+            existingUser.UpdatedDate = DateTime.Now;
+
+            _context.DeptUserRoles.RemoveRange(existingUser.DeptUserRoles);
+
+            //foreach (var roleId in roleIds)
             //{
-            //    // No record exists yet
-            //    model.UserId = "EXD00001";
-            //}
-            //else
-            //{
-
-            //    int number = int.Parse(lastUid.Substring(3));
-
-
-            //    model.UserId = "EXD" + (number + 1).ToString("D7");
-            //}
-
-            //// 2. Default Password
-            //string defaultPassword = "Test@123";
-
-            //// 3. SHA256 Hash
-            //using (var sha256 = SHA256.Create())
-            //{
-            //    byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
-            //    byte[] hashBytes = sha256.ComputeHash(bytes);
-
-            //    StringBuilder sb = new StringBuilder();
-            //    foreach (byte b in hashBytes)
+            //    existingUser.DeptUserRoles.Add(new DeptUserRoles
             //    {
-            //        sb.Append(b.ToString("X2"));
-            //    }
-
-
-            //    model.Password = sb.ToString();
+            //        UserId = existingUser.UserId,
+            //        RoleId = roleId
+            //    });
             //}
 
-            //_context.MstUsReg.Add(model);
-            //await _context.SaveChangesAsync();
-
-            //return model.RegId;
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
+        //public async Task<bool> DeleteAsync(string userId)
+        //{
+        //    var user = await _context.DepartmentUsers
+        //        .Include(x => x.DeptUserRoles)
+        //        .FirstOrDefaultAsync(x => x.UserId == userId);
 
+        //    if (user == null)
+        //        return false;
 
+        //    _context.DeptUserRoles.RemoveRange(user.DeptUserRoles);
+        //    _context.DepartmentUsers.Remove(user);
 
-        public async Task<IEnumerable<DepartmentUsers>> GetLoginAsync()
-        {
-            return await _context.DepartmentUsers.ToListAsync();
-        }
+        //    return await _context.SaveChangesAsync() > 0;
+        //}
 
-        public async Task<DepartmentUsers?> AuthenticateAsync(string userId, string password)
-        {
-
-            return await _context.DepartmentUsers
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.PasswordHash == password);
-
-        }
-
-        public async Task<DepartmentUsers?> LoginAuthenticateAsync(string userId, string password)
-        {
-            return await _context.DepartmentUsers
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.PasswordHash == password);
-        }
-
-
-        public async Task SaveTokenAsync(string userId, string token)
-        {
-            var user = await _context.DepartmentUsers.FirstOrDefaultAsync(u => u.UserId == userId);
-            if (user is null)
-            {
-                return;
-            }
-
-            user.Token = token;
-            user.Token_Generated_At = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
-        }
-        public async Task SaveTokenPairAsync(string userId, string accessToken, string refreshToken, DateTime refreshTokenExpiry)
-        {
-            var user = await _context.DepartmentUsers.FirstOrDefaultAsync(u => u.UserId == userId);
-            if (user is null)
-            {
-                return;
-            }
-
-            user.Token = accessToken;
-            user.Token_Generated_At = DateTime.UtcNow;
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiry = refreshTokenExpiry;
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<DepartmentUsers?> GetUserByRefreshTokenAsync(string refreshToken)
-        {
-            return await _context.DepartmentUsers
-                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
-        }
+        //public async Task<DepartmentUsers?> LoginAsync(string email)
+        //{
+        //    return await _context.DepartmentUsers
+        //        .Include(x => x.DeptUserRoles)
+        //        .ThenInclude(x => x.MstRoles)
+        //        .FirstOrDefaultAsync(x => x.Email == email && x.IsActive == "Y");
+        //}
     }
-
 }

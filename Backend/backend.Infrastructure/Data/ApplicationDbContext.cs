@@ -64,6 +64,7 @@ namespace backend.Infrastructure.Data
         public DbSet<MstLiquorStateIpValidity> MstLiquorStateIpValidities { get; set; }
         public DbSet<DepartmentUsers> DepartmentUsers { get; set; }
         public DbSet<MstRoles> MstRoles { get; set; }
+        public DbSet<DeptUserRoles> DeptUserRoles { get; set; }
 
 
 

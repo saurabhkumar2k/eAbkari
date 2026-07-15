@@ -11,9 +11,12 @@ namespace backend.Core.Interfaces
     public interface IRolesRepository
     {
         Task<IEnumerable<MstRoles>> GetRolesAsync();
-        Task<MstRoles?> GetRoleByRoleName(string RoleName);
+        Task<MstRoles?> GetRoleByRoleId(int roleId);
         Task<MstRoles> CreateRoleAsync(AddRoleDto model);
-        Task<bool> RoleExistsAsync(string roleName);
+        Task<bool> RoleExistsAsync(int roleId);
+        Task<bool> RoleExistsByNameAsync(string roleName);
+        Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model);
+        Task DeleteRoleAsync(int roleId);
 
     }
 }
