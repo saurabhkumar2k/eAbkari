@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  Plus, 
+import { Plus, 
   Trash2, 
   RotateCcw, 
   X, 
@@ -18,111 +17,44 @@ import {
   Info, 
   AlertCircle, 
   CheckCircle2, 
+  ArrowLeft,
   ChevronsUpDown,
   Filter,
   Download,
   Clock,
   Briefcase
 } from 'lucide-react';
+import axios from "axios";
 
-// Predefined Brand Data for dynamic dropdown options
-const brandCodeOptions = [
-  { value: 'BC-EXC-DEL-001', label: 'BC-EXC-DEL-001 (Premium Class A)' },
-  { value: 'BC-EXC-DEL-002', label: 'BC-EXC-DEL-002 (Economy Plain)' },
-  { value: 'BC-EXC-DEL-003', label: 'BC-EXC-DEL-003 (Special Reserve)' },
-  { value: 'BC-EXC-DEL-004', label: 'BC-EXC-DEL-004 (Imported Malt)' },
-  { value: 'BC-EXC-DEL-005', label: 'BC-EXC-DEL-005 (Standard Mild)' }
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5214";
+const API = `${API_BASE_URL}/api/LiquorBrand`;
+const LIQUOR_MASTER_API = `${API_BASE_URL}/api/LiquorMaster`;
+const routeValue = (value) => encodeURIComponent(value);
+const normalizeCode = (value) => String(value ?? '').trim().toLowerCase();
 
-const kindOfLiquorOptions = {
-  'Country Liquor': [
-    { value: 'Country Spirit (Plain)', label: 'Country Spirit (Plain)' },
-    { value: 'Country Spirit (Spiced)', label: 'Country Spirit (Spiced)' },
-    { value: 'Country Rum', label: 'Country Rum' }
-  ],
-  'Indian Liquor': [
-    { value: 'Indian Made Foreign Liquor (IMFL)', label: 'Indian Made Foreign Liquor (IMFL)' },
-    { value: 'Foreign Liquor (Imported FL)', label: 'Foreign Liquor (Imported FL)' },
-    { value: 'Beer (Domestic)', label: 'Beer (Domestic)' },
-    { value: 'Beer (Imported/Premium)', label: 'Beer (Imported/Premium)' },
-    { value: 'Wine (Domestic)', label: 'Wine (Domestic)' },
-    { value: 'Wine (Imported)', label: 'Wine (Imported)' }
-  ]
+const getValue = (item, ...keys) => {
+  for (const key of keys) {
+    if (item?.[key] !== undefined && item?.[key] !== null) {
+      return item[key];
+    }
+  }
+  return '';
 };
 
-const liquorTypeOptions = {
-  'Country Spirit (Plain)': [
-    { value: 'Plain Spirit 36°', label: 'Plain Spirit 36° Proof' },
-    { value: 'Plain Spirit 40°', label: 'Plain Spirit 40° Proof' }
-  ],
-  'Country Spirit (Spiced)': [
-    { value: 'Spiced Spirit 50°', label: 'Spiced Spirit 50° Proof' },
-    { value: 'Masala Premium 50°', label: 'Masala Premium 50° Proof' }
-  ],
-  'Country Rum': [
-    { value: 'Country Rum Dark', label: 'Country Rum Dark' }
-  ],
-  'Indian Made Foreign Liquor (IMFL)': [
-    { value: 'Whisky', label: 'Whisky' },
-    { value: 'Rum', label: 'Rum' },
-    { value: 'Vodka', label: 'Vodka' },
-    { value: 'Gin', label: 'Gin' },
-    { value: 'Brandy', label: 'Brandy' }
-  ],
-  'Foreign Liquor (Imported FL)': [
-    { value: 'Single Malt Whisky', label: 'Single Malt Whisky' },
-    { value: 'Premium Scotch', label: 'Premium Scotch' },
-    { value: 'Bourbon Whisky', label: 'Bourbon Whisky' },
-    { value: 'Imported Gin', label: 'Imported Gin' },
-    { value: 'Imported Vodka', label: 'Imported Vodka' }
-  ],
-  'Beer (Domestic)': [
-    { value: 'Strong Beer', label: 'Strong Beer' },
-    { value: 'Mild Lager', label: 'Mild Lager' },
-    { value: 'Draft Beer', label: 'Draft Beer' }
-  ],
-  'Beer (Imported/Premium)': [
-    { value: 'Imported Premium IPA', label: 'Imported Premium IPA' },
-    { value: 'International Stout', label: 'International Stout' },
-    { value: 'Premium Pilsner', label: 'Premium Pilsner' }
-  ],
-  'Wine (Domestic)': [
-    { value: 'Shiraz Red Wine', label: 'Shiraz Red Wine' },
-    { value: 'Sauvignon White Wine', label: 'Sauvignon White Wine' },
-    { value: 'Sparkling Rose', label: 'Sparkling Rose' }
-  ],
-  'Wine (Imported)': [
-    { value: 'Imported Champagne', label: 'Imported Champagne' },
-    { value: 'Premium Bordeaux Red', label: 'Premium Bordeaux Red' },
-    { value: 'Chardonnay White', label: 'Chardonnay White' }
-  ]
-};
-
-// Initial brand dataset for simulation purposes
-const INITIAL_BRANDS_POOL = [
-  { id: 'BL-9812', oldBrandId: 'OLD-9122', brandCode: 'BC-EXC-DEL-001', brandName: 'SOLAN NO.1 RARE PREMIUM MALT', category: 'Indian Liquor', kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)', liquorType: 'Whisky', measure: '750 Ml', status: 'Approved', timestamp: 1711213010000 },
-  { id: 'BL-4309', oldBrandId: 'OLD-2211', brandCode: 'BC-EXC-DEL-003', brandName: 'OLD MONK SUPREME XXX INTEGRITY RUM', category: 'Indian Liquor', kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)', liquorType: 'Rum', measure: '750 Ml', status: 'Approved', timestamp: 1711213123000 },
-  { id: 'BL-7756', oldBrandId: 'OLD-5012', brandCode: 'BC-EXC-DEL-002', brandName: 'DELHI DESI MASALA SPECIAL SPIRIT', category: 'Country Liquor', kindOfLiquor: 'Country Spirit (Spiced)', liquorType: 'Masala Premium 50°', measure: '375 Ml', status: 'Approved', timestamp: 1711213233000 },
-  { id: 'BL-1209', oldBrandId: 'OLD-8041', brandCode: 'BC-EXC-DEL-004', brandName: 'GLENFIDDICH 12 YEARS SINGLE MALT SCOTCH', category: 'Indian Liquor', kindOfLiquor: 'Foreign Liquor (Imported FL)', liquorType: 'Single Malt Whisky', measure: '700 Ml', status: 'Active', timestamp: 1711213344000 },
-  { id: 'BL-6081', oldBrandId: 'OLD-3877', brandCode: 'BC-EXC-DEL-005', brandName: 'BIRA 91 BOOM STRONG BEER LAGER', category: 'Indian Liquor', kindOfLiquor: 'Beer (Domestic)', liquorType: 'Strong Beer', measure: '650 Ml', status: 'Active', timestamp: 1711213455000 },
-  { id: 'BL-8812', oldBrandId: 'OLD-0011', brandCode: 'BC-EXC-DEL-002', brandName: 'DELHI DHAMAKA DUMDAAR PLAIN GRADE', category: 'Country Liquor', kindOfLiquor: 'Country Spirit (Plain)', liquorType: 'Plain Spirit 36°', measure: '180 Ml', status: 'Approved', timestamp: 1711213566000 },
-  { id: 'BL-3342', oldBrandId: 'OLD-3312', brandCode: 'BC-EXC-DEL-001', brandName: 'SULA SHIRAZ RED RESERVE COLLECTION', category: 'Indian Liquor', kindOfLiquor: 'Wine (Domestic)', liquorType: 'Shiraz Red Wine', measure: '750 Ml', status: 'Active', timestamp: 1711213677000 },
-  { id: 'BL-9011', oldBrandId: 'OLD-4412', brandCode: 'BC-EXC-DEL-004', brandName: 'MOET & CHANDON IMPERIAL BRUT CHAMPAGNE', category: 'Indian Liquor', kindOfLiquor: 'Wine (Imported)', liquorType: 'Imported Champagne', measure: '750 Ml', status: 'Pending Approval', timestamp: 1711213788000 }
-];
+const toArray = (data) => Array.isArray(data) ? data : [];
+const MAX_VISIBLE_PAGES = 10;
 
 export default function LiquorBrandRegistration({ onNavigateHome }) {
-  // Persistence state
-  const [brandsList, setBrandsList] = useState(() => {
-    const saved = localStorage.getItem('excise_brands_registry');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return [];
-      }
-    }
-    return []; // Empty initially as per requirements: "Initial State: Empty table body"
-  });
+
+const [brandsList, setBrandsList] = useState([]);
+
+const [categories, setCategories] = useState([]);
+
+const [kinds, setKinds] = useState([]);
+
+const [types, setTypes] = useState([]);
+
+const [measures, setMeasures] = useState([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -137,6 +69,8 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
   const [formErrors, setFormErrors] = useState({});
   const [toast, setToast] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Table Filters & Sort Logic
   const [searchTerm, setSearchTerm] = useState('');
@@ -155,9 +89,89 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
     }
   }, [toast]);
 
-  // Sync to localStorage
-  const saveToLocalStorage = (list) => {
-    localStorage.setItem('excise_brands_registry', JSON.stringify(list));
+  const getCategoryDesc = (catCode, source = categories) => {
+    const category = source.find(item => getValue(item, 'liquorCatCode', 'LiquorCatCode') === catCode);
+    return getValue(category, 'liquorCatDesc', 'LiquorCatDesc') || catCode;
+  };
+
+  const getKindDesc = (kindCode, source = kinds) => {
+    const kind = source.find(item => getValue(item, 'liquorKindCode', 'LiquorKindCode') === kindCode);
+    return getValue(kind, 'liquorKindDesc', 'LiquorKindDesc') || kindCode;
+  };
+
+  const getTypeDesc = (typeCode, source = types) => {
+    const type = source.find(item => getValue(item, 'liquorTypeCode', 'LiquorTypeCode') === typeCode);
+    return getValue(type, 'liquorTypeDesc', 'LiquorTypeDesc') || typeCode;
+  };
+
+  const getMeasureValue = (measure) => {
+    return getValue(measure, 'measureScale', 'MeasureScale', 'measureUpper', 'MeasureUpper', 'measureCode', 'MeasureCode');
+  };
+
+  const getMeasureLabel = (measure) => {
+    const detail = getValue(measure, 'measureDetail', 'MeasureDetail');
+    const scale = getValue(measure, 'measureScale', 'MeasureScale');
+    const unit = getValue(measure, 'measureUnit', 'MeasureUnit');
+    const code = getValue(measure, 'measureCode', 'MeasureCode');
+
+    if (detail) return detail;
+    if (scale || unit) return `${scale} ${unit}`.trim();
+    return code;
+  };
+
+  const mapBrand = (brand, lookup = {}) => {
+    const categorySource = lookup.categories || categories;
+    const kindSource = lookup.kinds || kinds;
+    const typeSource = lookup.types || types;
+    const catCode = getValue(brand, 'liquorCatCode', 'LiquorCatCode');
+    const kindCode = getValue(brand, 'liquorKindCode', 'LiquorKindCode');
+    const typeCode = getValue(brand, 'liquorTypeCode', 'LiquorTypeCode');
+    const brandCode = getValue(brand, 'liquorBrandCode', 'LiquorBrandCode');
+    const measure = getValue(brand, 'quartsMeasure', 'QuartsMeasure');
+    const key = [catCode, kindCode, typeCode, brandCode].join('|');
+
+    return {
+      key,
+      id: brandCode,
+      oldBrandId: getValue(brand, 'brandNameAlias', 'BrandNameAlias') || 'N/A',
+      brandCode,
+      brandName: getValue(brand, 'liquorBrandDesc', 'LiquorBrandDesc'),
+      category: catCode,
+      categoryName: getCategoryDesc(catCode, categorySource),
+      kindOfLiquor: kindCode,
+      kindOfLiquorName: getKindDesc(kindCode, kindSource),
+      liquorType: typeCode,
+      liquorTypeName: getTypeDesc(typeCode, typeSource),
+      measure: measure === '' ? '' : String(measure),
+      status: 'Active',
+      timestamp: brandCode || '',
+      raw: brand
+    };
+  };
+
+  const loadInitialData = async () => {
+    setIsLoading(true);
+    try {
+      const categoriesResponse = await axios.get(`${API}/categories`);
+      const categoryList = toArray(categoriesResponse.data);
+      setCategories(categoryList);
+
+      try {
+        const brandsResponse = await axios.get(API);
+        setBrandsList(toArray(brandsResponse.data).map(brand => mapBrand(brand, { categories: categoryList })));
+      } catch (brandError) {
+        console.error('Liquor brand grid API failed:', brandError);
+        setBrandsList([]);
+        showToastMsg('Category loaded, but brand grid API failed.', 'error');
+      }
+
+   
+    } catch (error) {
+      console.error('Liquor category API failed:', error);
+      showToastMsg('Unable to load liquor brand master data from API.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Toast trigger helper
@@ -165,29 +179,102 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
     setToast({ message, type });
   };
 
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadKindsForCategory = async (catCode) => {
+    if (!catCode) {
+      setKinds([]);
+      setTypes([]);
+      return;
+    }
+
+    const url = `${API}/kinds/${routeValue(catCode)}`;
+    try {
+      console.log('Liquor kind API:', url);
+      const response = await axios.get(url);
+      const kindList = toArray(response.data);
+      console.log('Liquor kind response:', kindList);
+      setKinds(kindList);
+      setTypes([]);
+    } catch (error) {
+      console.error('Liquor kind API failed:', error);
+      setKinds([]);
+      setTypes([]);
+      showToastMsg('Unable to load kind of liquor list.', 'error');
+    }
+  };
+
+  const loadTypesForKind = async (catCode, kindCode) => {
+    if (!catCode || !kindCode) {
+      setTypes([]);
+      return;
+    }
+
+    const url = `${API}/types/${routeValue(catCode)}/${routeValue(kindCode)}`;
+    try {
+      setTypes([]);
+      console.log('Liquor type API:', url);
+      const response = await axios.get(url);
+      const typeList = toArray(response.data);
+      console.log('Liquor type response:', typeList);
+      setTypes(typeList);
+    } catch (error) {
+      console.error('Liquor type API failed:', error);
+      setTypes([]);
+      showToastMsg('Unable to load liquor type list.', 'error');
+    }
+  };
+
   // Handle category change: resets kindOfLiquor & liquorType
-  const handleCategoryChange = (e) => {
+  const handleCategoryChange = async (e) => {
     const value = e.target.value;
     setFormData(prev => ({
       ...prev,
       category: value,
       kindOfLiquor: '',
-      liquorType: ''
+      liquorType: '',
+      measure: ''
     }));
-    setFormErrors(prev => ({ ...prev, category: '' }));
+    setFormErrors(prev => ({ ...prev, category: '', kindOfLiquor: '', liquorType: '', measure: '' }));
+    setMeasures([]);
+    await loadKindsForCategory(value);
   };
 
   // Handle Kind of Liquor Change: resets liquorType
-  const handleKindOfChange = (e) => {
+  const handleKindOfChange = async (e) => {
     const value = e.target.value;
+    const selectedCategory = formData.category;
     setFormData(prev => ({
       ...prev,
       kindOfLiquor: value,
-      liquorType: ''
+      liquorType: '',
+      measure: ''
     }));
-    setFormErrors(prev => ({ ...prev, kindOfLiquor: '' }));
+    setFormErrors(prev => ({ ...prev, kindOfLiquor: '', liquorType: '', measure: '' }));
+    setMeasures([]);
+    await loadTypesForKind(selectedCategory, value);
   };
 
+const loadMeasures = async (catCode, kindCode, typeCode) => {
+  if (!catCode || !kindCode || !typeCode) {
+    setMeasures([]);
+    return;
+  }
+
+  try {
+    const response = await axios.get(
+      `${API}/LiquorMeasure/${routeValue(catCode)}/${routeValue(kindCode)}/${routeValue(typeCode)}`
+    );
+
+    setMeasures(toArray(response.data));
+  } catch (error) {
+    console.error("Liquor measure API failed:", error);
+    setMeasures([]);
+    showToastMsg("Unable to load measure list.", "error");
+  }
+};
   // Input change handler
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -197,11 +284,14 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
   };
 
   // Load baseline samples for demonstration/easier interaction
-  const loadDefaultSamples = () => {
-    setBrandsList(INITIAL_BRANDS_POOL);
-    saveToLocalStorage(INITIAL_BRANDS_POOL);
-    setCurrentPage(1);
-    showToastMsg('Baseline brand registries loaded successfully for simulation!', 'info');
+  const loadDefaultSamples = async () => {
+    try {
+      await loadInitialData();
+      setCurrentPage(1);
+      showToastMsg('Liquor brand data refreshed from API.', 'info');
+    } catch (error) {
+      showToastMsg('Unable to refresh liquor brand data.', 'error');
+    }
   };
 
   // Form Reset
@@ -216,6 +306,9 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
       brandName: ''
     });
     setFormErrors({});
+    setKinds([]);
+    setTypes([]);
+    setMeasures([]);
     showToastMsg('Brand registration form has been reset to defaults.', 'info');
   };
 
@@ -228,7 +321,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
   };
 
   // Form Validation and Submission
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     const errors = {};
 
@@ -249,52 +342,81 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
       }
     }
 
+    if (formData.measure && !Number.isInteger(Number(formData.measure))) {
+      errors.measure = 'Quarts Measure must be a whole number';
+    }
+
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       showToastMsg('Please check and fill the required fields highlights.', 'error');
       return;
     }
 
-    // Create a new Brand entry
-    const newId = `BL-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newBrandItem = {
-      id: newId,
-      oldBrandId: formData.oldBrandId || `N/A`,
-      brandCode: formData.brandCode || 'BC-EXC-DEL-001',
-      brandName: formData.brandName.trim().toUpperCase(),
-      category: formData.category,
-      kindOfLiquor: formData.kindOfLiquor,
-      liquorType: formData.liquorType,
-      measure: formData.measure ? formData.measure.trim() : '750 Ml',
-      status: 'Active',
-      timestamp: Date.now()
+    const payload = {
+      liquorCatCode: formData.category,
+      liquorKindCode: formData.kindOfLiquor,
+      liquorTypeCode: formData.liquorType,
+      liquorBrandDesc: formData.brandName.trim().toUpperCase(),
+      brandNameAlias: formData.oldBrandId.trim() || null,
+      quartsMeasure: formData.measure ? parseInt(formData.measure, 10) : null
     };
 
-    const updatedList = [newBrandItem, ...brandsList];
-    setBrandsList(updatedList);
-    saveToLocalStorage(updatedList);
-    showToastMsg(`New Brand "${newBrandItem.brandName}" filed & registered with ID ${newId}!`);
-    
-    // Reset form fields
-    setFormData({
-      category: '',
-      kindOfLiquor: '',
-      liquorType: '',
-      oldBrandId: '',
-      brandCode: '',
-      measure: '',
-      brandName: ''
-    });
-    setFormErrors({});
-    setCurrentPage(1);
+    setIsSaving(true);
+    try {
+      const selectedCategory = formData.category;
+      const selectedKind = formData.kindOfLiquor;
+      const selectedType = formData.liquorType;
+
+      const response = await axios.post(API, payload);
+      showToastMsg('Brand saved successfully.', 'success');
+      window.alert('Brand saved successfully.');
+      const responseData = response?.data ?? {};
+      const savedBrand = mapBrand({
+        ...responseData,
+        liquorCatCode: getValue(responseData, 'liquorCatCode', 'LiquorCatCode') || payload.liquorCatCode,
+        liquorKindCode: getValue(responseData, 'liquorKindCode', 'LiquorKindCode') || payload.liquorKindCode,
+        liquorTypeCode: getValue(responseData, 'liquorTypeCode', 'LiquorTypeCode') || payload.liquorTypeCode,
+        liquorBrandDesc: getValue(responseData, 'liquorBrandDesc', 'LiquorBrandDesc') || payload.liquorBrandDesc,
+        brandNameAlias: getValue(responseData, 'brandNameAlias', 'BrandNameAlias') || payload.brandNameAlias,
+        quartsMeasure: getValue(responseData, 'quartsMeasure', 'QuartsMeasure') || payload.quartsMeasure
+      });
+      setBrandsList(prev => [savedBrand, ...prev.filter(item => item.key !== savedBrand.key)]);
+      
+      setFormData({
+        category: selectedCategory,
+        kindOfLiquor: selectedKind,
+        liquorType: selectedType,
+        oldBrandId: '',
+        brandCode: savedBrand.brandCode || '',
+        measure: '',
+        brandName: ''
+      });
+      setFormErrors({});
+      setMeasures([]);
+      setCurrentPage(1);
+    } catch (error) {
+      showToastMsg('Unable to save liquor brand record.', 'error');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Delete brand record helper
-  const handleDeleteBrand = (id, name) => {
-    const updatedList = brandsList.filter(b => b.id !== id);
-    setBrandsList(updatedList);
-    saveToLocalStorage(updatedList);
-    showToastMsg(`Removed registry: ${name}`, 'info');
+  const handleDeleteBrand = async (brand) => {
+    try {
+      await axios.delete(API, {
+        params: {
+          catCode: brand.category,
+          kindCode: brand.kindOfLiquor,
+          typeCode: brand.liquorType,
+          brandCode: brand.brandCode
+        }
+      });
+      setBrandsList(prev => prev.filter(item => item.key !== brand.key));
+      showToastMsg(`Removed registry: ${brand.brandName}`, 'info');
+    } catch (error) {
+      showToastMsg('Unable to delete liquor brand record.', 'error');
+    }
   };
 
   // Sort helper
@@ -321,17 +443,17 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
       return [];
     }
 
-    let filtered = brandsList.filter(item => item.category === currentCategoryFilter);
+    let filtered = brandsList.filter(item => normalizeCode(item.category) === normalizeCode(currentCategoryFilter));
 
     // Apply search filter
     if (searchTerm.trim() !== '') {
       const query = searchTerm.toLowerCase();
       filtered = filtered.filter(item => 
-        item.brandName.toLowerCase().includes(query) ||
-        item.id.toLowerCase().includes(query) ||
-        item.brandCode.toLowerCase().includes(query) ||
-        item.liquorType.toLowerCase().includes(query) ||
-        item.kindOfLiquor.toLowerCase().includes(query)
+        String(item.brandName ?? '').toLowerCase().includes(query) ||
+        String(item.id ?? '').toLowerCase().includes(query) ||
+        String(item.brandCode ?? '').toLowerCase().includes(query) ||
+        String(getTypeDesc(item.liquorType) ?? '').toLowerCase().includes(query) ||
+        String(getKindDesc(item.kindOfLiquor) ?? '').toLowerCase().includes(query)
       );
     }
 
@@ -358,27 +480,45 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
       if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [brandsList, formData.category, searchTerm, sortColumn, sortDirection]);
+  }, [brandsList, formData.category, searchTerm, sortColumn, sortDirection, kinds, types]);
 
   // Pagination calculation
   const totalItems = processedBrands.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedBrands = useMemo(() => {
     return processedBrands.slice(startIndex, startIndex + pageSize);
   }, [processedBrands, startIndex, pageSize]);
 
+  const visiblePageNumbers = useMemo(() => {
+    if (totalPages <= 0) return [];
+
+    let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2));
+    let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
+
+    if (endPage - startPage + 1 < MAX_VISIBLE_PAGES) {
+      startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, idx) => startPage + idx);
+  }, [currentPage, totalPages]);
+
   // Keep page index within bounds on data change
   useEffect(() => {
+    if (totalPages === 0) {
+      setCurrentPage(1);
+      return;
+    }
+
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
     }
   }, [totalPages, currentPage]);
 
-  const showTable = formData.category === 'Country Liquor' || formData.category === 'Indian Liquor';
+  const showTable = Boolean(formData.category);
 
   return (
-    <div className="brand-registration-page">
+      <div className="brand-registration-page">
       
       {/* Toast Alert Notifications */}
       {toast && (
@@ -387,43 +527,43 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
           toast.type === 'error' ? 'brand-toast-error' :
           'brand-toast-info'
         }`}>
-          {toast.type === 'success' && <CheckCircle2 className="toast-icon-success" />}
-          {toast.type === 'error' && <AlertCircle className="toast-icon-error" />}
-          {toast.type === 'info' && <Info className="toast-icon-info" />}
-          <span className="toast-message">{toast.message}</span>
-          <button onClick={() => setToast(null)} className="toast-close-btn">
-            <X className="btn-icon" />
+           {toast.type === 'success' && <CheckCircle2 className="toast-icon-success" />}
+                   {toast.type === 'error' && <AlertCircle className="toast-icon-error" />}
+                   {toast.type === 'info' && <Info className="toast-icon-info" />}
+                   <span className="toast-message">{toast.message}</span>
+                   <button onClick={() => setToast(null)} className="toast-close-btn">
+                     <X className="btn-icon" />
           </button>
         </div>
       )}
 
       {/* Main Container */}
-      <div className="brand-container">
-        
-        {/* Navigation Breadcrumbs / Portal Header */}
-        <div className="brand-header">
-          <div className="brand-header-flex">
-            <div>
-              <div className="brand-subtitle">Master Registries</div>
-              <h1 className="brand-title">Liquor Brand Registration</h1>
-            </div>
-          </div>
-          
-          {/* Simulation Helper */}
-          <button
-            onClick={loadDefaultSamples}
-            className="btn-load-sample"
-          >
-            <Clock className="btn-load-sample-icon" />
-            <span>Load Sample Dataset</span>
-          </button>
-        </div>
+           <div className="brand-container">
+             
+             {/* Navigation Breadcrumbs / Portal Header */}
+             <div className="brand-header">
+               <div className="brand-header-flex">
+                 <div>
+                   <div className="brand-subtitle">Master Registries</div>
+                   <h1 className="brand-title">Liquor Brand Registration</h1>
+                 </div>
+               </div>
+               
+               {/* Simulation Helper */}
+               <button
+                 onClick={loadDefaultSamples}
+                 className="btn-load-sample"
+               >
+                 <Clock className="btn-load-sample-icon" />
+                 <span>Load Sample Dataset</span>
+               </button>
+             </div>
 
         {/* Statistics Cards */}
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-card-icon-wrapper stat-icon-blue">
-              <Sliders className="stat-card-icon" />
+            <Sliders className="stat-card-icon" />
             </div>
             <div>
               <p>Total Active Brands</p>
@@ -432,29 +572,29 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
           </div>
           <div className="stat-card">
             <div className="stat-card-icon-wrapper stat-icon-emerald">
-              <Activity className="stat-card-icon" />
-            </div>
+                         <Activity className="stat-card-icon" />
+                       </div>
             <div>
               <p>Indian Liquor Registries</p>
               <h3>
-                {brandsList.filter(b => b.category === 'Indian Liquor').length}
+                {brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('indian')).length}
               </h3>
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-card-icon-wrapper stat-icon-amber">
-              <Layers className="stat-card-icon" />
-            </div>
-            <div>
+           <div className="stat-card">
+                      <div className="stat-card-icon-wrapper stat-icon-amber">
+                        <Layers className="stat-card-icon" />
+                      </div>
+                      <div>
               <p>Country Liquor Registries</p>
               <h3>
-                {brandsList.filter(b => b.category === 'Country Liquor').length}
+                {brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('country')).length}
               </h3>
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-card-icon-wrapper stat-icon-slate">
-              <Clock className="stat-card-icon" />
+             <div className="stat-card-icon-wrapper stat-icon-slate">
+                        <Clock className="stat-card-icon" />
             </div>
             <div>
               <p>Latest Pending Review</p>
@@ -468,176 +608,178 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
         {/* 1. GLASSMORPHISM FORM CARD WITH BLUE ACCENT ACCORDING TO SPEC */}
         <div id="liquor-brand-form-card" className="brand-card">
           
-          {/* Blue Top Border */}
-          <div className="brand-card-accent" />
-          
-          <div className="brand-card-header brand-card-header-flex">
-            <div className="brand-card-header-icon">
-              <Sliders />
-            </div>
-            <div>
-              <h2 className="brand-card-title">Brand Parameters & Specifications</h2>
-              <p className="brand-card-subtitle">Fill out physical characteristics, category groupings, and official measure metrics.</p>
-            </div>
-          </div>
-
-          <div className="brand-card-body">
-            <form onSubmit={handleSave} className="brand-form">
+                        
+        {/* Blue Top Border */}
+        <div className="brand-card-accent" />
+                        
+        <div className="brand-card-header brand-card-header-flex">
+        <div className="brand-card-header-icon">
+        <Sliders />
+        </div>
+        <div>
+        <h2 className="brand-card-title">Brand Parameters & Specifications</h2>
+        <p className="brand-card-subtitle">Fill out physical characteristics, category groupings, and official measure metrics.</p>
+        </div>
+        </div>
               
+        <div className="brand-card-body">
+        <form onSubmit={handleSave} className="brand-form">
               {/* Form Grid */}
               <div className="form-grid">
                 
                 {/* 1. Category Dropdown */}
-                <div className="form-group form-group-flex">
-                  <label htmlFor="category" className="form-label form-label-flex">
-                    Liquor Category <span className="form-label-required">*</span>
-                  </label>
-                  <div className="field-wrapper">
-                    <Sliders className="field-icon" />
-                    <select
-                      id="category"
-                      value={formData.category}
-                      onChange={handleCategoryChange}
-                      className={`field-control brand-select ${
-                        formErrors.category ? 'field-error-border' : ''
-                      }`}
-                    >
+                 <div className="form-group form-group-flex">
+                                  <label htmlFor="category" className="form-label form-label-flex">
+                                    Liquor Category <span className="form-label-required">*</span>
+                                  </label>
+                                  <div className="field-wrapper">
+                                    <Sliders className="field-icon" />
+                                    <select
+                                      id="category"
+                                      value={formData.category}
+                                      onChange={handleCategoryChange}
+                                      className={`field-control brand-select ${
+                                        formErrors.category ? 'field-error-border' : ''
+                                      }`}
+                                    >
                       <option value="">Select Category</option>
-                      <option value="Country Liquor">Country Liquor</option>
-                      <option value="Indian Liquor">Indian Liquor</option>
+                      {categories.map(category => {
+                        const code = getValue(category, 'liquorCatCode', 'LiquorCatCode');
+                        const label = getValue(category, 'liquorCatDesc', 'LiquorCatDesc');
+                        return <option key={code} value={code}>{label}</option>;
+                      })}
                     </select>
                     <div className="select-arrow">
-                      <ChevronRight className="select-arrow-icon" />
+                    <ChevronRight className="select-arrow-icon" />
                     </div>
                   </div>
-                  {formErrors.category && (
-                    <span className="field-error">
-                      <AlertCircle className="field-error-icon" />
-                      {formErrors.category}
-                    </span>
-                  )}
-                </div>
+                 {formErrors.category && (
+                                     <span className="field-error">
+                                       <AlertCircle className="field-error-icon" />
+                                       {formErrors.category}
+                                     </span>
+                                   )}
+                                 </div>
+                 
 
-                {/* 2. Kind of Liquor (Responsive options based on category) */}
-                <div className="form-group form-group-flex">
-                  <label htmlFor="kindOfLiquor" className="form-label form-label-flex">
-                    Kind of Liquor {formData.category && <span className="form-label-required">*</span>}
-                  </label>
-                  <div className="field-wrapper">
-                    <Layers className="field-icon" />
-                    <select
-                      id="kindOfLiquor"
-                      value={formData.kindOfLiquor}
-                      onChange={handleKindOfChange}
-                      disabled={!formData.category}
-                      className={`field-control brand-select ${
-                        !formData.category ? 'field-disabled' :
-                        formErrors.kindOfLiquor ? 'field-error-border' : ''
-                      }`}
-                    >
-                      <option value="">Select Kind of Liquor</option>
-                      {formData.category && kindOfLiquorOptions[formData.category]?.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <div className="select-arrow">
-                      <ChevronRight className="select-arrow-icon" />
-                    </div>
-                  </div>
-                  {!formData.category && (
-                    <span className="field-helper">
-                      Select a Liquor Category to unlock Kind of Liquor.
-                    </span>
-                  )}
-                  {formErrors.kindOfLiquor && (
-                    <span className="field-error">
-                      <AlertCircle className="field-error-icon" />
-                      {formErrors.kindOfLiquor}
-                    </span>
-                  )}
+                {/* 2. Kind of Liquor (Responsive options based on category) */}                   
+                <div className="form-group form-group-flex">   
+                <label htmlFor="kindOfLiquor" className="form-label form-label-flex"> Kind of Liquor {formData.category && 
+                <span className="text-rose-600 font-bold">*</span>}
+                </label>
+                <div className="field-wrapper">
+                <Layers className="field-icon" />
+                <select
+                id="kindOfLiquor"
+                value={formData.kindOfLiquor}
+                onChange={handleKindOfChange}
+                disabled={!formData.category}
+                style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
+                className={`field-control brand-select ${
+                !formData.category ? 'field-disabled' :
+                formErrors.kindOfLiquor ? 'field-error-border' : '' 
+              }`} >  
+                <option value="">Select Kind of Liquor</option>
+                {kinds.map(kind => {
+                const code = getValue(kind, 'liquorKindCode', 'LiquorKindCode');
+                const label = getValue(kind, 'liquorKindDesc', 'LiquorKindDesc');
+                return <option key={code} value={code}>{label}</option>;
+                })}
+                </select>
+                <div className="select-arrow">
+                <ChevronRight className="select-arrow-icon" />
                 </div>
+                </div>
+                {!formData.category && (
+               <span className="field-helper">
+                Select a Liquor Category to unlock Kind of Liquor
+               </span>
+                )}
+                {formErrors.kindOfLiquor && (
+                <span className="field-error">
+                                      <AlertCircle className="field-error-icon" />
+
+                                      {formErrors.kindOfLiquor}
+                                    </span>
+                                  )}
+                                </div>
 
                 {/* 3. Liquor Type (Responsive options based on Kind of Liquor) */}
                 <div className="form-group form-group-flex">
                   <label htmlFor="liquorType" className="form-label form-label-flex">
-                    Liquor Type {formData.kindOfLiquor && <span className="form-label-required">*</span>}
+                    Liquor Type {formData.kindOfLiquor &&  <span className="form-label-required">*</span>}
                   </label>
                   <div className="field-wrapper">
                     <Activity className="field-icon" />
                     <select
                       id="liquorType"
                       value={formData.liquorType}
-                      onChange={(e) => handleInputChange('liquorType', e.target.value)}
+                      onChange={async (e) => {
+                      const typeCode = e.target.value;
+
+                      handleInputChange("liquorType", typeCode);
+
+                       setMeasures([]);
+
+                       await loadMeasures(
+                          formData.category,
+                           formData.kindOfLiquor,
+                            typeCode
+                             );
+                          }}
                       disabled={!formData.kindOfLiquor}
+                      style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
                       className={`field-control brand-select ${
-                        !formData.kindOfLiquor ? 'field-disabled' :
+                         !formData.kindOfLiquor ? 'field-disabled' :
                         formErrors.liquorType ? 'field-error-border' : ''
                       }`}
                     >
                       <option value="">Select Liquor Type</option>
-                      {formData.kindOfLiquor && liquorTypeOptions[formData.kindOfLiquor]?.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
+                      {types.map(type => {
+                        const code = getValue(type, 'liquorTypeCode', 'LiquorTypeCode');
+                        const label = getValue(type, 'liquorTypeDesc', 'LiquorTypeDesc');
+                        return <option key={code} value={code}>{label}</option>;
+                      })}
                     </select>
                     <div className="select-arrow">
                       <ChevronRight className="select-arrow-icon" />
                     </div>
                   </div>
                   {!formData.kindOfLiquor && (
-                    <span className="field-helper">
+                    <span className="field-helper block">
                       Select Kind of Liquor to unlock specific Liquor Type.
                     </span>
                   )}
                   {formErrors.liquorType && (
-                    <span className="field-error">
-                      <AlertCircle className="field-error-icon" />
+                   <span className="field-error">
+                     <AlertCircle className="field-error-icon" />
                       {formErrors.liquorType}
                     </span>
                   )}
                 </div>
 
-                {/* 4. Old Brand ID */}
-                <div className="form-group form-group-flex">
-                  <label htmlFor="oldBrandId" className="form-label form-label-flex">
-                    Old Brand ID
-                  </label>
-                  <div className="field-wrapper">
-                    <Hash className="field-icon" />
-                    <input
-                      id="oldBrandId"
-                      type="text"
-                      placeholder="e.g. OLD-EXC-4581"
-                      value={formData.oldBrandId}
-                      onChange={(e) => handleInputChange('oldBrandId', e.target.value)}
-                      className="field-control brand-input"
-                    />
-                  </div>
-                  <span className="field-helper">Optional reference index for legacy brand profiles.</span>
-                </div>
+                
 
-                {/* 5. Brand Code Dropdown */}
-                <div className="form-group form-group-flex">
+                {/* 5. Brand Code */}
+               <div className="form-group form-group-flex">
                   <label htmlFor="brandCode" className="form-label form-label-flex">
                     Brand Code
                   </label>
                   <div className="field-wrapper">
                     <Barcode className="field-icon" />
-                    <select
+                    <input
                       id="brandCode"
+                      type="text"
+                      placeholder="Generated by API after save"
                       value={formData.brandCode}
-                      onChange={(e) => handleInputChange('brandCode', e.target.value)}
+                      readOnly
                       className="field-control brand-select"
-                    >
-                      <option value="">Select Brand Code</option>
-                      {brandCodeOptions.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <div className="select-arrow">
+                    />
+                    {/* <div className="select-arrow">
                       <ChevronRight className="select-arrow-icon" />
-                    </div>
+                    </div> */}
                   </div>
-                  <span className="field-helper">Select a pre-allocated structural tariff billing code.</span>
+                  <span className="field-helper block">Brand code is generated automatically by the backend.</span>
                 </div>
 
                 {/* 6. Quarts Measure */}
@@ -647,88 +789,107 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                   </label>
                   <div className="field-wrapper">
                     <GlassWater className="field-icon" />
-                    <input
+                    <select
                       id="measure"
-                      type="text"
-                      placeholder="e.g. 750 Ml, 375 Ml, 180 Ml"
                       value={formData.measure}
                       onChange={(e) => handleInputChange('measure', e.target.value)}
-                      className="field-control brand-input"
-                    />
+                      style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
+                      className={`field-control brand-select ${
+                        formErrors.measure ? 'border-red-500' : ''
+                      }`}
+                    >
+                     <option value="">Select Measure</option>
+
+{measures.map((measure) => (
+  <option key={measure} value={measure}>
+    {measure}
+  </option>
+))}
+                    </select>
+                    <div className="select-arrow">
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
+                    </div>
                   </div>
-                  <span className="field-helper">Specify volume capacity per individual bottle unit.</span>
+                  {formErrors.measure ? (
+                    <span className="field-error flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      {formErrors.measure}
+                    </span>
+                  ) : (
+                    <span className="field-helper block">Select bottle capacity from liquor measure master.</span>
+                  )}
                 </div>
 
               </div>
 
               {/* 7. Brand Name (Textarea spanning full width) */}
               <div className="form-group full-width form-group-flex">
-                <label htmlFor="brandName" className="form-label form-label-flex">
-                  Brand Name <span className="form-label-required">*</span>
-                </label>
-                <div className="textarea-wrapper">
-                  <TagIcon className="textarea-icon" />
-                  <textarea
-                    id="brandName"
-                    rows="2"
-                    placeholder="Enter full legislative trademark name (e.g. JOHNNIE WALKER WHITE PLATINUM SELECTION)"
-                    value={formData.brandName}
-                    onChange={(e) => handleInputChange('brandName', e.target.value)}
-                    className={`brand-textarea ${
-                      formErrors.brandName ? 'field-error-border' : ''
-                    }`}
-                  />
-                </div>
-                {formErrors.brandName ? (
-                  <span className="field-error">
-                    <AlertCircle className="field-error-icon" />
-                    {formErrors.brandName}
-                  </span>
-                ) : (
-                  <span className="field-helper">Ensure brand spelling aligns precisely with intellectual property registrations.</span>
-                )}
-              </div>
+                              <label htmlFor="brandName" className="form-label form-label-flex">
+                                Brand Name <span className="form-label-required">*</span>
+                              </label>
+                              <div className="textarea-wrapper">
+                                <TagIcon className="textarea-icon" />
+                                <textarea
+                                  id="brandName"
+                                  rows="2"
+                                  placeholder="Enter full legislative trademark name (e.g. JOHNNIE WALKER WHITE PLATINUM SELECTION)"
+                                  value={formData.brandName}
+                                  onChange={(e) => handleInputChange('brandName', e.target.value)}
+                                  className={`brand-textarea ${
+                                    formErrors.brandName ? 'field-error-border' : ''
+                                  }`}
+                                />
+                              </div>
+                              {formErrors.brandName ? (
+                                <span className="field-error">
+                                  <AlertCircle className="field-error-icon" />
+                                  {formErrors.brandName}
+                                </span>
+                              ) : (
+                                <span className="field-helper">Ensure brand spelling aligns precisely with intellectual property registrations.</span>
+                              )}
+                            </div>
 
               {/* Action Buttons */}
               <div className="form-actions">
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="btn-reset btn-icon-flex"
-                >
-                  <RotateCcw className="btn-icon" />
-                  <span>Reset Fields</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="btn-cancel btn-icon-flex"
-                >
-                  <X className="btn-icon" />
-                  <span>Cancel</span>
-                </button>
-                <button
-                  type="submit"
-                  className="btn-save btn-icon-flex"
-                >
-                  <Save className="btn-icon" />
-                  <span>Save Record</span>
-                </button>
-              </div>
-
-            </form>
-          </div>
-        </div>
+                        <button
+                          type="button"
+                          onClick={handleReset}
+                          className="btn-reset btn-icon-flex"
+                        >
+                          <RotateCcw className="btn-icon" />
+                          <span>Reset Fields</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCancel}
+                          className="btn-cancel btn-icon-flex"
+                        >
+                          <X className="btn-icon" />
+                          <span>Cancel</span>
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className="btn-save btn-icon-flex"
+                        >
+                          <Save className="btn-icon" />
+                          <span>{isSaving ? 'Saving...' : 'Save Record'}</span>
+                        </button>
+                      </div>
+        
+                    </form>
+                  </div>
+                </div>
 
         {/* 2. DYNAMICALLY RENDERED DATA TABLE SECTION */}
         {showTable ? (
-          <div className="table-card brand-table-card">
+         <div className="table-card brand-table-card">
             
             {/* Table Control Header */}
             <div className="table-header">
               
-              <div className="table-header-row">
-                
+                <div className="table-header-row">
                 <div>
                   <h3 className="table-title">
                     <span>Registered Brands - {formData.category}</span>
@@ -890,7 +1051,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                   <tbody className="divide-y divide-slate-100">
                     {paginatedBrands.map((brand) => (
                       <tr 
-                        key={brand.id}
+                         key={brand.key}
                         className="table-row"
                       >
                         
@@ -930,7 +1091,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                               {brand.liquorType}
                             </span>
                             <span className="liquor-kind-text">
-                              {brand.kindOfLiquor.split(' (')[0]}
+                              {brand.kindOfLiquorName}
                             </span>
                           </div>
                         </td>
@@ -961,7 +1122,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                         {/* 7. Delete trash item Column */}
                         <td className="action-cell">
                           <button
-                            onClick={() => handleDeleteBrand(brand.id, brand.brandName)}
+                            onClick={() => handleDeleteBrand(brand)}
                             className="btn-delete-record"
                             title="Remove registration record"
                           >
@@ -989,7 +1150,7 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
                 {/* Arrow navigation UI */}
                 <div className="pagination-buttons-group">
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
                     className={`page-btn ${
                       currentPage === 1 ? 'page-btn-disabled' : 'page-btn-normal'
@@ -1000,13 +1161,13 @@ export default function LiquorBrandRegistration({ onNavigateHome }) {
 
                   {/* Discrete page numbers up to 1-10 pages constraint */}
                   <div className="pagination-numbers">
-                    {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((val) => (
+                    {visiblePageNumbers.map((val) => (
                       <button
                         key={val}
                         onClick={() => setCurrentPage(val)}
                         className={`page-btn ${
                           currentPage === val 
-                            ? 'page-btn-active' 
+                           ? 'page-btn-active' 
                             : 'page-btn-normal'
                         }`}
                       >
