@@ -32,15 +32,16 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
         return BadRequest(ModelState);
 
             //generate application id
-            string? lastappid = await _context.LicenseApplications
-                .OrderByDescending(x => x.ApplicationIdNo)
-                .Select(x => x.ApplicationIdNo)
-                .FirstOrDefaultAsync();
+            //string? lastappid = await _context.LicenseApplications
+            //    .OrderByDescending(x => x.ApplicationIdNo)
+            //    .Select(x => x.ApplicationIdNo)
+            //    .FirstOrDefaultAsync();
 
 
-            string prefix = $"REF{dto.CatCode}";
+            //string prefix = $"REF{dto.CatCode}";
 
-            //string? lastAppId = await _context.LicenseApplications
+
+            //string? lastappid = await _context.LicenseApplications
             //    .Where(x => x.ApplicationIdNo.StartsWith(prefix))
             //    .OrderByDescending(x => x.ApplicationIdNo)
             //    .Select(x => x.ApplicationIdNo)
@@ -48,22 +49,43 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
 
 
 
+            //string newAppId;
 
-            // string prefix = $"REF{dto.CatCode}";
+            //if (string.IsNullOrWhiteSpace(lastappid))
+            //{
+            //    newAppId = $"{prefix}0001";
+            //}
+            //else
+            //{
+            //    int number = int.Parse(lastappid.Substring(prefix.Length));
+            //    newAppId = $"{prefix}{(number + 1):0000}";
+            //}
 
-            string newAppId;
 
-            if (string.IsNullOrWhiteSpace(lastappid))
+
+            string? lastAppId = await _context.LicenseApplications
+    .OrderByDescending(x => x.Id)   // ya CreatedDate
+    .Select(x => x.ApplicationIdNo)
+    .FirstOrDefaultAsync();
+
+            string prefix = $"REF{dto.CatCode}";
+
+            int sequence = 1;
+
+            if (!string.IsNullOrWhiteSpace(lastAppId))
             {
-                newAppId = $"{prefix}0001";
-            }
-            else
-            {
-                int number = int.Parse(lastappid.Substring(prefix.Length));
-                newAppId = $"{prefix}{(number + 1):0000}";
+                string lastFour = lastAppId.Substring(lastAppId.Length - 4);
+                sequence = int.Parse(lastFour) + 1;
             }
 
-     
+            string newAppId = $"{prefix}{sequence:0000}";
+
+
+
+
+
+
+
 
             var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
 
