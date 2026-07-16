@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import NewLicense from "./NewLicense";
 import NewPermitWizard from "./Permit/NewPermit";
+import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
 
 const menuItems = [
   { id: "Home", label: "Home", icon: Home },
@@ -48,10 +49,6 @@ const menuItems = [
   { id: "Premise", label: "Premise", icon: Building },
   { id: "Profile", label: "Profile & Settings", icon: Settings },
 ];
-
-
-
-
 
 const statsData = [
   {
@@ -111,15 +108,8 @@ const SectionTitle = ({ title, subtitle }) => {
   );
 };
 
-
-
-
 const StatCard = ({ item }) => {
   const Icon = item.icon;
-
-
-  
-
   return (
     <div className="dashboard-card stat-card">
       <div className="stat-top">
@@ -133,7 +123,6 @@ const StatCard = ({ item }) => {
           View →
         </span>
       </div>
-
       <div>
         <p className="stat-title">
           {item.title}
@@ -613,16 +602,11 @@ const loadApplicantData = async (regId) => {
   setProfile(data);
 };
 
-
-
-
-
-
-  const filteredLicenses = licenses.filter(
+const filteredLicenses = licenses.filter(
     (item) =>
       item.type.toLowerCase().includes(search.toLowerCase()) ||
       item.id.toLowerCase().includes(search.toLowerCase())
-  );
+);
 
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col relative">
@@ -808,13 +792,7 @@ const loadApplicantData = async (regId) => {
     <span className="profile-label">State</span>
     <span className="profile-value">{profile.stateUT}</span>
   </div> */}
-</div>
-
-
-
-
-
-
+                </div>
                 </div>
               </div>
             </>
@@ -1848,255 +1826,15 @@ const loadApplicantData = async (regId) => {
             </div>
           )}
 
-          {/* REGISTER PREMISE TAB */}
-          {activeTab === "Register Premise" && (
-            <div className="space-y-6 max-w-3xl mx-auto">
-              <SectionTitle 
-                title="Register Physical Premise" 
-                subtitle="Apply for excise registration and physical verification of a retail, wholesale, or bonded store space" 
-              />
-
-              {premiseSubmissionCompleted ? (
-                <div className="dashboard-card p-8 text-center space-y-4 bg-white">
-                  <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800">Premise Registration Filed</h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                    The registration dossier for <span className="font-semibold text-slate-700">{newPremiseData.premiseName}</span> has been compiled and saved. Your request ID is <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">PM-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. State safety division dispatchers will reach out for physical measurements.
-                  </p>
-                  <button 
-                    onClick={() => {
-                      setPremiseSubmissionCompleted(false);
-                      setNewPremiseData({
-                        premiseName: "",
-                        ownerName: "",
-                        address: "",
-                        premiseType: "Bonded Warehouse Store",
-                        dimensions: "3,000 Sq. Ft.",
-                        fireNocNumber: "",
-                        securityDepositReceipt: "",
-                        declarationsChecked: false
-                      });
-                    }}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
-                  >
-                    Register Another Premise
-                  </button>
-                </div>
-              ) : (
-                <form 
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!newPremiseData.premiseName || !newPremiseData.address || !newPremiseData.fireNocNumber) {
-                      showToast("Please fill all required brand, address, and clearance fields", "error");
-                      return;
-                    }
-                    if (!newPremiseData.declarationsChecked) {
-                      showToast("Please accept the physical safety compliance bounds", "error");
-                      return;
-                    }
-
-                    // Add to premise applications state list
-                    const referenceNum = `PM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-                    setPremiseApplications(prev => [
-                      {
-                        id: referenceNum,
-                        premiseName: newPremiseData.premiseName,
-                        address: newPremiseData.address,
-                        premiseType: newPremiseData.premiseType,
-                        dimensions: newPremiseData.dimensions,
-                        status: "Under Physical Inspection",
-                        submittedDate: new Date().toLocaleDateString("en-GB"),
-                        remarks: "Verification of bonded store safety metrics registered"
-                      },
-                      ...prev
-                    ]);
-
-                    setPremiseSubmissionCompleted(true);
-                    showToast(`Premise registration filed under ${referenceNum}`);
-                  }}
-                  className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
-                >
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Premise / Trade Depot Name *</label>
-                      <input 
-                        type="text" 
-                        value={newPremiseData.premiseName}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, premiseName: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                        placeholder="e.g. West Delhi Distributing Depot"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Area / Floor Dimensions *</label>
-                      <input 
-                        type="text" 
-                        value={newPremiseData.dimensions}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, dimensions: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
-                        placeholder="e.g. 3,500 Sq. Ft."
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Fire Safety NOC Reference *</label>
-                      <input 
-                        type="text" 
-                        value={newPremiseData.fireNocNumber}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, fireNocNumber: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
-                        placeholder="e.g. DFS/NOC/2026/XXXX"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Treasury Security Deposit Receipt</label>
-                      <input 
-                        type="text" 
-                        value={newPremiseData.securityDepositReceipt}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, securityDepositReceipt: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
-                        placeholder="e.g. SD-EXE-99381-2026"
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Premise Category Classification *</label>
-                      <select 
-                        value={newPremiseData.premiseType}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, premiseType: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-750"
-                      >
-                        <option value="Bonded Warehouse Store">Bonded Warehouse Store</option>
-                        <option value="Retail Vend Shop">Retail Vend Shop</option>
-                        <option value="Micro-brewery Service Deck">Micro-brewery Service Deck</option>
-                        <option value="Temporary Permit Bar Ground">Temporary Permit Bar Ground</option>
-                      </select>
-                    </div>
-
-                    <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Full Landmark Address & Plot Location *</label>
-                      <textarea 
-                        rows="2"
-                        value={newPremiseData.address}
-                        onChange={(e) => setNewPremiseData(p => ({ ...p, address: e.target.value }))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
-                        placeholder="Specific road, industrial sector details, block number, Pin code..."
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
-                    <input 
-                      type="checkbox" 
-                      id="premise-check"
-                      checked={newPremiseData.declarationsChecked}
-                      onChange={(e) => setNewPremiseData(p => ({ ...p, declarationsChecked: e.target.checked }))}
-                      className="mt-1 accent-amber-600 scale-110 cursor-pointer"
-                    />
-                    <label htmlFor="premise-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
-                      I certify that the store premise is safe, possesses lockable warehouses conforming to physical security standards, and matches dimensions described above. I understand and welcome physical surprise audits by state excise agents.
-                    </label>
-                  </div>
-
-                  <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 font-sans">
-                    <button 
-                      type="button"
-                      onClick={() => setActiveTab("Home")} 
-                      className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      type="submit" 
-                      className="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
-                    >
-                      File Premise Registration
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          )}
-
-          {/* APPLIED PREMISE TAB */}
-          {activeTab === "Applied Premise" && (
-            <div className="space-y-6">
-              <SectionTitle 
-                title="Registered Excise Premises Registry" 
-                subtitle="Track current safety certificates, fire audits, and active physical statuses of your warehouses" 
-              />
-
-              <div className="space-y-4">
-                {premiseApplications.map((app) => (
-                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
-                    <div className="flex justify-between items-start gap-4 flex-wrap">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-extrabold text-[#d97706] bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">EXCISE PHYSICAL PREMISE</span>
-                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
-                        </div>
-                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.premiseName}</h4>
-                        <p className="text-xs text-slate-500 font-semibold mt-1">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Type / Dimension:</span> {app.premiseType} ({app.dimensions})
-                        </p>
-                        <p className="text-xs text-slate-400 font-medium mt-1">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Location:</span> {app.address}
-                        </p>
-                        <p className="text-[11px] text-slate-400 font-medium font-sans mt-0.5">Application Filed on: {app.submittedDate}</p>
-                      </div>
-
-                      <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          app.status === "Approved" 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
-                            : "bg-amber-50 text-amber-700 border-amber-100"
-                        }`}>
-                          {app.status}
-                        </span>
-                        <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
-                          {app.remarks}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
-                      {[
-                        { label: "Fire Scrutiny", done: true },
-                        { label: "Physical Verification", done: true },
-                        { label: "Safety Audit clearance", done: app.status === "Approved" },
-                        { label: "Premise Active", done: app.status === "Approved" }
-                      ].map((step, sIdx) => (
-                        <div key={sIdx} className="space-y-1">
-                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
-                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* NEW PERMIT TAB */}
-          {activeTab === "New Permit" && (
-            <div className="animate-fade">
-              <NewPermitWizard 
-                onBackToDashboard={() => setActiveTab("Home")} 
-                showToast={showToast} 
-                onSubmitPermit={(newPermit) => {
-                  setPermitApplications(prev => [newPermit, ...prev]);
-                }}
-              />
-            </div>
+           {/* PREMISE MODULE */}
+          {(activeTab === "Register Premise" || activeTab === "Applied Premise") && (
+            <PremiseDashboard
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              premiseApplications={premiseApplications}
+              setPremiseApplications={setPremiseApplications}
+              showToast={showToast}
+            />
           )}
 
           {/* APPLIED PERMIT TAB */}
