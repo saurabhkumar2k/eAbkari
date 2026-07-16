@@ -624,7 +624,7 @@ const payload = {
 
   Email: applicant.email,
   Mobile: applicant.mobile,
-  LandLine: applicant.landline,
+  // LandLine: applicant.landline,
   CinNo: applicant.cinNo,
   OwnerType: applicant.ownerType,
   CatCode: applicant.catCode
