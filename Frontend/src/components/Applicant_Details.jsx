@@ -438,7 +438,7 @@ subDivisions?.forEach((s) =>
     </div>
 
     {/* Landline */}
-    <div className="reg-field">
+    {/* <div className="reg-field">
       <label className="reg-label label-title">
         Landline
       </label>
@@ -456,7 +456,7 @@ subDivisions?.forEach((s) =>
           disabled
         />
       </div>
-    </div>
+    </div> */}
 
   </div>
 </div>

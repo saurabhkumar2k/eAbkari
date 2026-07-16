@@ -82,8 +82,9 @@ using (var stream = new FileStream(filePath, FileMode.Create))
     await photo.CopyToAsync(stream);
 }
 
+                model.Photo = fileName;
 // Save relative path in database
-model.Photo = Path.Combine("Photo_", fileName);
+//model.Photo = Path.Combine("Photo_", fileName);
                 
     }
 
