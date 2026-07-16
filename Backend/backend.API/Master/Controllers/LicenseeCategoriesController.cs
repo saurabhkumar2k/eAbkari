@@ -37,18 +37,33 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
                 .Select(x => x.ApplicationIdNo)
                 .FirstOrDefaultAsync();
 
-            string newappid;
+
+            string prefix = $"REF{dto.CatCode}";
+
+            //string? lastAppId = await _context.LicenseApplications
+            //    .Where(x => x.ApplicationIdNo.StartsWith(prefix))
+            //    .OrderByDescending(x => x.ApplicationIdNo)
+            //    .Select(x => x.ApplicationIdNo)
+            //    .FirstOrDefaultAsync();
+
+
+
+
+            // string prefix = $"REF{dto.CatCode}";
+
+            string newAppId;
 
             if (string.IsNullOrWhiteSpace(lastappid))
             {
-                newappid = "REFL10001";
+                newAppId = $"{prefix}0001";
             }
             else
             {
-                int number = int.Parse(lastappid.Substring(4));
-                newappid = $"REFL{(number + 1):00000}";
+                int number = int.Parse(lastappid.Substring(prefix.Length));
+                newAppId = $"{prefix}{(number + 1):0000}";
             }
 
+     
 
             var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
 
@@ -87,7 +102,7 @@ public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicatio
             {
                 IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 RegId = (int)dto.RegId,
-                ApplicationIdNo = newappid,
+                ApplicationIdNo = newAppId,
                 ApplicationDate = DateTime.Now,
                 FinYear = finYear,
                 ApplicationStatus = "P",
