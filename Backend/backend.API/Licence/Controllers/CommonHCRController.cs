@@ -1,5 +1,5 @@
+using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
-using backend.Core.Interfaces.License;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.API.Licence.Controllers
@@ -8,22 +8,22 @@ namespace backend.API.Licence.Controllers
     [ApiController]
     public class CommonHCRController : ControllerBase
     {
-        private readonly ICommonHCRRepository _HCRrepository;    
-        public CommonHCRController(ICommonHCRRepository repository)
+        private readonly ICommonHCRServices _HCRservice;    
+        public CommonHCRController(ICommonHCRServices repository)
         {
-            _HCRrepository = repository;
+            _HCRservice = repository;
         }
 
         [HttpPost]
-        [Route("ApplyLicense")]
-        public async Task<IActionResult> CreateApplyLicense(LicenseApplicationUserDetailsDto dto)
+        [Route("SaveSiteDetails")]
+        public async Task<IActionResult> SaveApplicantSiteDetails(LicenseSiteDetailsDto dto)
         {
             if (!ModelState.IsValid)
             {          
                 return BadRequest(ModelState);
             }
 
-            var user = await _HCRrepository.SaveApplicantDetails(dto);
+            var user = await _HCRservice.SaveApplicantSiteDetails(dto);
 
             return Ok(user);
         }
