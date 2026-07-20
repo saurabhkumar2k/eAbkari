@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
+import ApplicantDetails from "../../../components/Applicant_Details";
+import DirectorsList from "../../../components/DirectorsList";
+import { createApplicant } from "../../../Model/Applicant";
+
 import {
   Building,
   Utensils,
@@ -37,78 +41,6 @@ import SelectLicenseType from "./SelectLicense";
 import L20 from "./L20";
 import HcrApplicantDetails from "./HcrApplicantDetail";
 
-// Option lists duplicate from LiquorBrandRegistration for ease of access inside modular feature folder
-const brandCodeOptions = [
-  { value: 'BC-EXC-DEL-001', label: 'BC-EXC-DEL-001 (Premium Class A)' },
-  { value: 'BC-EXC-DEL-002', label: 'BC-EXC-DEL-002 (Economy Plain)' },
-  { value: 'BC-EXC-DEL-003', label: 'BC-EXC-DEL-003 (Special Reserve)' },
-  { value: 'BC-EXC-DEL-004', label: 'BC-EXC-DEL-004 (Imported Malt)' },
-  { value: 'BC-EXC-DEL-005', label: 'BC-EXC-DEL-005 (Standard Mild)' }
-];
-
-const kindOfLiquorOptions = {
-  'Country Liquor': [
-    { value: 'Country Spirit (Plain)', label: 'Country Spirit (Plain)' },
-    { value: 'Country Spirit (Spiced)', label: 'Country Spirit (Spiced)' },
-    { value: 'Country Rum', label: 'Country Rum' }
-  ],
-  'Indian Liquor': [
-    { value: 'Indian Made Foreign Liquor (IMFL)', label: 'Indian Made Foreign Liquor (IMFL)' },
-    { value: 'Foreign Liquor (Imported FL)', label: 'Foreign Liquor (Imported FL)' },
-    { value: 'Beer (Domestic)', label: 'Beer (Domestic)' },
-    { value: 'Beer (Imported/Premium)', label: 'Beer (Imported/Premium)' },
-    { value: 'Wine (Domestic)', label: 'Wine (Domestic)' },
-    { value: 'Wine (Imported)', label: 'Wine (Imported)' }
-  ]
-};
-
-const liquorTypeOptions = {
-  'Country Spirit (Plain)': [
-    { value: 'Plain Spirit 36°', label: 'Plain Spirit 36° Proof' },
-    { value: 'Plain Spirit 40°', label: 'Plain Spirit 40° Proof' }
-  ],
-  'Country Spirit (Spiced)': [
-    { value: 'Spiced Spirit 50°', label: 'Spiced Spirit 50° Proof' },
-    { value: 'Masala Premium 50°', label: 'Masala Premium 50° Proof' }
-  ],
-  'Country Rum': [
-    { value: 'Country Rum Dark', label: 'Country Rum Dark' }
-  ],
-  'Indian Made Foreign Liquor (IMFL)': [
-    { value: 'Whisky', label: 'Whisky' },
-    { value: 'Rum', label: 'Rum' },
-    { value: 'Vodka', label: 'Vodka' },
-    { value: 'Gin', label: 'Gin' },
-    { value: 'Brandy', label: 'Brandy' }
-  ],
-  'Foreign Liquor (Imported FL)': [
-    { value: 'Single Malt Whisky', label: 'Single Malt Whisky' },
-    { value: 'Premium Scotch', label: 'Premium Scotch' },
-    { value: 'Bourbon Whisky', label: 'Bourbon Whisky' },
-    { value: 'Imported Gin', label: 'Imported Gin' },
-    { value: 'Imported Vodka', label: 'Imported Vodka' }
-  ],
-  'Beer (Domestic)': [
-    { value: 'Strong Beer', label: 'Strong Beer' },
-    { value: 'Mild Lager', label: 'Mild Lager' },
-    { value: 'Draft Beer', label: 'Draft Beer' }
-  ],
-  'Beer (Imported/Premium)': [
-    { value: 'Imported Premium IPA', label: 'Imported Premium IPA' },
-    { value: 'International Stout', label: 'International Stout' },
-    { value: 'Premium Pilsner', label: 'Premium Pilsner' }
-  ],
-  'Wine (Domestic)': [
-    { value: 'Shiraz Red Wine', label: 'Shiraz Red Wine' },
-    { value: 'Sauvignon White Wine', label: 'Sauvignon White Wine' },
-    { value: 'Sparkling Rose', label: 'Sparkling Rose' }
-  ],
-  'Wine (Imported)': [
-    { value: 'Imported Champagne', label: 'Imported Champagne' },
-    { value: 'Premium Bordeaux Red', label: 'Premium Bordeaux Red' },
-    { value: 'Chardonnay White', label: 'Chardonnay White' }
-  ]
-};
 
 export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootData = {} }) {
   // We represent HCR Wizard Steps corresponding to user's requested screenshot layout:
@@ -121,6 +53,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
   // Selected HCR license code
   const [selectedLicenseId, setSelectedLicenseId] = useState("L-15");
+  //const [applicantForm, setApplicantForm] = useState(createApplicant());
 
   // HCR Applicant Profile State
   const [applicantForm, setApplicantForm] = useState({
@@ -170,10 +103,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     noOfKitchenStaff: "",
     utilityEmployees: "",
     noOfRestaurantAttendent: "",
-
     eduInsDistance: "Less than 100 Meters",
     religiousPlaceDistance: "Less than 100 Meters",
-
     hoursOfSale: ""
   });
 
@@ -203,24 +134,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   });
   const [trainErrors, setTrainErrors] = useState({});
 
-  // HCR Brand associated state
-  const [associatedBrands, setAssociatedBrands] = useState([]);
-
-  // Brand registration sub-form state
-  const [brandForm, setBrandForm] = useState({
-    category: 'Indian Liquor', // default selection
-    kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-    liquorType: 'Whisky',
-    oldBrandId: '',
-    brandCode: 'BC-EXC-DEL-001',
-    measure: '750 Ml',
-    brandName: ''
-  });
-
-  const [brandFormErrors, setBrandFormErrors] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortColumn, setSortColumn] = useState('brandName');
-  const [sortDirection, setSortDirection] = useState('asc');
 
   // Premises Details States (inside step 5 for non-L20)
   const [premisesForm, setPremisesForm] = useState({
@@ -397,151 +310,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     }
     setTrainErrors({});
     return true;
-  };
-
-  // Brand association save helper
-  const handleSaveBrand = (e) => {
-    e.preventDefault();
-    const errors = {};
-
-    if (!brandForm.category) {
-      errors.category = 'Liquor category is required';
-    }
-    if (!brandForm.brandName || brandForm.brandName.trim() === '') {
-      errors.brandName = 'Brand name is blank';
-    }
-    if (!brandForm.kindOfLiquor) {
-      errors.kindOfLiquor = 'Kind of liquor is required';
-    }
-    if (!brandForm.liquorType) {
-      errors.liquorType = 'Liquor Specific Type is required';
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setBrandFormErrors(errors);
-      triggerToast('Please clarify form errors.', 'error');
-      return;
-    }
-
-    const newBrand = {
-      id: `BL-${Math.floor(1000 + Math.random() * 9000)}`,
-      brandName: brandForm.brandName.toUpperCase().trim(),
-      category: brandForm.category,
-      kindOfLiquor: brandForm.kindOfLiquor,
-      liquorType: brandForm.liquorType,
-      oldBrandId: brandForm.oldBrandId || 'N/A',
-      brandCode: brandForm.brandCode || 'BC-EXC-DEL-001',
-      measure: brandForm.measure || '750 Ml',
-      status: 'Associated'
-    };
-
-    setAssociatedBrands(prev => [newBrand, ...prev]);
-    setBrandForm({
-      category: 'Indian Liquor',
-      kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-      liquorType: 'Whisky',
-      oldBrandId: '',
-      brandCode: 'BC-EXC-DEL-001',
-      measure: '750 Ml',
-      brandName: ''
-    });
-    setBrandFormErrors({});
-    triggerToast('Brand successfully linked to HCR application registry!');
-  };
-
-  // Remove Brand item helper
-  const handleRemoveBrand = (id) => {
-    setAssociatedBrands(prev => prev.filter(b => b.id !== id));
-    triggerToast('Removed brand link.', 'info');
-  };
-
-  // Sorting logic for Step 4 list
-  const filteredBrands = useMemo(() => {
-    let result = [...associatedBrands];
-    if (searchTerm.trim() !== '') {
-      const q = searchTerm.toLowerCase();
-      result = result.filter(b =>
-        b.brandName.toLowerCase().includes(q) ||
-        b.id.toLowerCase().includes(q) ||
-        b.liquorType.toLowerCase().includes(q)
-      );
-    }
-    return result.sort((a, b) => {
-      let aVal = String(a[sortColumn]).toLowerCase();
-      let bVal = String(b[sortColumn]).toLowerCase();
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [associatedBrands, searchTerm, sortColumn, sortDirection]);
-
-  // Handle category change, reset children
-  const handleBrandCategoryChange = (e) => {
-    const cat = e.target.value;
-    const kindDefault = cat === 'Country Liquor' ? 'Country Spirit (Plain)' : 'Indian Made Foreign Liquor (IMFL)';
-    const typeDefault = cat === 'Country Liquor' ? 'Plain Spirit 36°' : 'Whisky';
-    setBrandForm(prev => ({
-      ...prev,
-      category: cat,
-      kindOfLiquor: kindDefault,
-      liquorType: typeDefault
-    }));
-  };
-
-  // Handle Kind change, reset children
-  const handleBrandKindChange = (e) => {
-    const kind = e.target.value;
-    const list = liquorTypeOptions[kind] || [];
-    const typeDefault = list.length > 0 ? list[0].value : '';
-    setBrandForm(prev => ({
-      ...prev,
-      kindOfLiquor: kind,
-      liquorType: typeDefault
-    }));
-  };
-
-  // Premises Submission & Validation
-  const handlePremisesSubmit = (e) => {
-    e.preventDefault();
-    const errors = {};
-    if (!premisesForm.premiseAddress.trim()) {
-      errors.premiseAddress = "Premises installation facility address cannot be blank";
-    }
-    if (!premisesForm.pincode.trim() || premisesForm.pincode.length !== 6) {
-      errors.pincode = "Valid 6-digit Delhi Pin code required";
-    }
-    if (!premisesForm.mcdTradeLicenseNum.trim()) {
-      errors.mcdTradeLicenseNum = "MCD Trade clearance certificate index ID required";
-    }
-    if (!premisesForm.declarationsChecked) {
-      errors.declarationsChecked = "You must acknowledge structural policy terms";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setPremisesErrors(errors);
-      triggerToast('Please tick the affirmations and verify entry inputs.', 'error');
-      return;
-    }
-
-    setPremisesErrors({});
-    setCurrentStep(7); // Proceed to Documents (Step 7)
-  };
-
-  // Final Action Filing
-  const handleFinalSubmit = () => {
-    // Submit creation success state
-    const applicationNo = `AP-HCR-${Math.floor(100000 + Math.random() * 900000)}`;
-    setSuccessReceipt({
-      applicationNo,
-      licenseId: selectedLicenseId,
-      fee: selectedLicenseId === "L-15" ? "₹ 3,25,000" : selectedLicenseId === "L-20" ? "₹ 2,00,000" : "₹ 2,80,000",
-      date: new Date().toLocaleDateString('en-IN'),
-      brandsCount: associatedBrands.length,
-      address: selectedLicenseId === "L-20" ? trainForm.tempStoreAddress : premisesForm.premiseAddress,
-      pincode: selectedLicenseId === "L-20" ? "110001" : premisesForm.pincode
-    });
-    setCurrentStep(8); // Proceed to Final Receipt (Step 8)
-    showToast("Excise Star Classified Restaurant Privilege Code application created!");
   };
 
   return (
@@ -776,7 +544,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <h3 className="hcr-brand-title font-sans"> Add Restaurant Details </h3>
                 </div>
 
-                <form onSubmit={handleSaveBrand} className="space-y-6">
+                <form onSubmit={handelResturantDetails} className="space-y-6">
                   <div className="form-grid">
 
                     {/* 1. Restaurant Name */}
@@ -1015,9 +783,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 9. Constituency Area */}
                     <div className="form-group">
-                      <label className="hcr-form-label">
-                        Constituency Area
-                        <span>Restaurant Name</span>
+                      <label className="hcr-form-label">                      
+                        <span>Constituency Area</span>
                         <span className="required">*</span>
                       </label>
 
@@ -1068,8 +835,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 11. Restaurant Email */}
                     <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant Email 
+                      <label className="hcr-form-label">                         
                         <span>Restaurant Email</span>
                         <span className="required">*</span>
                       </label>
@@ -1222,9 +988,9 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <button
                     type="button"
                     onClick={() => {
-                      if (associatedBrands.length === 0) {
-                        triggerToast("Tip: Registering at least 1 brand is recommended, but you may proceed as draft.", "info");
-                      }
+                      // if (associatedBrands.length === 0) {
+                      //   triggerToast("Tip: Registering at least 1 brand is recommended, but you may proceed as draft.", "info");
+                      // }
 
                       if (selectedLicenseId === "L-20") {
                         setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
@@ -1254,7 +1020,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 <p className="hcr-step-card-description font-sans">Specify layout dimensions, local authorities compliance.</p>
               </div>
 
-              <form onSubmit={handlePremisesSubmit} className="hcr-premises-form">
+              <form onSubmit={handelResturantDetails} className="hcr-premises-form">
                 <div className="hcr-form-grid">
                   {/* Restaurant Area */}
                   <div className="form-group">
