@@ -64,6 +64,7 @@ builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepositor
 builder.Services.AddScoped<IPermitPassValidityRepository,PermitPassValidityRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<ICommonHCRRepository, CommonHCRRepositories>();
+builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 
