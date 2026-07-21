@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 
 export default function HcrApplicantDetails({ formData, onChange, errors = {} }) {
+
+    console.log("HCR App",formData)
+
   return (
     <div className="hcr-applicant-container animate-fade text-left">
       {/* Informational banner reflecting registered status */}
@@ -81,7 +84,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
                 className={`reg-input font-bold text-slate-800 ${
                   errors.dob ? "error" : ""
                 }`}
-                value={formData.dob || ""}
+                value={formData.dateOfBirth || ""}
                 onChange={(e) => onChange("dob", e.target.value)}
               />
             </div>
@@ -101,7 +104,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
                 type="text"
                 placeholder="Father's / Husband's Name"
                 className="reg-input uppercase font-bold text-slate-800"
-                value={formData.fatherName || ""}
+                value={formData.fatherHusbandName || ""}
                 onChange={(e) => onChange("fatherName", e.target.value.toUpperCase())}
               />
             </div>
@@ -189,7 +192,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
                 className={`reg-input font-bold text-slate-800 ${
                   errors.address1 ? "error" : ""
                 }`}
-                value={formData.address1 || ""}
+                value={formData.addressLine1 || ""}
                 onChange={(e) => onChange("address1", e.target.value)}
               />
             </div>
@@ -209,7 +212,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
                 type="text"
                 placeholder="LOCALITY, AREA, NEAREST LANDMARK"
                 className="reg-input font-bold text-slate-800"
-                value={formData.address2 || ""}
+                value={formData.addressLine2 || ""}
                 onChange={(e) => onChange("address2", e.target.value)}
               />
             </div>
@@ -227,7 +230,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
               </div>
               <select
                 className="reg-select font-bold text-slate-800"
-                value={formData.state || "Delhi"}
+                value={formData.stateUT || "Delhi"}
                 onChange={(e) => onChange("state", e.target.value)}
               >
                 <option value="Delhi">Delhi</option>
