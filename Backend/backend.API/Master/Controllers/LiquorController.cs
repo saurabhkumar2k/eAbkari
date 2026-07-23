@@ -117,6 +117,19 @@ public LiquorMasterController(ILiquorMasterRepository liquorKindRepository
             return Ok(data);
         }
 
+        [HttpGet("GetHCRLicenseeCategory")]
+        public async Task<IActionResult> GetHCRLicenseeCategory()
+        {
+            var data = await _LiquorMasterRepository.GetHCRLicenseeCategoryAsync();
+
+            if (data == null || !data.Any())
+            {
+                return NotFound(new { message = "No HCR license category found" });
+            }
+
+            return Ok(data);
+        }
+
 
 
 
