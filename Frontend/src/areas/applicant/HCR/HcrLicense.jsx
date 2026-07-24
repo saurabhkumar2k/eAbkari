@@ -62,42 +62,23 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
   console.log('hcrlic', applicantForm)
 
-  // HCR Applicant Profile State
-  // const [applicantForm, setApplicantForm] = useState({
-  //   applicantName: "RAMESH KUMAR",
-  //   dob: "1985-05-15",
-  //   fatherName: "SURESH KUMAR",
-  //   occupation: "HOTELIER",
-  //   panNo: "ABCDE1234F",
-  //   address1: "74, KHAN MARKET",
-  //   address2: "NEAR METRO STATION",
-  //   state: "Delhi",
-  //   district: "South",
-  //   subDivision: "Saket",
-  //   pin: "110003",
-  //   mobile: "9876543210",
-  //   email: "ramesh.kumar@hotels.in",
-  //   landline: "",
-  //   fax: ""
-  // });
-
   // HCR Resturant Profile State
   const [siteForm, setSiteForm] = useState({
-    restaurantName: "",
-    address1: "",
-    address2: "",
-    state: "",
-    district: "",
-    subDivision: "",
-    policeStation: "",
-    pin: "",
-    constituency: "",
-    ward: "",
-    email: "",
-    mobile: "",
-    landline: "",
-    fax: "",
-    pan: ""
+    SiteName: "",
+    SiteAddress: "",
+    SiteAddress2: "",
+    State: "",
+    DistrictCode: "",
+    SubDivisionCode: "",
+    PoliceStationCode: "",
+    SitePin: "",
+    SiteAssembly: "",
+    SiteWard: "",
+    SiteEmail: "",
+    SiteMobile: "",
+    SiteLandline: "",
+    SiteFax: "",
+    SitePan: ""
   });
 
   const [AdditionalFrom, setAdditionalFrom] = useState({
@@ -159,32 +140,35 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
   const handelResturantDetails = () => {
     const errors = {};
-    if (!siteForm.restaurantName.trim()) {
-      errors.restaurantName = "Resturant Name is required";
+    if (!siteForm.SiteName.trim()) {
+      errors.SiteName = "Resturant Name is required";
     }
-    if (!siteForm.state, trim()) {
-      errors.state = "Resturant state is required";
+    if (!siteForm.SiteAddress, trim()) {
+      errors.SiteAddress = "Resturant state is required";
     }
-    if (!siteForm.district, trim()) {
-      errors.district = "Resturant district is required";
+    if (!siteForm.State, trim()) {
+      errors.State = "Resturant state is required";
     }
-    if (!siteForm.subDivision, trim()) {
-      errors.subDivision = "Resturant subDivision is required";
+    if (!siteForm.DistrictCode, trim()) {
+      errors.DistrictCode = "Resturant district is required";
     }
-    if (!siteForm.policeStation, trim()) {
-      errors.policeStation = "Resturant policeStation is required";
+    if (!siteForm.SubDivisionCode, trim()) {
+      errors.SubDivisionCode = "Resturant subDivision is required";
     }
-    if (!siteForm.pin, trim()) {
-      errors.pin = "Resturant pin is required";
+    if (!siteForm.PoliceStationCode, trim()) {
+      errors.PoliceStationCode = "Resturant policeStation is required";
     }
-    if (!siteForm.constituency, trim()) {
-      errors.constituency = "Resturant constituency is required";
+    if (!siteForm.SitePin, trim()) {
+      errors.SitePin = "Resturant pin is required";
     }
-    if (!siteForm.email, trim()) {
-      errors.email = "Resturant email is required";
+    if (!siteForm.SiteAssembly, trim()) {
+      errors.SiteAssembly = "Resturant constituency is required";
     }
-    if (!siteForm.mobile, trim()) {
-      errors.mobile = "Resturant mobile is required";
+    if (!siteForm.SiteEmail, trim()) {
+      errors.SiteEmail = "Resturant email is required";
+    }
+    if (!siteForm.SiteMobile, trim()) {
+      errors.SiteMobile = "Resturant mobile is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -469,8 +453,38 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
       }
 
+      if (currentStep === 5) {
+        debugger;
+
+        const payload = {
+          ...siteForm,
+          Regnumber: localStorage.getItem("regId"),
+          ApplicationIdNo: localStorage.getItem("applicationId"),
+          FinYear: "2026-2027",
+          CatCode: selectedLicenseId
+        };
+
+ console.log('payload', payload)
+
+        const response = await fetch(
+          "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("HCR License Resturant Response:", data);
+
+      }
+
     } catch (error) {
-      console.error(error);
+      console.log(error);
 
       if (showToast) {
         showToast("Unable to save applicant data", "error");
@@ -848,29 +862,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 1. Restaurant Name */}
 
-                    {/* <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Name</span>
-                        <span className="required">*</span>
-                      </label>
-                      <div className="reg-input-group">
-                        <div className="reg-input-icon">
-                          <User className="w-4 h-4 text-blue-600" />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Enter Restaurant Name"
-                          className={`reg-input uppercase font-bold text-slate-800 ${errors.restaurantName ? "error" : ""
-                            }`}
-                          value={formData.restaurantName || ""}
-                          onChange={(e) => onChange("SiteForm", e.target.value.toUpperCase())}                         
-                        />
-                      </div>
-                      {errors.restaurantName && (
-                        <p className="error-text">{errors.restaurantName}</p>
-                      )}
-                    </div> */}
-
                     <div className="form-group full-width">
                       <label className="hcr-form-label">
                         <span>Restaurant Name</span>
@@ -880,11 +871,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Enter Restaurant Name"
-                        value={siteForm.restaurantName}
+                        value={siteForm.SiteName}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            restaurantName: e.target.value
+                            SiteName: e.target.value
                           }))
                         }
                         className="input-box"
@@ -902,11 +893,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <textarea
                         rows="2"
                         placeholder="Address Line 1"
-                        value={siteForm.address1}
+                        value={siteForm.SiteAddress}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            address1: e.target.value
+                            SiteAddress: e.target.value
                           }))
                         }
                         className="textarea-box"
@@ -922,11 +913,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <textarea
                         rows="2"
                         placeholder="Address Line 2"
-                        value={siteForm.address2}
+                        value={siteForm.SiteAddress2}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            address2: e.target.value
+                            SiteAddress2: e.target.value
                           }))
                         }
                         className="textarea-box"
@@ -941,11 +932,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.state}
+                        value={siteForm.State}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            state: e.target.value
+                            State: e.target.value
                           }))
                         }
                         className="select-box"
@@ -969,22 +960,22 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.district}
+                        value={siteForm.DistrictCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            district: e.target.value
+                            DistrictCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select District</option>
-                        <option value="South">South</option>
-                        <option value="New Delhi">New Delhi</option>
-                        <option value="Central">Central</option>
-                        <option value="North">North</option>
-                        <option value="East">East</option>
-                        <option value="West">West</option>
+                        <option value="00">Select District</option>
+                        <option value="01">South</option>
+                        <option value="02">New Delhi</option>
+                        <option value="03">Central</option>
+                        <option value="04">North</option>
+                        <option value="05">East</option>
+                        <option value="06">West</option>
 
                         {/* {districtOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -1002,21 +993,21 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.subDivision}
+                        value={siteForm.SubDivisionCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            subDivision: e.target.value
+                            SubDivisionCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Sub Division</option>
-                        <option value="Saket">Saket</option>
-                        <option value="Vasant Vihar">Vasant Vihar</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
-                        <option value="Kalkaji">Kalkaji</option>
+                        <option value="00">Select Sub Division</option>
+                        <option value="01">Saket</option>
+                        <option value="02">Vasant Vihar</option>
+                        <option value="03">Hauz Khas</option>
+                        <option value="04">Mehrauli</option>
+                        <option value="05">Kalkaji</option>
 
                         {/* {subDivisionOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -1034,19 +1025,19 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.policeStation}
+                        value={siteForm.PoliceStationCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            policeStation: e.target.value
+                            PoliceStationCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Police Station</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
-                        <option value="Kalkaji">Kalkaji</option>
+                        <option value="00">Select Police Station</option>
+                        <option value="01">Hauz Khas</option>
+                        <option value="02">Mehrauli</option>
+                        <option value="03">Kalkaji</option>
 
                         {/* {policeStationOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -1068,11 +1059,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         type="text"
                         maxLength={6}
                         placeholder="PIN Code"
-                        value={siteForm.pin}
+                        value={siteForm.SitePin}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            pin: e.target.value
+                            SitePin: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1088,18 +1079,18 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.constituency}
+                        value={siteForm.SiteAssembly}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            constituency: e.target.value
+                            SiteAssembly: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Constituency</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
+                        <option value="00">Select Constituency</option>
+                        <option value="01">Hauz Khas</option>
+                        <option value="02">Mehrauli</option>
 
                         {/* {constituencyOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -1120,11 +1111,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Ward Name"
-                        value={siteForm.ward}
+                        value={siteForm.SiteWard}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            ward: e.target.value
+                            SiteWard: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1142,11 +1133,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="email"
                         placeholder="restaurant@email.com"
-                        value={siteForm.email}
+                        value={siteForm.SiteEmail}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            email: e.target.value
+                            SiteEmail: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1165,11 +1156,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         type="tel"
                         maxLength={10}
                         placeholder="9876543210"
-                        value={siteForm.mobile}
+                        value={siteForm.SiteMobile}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            mobile: e.target.value
+                            SiteMobile: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1186,11 +1177,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Landline Number"
-                        value={siteForm.landline}
+                        value={siteForm.SiteLandline}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            landline: e.target.value
+                            SiteLandline: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1205,11 +1196,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Fax Number"
-                        value={siteForm.fax}
+                        value={siteForm.SiteFax}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            fax: e.target.value
+                            SiteFax: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1227,11 +1218,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         maxLength={10}
                         placeholder="ABCDE1234F"
                         style={{ textTransform: "uppercase" }}
-                        value={siteForm.pan}
+                        value={siteForm.SitePan}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            pan: e.target.value.toUpperCase()
+                            SitePan: e.target.value.toUpperCase()
                           }))
                         }
                         className="input-box"
@@ -1240,30 +1231,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                   </div>
 
-
-                  {/* Add Brand Action Row */}
-                  {/* <div className="hcr-action-row">
-                    <button
-                      type="button"
-                      onClick={() => setBrandForm({
-                        category: 'Indian Liquor',
-                        kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-                        liquorType: 'Whisky',
-                        oldBrandId: '',
-                        brandCode: 'BC-EXC-DEL-001',
-                        measure: '750 Ml',
-                        brandName: ''
-                      })}
-                      className="btn btn-secondary"
-                    >
-                      <RotateCcw className="hcr-action-icon" />
-                      <span>Reset Form</span>
-                    </button>
-                    <button type="submit" className="btn btn-primary hcr-reset-btn">
-                      <Plus className="w-4 h-4" />
-                      <span>Add Brand to Profile</span>
-                    </button>
-                  </div> */}
                 </form>
               </div>
 
@@ -1294,6 +1261,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       if (selectedLicenseId === "L-20") {
                         setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
                       } else {
+                        handleNextStep()
                         setCurrentStep(6); // Proceed to Premises Details (Step 6 for non-L20)
                       }
                     }}

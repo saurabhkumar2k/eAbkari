@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class MstUsReg
 {
-    public long RegId { get; set; }
+    public int RegId { get; set; }
     [Required]
     public string? FirstName { get; set; }
     [Required]

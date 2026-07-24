@@ -23,9 +23,9 @@ namespace backend.API.Licence.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _HCRservice.SaveApplicantSiteDetails(dto);
+            var AppId = await _HCRservice.SaveApplicantSiteDetails(dto);
 
-            return Ok(user);
+            return Ok(new{  AppId });
         }
     }
 }
