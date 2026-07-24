@@ -6,5 +6,7 @@ namespace backend.Core.Interfaces.License
     public interface ICommonHCRRepository
     {
         Task<string> SaveApplicantSiteDetails(LicenseSiteDetails dto);
+          Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(String AppId);
+
     }
 }
