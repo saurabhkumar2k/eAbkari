@@ -10,7 +10,7 @@ namespace backend.Core.Entities.Licence
         public long Id { get; set; }
 
         [StringLength(20)]
-        public string? Regnumber { get; set; }
+        public string Regnumber { get; set; }
 
         [Key]
         [StringLength(30)]
