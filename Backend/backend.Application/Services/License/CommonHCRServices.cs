@@ -14,44 +14,58 @@ namespace backend.Application.Services.License
             _HcrRepositry = repository;
         }
 
-        public async Task<string> SaveApplicantSiteDetails (LicenseSiteDetailsDto dto)
+        public async Task<string> SaveApplicantSiteDetails(LicenseSiteDetailsDto dto)
         {
             try
             {
-                
-                    var Sitedetails = new LicenseSiteDetails
-                    {
-                      
-                        Regnumber = dto.Regnumber,
-                        ApplicationIdNo = dto.ApplicationIdNo,
-                        FinYear = dto.FinYear,
-                        CatCode =dto.CatCode,
-                        SiteName =dto.SiteName,
-                        SiteAddress = dto.SiteAddress,
-                        SiteAddress2=dto.SiteAddress2,
-                        State=dto.State,
-                        DistrictCode=dto.DistrictCode,
-                        SubDivisionCode=dto.SubDivisionCode,
-                        PoliceStationCode=dto.PoliceStationCode,
-                        SitePin=dto.SitePin,
-                        SiteAssembly=dto.SiteAssembly,
-                        SiteWard=dto.SiteWard,
-                        SiteEmail=dto.SiteEmail,
-                        SiteMobile=dto.SiteMobile,
-                        SiteLandline=dto.SiteLandline,
-                        SiteFax=dto.SiteFax,
-                        SitePan=dto.SitePan
+
+                var Sitedetails = new LicenseSiteDetails
+                {
+
+                    Regnumber = dto.Regnumber,
+                    ApplicationIdNo = dto.ApplicationIdNo,
+                    FinYear = dto.FinYear,
+                    CatCode = dto.CatCode,
+                    SiteName = dto.SiteName,
+                    SiteAddress = dto.SiteAddress,
+                    SiteAddress2 = dto.SiteAddress2,
+                    State = dto.State,
+                    DistrictCode = dto.DistrictCode,
+                    SubDivisionCode = dto.SubDivisionCode,
+                    PoliceStationCode = dto.PoliceStationCode,
+                    SitePin = dto.SitePin,
+                    SiteAssembly = dto.SiteAssembly,
+                    SiteWard = dto.SiteWard,
+                    SiteEmail = dto.SiteEmail,
+                    SiteMobile = dto.SiteMobile,
+                    SiteLandline = dto.SiteLandline,
+                    SiteFax = dto.SiteFax,
+                    SitePan = dto.SitePan
 
 
-                    };
-                    return await _HcrRepositry.SaveApplicantSiteDetails(Sitedetails);
+                };
+                return await _HcrRepositry.SaveApplicantSiteDetails(Sitedetails);
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
         }
-        
+
+        public async Task<LicenseSiteDetailsDto?> GetSiteDetails(string AppId)
+        {
+            try
+            {
+                return await _HcrRepositry.GetSiteDetails( AppId);
+            }
+            catch (Exception ex)
+            {
+                
+                return null;
+            }
+            
+        }
+
 
     }
 }
