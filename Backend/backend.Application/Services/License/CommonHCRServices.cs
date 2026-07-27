@@ -56,7 +56,7 @@ namespace backend.Application.Services.License
         {
             try
             {
-                return await _HcrRepositry.GetSiteDetails( AppId);
+                return await _HcrRepositry.GetSiteDetailsRepo( AppId);
             }
             catch (Exception ex)
             {

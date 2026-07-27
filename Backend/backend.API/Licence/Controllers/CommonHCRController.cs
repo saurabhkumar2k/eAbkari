@@ -8,7 +8,7 @@ namespace backend.API.Licence.Controllers
     [ApiController]
     public class CommonHCRController : ControllerBase
     {
-        private readonly ICommonHCRServices _HCRservice;    
+        private readonly ICommonHCRServices _HCRservice;
         public CommonHCRController(ICommonHCRServices repository)
         {
             _HCRservice = repository;
@@ -19,7 +19,7 @@ namespace backend.API.Licence.Controllers
         public async Task<IActionResult> SaveApplicantSiteDetails(LicenseSiteDetailsDto dto)
         {
             if (!ModelState.IsValid)
-            {          
+            {
                 return BadRequest(ModelState);
             }
 
@@ -27,5 +27,19 @@ namespace backend.API.Licence.Controllers
 
             return Ok(new{  AppId });
         }
+
+        [HttpPost]
+        [Route("GetSiteDetails")]
+        [HttpGet("GetSiteDetails/{appId}")]
+        public async Task<IActionResult> GetSiteDetails(string appId)
+        {
+            var siteDetails = await _HCRservice.GetSiteDetails(appId);
+
+            if (siteDetails == null)
+                return NotFound();
+
+            return Ok(siteDetails);
+        }
+
     }
 }
