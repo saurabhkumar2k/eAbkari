@@ -2,6 +2,7 @@
 using backend.Core.Entities.Department;
 using backend.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using backend.Application.Interfaces.Department;
 
 namespace backend.API.Master.Controllers
 {
@@ -10,36 +11,43 @@ namespace backend.API.Master.Controllers
     [Route("api/[controller]")]
     public class DepartmentUsersController : ControllerBase
     {
-        private readonly IDepartmentUserRepository _repository;
+        private readonly IDepartmentUsersService _service;
 
-        public DepartmentUsersController(IDepartmentUserRepository repository)
+        public DepartmentUsersController(IDepartmentUsersService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _repository.GetAllAsync();
+            var users = await _service.GetAllAsync();
+
+            if (!users.Any())
+                return NotFound("No department users found.");
+
             return Ok(users);
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetById(string userId)
         {
-            var user = await _repository.GetByIdAsync(userId);
+            if (string.IsNullOrWhiteSpace(userId))
+                return BadRequest("UserId is required.");
+
+            var user = await _service.GetByIdAsync(userId);
 
             if (user == null)
-                return NotFound();
+                return NotFound("User not found.");
 
             return Ok(user);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(DepartmentUserDto dto)
+        public async Task<IActionResult> Create(DepartmentUserDto userDto)
         {
            
-            var result = await _repository.CreateAsync(dto);
+            var result = await _service.CreateAsync(userDto);
 
             if (!result)
                 return BadRequest("Unable to create user.");
@@ -48,19 +56,10 @@ namespace backend.API.Master.Controllers
         }
 
         [HttpPut("{userId}")]
-        public async Task<IActionResult> Update(DepartmentUserDto dto)
+        public async Task<IActionResult> Update(DepartmentUserDto userDto)
         {
-            var user = new DepartmentUserDto
-            {
-                UserId = dto.UserId,
-                UserName = dto.UserName,
-                UserDesignation = dto.UserDesignation,
-                Email = dto.Email,
-                IsActive = dto.IsActive,
-                //UpdatedDate = DateTime.UtcNow
-            };
 
-            var result = await _repository.UpdateAsync(user);
+            var result = await _service.UpdateAsync(userDto);
 
             if (!result)
                 return NotFound();

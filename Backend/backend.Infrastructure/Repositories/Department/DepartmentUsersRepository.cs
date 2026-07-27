@@ -48,49 +48,9 @@ namespace backend.Infrastructure.Repositories.Department
                 .Select(r => r.RoleName)
                 .FirstOrDefaultAsync() ?? "";
         }
-        public async Task<bool> CreateAsync(DepartmentUserDto user)
+        public async Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles)
         {
-            var roleName = await GetRoleNameByRoleId(user.RoleId);
-
-            var firstName = user.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
-
-            var usrId = $"{roleName}-{firstName}";
-            var DepartmentUser = new DepartmentUsers
-            {
-                UserId = usrId,
-                UserName = user.UserName.Trim(),
-                UserDesignation = user.UserDesignation.Trim(),
-                Email = user.Email,
-                IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
-                CreatedDate = DateTime.Now
-            };
-
-            // 2. Default Password
-            string defaultPassword = "Test@123";
-
-            // 3. SHA256 Hash
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
-                byte[] hashBytes = sha256.ComputeHash(bytes);
-
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in hashBytes)
-                {
-                    sb.Append(b.ToString("X2"));
-                }
-
-
-                DepartmentUser.PasswordHash = sb.ToString();
-            }
-            var DeptUserRoleId = await GetNextDeptUserRoleIdAsync();
-            var DeptUserRoles = new DeptUserRoles
-            {
-                 
-                DeptUserRoleId = DeptUserRoleId,
-                UserId = usrId,
-                RoleId = user.RoleId
-            };
+          
 
             await _context.DepartmentUsers.AddAsync(DepartmentUser);
             

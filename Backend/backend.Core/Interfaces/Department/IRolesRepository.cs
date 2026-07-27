@@ -17,6 +17,7 @@ namespace backend.Core.Interfaces.Department
         Task<bool> RoleExistsByNameAsync(string roleName);
         Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model);
         Task DeleteRoleAsync(int roleId);
+        Task<string> GetRoleNameByRoleId(int roleId);
 
     }
 }

@@ -3,50 +3,146 @@ using backend.Core.Entities.Department;
 using backend.Core.DTOs;
 using System.Text.Json;
 using backend.Core.Interfaces.Department;
-using backend.Application.Interfaces;
+using backend.Application.Interfaces.Department;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace backend.Application.Services.Department
 {
     public class DepartmentUsersService : IDepartmentUsersService
     {
         private readonly IDepartmentUserRepository _departmentUsersRepository;
+        private readonly IRolesRepository _rolesRepository;
 
-        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository)
+
+        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository,IRolesRepository rolesRepository)
         {
-            _departmentUsersRepository  = departmentUsersRepository;
+            _departmentUsersRepository = departmentUsersRepository;
+            _rolesRepository = rolesRepository;
         }
 
-        public async Task<bool> CreateAsync(DepartmentUsers model)
+
+        public async Task<IEnumerable<DepartmentUserDto>> GetAllAsync()
         {
-        var dto = JsonSerializer.Deserialize<DepartmentUserDto>(
-        JsonSerializer.Serialize(model));
+            var users = await _departmentUsersRepository.GetAllAsync();
 
-        if (dto == null)
-        throw new InvalidOperationException("Failed to map DepartmentUsers to DepartmentUserDto");
+            if (users == null || !users.Any())
+            {
+                return Enumerable.Empty<DepartmentUserDto>();
+            }
 
-        return await _departmentUsersRepository.CreateAsync(dto);
+            return users.Select(x => new DepartmentUserDto
+            {
+                UserId = x.UserId,
+                UserName = x.UserName,
+                UserDesignation = x.UserDesignation,
+                Email = x.Email,
+                IsActive = x.IsActive,
+                RoleId = x.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0
+            });
         }
 
-        public async Task<IEnumerable<DepartmentUsers>> GetAllAsync()
+        public async Task<DepartmentUserDto?> GetByIdAsync(string userId)
         {
-        return await _departmentUsersRepository.GetAllAsync();
+            var user = await _departmentUsersRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new DepartmentUserDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                UserDesignation = user.UserDesignation,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                RoleId = user.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0
+            };
         }
 
-        public async Task<DepartmentUsers?> GetByIdAsync(string userId)
+
+
+
+        public async Task<bool> CreateAsync(DepartmentUserDto user)
         {
-         return await _departmentUsersRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrWhiteSpace(user.UserId))
+                throw new ArgumentException("UserId is required.");
+
+            if (string.IsNullOrWhiteSpace(user.UserName))
+                throw new ArgumentException("UserName is required.");
+
+            if (string.IsNullOrWhiteSpace(user.Email))
+                throw new ArgumentException("Email is required.");
+
+            // Optional: Check if the user already exists
+            var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
+
+            if (existingUser != null)
+                throw new InvalidOperationException("User already exists.");
+
+            var roleName = await _rolesRepository.GetRoleNameByRoleId(user.RoleId);
+
+            var firstName = user.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+
+            var usrId = $"{roleName}-{firstName}";
+            var DepartmentUser = new DepartmentUsers
+            {
+                UserId = usrId,
+                UserName = user.UserName.Trim(),
+                UserDesignation = user.UserDesignation.Trim(),
+                Email = user.Email,
+                IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
+                CreatedDate = DateTime.Now
+            };
+
+            // 2. Default Password
+            string defaultPassword = "Test@123";
+
+            // 3. SHA256 Hash
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(defaultPassword);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("X2"));
+                }
+
+
+                DepartmentUser.PasswordHash = sb.ToString();
+            }
+            var DeptUserRoleId = await _departmentUsersRepository.GetNextDeptUserRoleIdAsync();
+            var DeptUserRoles = new DeptUserRoles
+            {
+
+                DeptUserRoleId = DeptUserRoleId,
+                UserId = usrId,
+                RoleId = user.RoleId      
+            };
+
+            return await _departmentUsersRepository.CreateAsync(DepartmentUser, DeptUserRoles);
         }
 
-        public async Task<bool> UpdateAsync(DepartmentUsers model)
+
+
+
+        public async Task<bool> UpdateAsync(DepartmentUserDto model)
         {
-         var dto = JsonSerializer.Deserialize<DepartmentUserDto>(
-        JsonSerializer.Serialize(model));
+            var dto = JsonSerializer.Deserialize<DepartmentUserDto>(
+           JsonSerializer.Serialize(model));
 
-        if (dto == null)
-        throw new InvalidOperationException("Failed to map DepartmentUsers to DepartmentUserDto");
+            if (dto == null)
+                throw new InvalidOperationException("Failed to map DepartmentUsers to DepartmentUserDto");
 
-        return await _departmentUsersRepository.UpdateAsync(dto);
+            return await _departmentUsersRepository.UpdateAsync(dto);
         }
-   
+
     }
 }

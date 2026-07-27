@@ -12,8 +12,10 @@ namespace backend.Core.Interfaces.Department
     {
         Task<IEnumerable<DepartmentUsers>> GetAllAsync();
         Task<DepartmentUsers?> GetByIdAsync(string userId);
-        Task<bool> CreateAsync(DepartmentUserDto user);
+        Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles);
         Task<bool> UpdateAsync(DepartmentUserDto user);
+        Task<int> GetNextDeptUserRoleIdAsync();
+
         //Task<bool> DeleteAsync(string userId);
         //Task<DepartmentUsers?> LoginAsync(string email);
     }
