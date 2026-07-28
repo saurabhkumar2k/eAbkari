@@ -1,15 +1,16 @@
+using backend.Core.DTOs;
 using backend.Core.Entities.Department;
 
-namespace backend.Application.Interfaces
+namespace backend.Application.Interfaces.Department
 {
     public interface IDepartmentUsersService
     {
-        Task<IEnumerable<DepartmentUsers>> GetAllAsync();
+        Task<IEnumerable<DepartmentUserDto>> GetAllAsync();
 
-        Task<DepartmentUsers?> GetByIdAsync(string userId);
+        Task<DepartmentUserDto?> GetByIdAsync(string userId);
 
-        Task<bool> CreateAsync(DepartmentUsers model);
+        Task<bool> CreateAsync(DepartmentUserDto model);
 
-        Task<bool> UpdateAsync(DepartmentUsers model);
+        Task<bool> UpdateAsync(DepartmentUserDto model);
     }
 }

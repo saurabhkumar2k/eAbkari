@@ -18,7 +18,13 @@ namespace backend.Infrastructure.Repositories.Department
         {
             _context = context;
         }
-
+        public async Task<string> GetRoleNameByRoleId(int roleId)
+        {
+            return await _context.MstRoles
+                .Where(r => r.RoleId == roleId)
+                .Select(r => r.RoleName)
+                .FirstOrDefaultAsync() ?? "";
+        }
 
         public async Task<IEnumerable<MstRoles>> GetRolesAsync()
         {
