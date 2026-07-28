@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Interfaces;
+using backend.Core.Interfaces.Department;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories;
+using backend.Infrastructure.Repositories.Department;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

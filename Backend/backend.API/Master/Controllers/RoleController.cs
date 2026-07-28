@@ -1,7 +1,7 @@
 ﻿using backend.Core.Entities.Department;
-using backend.Core.Interfaces;
+using backend.Core.Interfaces.Department;
 using backend.Infrastructure.Data;
-using backend.Infrastructure.Repositories;
+using backend.Infrastructure.Repositories.Department;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
