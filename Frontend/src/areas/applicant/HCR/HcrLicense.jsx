@@ -99,7 +99,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
   const [applicantErrors, setApplicantErrors] = useState({});
   const [siteFormErrors, setsiteFormErrors] = useState({});
-  //const [applicant, setApplicant] = useState(createApplicant());
 
   // Applicant Submission validation helper
   const handleApplicantSubmit = () => {
@@ -212,13 +211,13 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   };
 
   const addRow = () =>
-    setApplicant((p) => ({
+    setApplicantForm((p) => ({
       ...p,
       directors: [...(p.directors || []), { name: "", panNo: "" }]
     }));
 
   const deleteRow = (i) =>
-    setApplicant((p) => ({
+    setApplicantForm((p) => ({
       ...p,
       directors: p.directors.filter((_, x) => x !== i)
     }));
@@ -285,6 +284,48 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     setSubDivisions(data);
   };
 
+
+  const fetchPoliceStations = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+      );
+
+      console.log("Status:", res.status);
+
+      const text = await res.text();
+      console.log("Response:", text);
+
+      if (!text) {
+        console.log("Empty response received");
+        return;
+      }
+
+      const data = JSON.parse(text);
+
+      setWarehousePoliceStations(data);
+    } catch (err) {
+      console.log(err); s
+    }
+  };
+
+
+  const fetchSubDivisions = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+      );
+
+      const data = await res.json();
+
+      setWarehouseSubDivisions(data);
+
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 
   const loadApplicantData = async (regId) => {
@@ -464,7 +505,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
           CatCode: selectedLicenseId
         };
 
- console.log('payload', payload)
+        console.log('payload', payload)
 
         const response = await fetch(
           "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
@@ -481,6 +522,101 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
         console.log("HCR License Resturant Response:", data);
 
+      }
+
+      if (currentStep === 6) {
+        debugger;
+
+        console.log("Directors:", applicantForm.directors);
+
+        const formData = new FormData();
+
+        // Merge all objects
+        // const payload = {
+        //   ...applicant,
+        //   ...nominee,
+        //   ...fssai,
+        //   ...vat,
+        //   ...distillery,
+        //   ...bwh,
+        //   regId: localStorage.getItem("regId"),
+        //   ApplicationIdNo: localStorage.getItem("applicationId"),
+        //   CatCode: localStorage.getItem("catCode")
+        // };
+
+        // Append normal fields
+        // Object.keys(payload).forEach((key) => {
+        //   // Skip file and list
+        //   if (
+        //     key !== "ExciseNomineePanImage" &&
+        //     key !== "CompanyPartnersDetails"
+        //   ) {
+        //     formData.append(key, payload[key] ?? "");
+        //   }
+        // });
+
+        // Append file
+        // if (nominee.ExciseNomineePanImage) {
+        //   formData.append(
+        //     "ExciseNomineePanImage",
+        //     nominee.ExciseNomineePanImage
+        //   );
+        // }
+
+        applicantForm.directors.forEach((director, index) => {
+          debugger;
+          formData.append(
+            `CompanyPartnersDetails[${index}].PName`,
+            director.PName || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPerShare`,
+            director.PPerShare || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPanNo`,
+            director.PPanNo || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PExciseNominee`,
+            director.PExciseNominee || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].DINNo`,
+            director.DINNo || ""
+          );
+
+
+          // PAN File
+          if (director.panFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].PanFile`,
+              director.panFile
+            );
+          }
+          if (director.addressFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].addressFile`,
+              director.addressFile
+            );
+          }
+        });
+
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("Warehouse License Response:", data);
       }
 
     } catch (error) {
@@ -1410,6 +1546,17 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         No
                       </label>
                     </div>
+                  </div>
+
+                  {/* Additional Area */}
+                  <div className="form-group full-width">
+                  <DirectorsList
+                    directors={applicantForm.directors || []}
+                    ConstitutionType={applicantForm.ConstitutionType}
+                    onChange={handleDirectorChange}
+                    onAdd={addRow}
+                    onDelete={deleteRow}
+                  />
                   </div>
 
                   {/* No. of Managers */}
