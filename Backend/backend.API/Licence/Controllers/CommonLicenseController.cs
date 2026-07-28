@@ -14,8 +14,7 @@ namespace backend.API.Licence.Controllers
             _LicenseService = services;
         }
 
-        [HttpPost]
-        [Route("ApplyLicense")]
+        [HttpPost("ApplyLicense")]
         public async Task<IActionResult> CreateApplyLicense(LicenseApplicationUserDetailsDto dto)
         {
             if (!ModelState.IsValid)
@@ -26,6 +25,14 @@ namespace backend.API.Licence.Controllers
             var user = await _LicenseService.SaveApplicantDetails(dto);
 
             return Ok(user);
+        }
+
+        [HttpGet("GetApplicantDetails/{AppId}")]
+        public async Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId)
+        {
+            var user = await _LicenseService.GetApplicantDetails(AppId);
+
+            return user;
         }
     }
 }

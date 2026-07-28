@@ -80,5 +80,9 @@ namespace backend.Application.Services.License
                 return ex.Message;
             }
         }
+        public async Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId)
+        {
+            return await _Licenserepository.GetApplicantDetails(AppId);
+        }
     }
 }
