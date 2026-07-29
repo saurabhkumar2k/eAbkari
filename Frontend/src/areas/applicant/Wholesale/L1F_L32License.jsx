@@ -1146,7 +1146,7 @@ if (currentStep === 5) {
     {/* CIN */}
     {applicant.ConstitutionType === "01" && (
       <div className="reg-field">
-        <label className="reg-label">CIN No</label>
+        <label className="reg-label">CIN No.(in case of Company)</label>
         <div className="reg-input-group">
           <div className="reg-input-icon">
             <FileText className="w-4 h-4 text-blue-600" />
@@ -1166,7 +1166,7 @@ if (currentStep === 5) {
 
     {/* Registration No */}
     <div className="reg-field">
-      <label className="reg-label">Registration No</label>
+      <label className="reg-label">Registration No. of LLP/Firm/Society(if applicable)</label>
       <div className="reg-input-group">
         <div className="reg-input-icon">
           <Hash className="w-4 h-4 text-blue-600" />
@@ -1185,7 +1185,7 @@ if (currentStep === 5) {
 
     {/* Registration Date */}
     <div className="reg-field">
-      <label className="reg-label">Registration Date</label>
+      <label className="reg-label">Date of Registration</label>
       <div className="reg-input-group">
         <div className="reg-input-icon">
           <Calendar className="w-4 h-4 text-blue-600" />
@@ -1204,7 +1204,7 @@ if (currentStep === 5) {
 
     {/* PAN */}
     <div className="reg-field">
-      <label className="reg-label">PAN No</label>
+      <label className="reg-label">Company/Firm/Society/LLP PAN No.</label>
       <div className="reg-input-group">
         <div className="reg-input-icon">
           <CreditCard className="w-4 h-4 text-blue-600" />
@@ -1226,7 +1226,7 @@ if (currentStep === 5) {
 
     {/* VAT */}
     <div className="reg-field">
-      <label className="reg-label">VAT / TIN</label>
+      <label className="reg-label">VAT/TIN No.</label>
       <div className="reg-input-group">
         <div className="reg-input-icon">
           <ReceiptText className="w-4 h-4 text-blue-600" />
@@ -1541,7 +1541,7 @@ if (currentStep === 5) {
 
     {/* Licence No */}
     <div className="reg-field">
-      <label className="reg-label">Licence No</label>
+      <label className="reg-label">Licence No./Registration No</label>
 
       <div className="reg-input-group">
         <div className="reg-input-icon">
@@ -1564,7 +1564,7 @@ if (currentStep === 5) {
 
     {/* Start Date */}
     <div className="reg-field">
-      <label className="reg-label">Start Date</label>
+      <label className="reg-label">Licence Start Date</label>
 
       <div className="reg-input-group">
         <div className="reg-input-icon">
@@ -1587,7 +1587,7 @@ if (currentStep === 5) {
 
     {/* End Date */}
     <div className="reg-field">
-      <label className="reg-label">End Date</label>
+      <label className="reg-label">Licence End Date</label>
 
       <div className="reg-input-group">
         <div className="reg-input-icon">

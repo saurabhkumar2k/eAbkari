@@ -147,20 +147,107 @@ const handlePhotoChange = (e) => {
   };
 
 
+// const handleChange = (e) => {
+//   const { name, value, type, checked } = e.target;
+
+//   setFormData((prev) => ({
+//     ...prev,
+//     [name]: type === "checkbox" ? checked : value
+//   }));
+
+//   // 🔥 clear error on typing
+//   setErrors((prev) => ({
+//     ...prev,
+//     [name]: ""
+//   }));
+// };
+
 const handleChange = (e) => {
+  debugger;
   const { name, value, type, checked } = e.target;
+
+  let fieldValue = type === "checkbox" ? checked : value;
+
+  if (name === "PIN") {
+    fieldValue = value.replace(/\D/g, "").slice(0, 6);
+
+    if (fieldValue.length >= 2 && !fieldValue.startsWith("11")) {
+      setErrors((prev) => ({
+        ...prev,
+        PIN: ["PIN Code must start with 11."]
+      }));
+      return;
+    }
+  }
+
+if (name === "Mobile") {
+  fieldValue = value.replace(/\D/g, "").slice(0, 10);
+
+  if (fieldValue.length === 10) {
+    checkMobileExists(fieldValue);
+  }
+}
+
+
+
+
+  if (name === "PanNo") {
+    fieldValue = value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 10);
+  }
+
+
 
   setFormData((prev) => ({
     ...prev,
-    [name]: type === "checkbox" ? checked : value
+    [name]: fieldValue
   }));
 
-  // 🔥 clear error on typing
+  // ✅ PAN validation after updating value
+  if (name === "PanNo") {
+    setErrors((prev) => ({
+      ...prev,
+      PanNo:
+        fieldValue.length > 0 &&
+        !/^[A-Z]{0,5}[0-9]{0,4}[A-Z]{0,1}$/.test(fieldValue)
+          ? ["Invalid PAN format"]
+          : ""
+    }));
+  } else {
+    setErrors((prev) => ({
+      ...prev,
+      [name]: ""
+    }));
+  }
+};
+
+
+const checkMobileExists = async (mobile) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5214/api/UserRegistration/check-mobile/${mobile}`
+    );
+
+    const data = response.data; // ✅
+
+if (response.data.exists) {
   setErrors((prev) => ({
     ...prev,
-    [name]: ""
+    Mobile: ["This mobile number is already registered."]
   }));
+} else {
+  setErrors((prev) => ({
+    ...prev,
+    Mobile: ""
+  }));
+}
+  } catch (err) {
+    console.error(err);
+  }
 };
+
 
 
 const handleSubmit = async (e) => {
@@ -236,9 +323,10 @@ setTimeout(() => {
     // setSubDivisions([]);
   } catch (error) {
   // ASP.NET Core model validation errors
-  if (error.response?.data?.errors) {
+  if (error.response && error.response.status === 400) {
     setErrors(error.response.data.errors);
-    return;
+  } else {
+    console.error(error);
   }
 
   const message =
@@ -323,13 +411,13 @@ setTimeout(() => {
 
 
             <div className="reg-field">
-              <label className="reg-label">Last Name <span className="reg-required">*</span></label>
+              <label className="reg-label">Last Name </label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
                 <input type="text" name="LastName"value={formData.LastName} onChange={handleChange} placeholder="Enter last name" className="reg-input"/>
               </div>
-                         {errors.LastName && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.LastName[0]} </span>)}
+                         {/* {errors.LastName && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.LastName[0]} </span>)} */}
             </div>
 
             <div className="reg-field">
@@ -553,7 +641,19 @@ setTimeout(() => {
               <label className="reg-label">PIN Code <span className="reg-required">*</span></label>
               <div className="reg-input-group">
                 <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" />
+                {/* <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" /> */}
+<input
+  type="text"
+  name="PIN"
+  value={formData.PIN}
+  onChange={handleChange}
+  maxLength={6}
+  placeholder="11XXXX"
+  className="reg-input"
+/>
+
+
+
               </div>
               {errors.PIN && (
   <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.PIN[0]} </span>)}
@@ -566,7 +666,8 @@ setTimeout(() => {
                 <input type="tel" name="Mobile" value={formData.Mobile} onChange={handleChange} placeholder="Enter mobile number" maxLength={10} className="reg-input" pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number" />
               </div>
               {errors.Mobile && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Mobile[0]} </span>)}
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red",fontSize: "13px"}}> {errors.Mobile[0]} </span>)}
+  
             </div>
 
             <div className="reg-field">
@@ -577,7 +678,7 @@ setTimeout(() => {
 />
               </div>
               {errors.Email && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.Email} </span>)}
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red",fontSize: "13px"}}> {errors.Email} </span>)}
             </div>
 
 
@@ -593,12 +694,16 @@ setTimeout(() => {
     <input
       type="text"
       name="PanNo"
-      value={formData.PanNo}
+      value={formData.PanNo || ""}
       onChange={handleChange}
       placeholder="ABCDE1234F"
       className="reg-input"
     />
+
   </div>
+  {errors.PanNo && (
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red",fontSize: "13px"}}> {errors.PanNo} </span>)}
+  
 </div>
 
 
@@ -639,7 +744,7 @@ setTimeout(() => {
 
                 <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
                 {errors.SecretQuestionId && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.SecretQuestionId[0]} </span>)}
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red",fontSize: "13px"}}> {errors.SecretQuestionId[0]} </span>)}
               </div>
             </div>
 
@@ -650,7 +755,7 @@ setTimeout(() => {
                 <input type="text" value={formData.SecretAnswer} onChange={handleChange} name="SecretAnswer" placeholder="Enter secret answer" className="reg-input" />
               </div>
               {errors.SecretAnswer && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.SecretAnswer[0]} </span>)}
+  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red",fontSize: "13px"}}> {errors.SecretAnswer[0]} </span>)}
             </div>
 
       <div className="reg-field-row reg-field-full">

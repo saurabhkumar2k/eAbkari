@@ -404,7 +404,7 @@ const WarehouseDetails = ({
     {/* Lease Registration */}
     <div className="reg-field">
       <label className="reg-label">
-        Lease / Sale / Rent Registration No
+        Registration No. of Lease Deed/ Sale Deed / Rent Agreement 
       </label>
 
       <div className="reg-input-group">
@@ -425,7 +425,7 @@ const WarehouseDetails = ({
     {/* Registration Date */}
     <div className="reg-field">
       <label className="reg-label">
-        Registration Date
+        Date of Registration of Lease Deed/ Sale Deed / Rent Agreement 
       </label>
 
       <div className="reg-input-group">
@@ -447,7 +447,7 @@ const WarehouseDetails = ({
     {/* Expiration Date */}
     <div className="reg-field">
       <label className="reg-label">
-        Expiration Date
+        Date of Expiration of Lease Deed/ Sale Deed / Rent Agreement 
       </label>
 
       <div className="reg-input-group">
@@ -469,7 +469,7 @@ const WarehouseDetails = ({
     {/* Architect Registration */}
     <div className="reg-field">
       <label className="reg-label">
-        Architect Reg. No
+        Certified Architect Registration Number
       </label>
 
       <div className="reg-input-group">
@@ -490,7 +490,7 @@ const WarehouseDetails = ({
     {/* Architect Valid Upto */}
     <div className="reg-field">
       <label className="reg-label">
-        Architect Valid Upto
+        Certified Architect Registration valid upto
       </label>
 
       <div className="reg-input-group">
@@ -515,7 +515,7 @@ const WarehouseDetails = ({
     {/* Super Area */}
     <div className="reg-field">
       <label className="reg-label">
-        Super Area (sq ft)
+       Total Super Area of License Premise (in sq ft)
       </label>
 
       <div className="reg-input-group">
@@ -541,7 +541,7 @@ const WarehouseDetails = ({
     {/* Carpet Area */}
     <div className="reg-field">
       <label className="reg-label">
-        Carpet Area (sq ft)
+        Total Carpet Area of License Premise (in sq ft)
       </label>
 
       <div className="reg-input-group">
@@ -567,7 +567,7 @@ const WarehouseDetails = ({
     {/* Distance */}
     <div className="reg-field">
       <label className="reg-label">
-        Distance from CP (KM)
+       Distance of Distillery from Connaught Place,Delhi (in KM)
       </label>
 
       <div className="reg-input-group">
@@ -601,16 +601,16 @@ const WarehouseDetails = ({
           <Clock3 className="w-4 h-4 text-blue-600" />
         </div>
 
-        <select
-          className="reg-select"
-          value={applicant.HoursofSale || ""}
-          onChange={(e) => onChange("HoursOfSale", e.target.value)}
-        >
-          <option value="">Select</option>
-          <option value="9-5">9 AM - 5 PM</option>
-          <option value="8-8">8 AM - 8 PM</option>
-          <option value="10-6">10 AM - 6 PM</option>
-        </select>
+ <select
+  className="reg-select"
+  value={applicant.HoursOfSale || ""}
+  onChange={(e) => onChange("HoursOfSale", e.target.value)}
+>
+  <option value="">Select</option>
+  <option value="9-5">9 AM - 5 PM</option>
+  <option value="8-8">8 AM - 8 PM</option>
+  <option value="10-6">10 AM - 6 PM</option>
+</select>
 
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />

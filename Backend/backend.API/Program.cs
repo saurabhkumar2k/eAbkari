@@ -69,6 +69,7 @@ builder.Services.AddScoped<ICommonHCRRepository, CommonHCRRepositories>();
 builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

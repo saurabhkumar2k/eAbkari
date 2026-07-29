@@ -16,7 +16,7 @@ public class WarehouseDetailsDto
     public string? WarehouseAddress2 { get; set; }
 
     //public string? WarehouseCity { get; set; }
-
+    public string? FinYear { get; set; }
     public string? WarehouseState { get; set; }
 
     public string? WarehouseDistrict { get; set; }
@@ -48,13 +48,15 @@ public string? WarehouseSubDivision { get; set; }
 
     public string? ArchitectRegistrationNo { get; set; }
 
+    
+
     public DateTime? ArchitectRegistrationNoValidUpto { get; set; }
 
     public decimal? SuperAreaofLicensePremise { get; set; }
 
     public decimal? CarpetAreaofLicensePremise { get; set; }
 
-    public decimal? DistanceofDistillery { get; set; }
+    public int? DistanceofDistilleryCP { get; set; }
 
     public string? HoursofSale { get; set; }
 

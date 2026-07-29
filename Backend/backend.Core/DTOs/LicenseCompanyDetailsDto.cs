@@ -99,7 +99,7 @@ public class AdditionalCompanyPartnersDetailsDto
     public string ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 
-    public decimal? PPerShare { get; set; }
+    public string? PPerShare { get; set; }
 
     public string? PPanNo { get; set; }
 
@@ -112,6 +112,11 @@ public class AdditionalCompanyPartnersDetailsDto
     public IFormFile? PanFile { get; set; }
 
     public IFormFile? addressFile { get; set; }
+
+
+    public string? PanFileUploaded { get; set; }
+    public string? AddressFileUploaded { get; set; }
+
 }
 
 

@@ -22,11 +22,15 @@ import ApplicantDetails  from "../../components/Reports/AdditionalDetails";
 import DocumentsUploaded  from "../../components/Reports/DocumentsUploaded";
 
 
+
+
 const ReportPrintL1 = ({ applicant , category }) => {
 
     const warehouse = applicant?.warehouseDetails;
 
     const CompanyDetails = applicant?.licenseCompanyDetails;
+
+const categories = applicant?.categoryDescription?.split(/\s*(?:and|&)\s*/i);
 
     return (
 
@@ -79,7 +83,7 @@ Application No : {applicant?.applicationIdNo}
 
 <ReportHeader
   applicant={applicant}
-  category={applicant?.categoryDescription?.split(" & ")[0]}
+  category={categories?.[0]}
 />
 
 
@@ -449,7 +453,7 @@ Application No : {applicant?.applicationIdNo}
 
 <ReportHeader
   applicant={applicant}
-  category={applicant?.categoryDescription?.split(" & ")[1]}
+  category={categories?.[1]}
 />
 
 
@@ -784,35 +788,6 @@ Application No : {applicant?.applicationIdNo}
 
 
 </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

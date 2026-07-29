@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using backend.Core.DTOs;
 using backend.Core.Entities.Department;
 
 
@@ -18,6 +19,10 @@ namespace backend.Core.Interfaces.Department
         Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model);
         Task DeleteRoleAsync(int roleId);
         Task<string> GetRoleNameByRoleId(int roleId);
+
+      
+       
+        
 
     }
 }

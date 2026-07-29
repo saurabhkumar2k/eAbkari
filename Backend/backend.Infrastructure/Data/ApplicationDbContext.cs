@@ -196,8 +196,8 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
                 .HasKey(x => x.ID);
             modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
-            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-                .HasKey(x => x.ApplicationIdNo);
+            //modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            //    .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
                 .Property(ap => ap.PName).IsRequired().HasMaxLength(150);
