@@ -25,7 +25,7 @@ namespace backend.API.Licence.Controllers
 
             var AppId = await _HCRservice.SaveApplicantSiteDetails(dto);
 
-            return Ok(new{  AppId });
+            return Ok(new { AppId });
         }
 
         [HttpPost]
@@ -41,5 +41,49 @@ namespace backend.API.Licence.Controllers
             return Ok(siteDetails);
         }
 
+        [HttpGet]
+        [Route("GetCategoryWiseQuestions")]
+        public async Task<IActionResult> GetCategoryWiseQuestions(string catCode)
+        {
+            var result = await _HCRservice.GetCategoryWiseQuestions(catCode);
+
+            if (result == null || result.Count == 0)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("SaveCategoryWiseAnswers")]
+        public async Task<IActionResult> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _HCRservice.SaveCategoryWiseAnswers(dto);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetAppIdWiseAnswers")]
+        public async Task<IActionResult> GetAppIdWiseAnswers(GetApplicationAnswerRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                return BadRequest("ApplicationIdNo is required.");
+
+            var result = await _HCRservice.GetAppIdWiseAnswers(dto.ApplicationIdNo);
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("UpdateCategoryWiseAnswers")]
+        public async Task<IActionResult> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            var result = await _HCRservice.UpdateCategoryWiseAnswers(dto);
+
+            return Ok(result);
+        }
     }
 }

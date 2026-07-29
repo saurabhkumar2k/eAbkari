@@ -6,7 +6,15 @@ namespace backend.Core.Interfaces.License
     public interface ICommonHCRRepository
     {
         Task<string> SaveApplicantSiteDetails(LicenseSiteDetails dto);
-          Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(String AppId);
+        Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(String AppId);
+
+
+        Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions( string catCode);
+
+        Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
+       
+        Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo);
+        Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
 
     }
 }
