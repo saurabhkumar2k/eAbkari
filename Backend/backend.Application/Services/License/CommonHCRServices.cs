@@ -56,14 +56,65 @@ namespace backend.Application.Services.License
         {
             try
             {
-                return await _HcrRepositry.GetSiteDetailsRepo( AppId);
+                return await _HcrRepositry.GetSiteDetailsRepo(AppId);
             }
             catch (Exception ex)
             {
-                
+
                 return null;
             }
-            
+
+        }
+
+        public async Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode)
+        {
+            try
+            {
+                return await _HcrRepositry.GetCategoryWiseQuestions(catCode);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+        public async Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            try
+            {
+                return await _HcrRepositry.SaveCategoryWiseAnswers(dto);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+        public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.GetAppIdWiseAnswers(applicationIdNo);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            try
+            {
+                 return await _HcrRepositry.UpdateCategoryWiseAnswers(dto);
+            }
+            catch  (Exception ex)
+            {
+                
+                 return null;
+            }
         }
 
 
