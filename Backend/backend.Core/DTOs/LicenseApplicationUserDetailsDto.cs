@@ -5,21 +5,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Core.DTOs
 {
-
-public class LicenseApplicationUserDetailsDto
-{
+    public class LicenseApplicationUserDetailsDto
+    {
         [Key]
         public long? Id { get; set; }
 
-    //public long RegNumber { get; set; }
+        //public long RegNumber { get; set; }
 
-    public long RegId { get; set; }
-   public string? Mobile { get; set; }
-    public string ApplicantName { get; set; } = string.Empty;
-    //public string CompanyName { get; set; } = string.Empty;
-    public DateTime? Dob { get; set; }
-     //public string ApplicationIdNo { get; set; } = string.Empty;
-      //public DateTime? OprDate { get; set; }
+        public long RegId { get; set; }
+        public string? Mobile { get; set; }
+        public string ApplicantName { get; set; } = string.Empty;
+        //public string CompanyName { get; set; } = string.Empty;
+        public DateTime? Dob { get; set; }
+        public string? ApplicationIdNo { get; set; }
+        //public DateTime? OprDate { get; set; }
 
     public string FatherHusbandName { get; set; } = string.Empty;
     public string Occupation { get; set; } = string.Empty;
@@ -33,20 +32,20 @@ public class LicenseApplicationUserDetailsDto
     public string Email { get; set; } = string.Empty;
     public string? LandLine { get; set; } = string.Empty;
 
-    //public string Fax { get; set; } = string.Empty;
+        //public string Fax { get; set; } = string.Empty;
 
-    public string PanNo { get; set; } = string.Empty;
+        public string PanNo { get; set; } = string.Empty;
 
-    public string? SubDivision { get; set; } = string.Empty;
+        public string? SubDivision { get; set; } = string.Empty;
 
         //public string ApplicantDesig { get; set; } = string.Empty;
 
-        
-            public string CatCode { get; set; } = string.Empty;
+
+        public string CatCode { get; set; } = string.Empty;
 
         public string OwnerType { get; set; } = string.Empty;
 
-        
+
 
     }
 

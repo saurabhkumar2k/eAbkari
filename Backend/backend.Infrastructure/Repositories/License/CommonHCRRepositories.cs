@@ -15,83 +15,50 @@ namespace backend.Infrastructure.Repositories.License
             _context = context;
         }
 
-        public async Task<string> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto)
+        public async Task<string> SaveApplicantSiteDetails(LicenseSiteDetails dto)
         {
-            try
+            _context.LicenseSiteDetails.Add(dto);
+            _context.ChangeTracker.Entries();
+            await _context.SaveChangesAsync();
+
+            return dto.ApplicationIdNo;
+
+        }
+
+        public async Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(string AppId)
+        {
+            var site = await _context.LicenseSiteDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+
+            if (site == null)
             {
-                //generate application id
-                string? lastappid = await _context.LicenseApplications
-                    .OrderByDescending(x => x.ApplicationIdNo)
-                    .Select(x => x.ApplicationIdNo)
-                    .FirstOrDefaultAsync();
-
-                string newappid;
-
-                if (string.IsNullOrWhiteSpace(lastappid))
-                {
-                    newappid = "REFL10001";
-                }
-                else
-                {
-                    int number = int.Parse(lastappid.Substring(4));
-                    newappid = $"REFL{(number + 1):00000}";
-                }
-
-                var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
-
-                var license = new LicenseApplicationUserDetails
-                {
-                    //ApplicationIdNo = newAppId,
-                    //RegNumber = user.RegId.ToString(),
-                    RegId = dto.RegId.ToString(),
-                    ApplicantName = dto.ApplicantName,
-                    //CompanyName = dto.CompanyName??"",
-                    DateOfBirth = dto.Dob,
-                    FatherHusbandName = dto.FatherHusbandName ?? "",
-                    Occupation = dto.Occupation ?? "",
-                    PanNo = dto.PanNo ?? "",
-                    PresentAddress = dto.PresentAddress ?? "",
-                    PermanentAddress = dto.PermanentAddress ?? "",
-                    StateUT = dto.StateUT ?? "",
-                    District = dto.District ?? "",
-                    SubDivision = dto.SubDivision ?? "",
-                    PIN = dto.PIN ?? "",
-                    //PoliceStation = dto.PoliceStation ??"",
-                    Email = dto.Email ?? "",
-                    Mobile = dto.Mobile ?? "",
-                    LandLine = dto.LandLine ?? "",
-                    //OprDate= DateTime.Now
-                    // Map other fields
-                };
-
-                var application = new LicenseApplication
-                {
-                    // IPAddress = HttpContent.Connection.RemoteIpAddress?.ToString(),
-                    RegId = (int)dto.RegId,
-                    ApplicationIdNo = newappid,
-                    ApplicationDate = DateTime.Now,
-                    FinYear = "2026-27",
-                    ApplicationStatus = "P",
-                    CatCode = dto.CatCode,
-                    LicenseType = dto.OwnerType,
-                    IsApplicationCompleted = "N",
-                    ApplicationFlag = "A",
-                    IsLicenseGenerated = "N",
-                    IsApproveYN = "N"
-                };
-
-                _context.LicenseApplications.Add(application);
-
-                _context.LicenseApplicationUserDetails.Add(license);
-                _context.ChangeTracker.Entries();
-                await _context.SaveChangesAsync();
-
-                return application.ApplicationIdNo;
+                return null;
             }
-            catch (Exception ex)
+
+            var dto = new LicenseSiteDetailsDto
             {
-                return ex.Message;
-            }
+                
+                Regnumber = site.Regnumber,
+                ApplicationIdNo = site.ApplicationIdNo,
+                FinYear = site.FinYear,
+                CatCode = site.CatCode,
+                SiteName = site.SiteName,
+                SiteAddress = site.SiteAddress,
+                SiteAddress2 = site.SiteAddress2,
+                State = site.State,
+                DistrictCode = site.DistrictCode,
+                SubDivisionCode = site.SubDivisionCode,
+                PoliceStationCode = site.PoliceStationCode,
+                SitePin = site.SitePin,
+                SiteAssembly = site.SiteAssembly,
+                SiteWard = site.SiteWard,
+                SiteEmail = site.SiteEmail,
+                SiteMobile = site.SiteMobile,
+                SiteLandline = site.SiteLandline,
+                SiteFax = site.SiteFax,
+                SitePan = site.SitePan
+            };
+
+            return dto;
         }
     }
 }

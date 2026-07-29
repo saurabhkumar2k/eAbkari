@@ -791,35 +791,6 @@ Application No : {applicant?.applicationIdNo}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <DocumentsUploaded applicant={applicant} />
 
 

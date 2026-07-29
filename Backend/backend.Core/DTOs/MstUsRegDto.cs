@@ -1,6 +1,6 @@
 public class MstUsRegDto
 {
-    public long RegId { get; set; }
+    public int RegId { get; set; }
 
     public string? FirstName { get; set; }
 

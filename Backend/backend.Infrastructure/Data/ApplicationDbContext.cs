@@ -65,6 +65,8 @@ namespace backend.Infrastructure.Data
         public DbSet<DepartmentUsers> DepartmentUsers { get; set; }
         public DbSet<MstRoles> MstRoles { get; set; }
         public DbSet<DeptUserRoles> DeptUserRoles { get; set; }
+        public DbSet<LicenseSiteDetails> LicenseSiteDetails { get; set; }
+
 
 
 
@@ -283,6 +285,11 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstRoles>()
                 .HasIndex(x => x.RoleName)
                 .IsUnique();
+
+             modelBuilder.Entity<LicenseSiteDetails>()
+                .HasKey(x => x.ApplicationIdNo);
+               
+
 
             base.OnModelCreating(modelBuilder);
              
