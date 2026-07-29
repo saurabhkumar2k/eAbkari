@@ -23,15 +23,15 @@ public class LicenseApplicationUserDetailsDto
 
     public string FatherHusbandName { get; set; } = string.Empty;
     public string Occupation { get; set; } = string.Empty;
-    public string PresentAddress { get; set; } = string.Empty;
-    public string PermanentAddress { get; set; } = string.Empty;
+    public string? PresentAddress { get; set; } = string.Empty;
+    public string? PermanentAddress { get; set; } = string.Empty;
     public string StateUT { get; set; } = string.Empty;
     public string District { get; set; } = string.Empty;
     public string PIN { get; set; } = string.Empty;
     
     //public string PoliceStation { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string LandLine { get; set; } = string.Empty;
+    public string? LandLine { get; set; } = string.Empty;
 
     //public string Fax { get; set; } = string.Empty;
 

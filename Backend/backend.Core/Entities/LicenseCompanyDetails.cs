@@ -100,7 +100,7 @@ public class ApplicantLicensePartnersDetails
     public string ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 
-    public decimal? PPerShare { get; set; }
+    public string? PPerShare { get; set; }
 
     public string? PPanNo { get; set; }
 

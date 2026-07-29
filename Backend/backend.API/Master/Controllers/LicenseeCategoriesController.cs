@@ -26,127 +26,109 @@ namespace backend.API.Controllers
 
 
         [HttpPost("ApplyLicense")]
-public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicationUserDetailsDto dto)
-{
-    if (!ModelState.IsValid)
-        return BadRequest(ModelState);
+        public async Task<IActionResult> CreateApplyLicense([FromBody] LicenseApplicationUserDetailsDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //generate application id
-            //string? lastappid = await _context.LicenseApplications
-            //    .OrderByDescending(x => x.ApplicationIdNo)
-            //    .Select(x => x.ApplicationIdNo)
-            //    .FirstOrDefaultAsync();
-
-
-            //string prefix = $"REF{dto.CatCode}";
-
-
-            //string? lastappid = await _context.LicenseApplications
-            //    .Where(x => x.ApplicationIdNo.StartsWith(prefix))
-            //    .OrderByDescending(x => x.ApplicationIdNo)
-            //    .Select(x => x.ApplicationIdNo)
-            //    .FirstOrDefaultAsync();
-
-
-
-            //string newAppId;
-
-            //if (string.IsNullOrWhiteSpace(lastappid))
-            //{
-            //    newAppId = $"{prefix}0001";
-            //}
-            //else
-            //{
-            //    int number = int.Parse(lastappid.Substring(prefix.Length));
-            //    newAppId = $"{prefix}{(number + 1):0000}";
-            //}
-
-
-
-            string? lastAppId = await _context.LicenseApplications
-    .OrderByDescending(x => x.Id)   // ya CreatedDate
-    .Select(x => x.ApplicationIdNo)
-    .FirstOrDefaultAsync();
-
-            string prefix = $"REF{dto.CatCode}";
-
-            int sequence = 1;
-
-            if (!string.IsNullOrWhiteSpace(lastAppId))
+            try
             {
-                string lastFour = lastAppId.Substring(lastAppId.Length - 4);
-                sequence = int.Parse(lastFour) + 1;
+
+
+
+                string? lastAppId = await _context.LicenseApplications
+        .OrderByDescending(x => x.Id)   // ya CreatedDate
+        .Select(x => x.ApplicationIdNo)
+        .FirstOrDefaultAsync();
+
+                string prefix = $"REF{dto.CatCode}";
+
+                int sequence = 1;
+
+                if (!string.IsNullOrWhiteSpace(lastAppId))
+                {
+                    string lastFour = lastAppId.Substring(lastAppId.Length - 4);
+                    sequence = int.Parse(lastFour) + 1;
+                }
+
+                string newAppId = $"{prefix}{sequence:0000}";
+
+
+
+
+
+
+
+
+                var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
+
+                var finYear = await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+
+
+
+
+
+                var license = new LicenseApplicationUserDetails
+                {
+                    //ApplicationIdNo = newAppId,
+                    //RegNumber = user.RegId.ToString(),
+                    RegId = dto.RegId.ToString(),
+                    ApplicantName = dto.ApplicantName,
+                    //CompanyName = dto.CompanyName??"",
+                    DateOfBirth = dto.Dob,
+                    FatherHusbandName = dto.FatherHusbandName ?? "",
+                    Occupation = dto.Occupation ?? "",
+                    PanNo = dto.PanNo ?? "",
+                    PresentAddress = dto.PresentAddress ?? "",
+                    PermanentAddress = dto.PermanentAddress ?? "",
+                    StateUT = dto.StateUT ?? "",
+                    District = dto.District ?? "",
+                    SubDivision = dto.SubDivision ?? "",
+                    PIN = dto.PIN ?? "",
+                    //PoliceStation = dto.PoliceStation ??"",
+                    Email = dto.Email ?? "",
+                    Mobile = dto.Mobile ?? "",
+                    LandLine = dto.LandLine ?? "",
+                    //OprDate= DateTime.Now
+                    // Map other fields
+                };
+
+                var application = new LicenseApplication
+                {
+                    IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                    RegId = (int)dto.RegId,
+                    ApplicationIdNo = newAppId,
+                    ApplicationDate = DateTime.Now,
+                    FinYear = finYear,
+                    ApplicationStatus = "P",
+                    CatCode = dto.CatCode,
+                    LicenseType = dto.OwnerType,
+                    IsApplicationCompleted = "N",
+                    ApplicationFlag = "A",
+                    IsLicenseGenerated = "N",
+                    IsApproveYN = "N"
+                };
+                Console.WriteLine(application.Id);
+                _context.LicenseApplications.Add(application);
+
+                _context.LicenseApplicationUserDetails.Add(license);
+                _context.ChangeTracker.Entries();
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    applicationId = application.ApplicationIdNo
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
             }
 
-            string newAppId = $"{prefix}{sequence:0000}";
-
-
-
-
-
-
-
-
-            var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
-
-            var finYear = await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
-
-
-
-
-
-            var license = new LicenseApplicationUserDetails
-    {
-                //ApplicationIdNo = newAppId,
-                //RegNumber = user.RegId.ToString(),
-                RegId = dto.RegId.ToString(),
-                ApplicantName =dto.ApplicantName,
-        //CompanyName = dto.CompanyName??"",
-        DateOfBirth = dto.Dob,
-        FatherHusbandName = dto.FatherHusbandName??"",
-        Occupation = dto.Occupation??"",
-        PanNo=dto.PanNo??"",
-        PresentAddress = dto.PresentAddress??"",
-        PermanentAddress = dto.PermanentAddress??"",
-        StateUT = dto.StateUT??"",
-        District = dto.District??"",
-        SubDivision=dto.SubDivision??"",
-        PIN = dto.PIN??"",
-        //PoliceStation = dto.PoliceStation ??"",
-        Email = dto.Email??"",
-        Mobile = dto.Mobile ?? "", 
-        LandLine=dto.LandLine??"",
-        //OprDate= DateTime.Now
-                // Map other fields
-            };
-
-            var application = new LicenseApplication
-            {
-                IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                RegId = (int)dto.RegId,
-                ApplicationIdNo = newAppId,
-                ApplicationDate = DateTime.Now,
-                FinYear = finYear,
-                ApplicationStatus = "P",
-                CatCode = dto.CatCode,
-                LicenseType = dto.OwnerType,
-                IsApplicationCompleted = "N",
-                ApplicationFlag = "A",
-                IsLicenseGenerated = "N",
-                IsApproveYN = "N"
-            };
-            Console.WriteLine(application.Id);
-            _context.LicenseApplications.Add(application);
-
-            _context.LicenseApplicationUserDetails.Add(license);
-            _context.ChangeTracker.Entries();
-    await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                applicationId = application.ApplicationIdNo
-            });
         }
+            
+
 
 
 
@@ -159,10 +141,15 @@ public async Task<IActionResult> CreateWarehouseLicense([FromBody] WarehouseDeta
 if (!ModelState.IsValid)
         return BadRequest(ModelState);
 
+
+            var finYear = await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+
+
             var WarehouseLicense = new WarehouseDetails
             {
                 RegId=dto.RegId,
                 CatCode=dto.CatCode,
+                FinYear= finYear,
                 ApplicationIdNo=dto.ApplicationIdNo,
                    WarehouseName = dto.WarehouseName,
                  WarehouseAddress1 = dto.WarehouseAddress1,
@@ -187,7 +174,7 @@ if (!ModelState.IsValid)
                     ArchitectRegistrationNoValidUpto = dto.ArchitectRegistrationNoValidUpto,
                     SuperAreaofLicensePremise = dto.SuperAreaofLicensePremise,
                     CarpetAreaofLicensePremise = dto.CarpetAreaofLicensePremise,
-                DistanceofDistilleryCP = Convert.ToInt64(dto.DistanceofDistillery),
+                DistanceofDistilleryCP = dto.DistanceofDistilleryCP,
                     HoursofSale = dto.HoursofSale,
                     CreatedDateAt = DateTime.Now,
                 
@@ -246,41 +233,6 @@ if (!ModelState.IsValid)
                 };
 
                 _context.LicenseCompanyDetails.Add(company);
-
-
-
-
-
-                //foreach (var partner in dto.CompanyPartnersDetails)
-                //{
-
-                //    if (partner.PanFile != null)
-                //    {
-                //        var fileName = Guid.NewGuid() +
-                //            Path.GetExtension(partner.PanFile.FileName);
-
-                //        var folder = Path.Combine(_env.WebRootPath, "Uploads", "PartnerPAN");
-
-                //        if (!Directory.Exists(folder))
-                //            Directory.CreateDirectory(folder);
-
-                //        var path = Path.Combine(folder, fileName);
-
-                //        using (var stream = new FileStream(path, FileMode.Create))
-                //        {
-                //            await partner.PanFile.CopyToAsync(stream);
-                //        }
-
-                //        // Database me filename save hoga
-                //        partner.PhotoURLPanNo = fileName;
-                //    }
-
-
-                //    _context.AdditionalCompanyPartnersDetails.Add(partner);
-                //}
-
-
-                //await _context.SaveChangesAsync();
 
 
 
