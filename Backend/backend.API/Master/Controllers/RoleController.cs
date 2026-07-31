@@ -1,4 +1,5 @@
-﻿using backend.Core.Entities.Department;
+﻿using backend.Application.Interfaces.Department;
+using backend.Core.Entities.Department;
 using backend.Core.Interfaces.Department;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories.Department;
@@ -11,11 +12,11 @@ namespace backend.API.Master.Controllers
     [Route("api/[controller]")]
     public class RoleController : Controller
     {
-        private readonly IRolesRepository _repository;
+        private readonly IRoleService _roleservice;
 
-        public RoleController(IRolesRepository repository)
+        public RoleController(IRoleService RoleService)
         {
-            _repository = repository;
+            _roleservice = RoleService;
         }
 
 
@@ -24,11 +25,11 @@ namespace backend.API.Master.Controllers
         public async Task<IActionResult> GetRole()
         {
 
-            var data = await _repository.GetRolesAsync();
+            var data = await _roleservice.GetAllAsync();
 
             if (data == null || !data.Any())
             {
-                return NotFound(new { message = "No Role data found" });
+                return NotFound("No Role data found");
             }
 
             return Ok(data);
@@ -42,18 +43,7 @@ namespace backend.API.Master.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool exists = await _repository.RoleExistsByNameAsync(model.RoleName);
-
-            if (exists)
-            {
-                return Conflict(new
-                {
-                    Success = false,
-                    Message = "Role already exists."
-                });
-            }
-
-            var role = await _repository.CreateRoleAsync(model);
+            var role = await _roleservice.CreateAsync(model);
 
             return Ok(new
             {
@@ -64,26 +54,16 @@ namespace backend.API.Master.Controllers
         }
 
         [HttpPut("UpdateRole")]
-        public async Task<IActionResult> UpdateRole(UpdateRoleDto model)
+        public async Task<IActionResult> UpdateRole(RoleDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Check if the role exists
-            var existRole = await _repository.RoleExistsAsync(model.RoleId);
-
-            if (!existRole)
-            {
-                return NotFound(new
-                {
-                    Success = false,
-                    Message = "Role not found."
-                });
-            }
+   
 
             // Check if another role already has the same name
 
-            var updatedRole = await _repository.UpdateRoleAsync(model);
+            var updatedRole = await _roleservice.UpdateAsync(model);
 
             return Ok(new
             {

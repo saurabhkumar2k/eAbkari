@@ -12,10 +12,11 @@ namespace backend.Core.Interfaces.Department
     {
         Task<IEnumerable<MstRoles>> GetRolesAsync();
         Task<MstRoles?> GetRoleByRoleId(int roleId);
-        Task<MstRoles> CreateRoleAsync(AddRoleDto model);
+        Task<bool> CreateRoleAsync(MstRoles model);
+        Task<int> GetNextRoleIdAsync();
         Task<bool> RoleExistsAsync(int roleId);
         Task<bool> RoleExistsByNameAsync(string roleName);
-        Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model);
+        Task<bool> UpdateRoleAsync(MstRoles model);
         Task DeleteRoleAsync(int roleId);
         Task<string> GetRoleNameByRoleId(int roleId);
 

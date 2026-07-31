@@ -6,6 +6,7 @@ using backend.Core.Interfaces.Department;
 using backend.Application.Interfaces.Department;
 using System.Text;
 using System.Security.Cryptography;
+using System;
 
 namespace backend.Application.Services.Department
 {
@@ -70,8 +71,8 @@ namespace backend.Application.Services.Department
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (string.IsNullOrWhiteSpace(user.UserId))
-                throw new ArgumentException("UserId is required.");
+            //if (string.IsNullOrWhiteSpace(user.UserId))
+            //    throw new ArgumentException("UserId is required.");
 
             if (string.IsNullOrWhiteSpace(user.UserName))
                 throw new ArgumentException("UserName is required.");
@@ -133,15 +134,36 @@ namespace backend.Application.Services.Department
 
 
 
-        public async Task<bool> UpdateAsync(DepartmentUserDto model)
+        public async Task<bool> UpdateAsync(DepartmentUserDto user)
         {
-            var dto = JsonSerializer.Deserialize<DepartmentUserDto>(
-           JsonSerializer.Serialize(model));
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
 
-            if (dto == null)
-                throw new InvalidOperationException("Failed to map DepartmentUsers to DepartmentUserDto");
+            if (string.IsNullOrWhiteSpace(user.UserId))
+                throw new ArgumentException("UserId is required.");
 
-            return await _departmentUsersRepository.UpdateAsync(dto);
+            if (string.IsNullOrWhiteSpace(user.UserName))
+                throw new ArgumentException("UserName is required.");
+
+            if (string.IsNullOrWhiteSpace(user.Email))
+                throw new ArgumentException("Email is required.");
+
+            var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
+
+            if (existingUser == null)
+                throw new InvalidOperationException("User not exists.");
+
+            var DepartmentUser = new DepartmentUsers
+            {
+                UserId = user.UserId,
+                UserName = user.UserName.Trim(),
+                UserDesignation = user.UserDesignation.Trim(),
+                Email = user.Email,
+                IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
+                CreatedDate = DateTime.Now
+            };
+
+            return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId);
         }
 
     }
