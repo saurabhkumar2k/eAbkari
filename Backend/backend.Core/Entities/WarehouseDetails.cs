@@ -17,6 +17,7 @@ public class WarehouseDetails
     public string? WarehouseAddress2 { get; set; }
 
     //public string? WarehouseCity { get; set; }
+    public string? FinYear { get; set; }
 
     public string? WarehouseState { get; set; }
 
@@ -55,7 +56,7 @@ public string? WarehouseSubDivision { get; set; }
 
     public decimal? CarpetAreaofLicensePremise { get; set; }
 
-    public decimal? DistanceofDistilleryCP { get; set; }
+    public int? DistanceofDistilleryCP { get; set; }
 
     public string? HoursofSale { get; set; }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import ApplicantDetails from "../../../components/Applicant_Details";
 import DirectorsList from "../../../components/DirectorsList";
 import { createApplicant } from "../../../Model/Applicant";
+import DocumentUpload from "../../../components/DocumentsDetails";
 
 import {
   Building,
@@ -34,6 +35,7 @@ import {
   Hash,
   Barcode,
   Search,
+  ShieldAlert,
   ChevronsUpDown,
   Tag as TagIcon
 } from "lucide-react";
@@ -53,10 +55,13 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [subDivisions, setSubDivisions] = useState([]);
   const [policeStations, setPoliceStations] = useState([]);
   const [licenseGroups, setLicenseGroups] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState({});
   // Selected HCR license code
   const [selectedLicenseId, setSelectedLicenseId] = useState("");
   const [ownerTypes, setOwnerTypes] = useState([]);
   const [ownerType, setOwnerType] = useState("");
+  const [formErrors, setFormErrors] = useState({});
 
 
 
@@ -99,7 +104,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
   const [applicantErrors, setApplicantErrors] = useState({});
   const [siteFormErrors, setsiteFormErrors] = useState({});
-  //const [applicant, setApplicant] = useState(createApplicant());
 
   // Applicant Submission validation helper
   const handleApplicantSubmit = () => {
@@ -203,7 +207,20 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     }
   }, [applicantForm.StateUT]);
 
-
+  const handleInputChange = (field, value) => {
+    // setFormData(prev => ({
+    //   ...prev,
+    //   [field]: value
+    // }));
+    // // Clear error
+    // if (formErrors[field]) {
+    //   setFormErrors(prev => ({
+    //     ...prev,
+    //     [field]: null
+    //   }));
+    // }
+    applicantForm[field] = value 
+  };
   const handleDirectorChange = (i, f, v) => {
     debugger;
     const d = [...(applicantForm.directors || [])];
@@ -212,16 +229,51 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   };
 
   const addRow = () =>
-    setApplicant((p) => ({
+    setApplicantForm((p) => ({
       ...p,
       directors: [...(p.directors || []), { name: "", panNo: "" }]
     }));
 
   const deleteRow = (i) =>
-    setApplicant((p) => ({
+    setApplicantForm((p) => ({
       ...p,
       directors: p.directors.filter((_, x) => x !== i)
     }));
+
+
+  const handleFileChange = (key, file) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [key]: {
+        file,
+        previewUrl: URL.createObjectURL(file)
+      }
+    }));
+  };
+
+  const handleDeleteFile = (key) => {
+    setUploadedFiles((prev) => {
+      const updated = { ...prev };
+      delete updated[key];
+      return updated;
+    });
+  };
+
+  useEffect(() => {
+    if (currentStep !== 7 && currentStep !== 8) return;
+
+    const applicationIdNo = localStorage.getItem("applicationId");
+    if (!applicationIdNo || !selectedLicenseId) return;
+
+    const docStatus = currentStep === 7 ? "A" : "S";
+
+    fetch(
+      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseId}&docStatus=${docStatus}`
+    )
+      .then((r) => r.json())
+      .then((data) => setDocuments(data));
+
+  }, [currentStep, selectedLicenseId]);
 
 
   const fetchConstitutionTypes = async () => {
@@ -285,6 +337,48 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     setSubDivisions(data);
   };
 
+
+  const fetchPoliceStations = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+      );
+
+      console.log("Status:", res.status);
+
+      const text = await res.text();
+      console.log("Response:", text);
+
+      if (!text) {
+        console.log("Empty response received");
+        return;
+      }
+
+      const data = JSON.parse(text);
+
+      setWarehousePoliceStations(data);
+    } catch (err) {
+      console.log(err); s
+    }
+  };
+
+
+  const fetchSubDivisions = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+      );
+
+      const data = await res.json();
+
+      setWarehouseSubDivisions(data);
+
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 
   const loadApplicantData = async (regId) => {
@@ -464,7 +558,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
           CatCode: selectedLicenseId
         };
 
- console.log('payload', payload)
+        console.log('payload', payload)
 
         const response = await fetch(
           "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
@@ -481,6 +575,134 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
         console.log("HCR License Resturant Response:", data);
 
+      }
+
+      if (currentStep === 6) {
+        debugger;
+
+        console.log("Directors:", applicantForm.directors);
+
+        applicantForm.undertakingAccept = false
+
+        // const [formData, setFormData] = useState({
+        //   // Step 6: Declaration
+        //   undertakingAccept: false,
+        //   // signatureName: "VISHAL DEVILAL JAISWAL",
+        //   // signingPlace: "New Delhi"
+        // });
+
+        applicantForm.directors.forEach((director, index) => {
+          debugger;
+          formData.append(
+            `CompanyPartnersDetails[${index}].PName`,
+            director.PName || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPerShare`,
+            director.PPerShare || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPanNo`,
+            director.PPanNo || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PExciseNominee`,
+            director.PExciseNominee || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].DINNo`,
+            director.DINNo || ""
+          );
+
+
+          // PAN File
+          if (director.panFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].PanFile`,
+              director.panFile
+            );
+          }
+          if (director.addressFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].addressFile`,
+              director.addressFile
+            );
+          }
+        });
+
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("Warehouse License Response:", data);
+      }
+
+      if (currentStep === 7) {
+        debugger;
+
+        const formData = new FormData();
+
+        formData.append(
+          "ApplicationIdNo",
+          localStorage.getItem("applicationId")
+        );
+
+        formData.append(
+          "MobileNo",
+          applicant.mobile
+        );
+
+        let index = 0;
+
+        documents.forEach((doc) => {
+          const uploaded = uploadedFiles[doc.docId];
+
+          if (uploaded?.file) {
+            formData.append(
+              `Documents[${index}].ApplicantSl`,
+              doc.applicantSl || 1
+            );
+
+            formData.append(
+              `Documents[${index}].DocId`,
+              doc.docId
+            );
+
+            formData.append(
+              `Documents[${index}].DocSl`,
+              doc.docSl || 1
+            );
+
+            formData.append(
+              `Documents[${index}].DocumentFile`,
+              uploaded.file
+            );
+
+            index++;
+          }
+        });
+
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await response.json();
+
+        console.log(data);
       }
 
     } catch (error) {
@@ -526,12 +748,12 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [premisesErrors, setPremisesErrors] = useState({});
 
   // Documents State
-  const [documents, setDocuments] = useState({
-    fireNocDoc: null,
-    mcdTradeDoc: null,
-    vatRegDoc: null,
-    identityProof: null
-  });
+  // const [documents, setDocuments] = useState({
+  //   fireNocDoc: null,
+  //   mcdTradeDoc: null,
+  //   vatRegDoc: null,
+  //   identityProof: null
+  // });
 
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);
@@ -569,7 +791,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
       list.push({ num: nextNum++, id: "premises", label: "Additional Details", sub: "Additional Details" });
     }
 
-    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Uploads" });
+    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Applicant Documents" });
+    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Site Documents" });
     list.push({ num: nextNum++, id: "review", label: "Review & Submit", sub: "Success Finalize" });
 
     return list;
@@ -648,7 +871,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
       <div className="hcr-container">
 
         {/* Dynamic Wizard Steps Indicator Row (32px vertical separation from header) */}
-        {currentStep < 8 && (
+        {currentStep < 9 && (
           <div className="hcr-dynamic">
             <div className="hcr-stepper">
               {/* Connector dots bar */}
@@ -1254,10 +1477,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <button
                     type="button"
                     onClick={() => {
-                      // if (associatedBrands.length === 0) {
-                      //   triggerToast("Tip: Registering at least 1 brand is recommended, but you may proceed as draft.", "info");
-                      // }
-
                       if (selectedLicenseId === "L-20") {
                         setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
                       } else {
@@ -1410,6 +1629,17 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         No
                       </label>
                     </div>
+                  </div>
+
+                  {/* Additional Area */}
+                  <div className="form-group full-width">
+                    <DirectorsList
+                      directors={applicantForm.directors || []}
+                      ConstitutionType={applicantForm.ConstitutionType}
+                      onChange={handleDirectorChange}
+                      onAdd={addRow}
+                      onDelete={deleteRow}
+                    />
                   </div>
 
                   {/* No. of Managers */}
@@ -1647,7 +1877,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                     <span>Go Back</span>
                   </button>
-                  <button type="submit" className="btn btn-primary">
+
+                  <button type="button" onClick={() => setCurrentStep(7)} className="btn btn-primary">
                     <span>Proceed to Documents</span>
                     <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                   </button>
@@ -1658,160 +1889,84 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
           {/* STEP 7: DOCUMENTS & UPLOADS */}
           {currentStep === 7 && (
-            <div className="hcr-step-card animate-fade">
-
-              <div className="hcr-step-card-header">
-                <h3 className="hcr-step-card-title">
-                  <Upload className="hcr-step-card-icon" />
-                  <span className="font-sans">Step 7: Compliance Documentation Upload</span>
-                </h3>
-
-                <p className="hcr-step-card-description font-sans">
-                  Upload verified legislative documents to authorize the
-                  digital privilege card generation.
-                </p>
-              </div>
-
-              <div className="hcr-document-grid">
-                {/* Custom upload slots */}
-                {[
-                  { key: 'fireNocDoc', title: 'Fire NOC Certificate', desc: 'Authorized PDF file copy under DFS Delhi agency.' },
-                  { key: 'mcdTradeDoc', title: 'MCD Health & Trade License', desc: 'Valid municipal certificate scan copy.' },
-                  { key: 'vatRegDoc', title: 'VAT / GST Commercial registration', desc: 'Signed tax invoice or portal filing document.' },
-                  { key: 'identityProof', title: 'Director ID Proof copy', desc: 'Certified Aadhar / PAN / Board Resolution copy.' }
-                ].map(doc => {
-                  return (
-                    <div key={doc.key} className="hcr-document-card">
-                      <div>
-                        <h4 className="hcr-document-title">
-                          {doc.title}
-                        </h4>
-
-                        <p className="hcr-document-description">
-                          {doc.desc}
-                        </p>
-                      </div>
-
-                      {/* Fake upload simulation field */}
-                      <div className="hcr-upload-box">
-                        <span className="hcr-upload-filename">
-                          {documents[doc.key]
-                            ? documents[doc.key]
-                            : "No document uploaded yet"}
-                        </span>
-
-                        {documents[doc.key] ? (
-                          <button
-                            onClick={() =>
-                              setDocuments(prev => ({
-                                ...prev,
-                                [doc.key]: null
-                              }))
-                            }
-                            className="hcr-remove-upload-btn"
-                          >
-                            Remove
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setDocuments(prev => ({
-                                ...prev,
-                                [doc.key]: `excise_attachment_${doc.key}.pdf`
-                              }));
-                              triggerToast(`${doc.title} uploaded successfully!`);
-                            }}
-                            className="hcr-upload-btn"
-                          >
-                            Upload PDF
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Informative prompt */}
-              <div className="hcr-info-alert">
-                <Info className="hcr-info-alert-icon" />
-
-                <p className="hcr-info-alert-text">
-                  <strong>Verification SLA Notice:</strong> Uploading dummy or
-                  invalid documents will result in instant rejection of the
-                  applicant dossier by physical auditing officers. Review details
-                  before remitting file fees.
-                </p>
-              </div>
-
-              {/* Back and Submit Application actions */}
-              <div className="hcr-submit-actions">
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(6)}
-                  className="btn btn-secondary"
-                >
+            <div className="hcr-license-card">
+              <DocumentUpload
+                documents={documents}
+                uploadedFiles={uploadedFiles}
+                handleDocumentFileChange={handleFileChange}
+                handleDeleteFile={handleDeleteFile}
+              />
+              {/* Back and Continue */}
+              <div className="hcr-step-navigation">
+                <button type="button" onClick={() => setCurrentStep(6)} className="btn btn-secondary">
                   <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                   <span>Go Back</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={handleFinalSubmit}
-                  className="btn btn-success"
-                >
-                  <FileCheck className="hcr-nav-icon hcr-nav-icon-right" />
-                  <span>Register & File Application</span>
+
+                <button type="button" onClick={() => setCurrentStep(8)} className="btn btn-primary">
+                  <span>Proceed to Documents</span>
+                  <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* STEP 8: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
-          {currentStep === 8 && successReceipt && (
-            <div className="hcr-success-card">
-              <div className="hcr-success-icon-wrapper">
-                <Check className="hcr-success-icon" />
-                <span className="hcr-success-ring"></span>
+          {/* STEP 8: DOCUMENTS & UPLOADS */}
+          {currentStep === 8 && (
+            <div className="hcr-license-card">
+              <DocumentUpload
+                documents={documents}
+                uploadedFiles={uploadedFiles}
+                handleDocumentFileChange={handleFileChange}
+                handleDeleteFile={handleDeleteFile}
+              />
+              {/* Back and Continue */}
+              <div className="hcr-step-navigation">
+                <button type="button" onClick={() => setCurrentStep(7)} className="btn btn-secondary">
+                  <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
+                  <span>Go Back</span>
+                </button>
+
+                <button type="button" onClick={() => setCurrentStep(9)} className="btn btn-primary">
+                  <span>Proceed to Documents</span>
+                  <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 9: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
+          {currentStep === 9 &&  (
+            <div className="animate-fade text-left space-y-6">
+              <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
+                <div className="text-xs font-semibold leading-relaxed">
+                  <p className="font-extrabold text-red-950 uppercase mb-1">Legal Notice & Liability under GNCTD Act</p>
+                  Any false claim or misleading declaration submitted will cause instant forfeiture of safety deposits of ₹ 5,00,000, summary rejection of licenses, and booking of criminal liabilities under Delhi Excise Act 2010.
+                </div>
               </div>
 
-              <div className="hcr-success-content">
-                <h2 className="hcr-success-title">
-                  HCR Application Filed Successfully
-                </h2>
-                <p className="hcr-success-description">
-                  Excise privilege dossier generated for category  <span className="hcr-success-license">{successReceipt.licenseId}</span>. Associated brand parameters have been logged and locked for municipal clearance.
-                </p>
-              </div>
+              <div className="p-5 border border-slate-200 rounded-xl space-y-4">
+                {/* Checkbox 1 */}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="acceptCheck"
+                    checked={applicantForm.undertakingAccept}
+                    onChange={(e) => handleInputChange("undertakingAccept", e.target.checked)}
+                    className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 focus:ring-2 border-slate-300 pointer-events-auto"
+                  />
+                  <label htmlFor="acceptCheck" className="text-xs text-slate-700 leading-relaxed font-semibold cursor-pointer">
 
-              {/* Structured Receipt Info */}
-              <div className="hcr-receipt-card">
-                <div className="hcr-receipt-header">
-                  <span className="hcr-receipt-title">Dossier Docket Record</span>
-                  <span className="hcr-receipt-status"> PENDING INSPECT </span>
-                </div>
+                    I declare the information provided above is true to the best of my knowledge and believe if any information particulars furnished in the application is subsequently found to be false, inaccurate or incomplete, the license, if any, granted on the basis of the application, will be liable to instant withdrawal without prejudice to other action then may be taken.
 
-                <div className="hcr-receipt-grid">
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> File Reference No </span>
-                    <span className="hcr-receipt-value hcr-receipt-reference"> {successReceipt.applicationNo} </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> License Class </span>
-                    <span className="hcr-receipt-value hcr-receipt-license">{successReceipt.licenseId} Premium Class </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> Filing Timestamp </span>
-                    <span className="hcr-receipt-value"> {successReceipt.date} </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> Linked Liquor Brand </span>
-                    <span className="hcr-receipt-value hcr-receipt-brand-count"> {successReceipt.brandsCount} Registered </span>
-                  </div>
-                  <div className="hcr-receipt-item hcr-receipt-item-full">
-                    <span className="hcr-receipt-label"> Structure Premise Address </span>
-                    <span className="hcr-receipt-address"> {successReceipt.address} (Pincode: {successReceipt.pincode}) </span>
-                  </div>
+
+                  </label>
                 </div>
+                {formErrors.undertakingAccept && (
+                  <span className="text-xs text-red-500 font-extrabold block">{formErrors.undertakingAccept}</span>
+                )}
+
               </div>
 
               {/* Success primary buttons */}
@@ -1824,7 +1979,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 }}
                   className="hcr-btn-download"
                 >
-                  Download Docket Summary Receipt
+                  <span>{currentStep === 9 ? "File Joint Application" : "Download Docket Summary Receipt"}</span>
                 </button>
               </div>
             </div>
