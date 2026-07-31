@@ -72,6 +72,9 @@ namespace backend.Infrastructure.Data
 
         public DbSet<CategoryWiseAnswers> CategoryWiseAnswers { get; set; }
 
+        public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -299,7 +302,8 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<CategoryWiseAnswers>()
                 .HasKey(x => x.Id);
-
+            modelBuilder.Entity<AdditionalHCRDetails>()
+                .HasKey(x => x.ApplicationIdNo);
 
             base.OnModelCreating(modelBuilder);
 

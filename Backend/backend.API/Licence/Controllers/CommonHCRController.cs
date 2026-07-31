@@ -85,5 +85,14 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("SaveAndUpdateAdditionalHCRDetails")]
+        public async Task<IActionResult> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        {
+            var result = await _HCRservice.SaveAndUpdateAdditionalHCRDetails(dto);
+
+            return Ok(result);
+        }
     }
 }

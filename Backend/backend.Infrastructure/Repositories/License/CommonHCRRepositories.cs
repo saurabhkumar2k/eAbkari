@@ -157,5 +157,80 @@ namespace backend.Infrastructure.Repositories.License
 
             return "Updated Successfully";
         }
+
+
+        public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        {
+            try
+            {
+                var details = await _context.AdditionalHCRDetails
+                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
+
+                if (details == null)
+                {
+                    details = new AdditionalHCRDetails
+                    {
+                        ApplicationIdNo = dto.ApplicationIdNo,
+                        NumberOfClubMember = dto.NumberOfClubMember,
+                        NumberOfSeatCovers = dto.NumberOfSeatCovers,
+                        NumberOfDispensingCounter = dto.NumberOfDispensingCounter,
+                        AdditionalArea = dto.AdditionalArea,
+                        NumberOfManagers = dto.NumberOfManagers,
+                        NumberOfKitchenStaff = dto.NumberOfKitchenStaff,
+                        NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees,
+                        TotalRoom = dto.TotalRoom,
+                        StaffStrength = dto.StaffStrength,
+                        StarCategory = dto.StarCategory,
+                        ServiceCounter = dto.ServiceCounter,
+                        TotalArea = dto.TotalArea,
+                        EducationalInsDist = dto.EducationalInsDist,
+                        ReligiousPlaceDist = dto.ReligiousPlaceDist,
+                        IsSuitableGagdget = dto.IsSuitableGagdget,
+                        IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved,
+                        IsIndicatingLiquor = dto.IsIndicatingLiquor,
+                        NumberOfBarAttendent = dto.NumberOfBarAttendent,
+                        StarCategoryRating = dto.StarCategoryRating,
+                        RestaurantArea = dto.RestaurantArea,
+                        HourOfSale = dto.HourOfSale
+                    };
+                    _context.AdditionalHCRDetails.Add(details);
+                }
+                else
+                {
+                    details.NumberOfClubMember = dto.NumberOfClubMember;
+                    details.NumberOfSeatCovers = dto.NumberOfSeatCovers;
+                    details.NumberOfDispensingCounter = dto.NumberOfDispensingCounter;
+                    details.AdditionalArea = dto.AdditionalArea;
+                    details.NumberOfManagers = dto.NumberOfManagers;
+                    details.NumberOfKitchenStaff = dto.NumberOfKitchenStaff;
+                    details.NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees;
+                    details.TotalRoom = dto.TotalRoom;
+                    details.StaffStrength = dto.StaffStrength;
+                    details.StarCategory = dto.StarCategory;
+                    details.ServiceCounter = dto.ServiceCounter;
+                    details.TotalArea = dto.TotalArea;
+                    details.EducationalInsDist = dto.EducationalInsDist;
+                    details.ReligiousPlaceDist = dto.ReligiousPlaceDist;
+                    details.IsSuitableGagdget = dto.IsSuitableGagdget;
+                    details.IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved;
+                    details.IsIndicatingLiquor = dto.IsIndicatingLiquor;
+                    details.NumberOfBarAttendent = dto.NumberOfBarAttendent;
+                    details.StarCategoryRating = dto.StarCategoryRating;
+                    details.RestaurantArea = dto.RestaurantArea;
+                    details.HourOfSale = dto.HourOfSale;
+
+
+                }
+                await _context.SaveChangesAsync();
+
+                return "Save/Updated Successfully";
+
+            }
+            catch (Exception)
+            {
+                return "Error Occured";
+            }
+        }
+
     }
 }

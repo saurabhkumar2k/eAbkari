@@ -108,15 +108,26 @@ namespace backend.Application.Services.License
         {
             try
             {
-                 return await _HcrRepositry.UpdateCategoryWiseAnswers(dto);
+                return await _HcrRepositry.UpdateCategoryWiseAnswers(dto);
             }
-            catch  (Exception ex)
+            catch (Exception ex)
             {
-                
-                 return null;
+
+                return null;
             }
         }
 
+        public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        {
+            try
+            {
+                return await _HcrRepositry.SaveAndUpdateAdditionalHCRDetails(dto);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
     }
 }
