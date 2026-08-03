@@ -22,7 +22,8 @@ import {
   FileCheck
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
-import HcrLicenseWizard from "./HCR/HcrLicense";// Import the HCR license wizard components
+import HcrLicenseWizard from "./HCR/HcrLicense";
+import L30SelectLicense from "./L30/L30SelectLicense";
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 
 export default function NewLicense({ setActiveTab, showToast }) {
@@ -45,6 +46,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
   const [appSubmissionCompleted, setAppSubmissionCompleted] = useState(false);
   const [isHCRFlowActive, setIsHCRFlowActive] = useState(false);
   const [isWholesaleFlowActive, setIsWholesaleFlowActive] = useState(false);
+  const [isL30FlowActive, setIsL30FlowActive] = useState(false);
 
   const calculateTotalFeeObj = () => {
     let base = 200000;
@@ -52,6 +54,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
     else if (newLicData.licenseType && newLicData.licenseType.includes("L-10")) base = 150000;
     else if (newLicData.licenseType && newLicData.licenseType.includes("L-15")) base = 300000;
     else if (newLicData.licenseType && newLicData.licenseType.includes("M&TP")) base = 200000;
+    else if (newLicData.licenseType && newLicData.licenseType.includes("L-30")) base = 100000;
     
     let offset = 0;
     const sub = newLicData.selectedSubLicense || "";
@@ -75,6 +78,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
     if (t.includes("M&TP")) return "M&TP";
     if (t.includes("L-10")) return "Retail";
     if (t.includes("L-1 ") || t.includes("L-1 (") || t.includes("L-1 Wholesale")) return "Wholesale";
+    if (t.includes("L-30")) return "L-30";
     return "HCR"; // default fallback
   };
 
@@ -226,8 +230,26 @@ export default function NewLicense({ setActiveTab, showToast }) {
   return (
     <div className="flex-grow w-full py-8 font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        
-        {isHCRFlowActive ? (
+        {isL30FlowActive ? (
+          <L30SelectLicense
+            applicant={newLicData}
+            onChange={(key, value) => setNewLicData(prev => ({ ...prev, [key]: value }))}
+            selectedType={newLicData.selectedSubLicense || "L-30"}
+            onSelectType={(code) => {
+              setNewLicData(prev => ({ ...prev, selectedSubLicense: code }));
+              showToast(`Selected L-30 License Type: ${code}`);
+            }}
+            onBack={() => {
+              setIsL30FlowActive(false);
+              setNewLicStep(2);
+            }}
+            onContinue={() => {
+              setIsL30FlowActive(false);
+              setAppSubmissionCompleted(true);
+              showToast("L-30 License Application submitted successfully!");
+            }}
+          />
+        ) : isHCRFlowActive ? (
           <HcrLicenseWizard 
             onBackToDashboard={() => {
               setIsHCRFlowActive(false);
@@ -529,6 +551,10 @@ export default function NewLicense({ setActiveTab, showToast }) {
                   onClick={() => {
                     // VALIDATIONS & ROUTING FOR NEXT
                     if (newLicStep === 2) {
+                       if (getActiveCategory() === "L-30") {
+                        setIsL30FlowActive(true);
+                        return;
+                      }
                       if (getActiveCategory() === "HCR") {
                         setIsHCRFlowActive(true);
                         return;
@@ -550,7 +576,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
                 >
                   <span>
                     {newLicStep === 2 
-                      ? (["HCR", "Wholesale"].includes(getActiveCategory()) ? "Proceed to Select License" : "Submit & Pay")
+                      ? (["HCR", "Wholesale", "L-30"].includes(getActiveCategory()) ? "Proceed to Select License" : "Submit & Pay")
                       : "Next Step"}
                   </span>
                   <ArrowRight className="w-4 h-4 text-white" />

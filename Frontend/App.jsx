@@ -7,7 +7,7 @@ import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
 import ApplicantDashboard from './src/areas/applicant/applicantdashboard.jsx';
-import DepartmentDashboard from './src/areas/dashboard/DepartmentDashboard.jsx';
+import DepartmentDashboard from './src/components/Department/DepartmentDashboard.jsx';
 import ImportPermitPass from './src/components/Department/Pages/ImportPermitPass.jsx';
 import EmptyPermitTable from './src/components/Department/EmptyPermitTable.jsx';
 import PermitForm from './src/components/Department/PermitForm.jsx';
@@ -19,6 +19,7 @@ import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
 import TransportBulkSpiritValidity from './src/components/Department/TransportBulkSpiritValidity.jsx';
+import TransportPackagedFL from './src/components/Department/TransportPackagedFL.jsx';
 
 import {
   ChevronDownSvg,
@@ -74,12 +75,24 @@ export default function App() {
       case "TRANSPORT : BULK SPIRIT":
         window.location.href = "/TransportBulkSpiritValidity";
         break;
+      
+      case "TRANSPORT : PACKAGED FL":
+        window.location.href = "/TransportPackagedFL";
+        break;
 
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
         break;
       case "IMPORT : PACKAGED FL":
         window.location.href = "/importpackaged";
+        break;
+
+      case "NEW USER CREATION":
+      case "USER CREATION":
+      case "USER_CREATION":
+      case "NEW_USER_CREATION":
+      case "USER MAINTENANCE":
+        window.location.href = "/departmentdashboard?directory=user-creation";
         break;
 
       case "Home":
@@ -198,6 +211,21 @@ return (
               onNavigate={handleAdminNavigate}
             />
             <TransportBulkSpiritValidity/>
+          </div>
+        }
+      />
+
+       {/* Transport Packaged FL */}
+      <Route
+        path="/TransportPackagedFL"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
+              onNavigate={handleAdminNavigate}
+            />
+            <TransportPackagedFL/>
           </div>
         }
       />
@@ -357,6 +385,26 @@ const navItems = [
     label: "House Keeping",
     icon: <SettingsSvg className="dept-nav-icon" />,
     hasDropdown: true,
+    items: [
+      { label: "User Maintenance",
+        hasSideMenu: true,
+        sideItems: [
+        "User Profile",
+        "Change Password (Dept.)",
+        "New User Creation",
+        "User Reset Password",
+        "Audit Trail",
+        "User Hierarchy",
+        "Reset Registration Password",
+        "User Transfer",
+        "PO Activation/Deactivation",
+        "OS File Transfer"
+        ]
+      },
+      { label: "Portal",},	
+      {  label: "Initialization" },
+      {  label: "Technical" }
+    ]
   },
   { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
