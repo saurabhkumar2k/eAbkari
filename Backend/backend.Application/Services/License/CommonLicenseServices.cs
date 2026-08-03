@@ -63,7 +63,7 @@ namespace backend.Application.Services.License
                     RegId = (int)dto.RegId,
                     ApplicationIdNo = newappid,
                     ApplicationDate = DateTime.Now,
-                    FinYear = "2026-27",
+                    FinYear = "2026-2027",
                     ApplicationStatus = "P",
                     CatCode = dto.CatCode,
                     LicenseType = dto.OwnerType,

@@ -28,8 +28,6 @@ namespace backend.API.Licence.Controllers
             return Ok(new { AppId });
         }
 
-        [HttpPost]
-        [Route("GetSiteDetails")]
         [HttpGet("GetSiteDetails/{appId}")]
         public async Task<IActionResult> GetSiteDetails(string appId)
         {
@@ -40,6 +38,8 @@ namespace backend.API.Licence.Controllers
 
             return Ok(siteDetails);
         }
+
+
 
         [HttpGet]
         [Route("GetCategoryWiseQuestions")]

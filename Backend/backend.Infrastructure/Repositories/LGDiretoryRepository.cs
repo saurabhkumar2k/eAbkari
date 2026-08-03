@@ -35,7 +35,7 @@ namespace backend.Infrastructure.Repositories
              .ToListAsync();
         }
 
-    public async Task<IEnumerable<MstUserSQ>> GetQuestionsAsync()
+        public async Task<IEnumerable<MstUserSQ>> GetQuestionsAsync()
         {
             return await _context.MstUserSQ
                 .ToListAsync();
@@ -46,7 +46,9 @@ namespace backend.Infrastructure.Repositories
 
         public async Task<IEnumerable<MstPoliceStation>> GetPoliceStationsAsync(string district_code)
         {
-            return await _context.MstPoliceStation.ToListAsync();
+            return await _context.MstPoliceStation
+                                .Where(ps => ps.DistrictCode == district_code)
+                                .ToListAsync();
         }
 
 
