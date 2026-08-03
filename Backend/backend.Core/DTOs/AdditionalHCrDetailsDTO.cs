@@ -6,7 +6,7 @@ namespace backend.Core.DTOs
 {
     public class AdditionalHCRDetailsDto
     {
-         public string ApplicationIdNo { get; set; } = string.Empty;
+        public string ApplicationIdNo { get; set; } = string.Empty;
 
         public int? NumberOfClubMember { get; set; }
 
@@ -50,5 +50,6 @@ namespace backend.Core.DTOs
 
         public string? HourOfSale { get; set; }
     }
+
 
 }
