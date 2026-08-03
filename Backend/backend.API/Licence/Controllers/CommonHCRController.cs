@@ -94,5 +94,21 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("GetAditionalDetailsIDWise")]
+        public async Task<IActionResult> GetAditionalDetailsIDWise(string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.GetAditionalDetailsIDWise(applicationIdNo);
+
+            return Ok(result);
+        }
+
+
     }
 }

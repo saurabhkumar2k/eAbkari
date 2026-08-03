@@ -17,6 +17,8 @@ namespace backend.Core.Interfaces.License
         Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
 
         Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto);
-       
+        
+        Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo);
+
     }
 }

@@ -160,6 +160,7 @@ namespace backend.Infrastructure.Repositories.License
 
 
         public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+
         {
             try
             {
@@ -231,6 +232,38 @@ namespace backend.Infrastructure.Repositories.License
                 return "Error Occured";
             }
         }
+        public async Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo)
+        {
+            var record = await _context.AdditionalHCRDetails
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .Select(x => new AdditionalHCRDetailsDto
+                {
+                    ApplicationIdNo = x.ApplicationIdNo,
+                    NumberOfClubMember = x.NumberOfClubMember,
+                    NumberOfSeatCovers = x.NumberOfSeatCovers,
+                    NumberOfDispensingCounter = x.NumberOfDispensingCounter,
+                    AdditionalArea = x.AdditionalArea,
+                    NumberOfManagers = x.NumberOfManagers,
+                    NumberOfKitchenStaff = x.NumberOfKitchenStaff,
+                    NumberOfUtlityEmployees = x.NumberOfUtlityEmployees,
+                    TotalRoom = x.TotalRoom,
+                    StaffStrength = x.StaffStrength,
+                    StarCategory = x.StarCategory,
+                    ServiceCounter = x.ServiceCounter,
+                    TotalArea = x.TotalArea,
+                    EducationalInsDist = x.EducationalInsDist,
+                    ReligiousPlaceDist = x.ReligiousPlaceDist,
+                    IsSuitableGagdget = x.IsSuitableGagdget,
+                    IsLocalAuthorityApproved = x.IsLocalAuthorityApproved,
+                    IsIndicatingLiquor = x.IsIndicatingLiquor,
+                    NumberOfBarAttendent = x.NumberOfBarAttendent,
+                    StarCategoryRating = x.StarCategoryRating,
+                    RestaurantArea = x.RestaurantArea,
+                    HourOfSale = x.HourOfSale
+                })
+                .FirstOrDefaultAsync();
 
+            return record;
+        }
     }
 }

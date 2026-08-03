@@ -129,5 +129,17 @@ namespace backend.Application.Services.License
             }
         }
 
+        public async Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.GetAditionalDetailsIDWise(applicationIdNo);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }
