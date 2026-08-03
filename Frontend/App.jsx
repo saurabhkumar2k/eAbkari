@@ -18,6 +18,7 @@ import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
+import TransportBulkSpiritValidity from './src/components/Department/TransportBulkSpiritValidity.jsx';
 
 import {
   ChevronDownSvg,
@@ -68,6 +69,10 @@ export default function App() {
       case "BrandOwner":
       case "BRANDOWNER":
         window.location.href = "/brandowner";
+        break;
+
+      case "TRANSPORT : BULK SPIRIT":
+        window.location.href = "/TransportBulkSpiritValidity";
         break;
 
       case "IMPORT : BULK SPIRIT":
@@ -182,6 +187,21 @@ return (
         }
       />
 
+       {/* Transport Bulk Spirit */}
+      <Route
+        path="/TransportBulkSpiritValidity"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="TRANSPORT_BULK_SPIRIT_VALIDITY"
+              onNavigate={handleAdminNavigate}
+            />
+            <TransportBulkSpiritValidity/>
+          </div>
+        }
+      />
+
       {/* Import Permit */}
       <Route
         path="/importpermitpass"
@@ -283,7 +303,7 @@ const navItems = [
           "Brand Owner"
         ],
       },
-      {
+     {
         label: "Permit/Pass Validity",
         hasSideMenu: true,
         sideItems: [
