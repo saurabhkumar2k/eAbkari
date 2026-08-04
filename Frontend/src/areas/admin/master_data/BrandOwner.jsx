@@ -156,7 +156,7 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
     try {
       const [originsResponse, statesResponse] = await Promise.all([
         axios.get(`${API}/origins`),
-        axios.get(`${LG_API}/getState`)
+        axios.get(`${API}/states`)
       ]);
 
       setOriginOptions(buildOriginOptions(originsResponse.data));
@@ -233,7 +233,8 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
       try {
         const [originsResponse, statesResponse] = await Promise.all([
           axios.get(`${API}/origins`),
-          axios.get(`${LG_API}/getState`)
+          axios.get(`${API}/states`)
+          
         ]);
 
         loadedStates = toArray(statesResponse.data);
@@ -587,7 +588,7 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
             <div className="wizard-title-arrow" />
           </div>
         </div>
-
+{/* 
         <div className="wizard-section">
           <button onClick={onNavigateHome} className="wizard-back-button">
             <ChevronLeft className="wizard-back-icon" />
@@ -600,7 +601,7 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
           <p className="bottler-directory-description">
             Register and maintain master records of brand owners, breweries, and distilleries.
           </p>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSave} className="bottler-form">
           <div className="bottler-form-grid">

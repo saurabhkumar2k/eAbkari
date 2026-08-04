@@ -541,7 +541,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
            <div className="brand-container">
              
              {/* Navigation Breadcrumbs / Portal Header */}
-             <div className="brand-header">
+             <div className="dept-brand-header">
                <div className="brand-header-flex">
                  <div>
                    <div className="brand-subtitle">Master Registries</div>
@@ -622,13 +622,13 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
         </div>
         </div>
               
-        <div className="brand-card-body">
+        <div className="dept-card-body">
         <form onSubmit={handleSave} className="brand-form">
               {/* Form Grid */}
               <div className="form-grid">
                 
                 {/* 1. Category Dropdown */}
-                 <div className="form-group form-group-flex">
+                 <div className="dept-form-group form-group-flex">
                                   <label htmlFor="category" className="form-label form-label-flex">
                                     Liquor Category <span className="form-label-required">*</span>
                                   </label>
@@ -663,7 +663,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                  
 
                 {/* 2. Kind of Liquor (Responsive options based on category) */}                   
-                <div className="form-group form-group-flex">   
+                <div className="dept-form-group form-group-flex">   
                 <label htmlFor="kindOfLiquor" className="form-label form-label-flex"> Kind of Liquor {formData.category && 
                 <span className="text-rose-600 font-bold">*</span>}
                 </label>
@@ -705,7 +705,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                                 </div>
 
                 {/* 3. Liquor Type (Responsive options based on Kind of Liquor) */}
-                <div className="form-group form-group-flex">
+                <div className="dept-form-group form-group-flex">
                   <label htmlFor="liquorType" className="form-label form-label-flex">
                     Liquor Type {formData.kindOfLiquor &&  <span className="form-label-required">*</span>}
                   </label>
@@ -761,7 +761,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 
 
                 {/* 5. Brand Code */}
-               <div className="form-group form-group-flex">
+               <div className="dept-form-group form-group-flex">
                   <label htmlFor="brandCode" className="form-label form-label-flex">
                     Brand Code
                   </label>
@@ -783,7 +783,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 </div>
 
                 {/* 6. Quarts Measure */}
-                <div className="form-group form-group-flex">
+                <div className="dept-form-group form-group-flex">
                   <label htmlFor="measure" className="form-label form-label-flex">
                     Quarts / Measure Size
                   </label>

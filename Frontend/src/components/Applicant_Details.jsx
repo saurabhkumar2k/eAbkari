@@ -453,7 +453,7 @@ subDivisions?.forEach((s) =>
           maxLength={10}
           className="reg-input"
           value={applicant.landline || ""}
-          disabled
+         
         />
       </div>
     </div> */}

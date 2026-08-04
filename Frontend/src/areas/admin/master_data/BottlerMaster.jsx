@@ -431,7 +431,7 @@ export default function BottlerMaster({ onNavigateHome }) {
         </div>
 
         {/* Back and Title section */}
-        <div className="wizard-section">
+        {/* <div className="wizard-section">
           <button 
             onClick={onNavigateHome}
            className="wizard-back-button"
@@ -446,7 +446,7 @@ export default function BottlerMaster({ onNavigateHome }) {
           <p className="bottler-directory-description">
             Register and maintain master records of active domestic and foreign distillery bottlers.
           </p>
-        </div>
+        </div> */}
 
         {/* Form area in double-column layout matching picture fields */}
         <form onSubmit={handleSave} className="bottler-form">
