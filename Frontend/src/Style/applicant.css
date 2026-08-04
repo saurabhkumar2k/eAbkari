@@ -1976,21 +1976,21 @@ HCR License
 /* =========================
    FORM GRID
 ========================= */
-
+/* 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
-}
+} */
 
 .full-width {
   grid-column: 1 / -1;
 }
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
-}
+} */
 
 /* =========================
    INPUTS
@@ -2706,10 +2706,10 @@ HCR License
 }
 
 /* Form Layout */
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
-}
+} */
 
 /* Inputs */
 
@@ -3780,22 +3780,23 @@ HCR License
 
 /* Form Controls */
 .form-grid {
+
   display: grid;
-  grid-template-columns: repeat(2,1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
+} */
 
-.form-group label {
+/* .form-group label {
   font-size: 14px;
   font-weight: 600;
   color: #334155;
-}
+} */
 
 .form-control {
   height: 54px;
@@ -4625,9 +4626,9 @@ HCR License
   margin-bottom: 24px;
 }
 
-.form-grid {
+/* .form-grid {
   margin-top: 12px;
-}
+} */
 
 /* Section Header for Select License Category */
 .section-header {

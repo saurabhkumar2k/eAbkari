@@ -12,6 +12,7 @@
 @import "./applicanthead.css";
 @import "./header.css";
 @import "./Premise.css";
+@import "./ownertype.css";
 
 :root {
   --brand-blue: #012a52;

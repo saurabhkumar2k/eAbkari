@@ -18,6 +18,8 @@ import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
+import OwnerType from './src/areas/admin/director_data/OwnerType.jsx';
+import SelfDeclaration from './src/components/Department/SelfDeclaration.jsx';
 
 import {
   ChevronDownSvg,
@@ -53,8 +55,10 @@ export default function App() {
     console.log("Navigation:", view);
 
     switch (view?.trim()) {
-      case "Bottle":
-      case "BOTTLE":
+      case "Brand":
+      case "BRAND":
+      case "Liquor Brand":
+      case "LIQUOR BRAND":
         window.location.href = "/liquorbrand";
         break;
 
@@ -68,6 +72,16 @@ export default function App() {
       case "BrandOwner":
       case "BRANDOWNER":
         window.location.href = "/brandowner";
+        break;
+      
+      case "Owner Type":
+      case "OWNER TYPE":
+        window.location.href = "/ownertype";
+        break;
+      
+      case "Self Declaration":
+      case "SELF DECLARATION":
+        window.location.href = "/selfdeclaration";
         break;
 
       case "IMPORT : BULK SPIRIT":
@@ -197,6 +211,34 @@ return (
           </div>
         }
       />
+      <Route 
+      path="/ownertype"
+      element={
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader
+            navItems={navItems}
+            currentView="OWNER_TYPE"    
+        onNavigate={handleAdminNavigate}
+          />
+        <OwnerType/>
+        </div>
+      }
+      />
+      <Route 
+      path = "/selfdeclaration"
+      element={
+        <div className="admin-app-layout flex-grow flex flex-col">
+          <AdminHeader
+            navItems={navItems}
+            currentView="SELF_DECLARATION"
+            onNavigate={handleAdminNavigate}
+          />
+
+          <SelfDeclaration/>
+        </div>
+      }
+      />
+
       {/* Import Packaged */}
      <Route
         path="/importpackaged"  
@@ -268,7 +310,52 @@ return (
 const navItems = [
   { label: "Home", icon: <HomeSvg className="dept-nav-icon" /> },
 
-  { label: "Directory Data", icon: <FolderSvg className="dept-nav-icon" />, hasDropdown: true },
+  { label: "Directory Data", 
+    icon: <FolderSvg className="dept-nav-icon" />, 
+    hasDropdown: true,
+    items: [
+      { label: "Excise License",	
+        hasSideMenu: true,
+        sideItems: [
+          "Owner Type",
+          "License Title",
+          "Category",
+          "Sub Category"
+        ],
+      },
+      { label: "Site Location",
+        hasSideMenu: true,
+        sideItems: [
+          "State",
+          "District",
+          "Police Station",
+          "Sub Division",
+          "Municipal Corp.",
+          "Location Type"
+        ],
+      },
+      { label: "Excise Location",
+        hasSideMenu: true,
+        sideItems: [
+          "District"
+        ],
+      },
+      { label: "Vehicle",
+        hasSideMenu: true,
+        sideItems: [
+          "Vehicle Make",
+          "Vehicle Model"
+        ],
+      },	
+      { label: "Packaged FL" },
+      { label: "Others",
+        hasSideMenu: true,
+        sideItems: [
+          "Self Declaration"
+        ],
+      }
+      
+ ]},
 
   {
     label: "Master Data",
@@ -278,7 +365,7 @@ const navItems = [
       { label: "Packaged Liquor",
         hasSideMenu: true,
         sideItems: [
-          "Bottle",
+          "Brand",
           "Bottler",
           "Brand Owner"
         ],
@@ -298,7 +385,8 @@ const navItems = [
       { label: "Misc. Case" },
       { label: "Fee/Duty Rate" },
       { label: "Export : Packaged Liquor" },
-      { label: "Others" },
+      { label: "Others"
+      },
       { label: "M&TP" },
     ],
   },
