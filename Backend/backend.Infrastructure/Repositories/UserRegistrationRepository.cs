@@ -79,6 +79,16 @@ namespace backend.Infrastructure.Repositories
 
             return model.RegId;
         }
+
+
+        public async Task<bool> IsMobileExistsAsync(string mobile)
+        {
+            return await _context.MstUsReg
+                .AnyAsync(x => x.Mobile == mobile);
+        }
+
+
+
     }
 
 }

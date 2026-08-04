@@ -63,9 +63,9 @@ namespace backend.Core.Entities.Department
         [StringLength(1)]
         public string IsActive { get; set; }
 
-        public virtual DepartmentUsers DepartmentUsers { get; set; }
+        public virtual  DepartmentUsers? DepartmentUsers { get; set; }
 
-        public virtual MstRoles MstRoles { get; set; }
+        public virtual  MstRoles? MstRoles { get; set; }
     }
 
 }

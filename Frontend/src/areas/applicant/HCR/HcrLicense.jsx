@@ -1,4 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
+import ApplicantDetails from "../../../components/Applicant_Details";
+import DirectorsList from "../../../components/DirectorsList";
+import { createApplicant } from "../../../Model/Applicant";
+import DocumentUpload from "../../../components/DocumentsDetails";
+
 import {
   Building,
   Utensils,
@@ -30,6 +35,7 @@ import {
   Hash,
   Barcode,
   Search,
+  ShieldAlert,
   ChevronsUpDown,
   Tag as TagIcon
 } from "lucide-react";
@@ -37,127 +43,47 @@ import SelectLicenseType from "./SelectLicense";
 import L20 from "./L20";
 import HcrApplicantDetails from "./HcrApplicantDetail";
 
-// Option lists duplicate from LiquorBrandRegistration for ease of access inside modular feature folder
-const brandCodeOptions = [
-  { value: 'BC-EXC-DEL-001', label: 'BC-EXC-DEL-001 (Premium Class A)' },
-  { value: 'BC-EXC-DEL-002', label: 'BC-EXC-DEL-002 (Economy Plain)' },
-  { value: 'BC-EXC-DEL-003', label: 'BC-EXC-DEL-003 (Special Reserve)' },
-  { value: 'BC-EXC-DEL-004', label: 'BC-EXC-DEL-004 (Imported Malt)' },
-  { value: 'BC-EXC-DEL-005', label: 'BC-EXC-DEL-005 (Standard Mild)' }
-];
-
-const kindOfLiquorOptions = {
-  'Country Liquor': [
-    { value: 'Country Spirit (Plain)', label: 'Country Spirit (Plain)' },
-    { value: 'Country Spirit (Spiced)', label: 'Country Spirit (Spiced)' },
-    { value: 'Country Rum', label: 'Country Rum' }
-  ],
-  'Indian Liquor': [
-    { value: 'Indian Made Foreign Liquor (IMFL)', label: 'Indian Made Foreign Liquor (IMFL)' },
-    { value: 'Foreign Liquor (Imported FL)', label: 'Foreign Liquor (Imported FL)' },
-    { value: 'Beer (Domestic)', label: 'Beer (Domestic)' },
-    { value: 'Beer (Imported/Premium)', label: 'Beer (Imported/Premium)' },
-    { value: 'Wine (Domestic)', label: 'Wine (Domestic)' },
-    { value: 'Wine (Imported)', label: 'Wine (Imported)' }
-  ]
-};
-
-const liquorTypeOptions = {
-  'Country Spirit (Plain)': [
-    { value: 'Plain Spirit 36°', label: 'Plain Spirit 36° Proof' },
-    { value: 'Plain Spirit 40°', label: 'Plain Spirit 40° Proof' }
-  ],
-  'Country Spirit (Spiced)': [
-    { value: 'Spiced Spirit 50°', label: 'Spiced Spirit 50° Proof' },
-    { value: 'Masala Premium 50°', label: 'Masala Premium 50° Proof' }
-  ],
-  'Country Rum': [
-    { value: 'Country Rum Dark', label: 'Country Rum Dark' }
-  ],
-  'Indian Made Foreign Liquor (IMFL)': [
-    { value: 'Whisky', label: 'Whisky' },
-    { value: 'Rum', label: 'Rum' },
-    { value: 'Vodka', label: 'Vodka' },
-    { value: 'Gin', label: 'Gin' },
-    { value: 'Brandy', label: 'Brandy' }
-  ],
-  'Foreign Liquor (Imported FL)': [
-    { value: 'Single Malt Whisky', label: 'Single Malt Whisky' },
-    { value: 'Premium Scotch', label: 'Premium Scotch' },
-    { value: 'Bourbon Whisky', label: 'Bourbon Whisky' },
-    { value: 'Imported Gin', label: 'Imported Gin' },
-    { value: 'Imported Vodka', label: 'Imported Vodka' }
-  ],
-  'Beer (Domestic)': [
-    { value: 'Strong Beer', label: 'Strong Beer' },
-    { value: 'Mild Lager', label: 'Mild Lager' },
-    { value: 'Draft Beer', label: 'Draft Beer' }
-  ],
-  'Beer (Imported/Premium)': [
-    { value: 'Imported Premium IPA', label: 'Imported Premium IPA' },
-    { value: 'International Stout', label: 'International Stout' },
-    { value: 'Premium Pilsner', label: 'Premium Pilsner' }
-  ],
-  'Wine (Domestic)': [
-    { value: 'Shiraz Red Wine', label: 'Shiraz Red Wine' },
-    { value: 'Sauvignon White Wine', label: 'Sauvignon White Wine' },
-    { value: 'Sparkling Rose', label: 'Sparkling Rose' }
-  ],
-  'Wine (Imported)': [
-    { value: 'Imported Champagne', label: 'Imported Champagne' },
-    { value: 'Premium Bordeaux Red', label: 'Premium Bordeaux Red' },
-    { value: 'Chardonnay White', label: 'Chardonnay White' }
-  ]
-};
 
 export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootData = {} }) {
-  // We represent HCR Wizard Steps corresponding to user's requested screenshot layout:
-  // Step 3: Select License
-  // Step 4: Brand Registration (the previous Brand Register module)
-  // Step 5: Premise Details
-  // Step 6: Documents
-  // Step 7: Review & Submit (Submit completion)
+
   const [currentStep, setCurrentStep] = useState(3);
-
+  const [applicantForm, setApplicantForm] = useState(createApplicant());
+  const [applicantDistricts, setApplicantDistricts] = useState([]);
+  const [constitutionTypes, setConstitutionTypes] = useState([]);
+  const [applicationId, setApplicationId] = useState(null);
+  const [states, setStates] = useState([]);
+  const [subDivisions, setSubDivisions] = useState([]);
+  const [policeStations, setPoliceStations] = useState([]);
+  const [licenseGroups, setLicenseGroups] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState({});
   // Selected HCR license code
-  const [selectedLicenseId, setSelectedLicenseId] = useState("L-15");
+  const [selectedLicenseId, setSelectedLicenseId] = useState("");
+  const [ownerTypes, setOwnerTypes] = useState([]);
+  const [ownerType, setOwnerType] = useState("");
+  const [formErrors, setFormErrors] = useState({});
 
-  // HCR Applicant Profile State
-  const [applicantForm, setApplicantForm] = useState({
-    applicantName: "RAMESH KUMAR",
-    dob: "1985-05-15",
-    fatherName: "SURESH KUMAR",
-    occupation: "HOTELIER",
-    panNo: "ABCDE1234F",
-    address1: "74, KHAN MARKET",
-    address2: "NEAR METRO STATION",
-    state: "Delhi",
-    district: "South",
-    subDivision: "Saket",
-    pin: "110003",
-    mobile: "9876543210",
-    email: "ramesh.kumar@hotels.in",
-    landline: "",
-    fax: ""
-  });
+
+
+  console.log('hcrlic', applicantForm)
 
   // HCR Resturant Profile State
   const [siteForm, setSiteForm] = useState({
-    restaurantName: "",
-    address1: "",
-    address2: "",
-    state: "",
-    district: "",
-    subDivision: "",
-    policeStation: "",
-    pin: "",
-    constituency: "",
-    ward: "",
-    email: "",
-    mobile: "",
-    landline: "",
-    fax: "",
-    pan: ""
+    SiteName: "",
+    SiteAddress: "",
+    SiteAddress2: "",
+    State: "",
+    DistrictCode: "",
+    SubDivisionCode: "",
+    PoliceStationCode: "",
+    SitePin: "",
+    SiteAssembly: "",
+    SiteWard: "",
+    SiteEmail: "",
+    SiteMobile: "",
+    SiteLandline: "",
+    SiteFax: "",
+    SitePan: ""
   });
 
   const [AdditionalFrom, setAdditionalFrom] = useState({
@@ -170,18 +96,624 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     noOfKitchenStaff: "",
     utilityEmployees: "",
     noOfRestaurantAttendent: "",
-
     eduInsDistance: "Less than 100 Meters",
     religiousPlaceDistance: "Less than 100 Meters",
-
     hoursOfSale: ""
   });
 
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
-
   const [applicantErrors, setApplicantErrors] = useState({});
-  //const [siteFormErrors, setsiteFormErrors] = useState({});
-  //const [applicant, setApplicant] = useState(createApplicant());
+  const [siteFormErrors, setsiteFormErrors] = useState({});
+
+  // Applicant Submission validation helper
+  const handleApplicantSubmit = () => {
+    const errors = {};
+    if (!applicantForm.applicantName.trim()) {
+      errors.applicantName = "Applicant Name is required";
+    }
+    if (!applicantForm.dateOfBirth) {
+      errors.dateOfBirth = "Date of birth is required";
+    }
+    if (!applicantForm.occupation.trim()) {
+      errors.occupation = "Occupation is required";
+    }
+    if (!applicantForm.panNo.trim() || applicantForm.panNo.length !== 10) {
+      errors.panNo = "Valid 10-digit PAN number is required";
+    }
+    if (!applicantForm.addressLine1.trim()) {
+      errors.addressLine1 = "Address Line 1 is required";
+    }
+    if (!applicantForm.pin.trim() || applicantForm.pin.length !== 6) {
+      errors.pin = "Valid 6-digit pin code is required";
+    }
+    if (!applicantForm.mobile.trim() || applicantForm.mobile.length !== 10) {
+      errors.mobile = "Valid 10-digit mobile number is required";
+    }
+    if (!applicantForm.email.trim() || !applicantForm.email.includes("@")) {
+      errors.email = "Valid email address is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setApplicantErrors(errors);
+      triggerToast("Please verify required fields in primary applicant profile.", "error");
+      return false;
+    }
+    setApplicantErrors({});
+    return true;
+  };
+
+  const handelResturantDetails = () => {
+    const errors = {};
+    if (!siteForm.SiteName.trim()) {
+      errors.SiteName = "Resturant Name is required";
+    }
+    if (!siteForm.SiteAddress, trim()) {
+      errors.SiteAddress = "Resturant state is required";
+    }
+    if (!siteForm.State, trim()) {
+      errors.State = "Resturant state is required";
+    }
+    if (!siteForm.DistrictCode, trim()) {
+      errors.DistrictCode = "Resturant district is required";
+    }
+    if (!siteForm.SubDivisionCode, trim()) {
+      errors.SubDivisionCode = "Resturant subDivision is required";
+    }
+    if (!siteForm.PoliceStationCode, trim()) {
+      errors.PoliceStationCode = "Resturant policeStation is required";
+    }
+    if (!siteForm.SitePin, trim()) {
+      errors.SitePin = "Resturant pin is required";
+    }
+    if (!siteForm.SiteAssembly, trim()) {
+      errors.SiteAssembly = "Resturant constituency is required";
+    }
+    if (!siteForm.SiteEmail, trim()) {
+      errors.SiteEmail = "Resturant email is required";
+    }
+    if (!siteForm.SiteMobile, trim()) {
+      errors.SiteMobile = "Resturant mobile is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setsiteFormErrors(errors);
+      triggerToast("Please verify required fields in primary applicant profile.", "error");
+      return false;
+    }
+    setsiteFormErrors({});
+    return true;
+  }
+  console.log('s1', applicantForm)
+
+
+  const handleApplicantChange = (field, value) => {
+    debugger;
+    setApplicantForm((prev) => ({ ...prev, [field]: value }));
+
+    if (field === "state") {
+      fetchDistricts(value, "applicantForm");
+    }
+
+    if (field === "ConstitutionType") {
+      console.log("Selected:", value);
+    }
+
+  };
+
+  // Applicant
+  useEffect(() => {
+    if (applicantForm.StateUT) {
+      fetchDistricts(applicantForm.StateUT, "applicantForm");
+    }
+  }, [applicantForm.StateUT]);
+
+  const handleInputChange = (field, value) => {
+    // setFormData(prev => ({
+    //   ...prev,
+    //   [field]: value
+    // }));
+    // // Clear error
+    // if (formErrors[field]) {
+    //   setFormErrors(prev => ({
+    //     ...prev,
+    //     [field]: null
+    //   }));
+    // }
+    applicantForm[field] = value 
+  };
+  const handleDirectorChange = (i, f, v) => {
+    debugger;
+    const d = [...(applicantForm.directors || [])];
+    d[i][f] = v;
+    setApplicantForm({ ...applicantForm, directors: d });
+  };
+
+  const addRow = () =>
+    setApplicantForm((p) => ({
+      ...p,
+      directors: [...(p.directors || []), { name: "", panNo: "" }]
+    }));
+
+  const deleteRow = (i) =>
+    setApplicantForm((p) => ({
+      ...p,
+      directors: p.directors.filter((_, x) => x !== i)
+    }));
+
+
+  const handleFileChange = (key, file) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [key]: {
+        file,
+        previewUrl: URL.createObjectURL(file)
+      }
+    }));
+  };
+
+  const handleDeleteFile = (key) => {
+    setUploadedFiles((prev) => {
+      const updated = { ...prev };
+      delete updated[key];
+      return updated;
+    });
+  };
+
+  useEffect(() => {
+    if (currentStep !== 7 && currentStep !== 8) return;
+
+    const applicationIdNo = localStorage.getItem("applicationId");
+    if (!applicationIdNo || !selectedLicenseId) return;
+
+    const docStatus = currentStep === 7 ? "A" : "S";
+
+    fetch(
+      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseId}&docStatus=${docStatus}`
+    )
+      .then((r) => r.json())
+      .then((data) => setDocuments(data));
+
+  }, [currentStep, selectedLicenseId]);
+
+
+  const fetchConstitutionTypes = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5214/api/LGDiretory/ConstitutionType"
+      );
+
+      const data = await res.json();
+
+      console.log("Constitution Types:", data);
+
+      setConstitutionTypes(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchConstitutionTypes();
+  }, []);
+
+  useEffect(() => {
+    debugger;
+    fetch("http://localhost:5214/api/LGDiretory/getState")
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("API Response:", data);
+        console.log("API isArray:", Array.isArray(data));
+
+        setStates(data);
+      });
+  }, []);
+
+
+  const fetchDistricts = async (stateCode, type) => {
+    debugger;
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`
+    );
+
+    const data = await res.json();
+
+    if (type === "applicantForm") {
+      setApplicantDistricts(data);
+    }
+  };
+
+
+  const fetchApplicantSubdivisions = async (districtCode) => {
+    console.log("DistrictCode sent:", districtCode);
+
+    const res = await fetch(
+      `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+    );
+
+    const data = await res.json();
+
+    console.log("SubDivision API Response:", data);
+
+    setSubDivisions(data);
+  };
+
+
+  const fetchPoliceStations = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+      );
+
+      console.log("Status:", res.status);
+
+      const text = await res.text();
+      console.log("Response:", text);
+
+      if (!text) {
+        console.log("Empty response received");
+        return;
+      }
+
+      const data = JSON.parse(text);
+
+      setWarehousePoliceStations(data);
+    } catch (err) {
+      console.log(err); s
+    }
+  };
+
+
+  const fetchSubDivisions = async (districtCode) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+      );
+
+      const data = await res.json();
+
+      setWarehouseSubDivisions(data);
+
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+  const loadApplicantData = async (regId) => {
+    try {
+      debugger;
+      const response = await fetch(
+        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+      );
+
+      if (!response.ok) {
+        console.log("API Error:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+      debugger;
+      console.log(data);
+      console.log("Applicant State:", applicantForm);
+      console.log("ownerType prop =", ownerType);
+      console.log("catCode prop =", selectedLicenseId);
+      console.log("SubDivision from API:", data.subDivision);
+      // 👇 Pehle state ke basis par district list load karo
+      await fetchDistricts(data.stateUT, "applicantForm");
+      await fetchApplicantSubdivisions(data.district);
+
+      setApplicantForm((prev) => ({
+
+        ...prev,
+        // firstName: data.firstName,
+        // lastName: data.lastName,
+
+        applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
+        fatherHusbandName: data.fatherHusbandName,
+        dateOfBirth: data.dateOfBirth
+          ? data.dateOfBirth.split("T")[0]
+          : "",
+        panNo: data.panNo,
+        ConstitutionType: data.ConstitutionType,
+        occupation: data.occupation,
+        addressLine1: data.addressLine1,
+        addressLine2: data.addressLine2,
+        stateUT: data.stateUT,
+        district: data.district,
+        subDivision: String(data.subDivision).trim(),
+        pin: data.pin,
+        email: data.email,
+        mobile: data.mobile,
+        landline: data.landline,
+        ownerType: ownerType,   // prop se
+        catCode: selectedLicenseId        // prop se
+
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    const regId = localStorage.getItem("regId");
+
+    if (regId) {
+      loadApplicantData(regId);
+    }
+  }, []);
+
+  console.log('ueff', applicantForm)
+
+
+  useEffect(() => {
+    console.log("Calling OwnerType API...");
+
+    fetch("http://localhost:5214/api/LGDiretory/GetOwnerTypes")
+      .then((res) => {
+        console.log("Status:", res.status);
+        return res.json();
+      })
+      .then((data) => {
+        console.log("OwnerTypes:", data);
+        setOwnerTypes(data);
+      })
+      .catch((err) => console.error("API Error:", err));
+  }, []);
+
+
+  const fetchLicenseCategories = async () => {
+    debugger;
+    try {
+      const res = await fetch(
+        "http://localhost:5214/api/LiquorMaster/GetHCRLicenseeCategory"
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+
+      setLicenseGroups(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!applicantForm.ownerType) return;
+    setOwnerType(applicantForm.ownerType)
+    fetchLicenseCategories();
+  }, [applicantForm.ownerType]);
+
+  console.log("selectedLicenseId", selectedLicenseId)
+
+
+  const handleNextStep = async () => {
+    debugger;
+    try {
+
+      // STEP 1 SAVE
+      if (currentStep === 4 && !applicationId) {
+        debugger;
+
+        const payload = {
+          RegId: Number(localStorage.getItem("regId")),
+
+
+          ApplicantName: applicantForm.applicantName,
+          Dob: applicantForm.dateOfBirth,
+          FatherHusbandName: applicantForm.fatherHusbandName,
+          Occupation: applicantForm.occupation,
+          PanNo: applicantForm.panNo,
+
+          PresentAddress: applicantForm.addressLine1,
+          PermanentAddress: applicantForm.addressLine2,
+
+          StateUT: applicantForm.stateUT,
+          District: applicantForm.district,
+          subDivision: applicantForm.subDivision,
+          PIN: applicantForm.pin,
+
+          Email: applicantForm.email,
+          Mobile: applicantForm.mobile,
+          LandLine: applicantForm.landline ? applicantForm.landline : '',
+          CinNo: applicantForm.cinNo,
+          OwnerType: applicantForm.ownerType,
+          CatCode: applicantForm.catCode
+        };
+
+        console.log("payload", payload)
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/ApplyLicense",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const data = await response.json();
+        debugger;
+        setApplicationId(data.applicationId);
+
+        console.log("Generated Id:", data.applicationId);
+        localStorage.setItem("applicationId", data.applicationId);
+        localStorage.setItem("catCode", data.catCode);
+        alert(`Your Application Reference No. is ${data.applicationId}`);
+
+
+      }
+
+      if (currentStep === 5) {
+        debugger;
+
+        const payload = {
+          ...siteForm,
+          Regnumber: localStorage.getItem("regId"),
+          ApplicationIdNo: localStorage.getItem("applicationId"),
+          FinYear: "2026-2027",
+          CatCode: selectedLicenseId
+        };
+
+        console.log('payload', payload)
+
+        const response = await fetch(
+          "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("HCR License Resturant Response:", data);
+
+      }
+
+      if (currentStep === 6) {
+        debugger;
+
+        console.log("Directors:", applicantForm.directors);
+
+        applicantForm.undertakingAccept = false
+
+        // const [formData, setFormData] = useState({
+        //   // Step 6: Declaration
+        //   undertakingAccept: false,
+        //   // signatureName: "VISHAL DEVILAL JAISWAL",
+        //   // signingPlace: "New Delhi"
+        // });
+
+        applicantForm.directors.forEach((director, index) => {
+          debugger;
+          formData.append(
+            `CompanyPartnersDetails[${index}].PName`,
+            director.PName || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPerShare`,
+            director.PPerShare || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PPanNo`,
+            director.PPanNo || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].PExciseNominee`,
+            director.PExciseNominee || ""
+          );
+
+          formData.append(
+            `CompanyPartnersDetails[${index}].DINNo`,
+            director.DINNo || ""
+          );
+
+
+          // PAN File
+          if (director.panFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].PanFile`,
+              director.panFile
+            );
+          }
+          if (director.addressFile) {
+            formData.append(
+              `CompanyPartnersDetails[${index}].addressFile`,
+              director.addressFile
+            );
+          }
+        });
+
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await response.json();
+
+        console.log("Warehouse License Response:", data);
+      }
+
+      if (currentStep === 7) {
+        debugger;
+
+        const formData = new FormData();
+
+        formData.append(
+          "ApplicationIdNo",
+          localStorage.getItem("applicationId")
+        );
+
+        formData.append(
+          "MobileNo",
+          applicant.mobile
+        );
+
+        let index = 0;
+
+        documents.forEach((doc) => {
+          const uploaded = uploadedFiles[doc.docId];
+
+          if (uploaded?.file) {
+            formData.append(
+              `Documents[${index}].ApplicantSl`,
+              doc.applicantSl || 1
+            );
+
+            formData.append(
+              `Documents[${index}].DocId`,
+              doc.docId
+            );
+
+            formData.append(
+              `Documents[${index}].DocSl`,
+              doc.docSl || 1
+            );
+
+            formData.append(
+              `Documents[${index}].DocumentFile`,
+              uploaded.file
+            );
+
+            index++;
+          }
+        });
+
+        const response = await fetch(
+          "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await response.json();
+
+        console.log(data);
+      }
+
+    } catch (error) {
+      console.log(error);
+
+      if (showToast) {
+        showToast("Unable to save applicant data", "error");
+      }
+    }
+  };
+
 
 
   // L-20 Train Details State
@@ -203,24 +735,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   });
   const [trainErrors, setTrainErrors] = useState({});
 
-  // HCR Brand associated state
-  const [associatedBrands, setAssociatedBrands] = useState([]);
-
-  // Brand registration sub-form state
-  const [brandForm, setBrandForm] = useState({
-    category: 'Indian Liquor', // default selection
-    kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-    liquorType: 'Whisky',
-    oldBrandId: '',
-    brandCode: 'BC-EXC-DEL-001',
-    measure: '750 Ml',
-    brandName: ''
-  });
-
-  const [brandFormErrors, setBrandFormErrors] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortColumn, setSortColumn] = useState('brandName');
-  const [sortDirection, setSortDirection] = useState('asc');
 
   // Premises Details States (inside step 5 for non-L20)
   const [premisesForm, setPremisesForm] = useState({
@@ -234,12 +748,12 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [premisesErrors, setPremisesErrors] = useState({});
 
   // Documents State
-  const [documents, setDocuments] = useState({
-    fireNocDoc: null,
-    mcdTradeDoc: null,
-    vatRegDoc: null,
-    identityProof: null
-  });
+  // const [documents, setDocuments] = useState({
+  //   fireNocDoc: null,
+  //   mcdTradeDoc: null,
+  //   vatRegDoc: null,
+  //   identityProof: null
+  // });
 
   const [toast, setToast] = useState(null);
   const [successReceipt, setSuccessReceipt] = useState(null);
@@ -277,88 +791,15 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
       list.push({ num: nextNum++, id: "premises", label: "Additional Details", sub: "Additional Details" });
     }
 
-    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Uploads" });
+    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Applicant Documents" });
+    list.push({ num: nextNum++, id: "documents", label: "Documents", sub: "Site Documents" });
     list.push({ num: nextNum++, id: "review", label: "Review & Submit", sub: "Success Finalize" });
 
     return list;
   }, [selectedLicenseId]);
 
-  // Applicant Submission validation helper
-  const handleApplicantSubmit = () => {
-    const errors = {};
-    if (!applicantForm.applicantName.trim()) {
-      errors.applicantName = "Applicant Name is required";
-    }
-    if (!applicantForm.dob) {
-      errors.dob = "Date of birth is required";
-    }
-    if (!applicantForm.occupation.trim()) {
-      errors.occupation = "Occupation is required";
-    }
-    if (!applicantForm.panNo.trim() || applicantForm.panNo.length !== 10) {
-      errors.panNo = "Valid 10-digit PAN number is required";
-    }
-    if (!applicantForm.address1.trim()) {
-      errors.address1 = "Address Line 1 is required";
-    }
-    if (!applicantForm.pin.trim() || applicantForm.pin.length !== 6) {
-      errors.pin = "Valid 6-digit pin code is required";
-    }
-    if (!applicantForm.mobile.trim() || applicantForm.mobile.length !== 10) {
-      errors.mobile = "Valid 10-digit mobile number is required";
-    }
-    if (!applicantForm.email.trim() || !applicantForm.email.includes("@")) {
-      errors.email = "Valid email address is required";
-    }
 
-    if (Object.keys(errors).length > 0) {
-      setApplicantErrors(errors);
-      triggerToast("Please verify required fields in primary applicant profile.", "error");
-      return false;
-    }
-    setApplicantErrors({});
-    return true;
-  };
 
-  	const handelResturantDetails = () => {
-    const errors = {};
-    if (!siteForm.restaurantName.trim()) {
-      errors.restaurantName = "Resturant Name is required";
-    }
-      if (!siteForm.state,trim()){
-      errors.state = "Resturant state is required";
-    }
-      if (!siteForm.district,trim()){
-      errors.district = "Resturant district is required";
-    }
-      if (!siteForm.subDivision,trim()){
-      errors.subDivision = "Resturant subDivision is required";
-    }
-      if (!siteForm.policeStation,trim()){
-      errors.policeStation = "Resturant policeStation is required";
-    }
-      if (!siteForm.pin,trim()){
-      errors.pin = "Resturant pin is required";
-    }
-      if (!siteForm.constituency,trim()){
-      errors.constituency = "Resturant constituency is required";
-    }
-      if (!siteForm.email,trim()){
-      errors.email = "Resturant email is required";
-    }
-         if (!siteForm.mobile,trim()){
-      errors.mobile = "Resturant mobile is required";
-    }
-
-      if (Object.keys(errors).length > 0) {
-      setApplicantErrors(errors);
-      triggerToast("Please verify required fields in primary applicant profile.", "error");
-      return false;
-    }
-    setApplicantErrors({});
-    return true;
-  }
-  
   // Train Submission validation helper
   const handleTrainSubmit = () => {
     const errors = {};
@@ -399,151 +840,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     return true;
   };
 
-  // Brand association save helper
-  const handleSaveBrand = (e) => {
-    e.preventDefault();
-    const errors = {};
-
-    if (!brandForm.category) {
-      errors.category = 'Liquor category is required';
-    }
-    if (!brandForm.brandName || brandForm.brandName.trim() === '') {
-      errors.brandName = 'Brand name is blank';
-    }
-    if (!brandForm.kindOfLiquor) {
-      errors.kindOfLiquor = 'Kind of liquor is required';
-    }
-    if (!brandForm.liquorType) {
-      errors.liquorType = 'Liquor Specific Type is required';
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setBrandFormErrors(errors);
-      triggerToast('Please clarify form errors.', 'error');
-      return;
-    }
-
-    const newBrand = {
-      id: `BL-${Math.floor(1000 + Math.random() * 9000)}`,
-      brandName: brandForm.brandName.toUpperCase().trim(),
-      category: brandForm.category,
-      kindOfLiquor: brandForm.kindOfLiquor,
-      liquorType: brandForm.liquorType,
-      oldBrandId: brandForm.oldBrandId || 'N/A',
-      brandCode: brandForm.brandCode || 'BC-EXC-DEL-001',
-      measure: brandForm.measure || '750 Ml',
-      status: 'Associated'
-    };
-
-    setAssociatedBrands(prev => [newBrand, ...prev]);
-    setBrandForm({
-      category: 'Indian Liquor',
-      kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-      liquorType: 'Whisky',
-      oldBrandId: '',
-      brandCode: 'BC-EXC-DEL-001',
-      measure: '750 Ml',
-      brandName: ''
-    });
-    setBrandFormErrors({});
-    triggerToast('Brand successfully linked to HCR application registry!');
-  };
-
-  // Remove Brand item helper
-  const handleRemoveBrand = (id) => {
-    setAssociatedBrands(prev => prev.filter(b => b.id !== id));
-    triggerToast('Removed brand link.', 'info');
-  };
-
-  // Sorting logic for Step 4 list
-  const filteredBrands = useMemo(() => {
-    let result = [...associatedBrands];
-    if (searchTerm.trim() !== '') {
-      const q = searchTerm.toLowerCase();
-      result = result.filter(b =>
-        b.brandName.toLowerCase().includes(q) ||
-        b.id.toLowerCase().includes(q) ||
-        b.liquorType.toLowerCase().includes(q)
-      );
-    }
-    return result.sort((a, b) => {
-      let aVal = String(a[sortColumn]).toLowerCase();
-      let bVal = String(b[sortColumn]).toLowerCase();
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [associatedBrands, searchTerm, sortColumn, sortDirection]);
-
-  // Handle category change, reset children
-  const handleBrandCategoryChange = (e) => {
-    const cat = e.target.value;
-    const kindDefault = cat === 'Country Liquor' ? 'Country Spirit (Plain)' : 'Indian Made Foreign Liquor (IMFL)';
-    const typeDefault = cat === 'Country Liquor' ? 'Plain Spirit 36°' : 'Whisky';
-    setBrandForm(prev => ({
-      ...prev,
-      category: cat,
-      kindOfLiquor: kindDefault,
-      liquorType: typeDefault
-    }));
-  };
-
-  // Handle Kind change, reset children
-  const handleBrandKindChange = (e) => {
-    const kind = e.target.value;
-    const list = liquorTypeOptions[kind] || [];
-    const typeDefault = list.length > 0 ? list[0].value : '';
-    setBrandForm(prev => ({
-      ...prev,
-      kindOfLiquor: kind,
-      liquorType: typeDefault
-    }));
-  };
-
-  // Premises Submission & Validation
-  const handlePremisesSubmit = (e) => {
-    e.preventDefault();
-    const errors = {};
-    if (!premisesForm.premiseAddress.trim()) {
-      errors.premiseAddress = "Premises installation facility address cannot be blank";
-    }
-    if (!premisesForm.pincode.trim() || premisesForm.pincode.length !== 6) {
-      errors.pincode = "Valid 6-digit Delhi Pin code required";
-    }
-    if (!premisesForm.mcdTradeLicenseNum.trim()) {
-      errors.mcdTradeLicenseNum = "MCD Trade clearance certificate index ID required";
-    }
-    if (!premisesForm.declarationsChecked) {
-      errors.declarationsChecked = "You must acknowledge structural policy terms";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setPremisesErrors(errors);
-      triggerToast('Please tick the affirmations and verify entry inputs.', 'error');
-      return;
-    }
-
-    setPremisesErrors({});
-    setCurrentStep(7); // Proceed to Documents (Step 7)
-  };
-
-  // Final Action Filing
-  const handleFinalSubmit = () => {
-    // Submit creation success state
-    const applicationNo = `AP-HCR-${Math.floor(100000 + Math.random() * 900000)}`;
-    setSuccessReceipt({
-      applicationNo,
-      licenseId: selectedLicenseId,
-      fee: selectedLicenseId === "L-15" ? "₹ 3,25,000" : selectedLicenseId === "L-20" ? "₹ 2,00,000" : "₹ 2,80,000",
-      date: new Date().toLocaleDateString('en-IN'),
-      brandsCount: associatedBrands.length,
-      address: selectedLicenseId === "L-20" ? trainForm.tempStoreAddress : premisesForm.premiseAddress,
-      pincode: selectedLicenseId === "L-20" ? "110001" : premisesForm.pincode
-    });
-    setCurrentStep(8); // Proceed to Final Receipt (Step 8)
-    showToast("Excise Star Classified Restaurant Privilege Code application created!");
-  };
-
   return (
     <div className="brand-registration-page select-none text-slate-800">
 
@@ -575,7 +871,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
       <div className="hcr-container">
 
         {/* Dynamic Wizard Steps Indicator Row (32px vertical separation from header) */}
-        {currentStep < 8 && (
+        {currentStep < 9 && (
           <div className="hcr-dynamic">
             <div className="hcr-stepper">
               {/* Connector dots bar */}
@@ -627,11 +923,18 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
           {currentStep === 3 && (
             <div className="hcr-license-card">
               <SelectLicenseType
+                applicant={applicantForm}
+                onChange={handleApplicantChange}
+                licenseGroups={licenseGroups}
+                ownerTypes={ownerTypes}
                 selectedType={selectedLicenseId}
                 onSelectType={(id) => setSelectedLicenseId(id)}
                 onBack={onBackToDashboard}
                 onContinue={() => setCurrentStep(4)}
               />
+              {
+
+              }
 
 
               {/* Active select step continue helper */}
@@ -685,6 +988,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     type="button"
                     onClick={() => {
                       if (handleApplicantSubmit()) {
+                        handleNextStep();
                         setCurrentStep(5); // Go to next step (Step 5 which is Train Details for L-20, or Brand Registration for others)
                       }
                     }}
@@ -776,36 +1080,13 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <h3 className="hcr-brand-title font-sans"> Add Restaurant Details </h3>
                 </div>
 
-                <form onSubmit={handleSaveBrand} className="space-y-6">
+                <form onSubmit={handelResturantDetails} className="space-y-6">
                   <div className="form-grid">
 
                     {/* 1. Restaurant Name */}
 
-                    {/* <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Name</span>
-                        <span className="required">*</span>
-                      </label>
-                      <div className="reg-input-group">
-                        <div className="reg-input-icon">
-                          <User className="w-4 h-4 text-blue-600" />
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Enter Restaurant Name"
-                          className={`reg-input uppercase font-bold text-slate-800 ${errors.restaurantName ? "error" : ""
-                            }`}
-                          value={formData.restaurantName || ""}
-                          onChange={(e) => onChange("SiteForm", e.target.value.toUpperCase())}                         
-                        />
-                      </div>
-                      {errors.restaurantName && (
-                        <p className="error-text">{errors.restaurantName}</p>
-                      )}
-                    </div> */}
-
                     <div className="form-group full-width">
-                      <label className="hcr-form-label">                  
+                      <label className="hcr-form-label">
                         <span>Restaurant Name</span>
                         <span className="required">*</span>
                       </label>
@@ -813,11 +1094,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Enter Restaurant Name"
-                        value={siteForm.restaurantName}
+                        value={siteForm.SiteName}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            restaurantName: e.target.value
+                            SiteName: e.target.value
                           }))
                         }
                         className="input-box"
@@ -835,11 +1116,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <textarea
                         rows="2"
                         placeholder="Address Line 1"
-                        value={siteForm.address1}
+                        value={siteForm.SiteAddress}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            address1: e.target.value
+                            SiteAddress: e.target.value
                           }))
                         }
                         className="textarea-box"
@@ -855,11 +1136,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <textarea
                         rows="2"
                         placeholder="Address Line 2"
-                        value={siteForm.address2}
+                        value={siteForm.SiteAddress2}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            address2: e.target.value
+                            SiteAddress2: e.target.value
                           }))
                         }
                         className="textarea-box"
@@ -874,11 +1155,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       </label>
 
                       <select
-                        value={siteForm.state}
+                        value={siteForm.State}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            state: e.target.value
+                            State: e.target.value
                           }))
                         }
                         className="select-box"
@@ -898,26 +1179,26 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     <div className="form-group">
                       <label className="hcr-form-label">
                         <span>Restaurant District</span>
-                        <span className="required">*</span>                       
+                        <span className="required">*</span>
                       </label>
 
                       <select
-                        value={siteForm.district}
+                        value={siteForm.DistrictCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            district: e.target.value
+                            DistrictCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select District</option>
-                        <option value="South">South</option>
-                        <option value="New Delhi">New Delhi</option>
-                        <option value="Central">Central</option>
-                        <option value="North">North</option>
-                        <option value="East">East</option>
-                        <option value="West">West</option>
+                        <option value="00">Select District</option>
+                        <option value="01">South</option>
+                        <option value="02">New Delhi</option>
+                        <option value="03">Central</option>
+                        <option value="04">North</option>
+                        <option value="05">East</option>
+                        <option value="06">West</option>
 
                         {/* {districtOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -929,27 +1210,27 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 6. Sub Division */}
                     <div className="form-group">
-                      <label className="hcr-form-label">                      
+                      <label className="hcr-form-label">
                         <span>Restaurant Sub Division</span>
                         <span className="required">*</span>
                       </label>
 
                       <select
-                        value={siteForm.subDivision}
+                        value={siteForm.SubDivisionCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            subDivision: e.target.value
+                            SubDivisionCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Sub Division</option>
-                        <option value="Saket">Saket</option>
-                        <option value="Vasant Vihar">Vasant Vihar</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
-                        <option value="Kalkaji">Kalkaji</option>
+                        <option value="00">Select Sub Division</option>
+                        <option value="01">Saket</option>
+                        <option value="02">Vasant Vihar</option>
+                        <option value="03">Hauz Khas</option>
+                        <option value="04">Mehrauli</option>
+                        <option value="05">Kalkaji</option>
 
                         {/* {subDivisionOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -961,25 +1242,25 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 7. Police Station */}
                     <div className="form-group">
-                      <label className="hcr-form-label">                       
+                      <label className="hcr-form-label">
                         <span>Police Station</span>
                         <span className="required">*</span>
                       </label>
 
                       <select
-                        value={siteForm.policeStation}
+                        value={siteForm.PoliceStationCode}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            policeStation: e.target.value
+                            PoliceStationCode: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Police Station</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
-                        <option value="Kalkaji">Kalkaji</option>
+                        <option value="00">Select Police Station</option>
+                        <option value="01">Hauz Khas</option>
+                        <option value="02">Mehrauli</option>
+                        <option value="03">Kalkaji</option>
 
                         {/* {policeStationOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -992,7 +1273,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 8. Restaurant PIN */}
                     <div className="form-group">
-                      <label className="hcr-form-label">                       
+                      <label className="hcr-form-label">
                         <span>Restaurant PIN</span>
                         <span className="required">*</span>
                       </label>
@@ -1001,11 +1282,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         type="text"
                         maxLength={6}
                         placeholder="PIN Code"
-                        value={siteForm.pin}
+                        value={siteForm.SitePin}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            pin: e.target.value
+                            SitePin: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1016,24 +1297,23 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     {/* 9. Constituency Area */}
                     <div className="form-group">
                       <label className="hcr-form-label">
-                        Constituency Area
-                        <span>Restaurant Name</span>
+                        <span>Constituency Area</span>
                         <span className="required">*</span>
                       </label>
 
                       <select
-                        value={siteForm.constituency}
+                        value={siteForm.SiteAssembly}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            constituency: e.target.value
+                            SiteAssembly: e.target.value
                           }))
                         }
                         className="select-box"
                       >
-                        <option value="">Select Constituency</option>
-                        <option value="Hauz Khas">Hauz Khas</option>
-                        <option value="Mehrauli">Mehrauli</option>
+                        <option value="00">Select Constituency</option>
+                        <option value="01">Hauz Khas</option>
+                        <option value="02">Mehrauli</option>
 
                         {/* {constituencyOptions.map(item => (
                           <option key={item.value} value={item.value}>
@@ -1054,11 +1334,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Ward Name"
-                        value={siteForm.ward}
+                        value={siteForm.SiteWard}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            ward: e.target.value
+                            SiteWard: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1069,7 +1349,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     {/* 11. Restaurant Email */}
                     <div className="form-group">
                       <label className="hcr-form-label">
-                        Restaurant Email 
                         <span>Restaurant Email</span>
                         <span className="required">*</span>
                       </label>
@@ -1077,11 +1356,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="email"
                         placeholder="restaurant@email.com"
-                        value={siteForm.email}
+                        value={siteForm.SiteEmail}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            email: e.target.value
+                            SiteEmail: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1091,7 +1370,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                     {/* 12. Restaurant Mobile */}
                     <div className="form-group">
-                      <label className="hcr-form-label">                        
+                      <label className="hcr-form-label">
                         <span>Restaurant Mobile</span>
                         <span className="required">*</span>
                       </label>
@@ -1100,11 +1379,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         type="tel"
                         maxLength={10}
                         placeholder="9876543210"
-                        value={siteForm.mobile}
+                        value={siteForm.SiteMobile}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            mobile: e.target.value
+                            SiteMobile: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1121,11 +1400,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Landline Number"
-                        value={siteForm.landline}
+                        value={siteForm.SiteLandline}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            landline: e.target.value
+                            SiteLandline: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1140,11 +1419,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                       <input
                         type="text"
                         placeholder="Fax Number"
-                        value={siteForm.fax}
+                        value={siteForm.SiteFax}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            fax: e.target.value
+                            SiteFax: e.target.value
                           }))
                         }
                         className="input-box"
@@ -1162,11 +1441,11 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         maxLength={10}
                         placeholder="ABCDE1234F"
                         style={{ textTransform: "uppercase" }}
-                        value={siteForm.pan}
+                        value={siteForm.SitePan}
                         onChange={(e) =>
                           setSiteForm(prev => ({
                             ...prev,
-                            pan: e.target.value.toUpperCase()
+                            SitePan: e.target.value.toUpperCase()
                           }))
                         }
                         className="input-box"
@@ -1175,30 +1454,6 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
                   </div>
 
-
-                  {/* Add Brand Action Row */}
-                  {/* <div className="hcr-action-row">
-                    <button
-                      type="button"
-                      onClick={() => setBrandForm({
-                        category: 'Indian Liquor',
-                        kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
-                        liquorType: 'Whisky',
-                        oldBrandId: '',
-                        brandCode: 'BC-EXC-DEL-001',
-                        measure: '750 Ml',
-                        brandName: ''
-                      })}
-                      className="btn btn-secondary"
-                    >
-                      <RotateCcw className="hcr-action-icon" />
-                      <span>Reset Form</span>
-                    </button>
-                    <button type="submit" className="btn btn-primary hcr-reset-btn">
-                      <Plus className="w-4 h-4" />
-                      <span>Add Brand to Profile</span>
-                    </button>
-                  </div> */}
                 </form>
               </div>
 
@@ -1222,13 +1477,10 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <button
                     type="button"
                     onClick={() => {
-                      if (associatedBrands.length === 0) {
-                        triggerToast("Tip: Registering at least 1 brand is recommended, but you may proceed as draft.", "info");
-                      }
-
                       if (selectedLicenseId === "L-20") {
                         setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
                       } else {
+                        handleNextStep()
                         setCurrentStep(6); // Proceed to Premises Details (Step 6 for non-L20)
                       }
                     }}
@@ -1254,7 +1506,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 <p className="hcr-step-card-description font-sans">Specify layout dimensions, local authorities compliance.</p>
               </div>
 
-              <form onSubmit={handlePremisesSubmit} className="hcr-premises-form">
+              <form onSubmit={handelResturantDetails} className="hcr-premises-form">
                 <div className="hcr-form-grid">
                   {/* Restaurant Area */}
                   <div className="form-group">
@@ -1377,6 +1629,17 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         No
                       </label>
                     </div>
+                  </div>
+
+                  {/* Additional Area */}
+                  <div className="form-group full-width">
+                    <DirectorsList
+                      directors={applicantForm.directors || []}
+                      ConstitutionType={applicantForm.ConstitutionType}
+                      onChange={handleDirectorChange}
+                      onAdd={addRow}
+                      onDelete={deleteRow}
+                    />
                   </div>
 
                   {/* No. of Managers */}
@@ -1605,7 +1868,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                         </option>
                       ))}
                     </select>
-                  </div>           
+                  </div>
                 </div>
 
                 {/* Back and Continue */}
@@ -1614,7 +1877,8 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                     <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                     <span>Go Back</span>
                   </button>
-                  <button type="submit" className="btn btn-primary">
+
+                  <button type="button" onClick={() => setCurrentStep(7)} className="btn btn-primary">
                     <span>Proceed to Documents</span>
                     <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                   </button>
@@ -1625,160 +1889,84 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
           {/* STEP 7: DOCUMENTS & UPLOADS */}
           {currentStep === 7 && (
-            <div className="hcr-step-card animate-fade">
-
-              <div className="hcr-step-card-header">
-                <h3 className="hcr-step-card-title">
-                  <Upload className="hcr-step-card-icon" />
-                  <span className="font-sans">Step 7: Compliance Documentation Upload</span>
-                </h3>
-
-                <p className="hcr-step-card-description font-sans">
-                  Upload verified legislative documents to authorize the
-                  digital privilege card generation.
-                </p>
-              </div>
-
-              <div className="hcr-document-grid">
-                {/* Custom upload slots */}
-                {[
-                  { key: 'fireNocDoc', title: 'Fire NOC Certificate', desc: 'Authorized PDF file copy under DFS Delhi agency.' },
-                  { key: 'mcdTradeDoc', title: 'MCD Health & Trade License', desc: 'Valid municipal certificate scan copy.' },
-                  { key: 'vatRegDoc', title: 'VAT / GST Commercial registration', desc: 'Signed tax invoice or portal filing document.' },
-                  { key: 'identityProof', title: 'Director ID Proof copy', desc: 'Certified Aadhar / PAN / Board Resolution copy.' }
-                ].map(doc => {
-                  return (
-                    <div key={doc.key} className="hcr-document-card">
-                      <div>
-                        <h4 className="hcr-document-title">
-                          {doc.title}
-                        </h4>
-
-                        <p className="hcr-document-description">
-                          {doc.desc}
-                        </p>
-                      </div>
-
-                      {/* Fake upload simulation field */}
-                      <div className="hcr-upload-box">
-                        <span className="hcr-upload-filename">
-                          {documents[doc.key]
-                            ? documents[doc.key]
-                            : "No document uploaded yet"}
-                        </span>
-
-                        {documents[doc.key] ? (
-                          <button
-                            onClick={() =>
-                              setDocuments(prev => ({
-                                ...prev,
-                                [doc.key]: null
-                              }))
-                            }
-                            className="hcr-remove-upload-btn"
-                          >
-                            Remove
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setDocuments(prev => ({
-                                ...prev,
-                                [doc.key]: `excise_attachment_${doc.key}.pdf`
-                              }));
-                              triggerToast(`${doc.title} uploaded successfully!`);
-                            }}
-                            className="hcr-upload-btn"
-                          >
-                            Upload PDF
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Informative prompt */}
-              <div className="hcr-info-alert">
-                <Info className="hcr-info-alert-icon" />
-
-                <p className="hcr-info-alert-text">
-                  <strong>Verification SLA Notice:</strong> Uploading dummy or
-                  invalid documents will result in instant rejection of the
-                  applicant dossier by physical auditing officers. Review details
-                  before remitting file fees.
-                </p>
-              </div>
-
-              {/* Back and Submit Application actions */}
-              <div className="hcr-submit-actions">
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(6)}
-                  className="btn btn-secondary"
-                >
+            <div className="hcr-license-card">
+              <DocumentUpload
+                documents={documents}
+                uploadedFiles={uploadedFiles}
+                handleDocumentFileChange={handleFileChange}
+                handleDeleteFile={handleDeleteFile}
+              />
+              {/* Back and Continue */}
+              <div className="hcr-step-navigation">
+                <button type="button" onClick={() => setCurrentStep(6)} className="btn btn-secondary">
                   <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
                   <span>Go Back</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={handleFinalSubmit}
-                  className="btn btn-success"
-                >
-                  <FileCheck className="hcr-nav-icon hcr-nav-icon-right" />
-                  <span>Register & File Application</span>
+
+                <button type="button" onClick={() => setCurrentStep(8)} className="btn btn-primary">
+                  <span>Proceed to Documents</span>
+                  <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* STEP 8: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
-          {currentStep === 8 && successReceipt && (
-            <div className="hcr-success-card">
-              <div className="hcr-success-icon-wrapper">
-                <Check className="hcr-success-icon" />
-                <span className="hcr-success-ring"></span>
+          {/* STEP 8: DOCUMENTS & UPLOADS */}
+          {currentStep === 8 && (
+            <div className="hcr-license-card">
+              <DocumentUpload
+                documents={documents}
+                uploadedFiles={uploadedFiles}
+                handleDocumentFileChange={handleFileChange}
+                handleDeleteFile={handleDeleteFile}
+              />
+              {/* Back and Continue */}
+              <div className="hcr-step-navigation">
+                <button type="button" onClick={() => setCurrentStep(7)} className="btn btn-secondary">
+                  <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
+                  <span>Go Back</span>
+                </button>
+
+                <button type="button" onClick={() => setCurrentStep(9)} className="btn btn-primary">
+                  <span>Proceed to Documents</span>
+                  <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 9: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
+          {currentStep === 9 &&  (
+            <div className="animate-fade text-left space-y-6">
+              <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
+                <div className="text-xs font-semibold leading-relaxed">
+                  <p className="font-extrabold text-red-950 uppercase mb-1">Legal Notice & Liability under GNCTD Act</p>
+                  Any false claim or misleading declaration submitted will cause instant forfeiture of safety deposits of ₹ 5,00,000, summary rejection of licenses, and booking of criminal liabilities under Delhi Excise Act 2010.
+                </div>
               </div>
 
-              <div className="hcr-success-content">
-                <h2 className="hcr-success-title">
-                  HCR Application Filed Successfully
-                </h2>
-                <p className="hcr-success-description">
-                  Excise privilege dossier generated for category  <span className="hcr-success-license">{successReceipt.licenseId}</span>. Associated brand parameters have been logged and locked for municipal clearance.
-                </p>
-              </div>
+              <div className="p-5 border border-slate-200 rounded-xl space-y-4">
+                {/* Checkbox 1 */}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="acceptCheck"
+                    checked={applicantForm.undertakingAccept}
+                    onChange={(e) => handleInputChange("undertakingAccept", e.target.checked)}
+                    className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 focus:ring-2 border-slate-300 pointer-events-auto"
+                  />
+                  <label htmlFor="acceptCheck" className="text-xs text-slate-700 leading-relaxed font-semibold cursor-pointer">
 
-              {/* Structured Receipt Info */}
-              <div className="hcr-receipt-card">
-                <div className="hcr-receipt-header">
-                  <span className="hcr-receipt-title">Dossier Docket Record</span>
-                  <span className="hcr-receipt-status"> PENDING INSPECT </span>
-                </div>
+                    I declare the information provided above is true to the best of my knowledge and believe if any information particulars furnished in the application is subsequently found to be false, inaccurate or incomplete, the license, if any, granted on the basis of the application, will be liable to instant withdrawal without prejudice to other action then may be taken.
 
-                <div className="hcr-receipt-grid">
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> File Reference No </span>
-                    <span className="hcr-receipt-value hcr-receipt-reference"> {successReceipt.applicationNo} </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> License Class </span>
-                    <span className="hcr-receipt-value hcr-receipt-license">{successReceipt.licenseId} Premium Class </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> Filing Timestamp </span>
-                    <span className="hcr-receipt-value"> {successReceipt.date} </span>
-                  </div>
-                  <div className="hcr-receipt-item">
-                    <span className="hcr-receipt-label"> Linked Liquor Brand </span>
-                    <span className="hcr-receipt-value hcr-receipt-brand-count"> {successReceipt.brandsCount} Registered </span>
-                  </div>
-                  <div className="hcr-receipt-item hcr-receipt-item-full">
-                    <span className="hcr-receipt-label"> Structure Premise Address </span>
-                    <span className="hcr-receipt-address"> {successReceipt.address} (Pincode: {successReceipt.pincode}) </span>
-                  </div>
+
+                  </label>
                 </div>
+                {formErrors.undertakingAccept && (
+                  <span className="text-xs text-red-500 font-extrabold block">{formErrors.undertakingAccept}</span>
+                )}
+
               </div>
 
               {/* Success primary buttons */}
@@ -1791,7 +1979,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                 }}
                   className="hcr-btn-download"
                 >
-                  Download Docket Summary Receipt
+                  <span>{currentStep === 9 ? "File Joint Application" : "Download Docket Summary Receipt"}</span>
                 </button>
               </div>
             </div>

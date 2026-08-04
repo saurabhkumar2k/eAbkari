@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Interfaces;
+using backend.Core.Interfaces.Department;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories;
+using backend.Infrastructure.Repositories.Department;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -64,8 +66,10 @@ builder.Services.AddScoped<IMstLiquorBottlerRepository,MstLiquorBottlerRepositor
 builder.Services.AddScoped<IPermitPassValidityRepository,PermitPassValidityRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<ICommonHCRRepository, CommonHCRRepositories>();
+builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

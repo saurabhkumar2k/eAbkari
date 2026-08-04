@@ -1,5 +1,22 @@
 
 import React, { useState, useEffect } from "react";
+import html2pdf from "html2pdf.js";
+import { pdf } from "@react-pdf/renderer";
+
+//import ReportHeader from "../reports/ReportHeader";
+
+
+import ReportHeader from "../../components/Reports/ReportHeader";
+
+import {
+  PDFDownloadLink,
+  Document,
+  Page,
+  Text,
+  View,
+  Image,
+  StyleSheet
+} from "@react-pdf/renderer";
 import {
   Home,
   Award,
@@ -40,6 +57,11 @@ import {
 import NewLicense from "./NewLicense";
 import NewPermitWizard from "./Permit/NewPermit";
 import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
+
+import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
+
+//import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
+
 
 const menuItems = [
   { id: "Home", label: "Home", icon: Home },
@@ -371,6 +393,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const [search, setSearch] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
  const [profile, setProfile] = useState({});   // <-- Yahan
+ const [showPreview, setShowPreview] = useState(false);
+ const [applicant, setApplicant] = useState({});
+ const [applications, setApplications] = useState([]);
   // States for sub-level views
   const [renewedList, setRenewedList] = useState({});
   const [docs, setDocs] = useState({
@@ -388,6 +413,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
 console.log("Applicant:", profile);
 
+const handlePreview = () => {
+  setShowPreview(true);
+};
   // M&TP states
   const [mtpApplications, setMtpApplications] = useState([
     {
@@ -443,6 +471,9 @@ console.log("Applicant:", profile);
       remarks: "Physical stockroom verification in progress"
     }
   ]);
+
+
+
 
   const [newDealerData, setNewDealerData] = useState({
     firmName: "Vedic Craft Beverages LLP",
@@ -567,6 +598,88 @@ console.log("Applicant:", profile);
     showToast("License Transfer request submitted for departmental review!");
   };
 
+
+// const handleDownloadPdf = async (applicationIdNo) => {
+// debugger;
+//   try {
+
+
+// const element = document.getElementById("report-content");
+// console.log(element);
+
+
+//     const response = await fetch(
+//       `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+//     );
+
+//     if (!response.ok) {
+//       throw new Error("Failed to load report");
+//     }
+
+//     const data = await response.json();
+
+//     // Report data state me set karo
+//     setApplicant(data);
+
+//     // React ko render karne ka time do
+//     setTimeout(() => {
+
+//       const element = document.getElementById("report-content");
+
+//       html2pdf()
+//         .from(element)
+//         .save(`L1_Application_${applicationIdNo}.pdf`);
+
+//     }, 300);
+
+//   } catch (error) {
+//     console.error(error);
+//     alert("Unable to generate report.");
+//   }
+// };
+
+const handleDownloadPdf = async (applicationIdNo) => {
+  debugger;
+  try {
+    const response = await fetch(
+      `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch report data.");
+    }
+
+    const data = await response.json();
+console.log(applicant);
+
+    const blob = await pdf(
+      <ReportPrintL1 applicant={data} />
+    ).toBlob();
+console.log(data);
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Application_${data.applicationIdNo}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+  } catch (err) {
+    console.error(err);
+    alert("Unable to generate PDF.");
+  }
+};
+
+const handlePrint = () => {
+  window.print();
+};
+
+
+
 // useEffect(() => {
 //   const regId = localStorage.getItem("regId");
 
@@ -582,7 +695,7 @@ console.log("Applicant:", profile);
 //     });
 // }, []);
 
-
+console.log("Parent Applicant:", applicant);
 const regId = localStorage.getItem("regId");
 
 useEffect(() => {
@@ -592,6 +705,7 @@ useEffect(() => {
 }, []);
 
 const loadApplicantData = async (regId) => {
+  debugger;
   const response = await fetch(
     `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
   );
@@ -601,6 +715,94 @@ const loadApplicantData = async (regId) => {
   const data = await response.json();
   setProfile(data);
 };
+
+
+// useEffect(() => {
+
+//    fetch(`http://localhost:5214/api/Report/L1/${applicationId}`)
+
+//       .then(res=>res.json())
+
+//       .then(data=>{
+
+//           setReport(data);
+
+//       });
+
+// },[]);
+
+const getStatusText = (status) => {
+  switch (status) {
+    case "P":
+      return "Scrutiny in Progress";
+    case "A":
+      return "Approved";
+    case "R":
+      return "Rejected";
+    case "C":
+      return "Clarification Needed";
+    case "I":
+      return "Inspection";
+    case "G":
+      return "Granted";
+    default:
+      return "Pending";
+  }
+};
+
+const getCurrentStage = (status) => {
+  switch (status) {
+    case "P":
+      return 2; // Scrutiny
+
+    case "I":
+      return 3; // Inspection
+
+    case "G":
+    case "A":
+      return 4; // Grant / Approved
+
+    case "R":
+      return 2;
+
+    default:
+      return 1; // Submission
+  }
+};
+
+const getStatusClass = (status) => {
+  switch (status) {
+    case "A":
+      return "application-status application-status-success";
+
+    case "C":
+      return "application-status application-status-clarification";
+
+    case "R":
+      return "application-status application-status-rejected";
+
+    case "P":
+    default:
+      return "application-status";
+  }
+};
+
+
+
+
+
+
+
+
+useEffect(() => {
+  debugger;
+    fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
+        .then(res => res.json())
+        .then(data => setApplications(data));
+}, []);
+
+
+
 
 const filteredLicenses = licenses.filter(
     (item) =>
@@ -813,89 +1015,115 @@ const filteredLicenses = licenses.filter(
              </div>
                 
                 {/* App 1 */}
-                <div className="application-card">
-                  <div className="application-header">
-                  <div>
-                  <div className="application-id-row">
-                    <span className="application-id-label"> Application ID: </span>
-                    <span className="application-id-value"> AP-2026-88021 </span>
-                  </div>
-                  <h4 className="application-title"> L-1 Wholesale Vend of Indian Liquor </h4>
-                  <p className="application-date"> Submitted Date: 14/05/2026 </p>
-                  </div>
-                  <span className="application-status"> Scrutiny in Progress </span>
-                </div>
+               {applications.map((app) => (
+  <div className="application-card" key={app.applicationIdNo}>
 
-                  
-                  {/* Stepper progress */}
-                  <div className="application-progress-grid">
-                     {[
-                      { label: "Submission", active: true, done: true },
-                      { label: "Scrutiny", active: true, done: false },
-                      { label: "Inspection", active: false, done: false },
-                      { label: "Grant", active: false, done: false }
-                    ].map((st, idx) => (
-                    <div key={idx} className="progress-step">
-                      <div className={`progress-bar ${ st.done
-                      ? "progress-done"
-                      : st.active
-                      ? "progress-active"
-                      : "progress-pending"
-                    }`}>                       
-                    </div> 
-                    <p className="progress-label">{st.label}</p>
-                    </div>
-                  ))}
-                  </div>
- 
+    <div className="application-header">
 
-                {/* App 2 */}
-                <div className="application-card">
-                  <div className="application-header">
-                  <div>
-                  <div className="application-id-row">
-                  <span className="application-id-label"> Application ID: </span>
-                  <span className="application-id-value"> AP-2026-44012 </span>
-                  </div>
-                  <h4 className="application-title"> L-15 Hotel Bar License </h4>
-                  <p className="application-date"> Submitted Date: 02/04/2026 </p> 
-                  </div>
-                  <span className="application-status application-status-success"> Approved &amp; Disbursed </span>
-                  </div>
-                 
-                  <div className="application-progress-grid">
-                    {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, idx) => (
-                      <div key={idx} className="progress-step">
-                      <div className="progress-bar progress-done"></div>
-                      <p className="progress-label"> {label} </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+  <div>
 
-             {/* App 3 */}
-             <div className="application-card">
-              <div className="application-header">
-              <div>
-              <div className="application-id-row">
-              <span className="application-id-label"> Application ID: </span>
-              <span className="application-id-value"> AP-2026-30219</span>
-              </div>
-              <h4 className="application-title"> L-22 Club Bar License </h4>
-              <p className="application-date"> Submitted Date: 29/03/2026 </p>
-              </div>
-              <span className="application-status application-status-clarification"> Clarification Needed </span>
-              </div>
-                               
-                  <div className="officer-remarks-box">
-                    <ShieldAlert className="officer-remarks-icon" />
-                    <div>
-                      <span className="font-bold">Officer Remarks:</span> Fire Safety NOC is near-expiry. Please submit an updated certified copy in the 
-                      <span className="document-revalidate-link"onClick={() => setActiveTab("Document Revalidate")}>Document Revalidate</span> tab to resume scrutiny.
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <div className="application-id-row">
+      <span className="application-id-label">
+        Application ID:
+      </span>
+
+      <span className="application-id-value">
+        {app.applicationIdNo}
+      </span>
+    </div>
+
+    <h4 className="application-title">
+      {app.licenseName}
+    </h4>
+
+    <p className="application-date">
+      Submitted Date:{" "}
+      {new Date(app.applicationDate).toLocaleDateString("en-GB")}
+    </p>
+
+  </div>
+
+  <div className="flex items-center gap-3">
+
+    <span className={getStatusClass(app.status)}>
+      {getStatusText(app.status)}
+    </span>
+
+<button
+  onClick={() => handleDownloadPdf(app.applicationIdNo)}
+  className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-md text-xs font-medium"
+>
+  Download PDF
+</button>
+
+{/* <PDFDownloadLink
+  document={<ReportPrintL1 applicant={applicant} />}
+  fileName={`Application_${applicant?.applicationIdNo || "Report"}.pdf`}
+  style={{ textDecoration: "none" }}
+>
+  {({ loading }) => (
+    <button
+      className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg"
+      disabled={loading}
+    >
+      {loading ? "Generating..." : "Download PDF"}
+    </button>
+  )}
+</PDFDownloadLink> */}
+
+  </div>
+
+
+<div
+  style={{
+    position: "absolute",
+    left: "-9999px",
+    top: 0
+  }}
+>
+    <View fixed>
+   <ReportHeader applicant={applicant}/>
+</View>
+</div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+    
+
+   <div className="application-progress-grid">
+  {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
+    <div key={index} className="progress-step">
+
+      <div
+        className={`progress-bar ${
+          index + 1 < getCurrentStage(app.status)
+            ? "progress-done"
+            : index + 1 === getCurrentStage(app.status)
+            ? "progress-active"
+            : "progress-pending"
+        }`}
+      >
+      </div>
+
+      <p className="progress-label">
+        {label}
+      </p>
+
+    </div>
+  ))}
+</div>
+
+  </div>
+))}
             </div>
           )}
 

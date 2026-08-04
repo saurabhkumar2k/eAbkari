@@ -83,6 +83,28 @@ namespace backend.Infrastructure.Repositories
 
         }
 
+        public async Task<IEnumerable<MstLicenseeCategory>> GetHCRLicenseeCategoryAsync()
+        {
+
+            try
+            {
+
+
+                var HCRCodes = new[] { "03", "04", "05", "06", "07","30","31","32","33","34","35","36"};
+
+                return await _context.MstLicenseeCategory
+                    .Where(x => HCRCodes.Contains(x.LicenseeCatCode.Trim()))
+                    .ToListAsync();
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
+        }
+
 
 
 

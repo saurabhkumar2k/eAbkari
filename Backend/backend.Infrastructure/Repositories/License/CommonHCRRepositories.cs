@@ -15,83 +15,255 @@ namespace backend.Infrastructure.Repositories.License
             _context = context;
         }
 
-        public async Task<string> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto)
+        public async Task<string> SaveApplicantSiteDetails(LicenseSiteDetails dto)
+        {
+            _context.LicenseSiteDetails.Add(dto);
+            _context.ChangeTracker.Entries();
+            await _context.SaveChangesAsync();
+
+            return dto.ApplicationIdNo;
+
+        }
+
+        public async Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(string AppId)
+        {
+            var site = await _context.LicenseSiteDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+
+            if (site == null)
+            {
+                return null;
+            }
+
+            var dto = new LicenseSiteDetailsDto
+            {
+
+                Regnumber = site.Regnumber,
+                ApplicationIdNo = site.ApplicationIdNo,
+                FinYear = site.FinYear,
+                CatCode = site.CatCode,
+                SiteName = site.SiteName,
+                SiteAddress = site.SiteAddress,
+                SiteAddress2 = site.SiteAddress2,
+                State = site.State,
+                DistrictCode = site.DistrictCode,
+                SubDivisionCode = site.SubDivisionCode,
+                PoliceStationCode = site.PoliceStationCode,
+                SitePin = site.SitePin,
+                SiteAssembly = site.SiteAssembly,
+                SiteWard = site.SiteWard,
+                SiteEmail = site.SiteEmail,
+                SiteMobile = site.SiteMobile,
+                SiteLandline = site.SiteLandline,
+                SiteFax = site.SiteFax,
+                SitePan = site.SitePan
+            };
+
+            return dto;
+        }
+        public async Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode)
+        {
+
+            var Questions = await (
+                from cq in _context.CategoryWiseQuestions
+                join q in _context.QuestionDetails
+                on cq.QuestionId equals q.QuestionId
+                where cq.LicenseeCatCode == catCode
+                    && cq.ActiveStatus == "Y"
+                    && q.QuestionStatus == "Y"
+                select new CatCodeWiseQuestionDto
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionDesc = q.QuestionDesc
+                }).ToListAsync();
+
+            if (Questions == null)
+            {
+                return null;
+            }
+
+            return Questions;
+
+        }
+        public async Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            if (dto == null || dto.Count == 0)
+                return "No Data Found";
+
+            string appId = dto.First().ApplicationIdNo;
+
+            var oldRecords = _context.CategoryWiseAnswers
+                            .Where(x => x.ApplicationIdNo == appId);
+
+            _context.CategoryWiseAnswers.RemoveRange(oldRecords);
+
+            int slNo = 1;
+
+            foreach (var item in dto)
+            {
+                CategoryWiseAnswers obj = new CategoryWiseAnswers
+                {
+                    ApplicationIdNo = item.ApplicationIdNo,
+                    QuestionId = item.QuestionId,
+                    AnswerGiven = item.AnswerGiven,
+                    SlNo = slNo++
+                };
+
+                _context.CategoryWiseAnswers.Add(obj);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return "Saved Successfully";
+        }
+        public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
+        {
+            var answers = await _context.CategoryWiseAnswers
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .OrderBy(x => x.SlNo)
+                .Select(x => new GetApplicationAnswerResponseDto
+                {
+                    QuestionId = x.QuestionId,
+                    AnswerGiven = x.AnswerGiven
+                })
+                    .ToListAsync();
+
+            if (answers == null || answers.Count == 0)
+            {
+                return null;
+            }
+
+            return answers;
+        }
+
+        public async Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            if (dto == null || dto.Count == 0)
+                return "No Data Found";
+
+            foreach (var item in dto)
+            {
+                var answer = await _context.CategoryWiseAnswers
+                    .FirstOrDefaultAsync(x =>
+                        x.ApplicationIdNo == item.ApplicationIdNo &&
+                        x.QuestionId == item.QuestionId);
+
+                if (answer != null)
+                {
+                    answer.AnswerGiven = item.AnswerGiven;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return "Updated Successfully";
+        }
+
+
+        public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+
         {
             try
             {
-                //generate application id
-                string? lastappid = await _context.LicenseApplications
-                    .OrderByDescending(x => x.ApplicationIdNo)
-                    .Select(x => x.ApplicationIdNo)
-                    .FirstOrDefaultAsync();
+                var details = await _context.AdditionalHCRDetails
+                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
 
-                string newappid;
-
-                if (string.IsNullOrWhiteSpace(lastappid))
+                if (details == null)
                 {
-                    newappid = "REFL10001";
+                    details = new AdditionalHCRDetails
+                    {
+                        ApplicationIdNo = dto.ApplicationIdNo,
+                        NumberOfClubMember = dto.NumberOfClubMember,
+                        NumberOfSeatCovers = dto.NumberOfSeatCovers,
+                        NumberOfDispensingCounter = dto.NumberOfDispensingCounter,
+                        AdditionalArea = dto.AdditionalArea,
+                        NumberOfManagers = dto.NumberOfManagers,
+                        NumberOfKitchenStaff = dto.NumberOfKitchenStaff,
+                        NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees,
+                        TotalRoom = dto.TotalRoom,
+                        StaffStrength = dto.StaffStrength,
+                        StarCategory = dto.StarCategory,
+                        ServiceCounter = dto.ServiceCounter,
+                        TotalArea = dto.TotalArea,
+                        EducationalInsDist = dto.EducationalInsDist,
+                        ReligiousPlaceDist = dto.ReligiousPlaceDist,
+                        IsSuitableGagdget = dto.IsSuitableGagdget,
+                        IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved,
+                        IsIndicatingLiquor = dto.IsIndicatingLiquor,
+                        NumberOfBarAttendent = dto.NumberOfBarAttendent,
+                        StarCategoryRating = dto.StarCategoryRating,
+                        RestaurantArea = dto.RestaurantArea,
+                        HourOfSale = dto.HourOfSale
+                    };
+                    _context.AdditionalHCRDetails.Add(details);
                 }
                 else
                 {
-                    int number = int.Parse(lastappid.Substring(4));
-                    newappid = $"REFL{(number + 1):00000}";
+                    details.NumberOfClubMember = dto.NumberOfClubMember;
+                    details.NumberOfSeatCovers = dto.NumberOfSeatCovers;
+                    details.NumberOfDispensingCounter = dto.NumberOfDispensingCounter;
+                    details.AdditionalArea = dto.AdditionalArea;
+                    details.NumberOfManagers = dto.NumberOfManagers;
+                    details.NumberOfKitchenStaff = dto.NumberOfKitchenStaff;
+                    details.NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees;
+                    details.TotalRoom = dto.TotalRoom;
+                    details.StaffStrength = dto.StaffStrength;
+                    details.StarCategory = dto.StarCategory;
+                    details.ServiceCounter = dto.ServiceCounter;
+                    details.TotalArea = dto.TotalArea;
+                    details.EducationalInsDist = dto.EducationalInsDist;
+                    details.ReligiousPlaceDist = dto.ReligiousPlaceDist;
+                    details.IsSuitableGagdget = dto.IsSuitableGagdget;
+                    details.IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved;
+                    details.IsIndicatingLiquor = dto.IsIndicatingLiquor;
+                    details.NumberOfBarAttendent = dto.NumberOfBarAttendent;
+                    details.StarCategoryRating = dto.StarCategoryRating;
+                    details.RestaurantArea = dto.RestaurantArea;
+                    details.HourOfSale = dto.HourOfSale;
+
+
                 }
-
-                var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
-
-                var license = new LicenseApplicationUserDetails
-                {
-                    //ApplicationIdNo = newAppId,
-                    //RegNumber = user.RegId.ToString(),
-                    RegId = dto.RegId.ToString(),
-                    ApplicantName = dto.ApplicantName,
-                    //CompanyName = dto.CompanyName??"",
-                    DateOfBirth = dto.Dob,
-                    FatherHusbandName = dto.FatherHusbandName ?? "",
-                    Occupation = dto.Occupation ?? "",
-                    PanNo = dto.PanNo ?? "",
-                    PresentAddress = dto.PresentAddress ?? "",
-                    PermanentAddress = dto.PermanentAddress ?? "",
-                    StateUT = dto.StateUT ?? "",
-                    District = dto.District ?? "",
-                    SubDivision = dto.SubDivision ?? "",
-                    PIN = dto.PIN ?? "",
-                    //PoliceStation = dto.PoliceStation ??"",
-                    Email = dto.Email ?? "",
-                    Mobile = dto.Mobile ?? "",
-                    LandLine = dto.LandLine ?? "",
-                    //OprDate= DateTime.Now
-                    // Map other fields
-                };
-
-                var application = new LicenseApplication
-                {
-                    // IPAddress = HttpContent.Connection.RemoteIpAddress?.ToString(),
-                    RegId = (int)dto.RegId,
-                    ApplicationIdNo = newappid,
-                    ApplicationDate = DateTime.Now,
-                    FinYear = "2026-27",
-                    ApplicationStatus = "P",
-                    CatCode = dto.CatCode,
-                    LicenseType = dto.OwnerType,
-                    IsApplicationCompleted = "N",
-                    ApplicationFlag = "A",
-                    IsLicenseGenerated = "N",
-                    IsApproveYN = "N"
-                };
-
-                _context.LicenseApplications.Add(application);
-
-                _context.LicenseApplicationUserDetails.Add(license);
-                _context.ChangeTracker.Entries();
                 await _context.SaveChangesAsync();
 
-                return application.ApplicationIdNo;
+                return "Save/Updated Successfully";
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return ex.Message;
+                return "Error Occured";
             }
+        }
+        public async Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo)
+        {
+            var record = await _context.AdditionalHCRDetails
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .Select(x => new AdditionalHCRDetailsDto
+                {
+                    ApplicationIdNo = x.ApplicationIdNo,
+                    NumberOfClubMember = x.NumberOfClubMember,
+                    NumberOfSeatCovers = x.NumberOfSeatCovers,
+                    NumberOfDispensingCounter = x.NumberOfDispensingCounter,
+                    AdditionalArea = x.AdditionalArea,
+                    NumberOfManagers = x.NumberOfManagers,
+                    NumberOfKitchenStaff = x.NumberOfKitchenStaff,
+                    NumberOfUtlityEmployees = x.NumberOfUtlityEmployees,
+                    TotalRoom = x.TotalRoom,
+                    StaffStrength = x.StaffStrength,
+                    StarCategory = x.StarCategory,
+                    ServiceCounter = x.ServiceCounter,
+                    TotalArea = x.TotalArea,
+                    EducationalInsDist = x.EducationalInsDist,
+                    ReligiousPlaceDist = x.ReligiousPlaceDist,
+                    IsSuitableGagdget = x.IsSuitableGagdget,
+                    IsLocalAuthorityApproved = x.IsLocalAuthorityApproved,
+                    IsIndicatingLiquor = x.IsIndicatingLiquor,
+                    NumberOfBarAttendent = x.NumberOfBarAttendent,
+                    StarCategoryRating = x.StarCategoryRating,
+                    RestaurantArea = x.RestaurantArea,
+                    HourOfSale = x.HourOfSale
+                })
+                .FirstOrDefaultAsync();
+
+            return record;
         }
     }
 }

@@ -3,6 +3,7 @@ using backend.Core.Interfaces;
 using backend.Infrastructure.Repositories;
 using backend.Core.Entities;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.API.Controllers
 {
@@ -82,8 +83,9 @@ using (var stream = new FileStream(filePath, FileMode.Create))
     await photo.CopyToAsync(stream);
 }
 
+                model.Photo = fileName;
 // Save relative path in database
-model.Photo = Path.Combine("Photo_", fileName);
+//model.Photo = Path.Combine("Photo_", fileName);
                 
     }
 
@@ -101,13 +103,18 @@ model.Photo = Path.Combine("Photo_", fileName);
 }
 
 
+        [HttpGet("check-mobile/{mobile}")]
+        public async Task<IActionResult> CheckMobile(string mobile)
+        {
+            bool exists = await _repository.IsMobileExistsAsync(mobile);
+            return Ok(new { exists });
+        }
 
 
 
 
 
-
-}
+    }
 
 
 

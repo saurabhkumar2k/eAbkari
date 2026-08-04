@@ -13,7 +13,7 @@ public interface IUserRegistrationRepository
 
     Task<long> CreateAsync(MstUsReg model);
 
-
+        Task<bool> IsMobileExistsAsync(string mobile);
 
     }
 }

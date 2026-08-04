@@ -1,5 +1,5 @@
+using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
-using backend.Core.Interfaces.License;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.API.Licence.Controllers
@@ -8,24 +8,107 @@ namespace backend.API.Licence.Controllers
     [ApiController]
     public class CommonHCRController : ControllerBase
     {
-        private readonly ICommonHCRRepository _HCRrepository;    
-        public CommonHCRController(ICommonHCRRepository repository)
+        private readonly ICommonHCRServices _HCRservice;
+        public CommonHCRController(ICommonHCRServices repository)
         {
-            _HCRrepository = repository;
+            _HCRservice = repository;
         }
 
         [HttpPost]
-        [Route("ApplyLicense")]
-        public async Task<IActionResult> CreateApplyLicense(LicenseApplicationUserDetailsDto dto)
+        [Route("SaveSiteDetails")]
+        public async Task<IActionResult> SaveApplicantSiteDetails(LicenseSiteDetailsDto dto)
         {
             if (!ModelState.IsValid)
-            {          
+            {
                 return BadRequest(ModelState);
             }
 
-            var user = await _HCRrepository.SaveApplicantDetails(dto);
+            var AppId = await _HCRservice.SaveApplicantSiteDetails(dto);
 
-            return Ok(user);
+            return Ok(new { AppId });
         }
+
+        [HttpPost]
+        [Route("GetSiteDetails")]
+        [HttpGet("GetSiteDetails/{appId}")]
+        public async Task<IActionResult> GetSiteDetails(string appId)
+        {
+            var siteDetails = await _HCRservice.GetSiteDetails(appId);
+
+            if (siteDetails == null)
+                return NotFound();
+
+            return Ok(siteDetails);
+        }
+
+        [HttpGet]
+        [Route("GetCategoryWiseQuestions")]
+        public async Task<IActionResult> GetCategoryWiseQuestions(string catCode)
+        {
+            var result = await _HCRservice.GetCategoryWiseQuestions(catCode);
+
+            if (result == null || result.Count == 0)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("SaveCategoryWiseAnswers")]
+        public async Task<IActionResult> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _HCRservice.SaveCategoryWiseAnswers(dto);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetAppIdWiseAnswers")]
+        public async Task<IActionResult> GetAppIdWiseAnswers(GetApplicationAnswerRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                return BadRequest("ApplicationIdNo is required.");
+
+            var result = await _HCRservice.GetAppIdWiseAnswers(dto.ApplicationIdNo);
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("UpdateCategoryWiseAnswers")]
+        public async Task<IActionResult> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
+        {
+            var result = await _HCRservice.UpdateCategoryWiseAnswers(dto);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("SaveAndUpdateAdditionalHCRDetails")]
+        public async Task<IActionResult> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        {
+            var result = await _HCRservice.SaveAndUpdateAdditionalHCRDetails(dto);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetAditionalDetailsIDWise")]
+        public async Task<IActionResult> GetAditionalDetailsIDWise(string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.GetAditionalDetailsIDWise(applicationIdNo);
+
+            return Ok(result);
+        }
+
+
     }
 }

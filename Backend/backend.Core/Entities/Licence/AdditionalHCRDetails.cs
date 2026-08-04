@@ -70,5 +70,8 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(50)]
         public string? RestaurantArea { get; set; }
+
+        [StringLength(1)]
+        public string? HourOfSale {get; set;}
     }
 }
