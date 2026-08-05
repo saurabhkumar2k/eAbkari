@@ -23,8 +23,11 @@ namespace backend.API.Licence.Controllers
             }
 
             var user = await _LicenseService.SaveApplicantDetails(dto);
-
-            return Ok(user);
+            return Ok(new
+                    {
+                        applicationId = user,
+                        message = "Application Saved Successfully"
+                    });
         }
 
         [HttpGet("GetApplicantDetails/{AppId}")]

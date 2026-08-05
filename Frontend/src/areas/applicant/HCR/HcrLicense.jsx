@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import ApplicantDetails from "../../../components/Applicant_Details";
 import DirectorsList from "../../../components/DirectorsList";
 import { createApplicant } from "../../../Model/Applicant";
+import { createHCRApplicant } from "../../../Model/HCRApplicant";
 import DocumentUpload from "../../../components/DocumentsDetails";
+import RestaurantDetails from "../../../components/RestaurantDetails";
 
 import {
   Building,
@@ -48,7 +50,12 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
   const [currentStep, setCurrentStep] = useState(3);
   const [applicantForm, setApplicantForm] = useState(createApplicant());
+  const [siteForm, setSiteForm] = useState(createHCRApplicant());
   const [applicantDistricts, setApplicantDistricts] = useState([]);
+  const [RestaurantDistricts, setRestaurantDistricts] = useState([]);
+  const [RestaurantSubDivisions, setWarehouseSubDivisions] = useState([]);
+  const [RestaurantPoliceStations, setWarehousePoliceStations] = useState([]);
+  const [RestaurantConstituencys, seRestaurantConstituencys] = useState([]);
   const [constitutionTypes, setConstitutionTypes] = useState([]);
   const [applicationId, setApplicationId] = useState(null);
   const [states, setStates] = useState([]);
@@ -68,23 +75,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   console.log('hcrlic', applicantForm)
 
   // HCR Resturant Profile State
-  const [siteForm, setSiteForm] = useState({
-    SiteName: "",
-    SiteAddress: "",
-    SiteAddress2: "",
-    State: "",
-    DistrictCode: "",
-    SubDivisionCode: "",
-    PoliceStationCode: "",
-    SitePin: "",
-    SiteAssembly: "",
-    SiteWard: "",
-    SiteEmail: "",
-    SiteMobile: "",
-    SiteLandline: "",
-    SiteFax: "",
-    SitePan: ""
-  });
+
 
   const [AdditionalFrom, setAdditionalFrom] = useState({
     ward: "",
@@ -104,6 +95,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
   const [applicantErrors, setApplicantErrors] = useState({});
   const [siteFormErrors, setsiteFormErrors] = useState({});
+
 
   // Applicant Submission validation helper
   const handleApplicantSubmit = () => {
@@ -143,39 +135,39 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   };
 
   const handelResturantDetails = () => {
+    debugger;
     const errors = {};
     if (!siteForm.SiteName.trim()) {
       errors.SiteName = "Resturant Name is required";
     }
-    if (!siteForm.SiteAddress, trim()) {
+    if (!siteForm.SiteAddress.trim()) {
       errors.SiteAddress = "Resturant state is required";
     }
-    if (!siteForm.State, trim()) {
+    if (!siteForm.State.trim()) {
       errors.State = "Resturant state is required";
     }
-    if (!siteForm.DistrictCode, trim()) {
+    if (!siteForm.DistrictCode.trim()) {
       errors.DistrictCode = "Resturant district is required";
     }
-    if (!siteForm.SubDivisionCode, trim()) {
+    if (!siteForm.SubDivisionCode.trim()) {
       errors.SubDivisionCode = "Resturant subDivision is required";
     }
-    if (!siteForm.PoliceStationCode, trim()) {
+    if (!siteForm.PoliceStationCode.trim()) {
       errors.PoliceStationCode = "Resturant policeStation is required";
     }
-    if (!siteForm.SitePin, trim()) {
+    if (!siteForm.SitePin.trim()) {
       errors.SitePin = "Resturant pin is required";
     }
-    if (!siteForm.SiteAssembly, trim()) {
-      errors.SiteAssembly = "Resturant constituency is required";
-    }
-    if (!siteForm.SiteEmail, trim()) {
+
+    if (!siteForm.SiteEmail.trim()) {
       errors.SiteEmail = "Resturant email is required";
     }
-    if (!siteForm.SiteMobile, trim()) {
+    if (!siteForm.SiteMobile.trim()) {
       errors.SiteMobile = "Resturant mobile is required";
     }
 
     if (Object.keys(errors).length > 0) {
+      console.log("errors",errors)
       setsiteFormErrors(errors);
       triggerToast("Please verify required fields in primary applicant profile.", "error");
       return false;
@@ -183,20 +175,39 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     setsiteFormErrors({});
     return true;
   }
-  console.log('s1', applicantForm)
-
+  console.log('s1', siteForm)
 
   const handleApplicantChange = (field, value) => {
+     setApplicantForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  const handleResturantChange = (field, value) => {
     debugger;
-    setApplicantForm((prev) => ({ ...prev, [field]: value }));
+    setSiteForm((prev) => ({ ...prev, [field]: value }));
+   
 
     if (field === "state") {
-      fetchDistricts(value, "applicantForm");
+      fetchDistricts(value, "siteForm");
     }
 
-    if (field === "ConstitutionType") {
-      console.log("Selected:", value);
+    // if (field === "RestaurantState") {
+    //   fetchDistricts(value, "siteForm");
+    // }
+
+
+    if (field === "DistrictCode") {
+      fetchSubDivisions(value);   // 👈 Add this
+      fetchPoliceStations(value);
     }
+
+    // if (field === "WarehouseSubDivision") {
+    //   fetchPoliceStations(siteForm.RestaurantDistrict);   // 👈 Add this
+
+    // }
+
+    // if (field === "ConstitutionType") {
+    //   console.log("Selected:", value);
+    // }
 
   };
 
@@ -206,6 +217,19 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
       fetchDistricts(applicantForm.StateUT, "applicantForm");
     }
   }, [applicantForm.StateUT]);
+
+  useEffect(() => {
+    if (siteForm.State) {
+      fetchDistricts(siteForm.State, "Restaurant");
+    }
+  }, [siteForm.State]);
+
+  useEffect(() => {
+    
+    if (siteForm.DistrictCode) {
+      fetchPoliceStations(siteForm.DistrictCode, "Restaurant");
+    }
+  }, [siteForm.DistrictCode]);
 
   const handleInputChange = (field, value) => {
     // setFormData(prev => ({
@@ -219,7 +243,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     //     [field]: null
     //   }));
     // }
-    applicantForm[field] = value 
+    applicantForm[field] = value
   };
   const handleDirectorChange = (i, f, v) => {
     debugger;
@@ -296,6 +320,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
     fetchConstitutionTypes();
   }, []);
 
+
   useEffect(() => {
     debugger;
     fetch("http://localhost:5214/api/LGDiretory/getState")
@@ -319,7 +344,14 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
     if (type === "applicantForm") {
       setApplicantDistricts(data);
+    } 
+    else if  (type === "siteForm") {
+      setRestaurantDistricts(data);
     }
+    else {
+      setWarehouseDistricts(data);
+    }
+    console.log('disdata', data)
   };
 
 
@@ -340,6 +372,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
   const fetchPoliceStations = async (districtCode) => {
     try {
+      debugger;
       const res = await fetch(
         `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
       );
@@ -492,10 +525,10 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
   const handleNextStep = async () => {
     debugger;
     try {
-
+        
       // STEP 1 SAVE
       if (currentStep === 4 && !applicationId) {
-        debugger;
+   
 
         const payload = {
           RegId: Number(localStorage.getItem("regId")),
@@ -525,7 +558,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
         console.log("payload", payload)
         const response = await fetch(
-          "http://localhost:5214/api/LicenseeCategories/ApplyLicense",
+          "http://localhost:5214/api/CommonLicense/ApplyLicense",
           {
             method: "POST",
             headers: {
@@ -707,6 +740,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
 
     } catch (error) {
       console.log(error);
+      alert(error)
 
       if (showToast) {
         showToast("Unable to save applicant data", "error");
@@ -1054,420 +1088,21 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
           )}
 
           {/* DYNAMIC PACKAGED LIQUOR BRAND REGISTRATION / ASSOCIATION */}
-          {((currentStep === 5 && selectedLicenseId !== "L-20") || (currentStep === 6 && selectedLicenseId === "L-20")) && (
-            <div className="hcr-form-section">
-
-              {/* Section Header */}
-              <div className="hcr-step-header">
-                <div>
-                  <h2 className="hcr-step-title font-sans">
-                    {/* Step {selectedLicenseId === "L-20" ? 6 : 5}: Packaged Liquor Brand Association */}
-                    Step {selectedLicenseId === "L-20" ? 6 : 5}: Restaurant Details
-                  </h2>
-                  <p className="hcr-step-description font-sans">
-                    Restaurant Details associated with this HCR License profile.
-                  </p>
-                </div>
-                <div className="hcr-license-badge">
-                  Licence Chosen: <span className="hcr-license-badge-value">{selectedLicenseId}</span>
-                </div>
-              </div>
-
-              {/* Glassmorphism Input Form Card */}
-              <div className="brand-card">
-                <div className="hcr-brand-header">
-                  <TagIcon className="hcr-brand-icon" />
-                  <h3 className="hcr-brand-title font-sans"> Add Restaurant Details </h3>
-                </div>
-
-                <form onSubmit={handelResturantDetails} className="space-y-6">
-                  <div className="form-grid">
-
-                    {/* 1. Restaurant Name */}
-
-                    <div className="form-group full-width">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Name</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Enter Restaurant Name"
-                        value={siteForm.SiteName}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteName: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-
-                    {/* 2. Restaurant Address 1 */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Address 1</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <textarea
-                        rows="2"
-                        placeholder="Address Line 1"
-                        value={siteForm.SiteAddress}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteAddress: e.target.value
-                          }))
-                        }
-                        className="textarea-box"
-                      />
-                    </div>
-
-                    {/* 3. Restaurant Address 2 */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant Address 2
-                      </label>
-
-                      <textarea
-                        rows="2"
-                        placeholder="Address Line 2"
-                        value={siteForm.SiteAddress2}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteAddress2: e.target.value
-                          }))
-                        }
-                        className="textarea-box"
-                      />
-                    </div>
-
-                    {/* 4. Restaurant State */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant State</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={siteForm.State}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            State: e.target.value
-                          }))
-                        }
-                        className="select-box"
-                      >
-                        <option value="">Select State</option>
-                        <option value="Delhi">Delhi</option>
-                        {/* {stateOptions.map(state => (
-                          <option key={state.value} value={state.value}>
-                            {state.label}
-                          </option>
-                        ))} */}
-                      </select>
-                    </div>
-
-
-                    {/* 5. District */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant District</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={siteForm.DistrictCode}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            DistrictCode: e.target.value
-                          }))
-                        }
-                        className="select-box"
-                      >
-                        <option value="00">Select District</option>
-                        <option value="01">South</option>
-                        <option value="02">New Delhi</option>
-                        <option value="03">Central</option>
-                        <option value="04">North</option>
-                        <option value="05">East</option>
-                        <option value="06">West</option>
-
-                        {/* {districtOptions.map(item => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))} */}
-                      </select>
-                    </div>
-
-                    {/* 6. Sub Division */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Sub Division</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={siteForm.SubDivisionCode}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SubDivisionCode: e.target.value
-                          }))
-                        }
-                        className="select-box"
-                      >
-                        <option value="00">Select Sub Division</option>
-                        <option value="01">Saket</option>
-                        <option value="02">Vasant Vihar</option>
-                        <option value="03">Hauz Khas</option>
-                        <option value="04">Mehrauli</option>
-                        <option value="05">Kalkaji</option>
-
-                        {/* {subDivisionOptions.map(item => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))} */}
-                      </select>
-                    </div>
-
-                    {/* 7. Police Station */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Police Station</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={siteForm.PoliceStationCode}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            PoliceStationCode: e.target.value
-                          }))
-                        }
-                        className="select-box"
-                      >
-                        <option value="00">Select Police Station</option>
-                        <option value="01">Hauz Khas</option>
-                        <option value="02">Mehrauli</option>
-                        <option value="03">Kalkaji</option>
-
-                        {/* {policeStationOptions.map(item => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))} */}
-                      </select>
-                    </div>
-
-
-                    {/* 8. Restaurant PIN */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant PIN</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        maxLength={6}
-                        placeholder="PIN Code"
-                        value={siteForm.SitePin}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SitePin: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-
-                    {/* 9. Constituency Area */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Constituency Area</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={siteForm.SiteAssembly}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteAssembly: e.target.value
-                          }))
-                        }
-                        className="select-box"
-                      >
-                        <option value="00">Select Constituency</option>
-                        <option value="01">Hauz Khas</option>
-                        <option value="02">Mehrauli</option>
-
-                        {/* {constituencyOptions.map(item => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))} */}
-                      </select>
-                    </div>
-
-
-
-                    {/* 10. Ward Name */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Ward Name
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Ward Name"
-                        value={siteForm.SiteWard}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteWard: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-
-                    {/* 11. Restaurant Email */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Email</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="email"
-                        placeholder="restaurant@email.com"
-                        value={siteForm.SiteEmail}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteEmail: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-
-                    {/* 12. Restaurant Mobile */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        <span>Restaurant Mobile</span>
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="tel"
-                        maxLength={10}
-                        placeholder="9876543210"
-                        value={siteForm.SiteMobile}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteMobile: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-
-                    {/* 13. Restaurant Landline */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant Landline
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Landline Number"
-                        value={siteForm.SiteLandline}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteLandline: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-                    {/* 14. Restaurant Fax */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant Fax
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Fax Number"
-                        value={siteForm.SiteFax}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SiteFax: e.target.value
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* 15. Restaurant PAN */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant PAN
-                      </label>
-
-                      <input
-                        type="text"
-                        maxLength={10}
-                        placeholder="ABCDE1234F"
-                        style={{ textTransform: "uppercase" }}
-                        value={siteForm.SitePan}
-                        onChange={(e) =>
-                          setSiteForm(prev => ({
-                            ...prev,
-                            SitePan: e.target.value.toUpperCase()
-                          }))
-                        }
-                        className="input-box"
-                      />
-                    </div>
-
-                  </div>
-
-                </form>
-              </div>
-
-              {/* Wizard navigation and proceed controls */}
+          {currentStep === 5 && selectedLicenseId !== "L-20" && (
+            <div className="hcr-form-section animate-fade">
+              <RestaurantDetails
+                siteForm={siteForm}
+                states={states}
+                districts={RestaurantDistricts}   // ✅ correct
+                subDivisions={RestaurantSubDivisions}
+                policeStations={RestaurantPoliceStations}
+                onChange={handleResturantChange}
+              />
+              {/* Active select step continue helper */}
               <div className="hcr-wizard">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (selectedLicenseId === "L-20") {
-                      setCurrentStep(5); // Back to luxury train carriage details (Step 5)
-                    } else {
-                      setCurrentStep(4); // Back to generic applicant profile details (Step 4)
-                    }
-                  }}
+                  onClick={() => setCurrentStep(4)} // Back to Applicant details
                   className="btn btn-secondary"
                 >
                   <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
@@ -1477,21 +1112,18 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
                   <button
                     type="button"
                     onClick={() => {
-                      if (selectedLicenseId === "L-20") {
-                        setCurrentStep(7); // Proceed directly to Documents (Step 7 for L-20; skipping Premise Details)
-                      } else {
-                        handleNextStep()
-                        setCurrentStep(6); // Proceed to Premises Details (Step 6 for non-L20)
+                       if (handelResturantDetails()) {
+                        handleNextStep();
+                        setCurrentStep(6); 
                       }
                     }}
                     className="btn btn-primary"
                   >
-                    <span>{selectedLicenseId === "L-20" ? "Proceed to Documents" : "Proceed to Premises Details"}</span>
+                    <span>Proceed to Restaurant Details</span>
                     <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
                   </button>
                 </div>
               </div>
-
             </div>
           )}
 
@@ -1936,7 +1568,7 @@ export default function HcrLicenseWizard({ onBackToDashboard, showToast, rootDat
           )}
 
           {/* STEP 9: RECEIPT SUCCESS DETAIL CARD (HIGH POLISH) */}
-          {currentStep === 9 &&  (
+          {currentStep === 9 && (
             <div className="animate-fade text-left space-y-6">
               <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
                 <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
