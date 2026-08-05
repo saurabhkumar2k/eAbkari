@@ -23,6 +23,7 @@ import {
 import OwnerTypeMaster from "./OwnerTypeMaster.jsx";
 import LicenseTitleMaster from "./LicenseTitleMaster.jsx";
 import UserCreation from "./UserCreation.jsx";
+import UserHierarchy from "./UserHierarchy.jsx";
 
 const DepartmentDashboard = ({
   onLogout,
@@ -182,6 +183,8 @@ const DepartmentDashboard = ({
             <LicenseTitleMaster />
           ) : activeDirectory === "user-creation" || activeDirectory === "new-user-creation" ? (
             <UserCreation onBack={() => window.location.href = "/departmentdashboard"} />
+           ) : activeDirectory === "flow-hierarchy" || activeDirectory === "user-hierarchy" ? (
+            <UserHierarchy onBack={() => window.location.href = "/departmentdashboard"} />
           ) : isDirectoryView ? (
             /* DIRECTORY VIEW */
             <div className="dept-dir-container">
