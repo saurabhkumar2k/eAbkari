@@ -86,29 +86,67 @@ namespace backend.API.Licence.Controllers
             return Ok(result);
         }
 
+
         [HttpPost]
-        [Route("SaveAndUpdateAdditionalHCRDetails")]
-        public async Task<IActionResult> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        [Route("SaveAdditionalHCRCompleteDetails")]
+        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
         {
-            var result = await _HCRservice.SaveAndUpdateAdditionalHCRDetails(dto);
+            if (dto == null || dto.AdditionalDetails == null)
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.AdditionalDetails.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.SaveAdditionalHCRCompleteDetails(dto);
 
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("GetAditionalDetailsIDWise")]
-        public async Task<IActionResult> GetAditionalDetailsIDWise(string applicationIdNo)
+        [HttpGet]
+        [Route("GetAdditionalHCRCompleteDetails")]
+        public async Task<IActionResult> GetAdditionalHCRCompleteDetails([FromQuery] string applicationIdNo)
         {
             if (string.IsNullOrWhiteSpace(applicationIdNo))
             {
                 return BadRequest("ApplicationIdNo is required.");
             }
 
-            var result = await _HCRservice.GetAditionalDetailsIDWise(applicationIdNo);
+            var result = await _HCRservice.GetAdditionalHCRCompleteDetails(applicationIdNo);
+
+            if (result == null)
+            {
+                return NotFound("Record Not Found");
+            }
 
             return Ok(result);
         }
+        [HttpPost]
+        [Route("DeletePartner")]
+        public async Task<IActionResult> DeletePartner(DeletePartnerDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid Request");
+            }
 
+            if (dto.ID <= 0)
+            {
+                return BadRequest("Invalid Partner Id");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.DeletePartner(dto.ID, dto.ApplicationIdNo);
+
+            return Ok(result);
+        }
 
     }
 }

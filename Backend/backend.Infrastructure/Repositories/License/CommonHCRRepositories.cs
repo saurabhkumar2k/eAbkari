@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using backend.Core.DTOs;
 using backend.Core.Entities.Licence;
 using backend.Core.Interfaces.License;
@@ -159,82 +160,128 @@ namespace backend.Infrastructure.Repositories.License
         }
 
 
-        public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
-
+        public async Task<string> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
         {
             try
             {
+                string appId = dto.AdditionalDetails.ApplicationIdNo;
+
+                //==========================
+                // STEP 1 : AdditionalHCRDetails
+                //==========================
+
                 var details = await _context.AdditionalHCRDetails
-                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
+                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == appId);
 
                 if (details == null)
                 {
                     details = new AdditionalHCRDetails
                     {
-                        ApplicationIdNo = dto.ApplicationIdNo,
-                        NumberOfClubMember = dto.NumberOfClubMember,
-                        NumberOfSeatCovers = dto.NumberOfSeatCovers,
-                        NumberOfDispensingCounter = dto.NumberOfDispensingCounter,
-                        AdditionalArea = dto.AdditionalArea,
-                        NumberOfManagers = dto.NumberOfManagers,
-                        NumberOfKitchenStaff = dto.NumberOfKitchenStaff,
-                        NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees,
-                        TotalRoom = dto.TotalRoom,
-                        StaffStrength = dto.StaffStrength,
-                        StarCategory = dto.StarCategory,
-                        ServiceCounter = dto.ServiceCounter,
-                        TotalArea = dto.TotalArea,
-                        EducationalInsDist = dto.EducationalInsDist,
-                        ReligiousPlaceDist = dto.ReligiousPlaceDist,
-                        IsSuitableGagdget = dto.IsSuitableGagdget,
-                        IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved,
-                        IsIndicatingLiquor = dto.IsIndicatingLiquor,
-                        NumberOfBarAttendent = dto.NumberOfBarAttendent,
-                        StarCategoryRating = dto.StarCategoryRating,
-                        RestaurantArea = dto.RestaurantArea,
-                        HourOfSale = dto.HourOfSale
+                        ApplicationIdNo = appId,
+                        NumberOfClubMember = dto.AdditionalDetails.NumberOfClubMember,
+                        NumberOfSeatCovers = dto.AdditionalDetails.NumberOfSeatCovers,
+                        NumberOfDispensingCounter = dto.AdditionalDetails.NumberOfDispensingCounter,
+                        AdditionalArea = dto.AdditionalDetails.AdditionalArea,
+                        NumberOfManagers = dto.AdditionalDetails.NumberOfManagers,
+                        NumberOfKitchenStaff = dto.AdditionalDetails.NumberOfKitchenStaff,
+                        NumberOfUtlityEmployees = dto.AdditionalDetails.NumberOfUtlityEmployees,
+                        TotalRoom = dto.AdditionalDetails.TotalRoom,
+                        StaffStrength = dto.AdditionalDetails.StaffStrength,
+                        StarCategory = dto.AdditionalDetails.StarCategory,
+                        ServiceCounter = dto.AdditionalDetails.ServiceCounter,
+                        TotalArea = dto.AdditionalDetails.TotalArea,
+                        EducationalInsDist = dto.AdditionalDetails.EducationalInsDist,
+                        ReligiousPlaceDist = dto.AdditionalDetails.ReligiousPlaceDist,
+                        IsSuitableGagdget = dto.AdditionalDetails.IsSuitableGagdget,
+                        IsLocalAuthorityApproved = dto.AdditionalDetails.IsLocalAuthorityApproved,
+                        IsIndicatingLiquor = dto.AdditionalDetails.IsIndicatingLiquor,
+                        NumberOfBarAttendent = dto.AdditionalDetails.NumberOfBarAttendent,
+                        StarCategoryRating = dto.AdditionalDetails.StarCategoryRating,
+                        RestaurantArea = dto.AdditionalDetails.RestaurantArea,
+                        HourOfSale = dto.AdditionalDetails.HourOfSale
                     };
+
                     _context.AdditionalHCRDetails.Add(details);
                 }
                 else
                 {
-                    details.NumberOfClubMember = dto.NumberOfClubMember;
-                    details.NumberOfSeatCovers = dto.NumberOfSeatCovers;
-                    details.NumberOfDispensingCounter = dto.NumberOfDispensingCounter;
-                    details.AdditionalArea = dto.AdditionalArea;
-                    details.NumberOfManagers = dto.NumberOfManagers;
-                    details.NumberOfKitchenStaff = dto.NumberOfKitchenStaff;
-                    details.NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees;
-                    details.TotalRoom = dto.TotalRoom;
-                    details.StaffStrength = dto.StaffStrength;
-                    details.StarCategory = dto.StarCategory;
-                    details.ServiceCounter = dto.ServiceCounter;
-                    details.TotalArea = dto.TotalArea;
-                    details.EducationalInsDist = dto.EducationalInsDist;
-                    details.ReligiousPlaceDist = dto.ReligiousPlaceDist;
-                    details.IsSuitableGagdget = dto.IsSuitableGagdget;
-                    details.IsLocalAuthorityApproved = dto.IsLocalAuthorityApproved;
-                    details.IsIndicatingLiquor = dto.IsIndicatingLiquor;
-                    details.NumberOfBarAttendent = dto.NumberOfBarAttendent;
-                    details.StarCategoryRating = dto.StarCategoryRating;
-                    details.RestaurantArea = dto.RestaurantArea;
-                    details.HourOfSale = dto.HourOfSale;
-
-
+                    details.NumberOfClubMember = dto.AdditionalDetails.NumberOfClubMember;
+                    details.NumberOfSeatCovers = dto.AdditionalDetails.NumberOfSeatCovers;
+                    details.NumberOfDispensingCounter = dto.AdditionalDetails.NumberOfDispensingCounter;
+                    details.AdditionalArea = dto.AdditionalDetails.AdditionalArea;
+                    details.NumberOfManagers = dto.AdditionalDetails.NumberOfManagers;
+                    details.NumberOfKitchenStaff = dto.AdditionalDetails.NumberOfKitchenStaff;
+                    details.NumberOfUtlityEmployees = dto.AdditionalDetails.NumberOfUtlityEmployees;
+                    details.TotalRoom = dto.AdditionalDetails.TotalRoom;
+                    details.StaffStrength = dto.AdditionalDetails.StaffStrength;
+                    details.StarCategory = dto.AdditionalDetails.StarCategory;
+                    details.ServiceCounter = dto.AdditionalDetails.ServiceCounter;
+                    details.TotalArea = dto.AdditionalDetails.TotalArea;
+                    details.EducationalInsDist = dto.AdditionalDetails.EducationalInsDist;
+                    details.ReligiousPlaceDist = dto.AdditionalDetails.ReligiousPlaceDist;
+                    details.IsSuitableGagdget = dto.AdditionalDetails.IsSuitableGagdget;
+                    details.IsLocalAuthorityApproved = dto.AdditionalDetails.IsLocalAuthorityApproved;
+                    details.IsIndicatingLiquor = dto.AdditionalDetails.IsIndicatingLiquor;
+                    details.NumberOfBarAttendent = dto.AdditionalDetails.NumberOfBarAttendent;
+                    details.StarCategoryRating = dto.AdditionalDetails.StarCategoryRating;
+                    details.RestaurantArea = dto.AdditionalDetails.RestaurantArea;
+                    details.HourOfSale = dto.AdditionalDetails.HourOfSale;
                 }
+
+                //==========================
+                // STEP 2 : ApplicantLicensePartnersDetails
+                //==========================
+
+                var oldPartners = _context.ApplicantLicensePartnersDetails
+                    .Where(x => x.ApplicationIdNo == appId);
+
+                _context.ApplicantLicensePartnersDetails.RemoveRange(oldPartners);
+
+                int slNo = 1;
+
+                foreach (var item in dto.Partners)
+                {
+                    ApplicantLicensePartnersDetails partner =
+                        new ApplicantLicensePartnersDetails
+                        {
+                            ApplicationIdNo = appId,
+                            PName = item.PName,
+                            PPerShare = item.PPerShare,
+                            PPanNo = item.PPanNo,
+                            PExciseNominee = item.PExciseNominee,
+                            DINNo = item.DINNo,
+
+                            PhotoURLPanNo = string.IsNullOrWhiteSpace(item.PanFileUploaded)
+                                ? null
+                                : appId + "_" + item.PanFileUploaded,
+
+                            PhotoURLAddressProof = string.IsNullOrWhiteSpace(item.AddressFileUploaded)
+                                ? null
+                                : appId + "_" + item.AddressFileUploaded,
+
+                            SlNo = slNo++
+                        };
+
+                    _context.ApplicantLicensePartnersDetails.Add(partner);
+                }
+
                 await _context.SaveChangesAsync();
 
-                return "Save/Updated Successfully";
-
+                return "Saved Successfully";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "Error Occured";
+                return ex.Message;
             }
         }
-        public async Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo)
+
+        public async Task<AdditionalHCRCompleteDto?> GetAdditionalHCRCompleteDetails(string applicationIdNo)
         {
-            var record = await _context.AdditionalHCRDetails
+            try
+            {
+
+            
+            var additionalDetails = await _context.AdditionalHCRDetails
                 .Where(x => x.ApplicationIdNo == applicationIdNo)
                 .Select(x => new AdditionalHCRDetailsDto
                 {
@@ -263,7 +310,63 @@ namespace backend.Infrastructure.Repositories.License
                 })
                 .FirstOrDefaultAsync();
 
-            return record;
+            if (additionalDetails == null)
+            {
+                return null;
+            }
+
+            var partners = await _context.ApplicantLicensePartnersDetails
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .OrderBy(x => x.SlNo)
+                .Select(x => new AdditionalCompanyPartnersDetailsDto
+                {
+                    ID = x.ID,
+                    ApplicationIdNo = x.ApplicationIdNo,
+                    PName = x.PName,
+                    PPerShare = x.PPerShare,
+                    PPanNo = x.PPanNo,
+                    PExciseNominee = x.PExciseNominee,
+                    DINNo = x.DINNo,
+
+                    PhotoURLPanNo = x.PhotoURLPanNo,
+
+                    PanFileUploaded = x.PhotoURLPanNo,
+
+                    AddressFileUploaded = x.PhotoURLAddressProof,
+
+                    SlNo = x.SlNo
+                })
+                .ToListAsync();
+
+            return new AdditionalHCRCompleteDto
+            {
+                AdditionalDetails = additionalDetails,
+                Partners = partners
+            };
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message; 
+                return null ;
+            }
+        }
+        public async Task<string> DeletePartner(int id, string applicationIdNo)
+        {
+            var partner = await _context.ApplicantLicensePartnersDetails
+                .FirstOrDefaultAsync(x =>
+                    x.SlNo == id &&
+                    x.ApplicationIdNo == applicationIdNo);
+
+            if (partner == null)
+            {
+                return "Record Not Found";
+            }
+
+            _context.ApplicantLicensePartnersDetails.Remove(partner);
+
+            await _context.SaveChangesAsync();
+
+            return "Deleted Successfully";
         }
     }
 }

@@ -117,29 +117,43 @@ namespace backend.Application.Services.License
             }
         }
 
-        public async Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto)
+        //Part for the HCR AdditionalDetails --starting
+        public async Task<AdditionalHCRCompleteDto?> GetAdditionalHCRCompleteDetails(string applicationIdNo)
         {
             try
             {
-                return await _HcrRepositry.SaveAndUpdateAdditionalHCRDetails(dto);
+                return await _HcrRepositry.GetAdditionalHCRCompleteDetails(applicationIdNo);
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
         }
 
-        public async Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo)
+        public async Task<string> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
         {
             try
             {
-                return await _HcrRepositry.GetAditionalDetailsIDWise(applicationIdNo);
+                return await _HcrRepositry.SaveAdditionalHCRCompleteDetails(dto);
             }
-            catch (Exception)
+            catch
             {
-                return null;
+                return "Operation Failed";
             }
         }
+
+        public async Task<string> DeletePartner(int id, string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.DeletePartner(id, applicationIdNo);
+            }
+            catch
+            {
+                return "Delete Failed";
+            }
+        }
+        //--ending
 
     }
 }
