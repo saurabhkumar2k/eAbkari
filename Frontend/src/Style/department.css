@@ -1,4 +1,6 @@
 @import "./user_creation.css";
+@import "./da.css";
+@import "./papplication.css";
 
 .dept-login-page {
   min-height: 100vh;

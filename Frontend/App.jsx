@@ -18,10 +18,8 @@ import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
-import OwnerType from './src/areas/admin/director_data/OwnerType.jsx';
-import SelfDeclaration from './src/components/Department/SelfDeclaration.jsx';
-import TransportBulkSpiritValidity from './src/components/Department/TransportBulkSpiritValidity.jsx';
-import TransportPackagedFL from './src/components/Department/TransportPackagedFL.jsx';
+import DADashbord from './src/components/Department/DA/DADashboard.jsx';
+
 
 import {
   ChevronDownSvg,
@@ -57,10 +55,8 @@ export default function App() {
     console.log("Navigation:", view);
 
     switch (view?.trim()) {
-      case "Brand":
-      case "BRAND":
-      case "Liquor Brand":
-      case "LIQUOR BRAND":
+      case "Bottle":
+      case "BOTTLE":
         window.location.href = "/liquorbrand";
         break;
 
@@ -76,37 +72,16 @@ export default function App() {
         window.location.href = "/brandowner";
         break;
       
-      case "Owner Type":
-      case "OWNER TYPE":
-        window.location.href = "/ownertype";
-        break;
-      
-      case "Self Declaration":
-      case "SELF DECLARATION":
-        window.location.href = "/selfdeclaration";
-        break;
-
-      case "TRANSPORT : BULK SPIRIT":
-        window.location.href = "/TransportBulkSpiritValidity";
-        break;
-      
-      case "TRANSPORT : PACKAGED FL":
-        window.location.href = "/TransportPackagedFL";
-        break;
+      case "DIR_EXCISE_LICENSE":
+      case "LICENSE TITLE":
+        window.location.href = "/departmentdashboard?directory=license-title";
+        break;   
 
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
         break;
       case "IMPORT : PACKAGED FL":
         window.location.href = "/importpackaged";
-        break;
-
-      case "NEW USER CREATION":
-      case "USER CREATION":
-      case "USER_CREATION":
-      case "NEW_USER_CREATION":
-      case "USER MAINTENANCE":
-        window.location.href = "/departmentdashboard?directory=user-creation";
         break;
 
       case "Home":
@@ -119,6 +94,24 @@ export default function App() {
       default:
         console.log("Unknown route:", view);
         break;
+    }
+  };
+  const handleHeaderViewSelect = (view) => {
+    switch (view) {
+      case 'HOME':
+        window.location.href = '/';
+        break;
+      case 'APPLICANT_LOGIN':
+        window.location.href = '/login';
+        break;
+      case 'DEPARTMENT_LOGIN':
+        window.location.href = '/departmentlogin';
+        break;
+      case 'DEPARTMENT_OVERVIEW':
+        window.location.href = '/department-overview';
+        break;
+      default:
+        window.location.href = '/';
     }
   };
 return (
@@ -184,9 +177,34 @@ return (
             onNavigateHome={() =>
               (window.location.href = "/")
             }
-            onLoginSuccess={() =>
-              (window.location.href = "/departmentdashboard")
-            }
+            onLoginSuccess={(role) => {
+              if (role === "DA" || role === "da") {
+                window.location.href = "/dadashboard";
+              } else {
+                window.location.href = "/departmentdashboard";
+              }
+            }}
+          />
+        }
+      />
+
+      {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
+      <Route
+        path="/dadashboard"
+        element={
+          <DADashbord
+            onLogout={() => (window.location.href = "/departmentlogin")}
+            onNavigateHome={() => (window.location.href = "/")}
+          />
+        }
+      />
+
+      <Route
+        path="/dadashbord"
+        element={
+          <DADashbord
+            onLogout={() => (window.location.href = "/departmentlogin")}
+            onNavigateHome={() => (window.location.href = "/")}
           />
         }
       />
@@ -204,42 +222,12 @@ return (
 
             <DepartmentDashboard
               onLogout={() =>
-                (window.location.href = "/")
+                (window.location.href = "/departmentlogin")
               }
               onNavigateHome={() =>
                 (window.location.href = "/")
               }
             />
-          </div>
-        }
-      />
-
-       {/* Transport Bulk Spirit */}
-      <Route
-        path="/TransportBulkSpiritValidity"
-        element={
-          <div className="admin-app-layout flex-grow flex flex-col">
-            <AdminHeader
-              navItems={navItems}
-              currentView="TRANSPORT_BULK_SPIRIT_VALIDITY"
-              onNavigate={handleAdminNavigate}
-            />
-            <TransportBulkSpiritValidity/>
-          </div>
-        }
-      />
-
-       {/* Transport Packaged FL */}
-      <Route
-        path="/TransportPackagedFL"
-        element={
-          <div className="admin-app-layout flex-grow flex flex-col">
-            <AdminHeader
-              navItems={navItems}
-              currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
-              onNavigate={handleAdminNavigate}
-            />
-            <TransportPackagedFL/>
           </div>
         }
       />
@@ -259,34 +247,6 @@ return (
           </div>
         }
       />
-      <Route 
-      path="/ownertype"
-      element={
-        <div className="admin-app-layout flex-grow flex flex-col">
-          <AdminHeader
-            navItems={navItems}
-            currentView="OWNER_TYPE"    
-        onNavigate={handleAdminNavigate}
-          />
-        <OwnerType/>
-        </div>
-      }
-      />
-      <Route 
-      path = "/selfdeclaration"
-      element={
-        <div className="admin-app-layout flex-grow flex flex-col">
-          <AdminHeader
-            navItems={navItems}
-            currentView="SELF_DECLARATION"
-            onNavigate={handleAdminNavigate}
-          />
-
-          <SelfDeclaration/>
-        </div>
-      }
-      />
-
       {/* Import Packaged */}
      <Route
         path="/importpackaged"  
@@ -301,6 +261,7 @@ return (
         </div>
       }
       />
+     
       {/* Liquor Brand */}
       <Route
   path="/liquorbrand"
@@ -361,49 +322,18 @@ const navItems = [
   { label: "Directory Data", 
     icon: <FolderSvg className="dept-nav-icon" />, 
     hasDropdown: true,
-    items: [
-      { label: "Excise License",	
+    items:[
+      { label: "Excise License",
         hasSideMenu: true,
         sideItems: [
           "Owner Type",
           "License Title",
           "Category",
           "Sub Category"
-        ],
-      },
-      { label: "Site Location",
-        hasSideMenu: true,
-        sideItems: [
-          "State",
-          "District",
-          "Police Station",
-          "Sub Division",
-          "Municipal Corp.",
-          "Location Type"
-        ],
-      },
-      { label: "Excise Location",
-        hasSideMenu: true,
-        sideItems: [
-          "District"
-        ],
-      },
-      { label: "Vehicle",
-        hasSideMenu: true,
-        sideItems: [
-          "Vehicle Make",
-          "Vehicle Model"
-        ],
-      },	
-      { label: "Packaged FL" },
-      { label: "Others",
-        hasSideMenu: true,
-        sideItems: [
-          "Self Declaration"
-        ],
+        ]
       }
-      
- ]},
+    ] 
+  },
 
   {
     label: "Master Data",
@@ -413,12 +343,12 @@ const navItems = [
       { label: "Packaged Liquor",
         hasSideMenu: true,
         sideItems: [
-          "Brand",
+          "Bottle",
           "Bottler",
           "Brand Owner"
         ],
       },
-     {
+      {
         label: "Permit/Pass Validity",
         hasSideMenu: true,
         sideItems: [
@@ -433,8 +363,7 @@ const navItems = [
       { label: "Misc. Case" },
       { label: "Fee/Duty Rate" },
       { label: "Export : Packaged Liquor" },
-      { label: "Others"
-      },
+      { label: "Others" },
       { label: "M&TP" },
     ],
   },
@@ -473,26 +402,6 @@ const navItems = [
     label: "House Keeping",
     icon: <SettingsSvg className="dept-nav-icon" />,
     hasDropdown: true,
-    items: [
-      { label: "User Maintenance",
-        hasSideMenu: true,
-        sideItems: [
-        "User Profile",
-        "Change Password (Dept.)",
-        "New User Creation",
-        "User Reset Password",
-        "Audit Trail",
-        "User Hierarchy",
-        "Reset Registration Password",
-        "User Transfer",
-        "PO Activation/Deactivation",
-        "OS File Transfer"
-        ]
-      },
-      { label: "Portal",},	
-      {  label: "Initialization" },
-      {  label: "Technical" }
-    ]
   },
   { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
