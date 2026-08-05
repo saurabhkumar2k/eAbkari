@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
+  margin-bottom: 3.5rem;
 }
 
 .hero-bg {
@@ -382,7 +383,6 @@
   background: #fbfbfc;
   transition: all 0.2s;
   outline: none;
-  box-sizing: border-box;
 }
 
 .reg-select {
@@ -432,42 +432,6 @@
     flex-direction: row;
     align-items: flex-end;
   }
-}
-
-/* Form Grid Layout Fix */
-.grid {
-  display: grid;
-}
-
-.grid.gap-6 {
-  gap: 1.5rem;
-}
-
-.grid.grid-cols-1 {
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .grid.md\:grid-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid.lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Ensure grid items take full width */
-.grid > * {
-  min-width: 0;
-}
-
-/* Form field responsive width */
-.reg-field {
-  width: 100%;
-  min-width: 0;
 }
 
 .photo-upload-box {
@@ -692,7 +656,7 @@
 .fw-bold { font-weight: 700; }
 .no-wrap-cell { white-space: nowrap; }
 .btn-w-auto { width: auto !important; }
-.section-mb-large { margin-bottom: 6rem !important; }
+.section-mb-large { margin-bottom: 3.5rem !important; }
 .pointer-cursor { cursor: pointer; }
 
 /* Login Page Styles */
@@ -766,18 +730,18 @@
   opacity: 0.8;
 }
 
-.login-page-wrapper .welcome-section {
+.welcome-section {
   margin-bottom: 2.5rem;
 }
 
-.login-page-wrapper .welcome-title {
+.welcome-title {
   font-size: 2.5rem;
   font-weight: 700;
   color: white;
   margin-bottom: 0.75rem;
 }
 
-.login-page-wrapper .welcome-subtitle {
+.welcome-subtitle {
   font-size: 1.125rem;
   color: white;
   opacity: 0.9;
@@ -957,7 +921,6 @@
 }
 
 .login-input-group {
-  
   position: relative;
   display: flex;
   align-items: center;
@@ -973,7 +936,7 @@
 
 .login-input-field {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem !important;
+  padding: 0.875rem 1rem 0.875rem 3rem;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   transition: all 0.2s;
@@ -1063,12 +1026,12 @@
   margin-right: 0.5rem;
 }
 
-.login-page-wrapper .divider-container {
+.divider-container {
   position: relative;
   padding: 1rem 0;
 }
 
-.login-page-wrapper .divider-line-box {
+.divider-line-box {
   position: absolute;
   top: 0;
   left: 0;
@@ -1078,12 +1041,12 @@
   align-items: center;
 }
 
-.login-page-wrapper .divider-line {
+.divider-line {
   width: 100%;
   border-top: 1px solid #e5e7eb;
 }
 
-.login-page-wrapper .divider-text-box {
+.divider-text-box {
   position: relative;
   display: flex;
   justify-content: center;
@@ -1091,7 +1054,7 @@
   text-transform: uppercase;
 }
 
-.login-page-wrapper .divider-text {
+.divider-text {
   background-color: white;
   padding: 0 1rem;
   color: #9ca3af;
@@ -1118,7 +1081,7 @@
   background-color: #eff6ff;
 }
 
-.login-page-wrapper .login-btn-content-box {
+.login-btn-content-box {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1232,27 +1195,27 @@
   .login-input-field {
     padding: 0.75rem 1rem 0.75rem 2.75rem !important;
   }
-  .login-page-wrapper .divider-container {
+  .divider-container {
     padding: 0.5rem 0 !important;
   }
-  .login-page-wrapper .login-btn-submit,
-  .login-page-wrapper .login-btn-new-account {
+  .login-btn-submit,
+  .login-btn-new-account {
     padding: 0.75rem !important;
     font-size: 0.95rem !important;
   }
-  .login-page-wrapper .gov-seal-footer {
+  .gov-seal-footer {
     margin-top: 0.5rem !important;
   }
-  .login-page-wrapper .gov-seal-box {
+  .gov-seal-box {
     padding: 0.75rem 1rem !important;
   }
-  .login-page-wrapper .welcome-section {
+  .welcome-section {
     margin-bottom: 1.5rem !important;
   }
-  .login-page-wrapper .welcome-title {
+  .welcome-title {
     font-size: 2.25rem !important;
   }
-  .login-page-wrapper .info-feature-list {
+  .info-feature-list {
     gap: 1rem !important;
   }
 }
@@ -1280,24 +1243,24 @@
   .login-options-row {
     font-size: 0.8rem !important;
   }
-  .login-page-wrapper .divider-container {
+  .divider-container {
     padding: 0.25rem 0 !important;
   }
-  .login-page-wrapper .login-btn-submit,
-  .login-page-wrapper .login-btn-new-account {
+  .login-btn-submit,
+  .login-btn-new-account {
     padding: 0.6rem !important;
     font-size: 0.85rem !important;
   }
-  .login-page-wrapper .gov-seal-footer {
+  .gov-seal-footer {
     display: none !important;
   }
-  .login-page-wrapper .welcome-section {
+  .welcome-section {
     margin-bottom: 1rem !important;
   }
-  .login-page-wrapper .welcome-title {
+  .welcome-title {
     font-size: 1.85rem !important;
   }
-  .login-page-wrapper .welcome-subtitle {
+  .welcome-subtitle {
     font-size: 1rem !important;
     max-width: 20rem !important;
   }
@@ -1314,19 +1277,19 @@
   .info-feature-list {
     display: none !important;
   }
-  .login-page-wrapper .login-dept-header {
+  .login-dept-header {
     margin-bottom: 0.5rem !important;
   }
-  .login-page-wrapper .welcome-section {
+  .welcome-section {
     margin-bottom: 0.5rem !important;
   }
-  .login-page-wrapper .welcome-title {
+  .welcome-title {
     font-size: 1.5rem !important;
   }
-  .login-page-wrapper .welcome-subtitle {
+  .welcome-subtitle {
     display: none !important;
   }
-  .login-page-wrapper .welcome-line {
+  .welcome-line {
     display: none !important;
   }
 }
@@ -1368,6 +1331,7 @@
 .features-section-box {
   background: white;
   border-bottom: 1px solid var(--border-gray);
+  margin-bottom: 3.5rem;
 }
 
 .features-content {
@@ -1457,8 +1421,8 @@
 
 /* Notice Board */
 .notice-board-container {
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+  margin-top: 0;
+  margin-bottom: 3.5rem;
 }
 
 .notice-board-header-row {
@@ -1496,8 +1460,8 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 3.5rem;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+  margin-top: 0;
+  margin-bottom: 3.5rem;
 }
 
 @media (min-width: 1024px) {
@@ -1615,13 +1579,13 @@
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-gray);
   overflow: hidden;
-  margin-bottom: 5rem;
+  margin-bottom: 0;
 }
 
 /* Dashboard Section Spacing Override */
 .dashboard-section {
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+  margin-top: 0;
+  margin-bottom: 3.5rem;
 }
 
 .card-header-inner {
