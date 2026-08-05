@@ -18,7 +18,10 @@ import LiquorBrand from './src/areas/admin/master_data/LiquorBrand.jsx';
 import BottlerMaster from './src/areas/admin/master_data/BottlerMaster.jsx';
 import BrandOwner from './src/areas/admin/master_data/BrandOwner.jsx';
 import ImportPackaged from './src/components/Department/ImportPackaged.jsx';
+import TransportBulkSpiritValidity from './src/components/Department/TransportBulkSpiritValidity.jsx';
+import TransportPackagedFL from './src/components/Department/TransportPackagedFL.jsx';
 import DADashbord from './src/components/Department/DA/DADashboard.jsx';
+import ExploreServicesModal from './src/Homepage/ExploreServicesModal.jsx';
 
 
 import {
@@ -76,10 +79,33 @@ export default function App() {
       case "LICENSE TITLE":
         window.location.href = "/departmentdashboard?directory=license-title";
         break;   
+       case "TRANSPORT : BULK SPIRIT":
+        window.location.href = "/TransportBulkSpiritValidity";
+        break;
+      
+      case "TRANSPORT : PACKAGED FL":
+        window.location.href = "/TransportPackagedFL";
+        break;
+
 
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
         break;
+       case "NEW USER CREATION":
+      case "USER CREATION":
+      case "USER_CREATION":
+      case "NEW_USER_CREATION":
+      case "USER MAINTENANCE":
+        window.location.href = "/departmentdashboard?directory=user-creation";
+        break;
+        case "USER HIERARCHY":
+      case "USER_HIERARCHY":
+      case "FLOW HIERARCHY":
+      case "FLOW_HIERARCHY":
+      case "FLOW HIERARCHY MAPPING":
+        window.location.href = "/departmentdashboard?directory=flow-hierarchy";
+        break;
+
       case "IMPORT : PACKAGED FL":
         window.location.href = "/importpackaged";
         break;
@@ -87,6 +113,7 @@ export default function App() {
       case "Home":
         window.location.href = "/departmentdashboard";
         break;
+        
       case "LOGOUT":
       window.location.href = "/";
       break;
@@ -96,7 +123,7 @@ export default function App() {
         break;
     }
   };
-  const handleHeaderViewSelect = (view) => {
+ const handleHeaderViewSelect = (view) => {
     switch (view) {
       case 'HOME':
         window.location.href = '/';
@@ -107,10 +134,8 @@ export default function App() {
       case 'DEPARTMENT_LOGIN':
         window.location.href = '/departmentlogin';
         break;
-      case 'DEPARTMENT_OVERVIEW':
-        window.location.href = '/department-overview';
-        break;
-      default:
+      
+        default:
         window.location.href = '/';
     }
   };
@@ -118,18 +143,17 @@ return (
   <BrowserRouter>
     <Routes>
 
-      {/* Home */}
+       {/* Home */}
       <Route
         path="/"
         element={
           <>
-            <Header />
-            <main>{renderHomeContent()}</main>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent /></main>
             <Footer />
           </>
         }
       />
-
       {/* Applicant Login */}
       <Route
         path="/login"
@@ -231,7 +255,20 @@ return (
           </div>
         }
       />
-
+       {/* Transport Packaged FL */}
+      <Route
+        path="/TransportPackagedFL"
+        element={
+          <div className="admin-app-layout flex-grow flex flex-col">
+            <AdminHeader
+              navItems={navItems}
+              currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
+              onNavigate={handleAdminNavigate}
+            />
+            <TransportPackagedFL/>
+          </div>
+        }
+      />
       {/* Import Permit */}
       <Route
         path="/importpermitpass"
@@ -313,7 +350,7 @@ return (
 </Routes>
   </BrowserRouter>
 );
-}
+};
 
 // Navigation menu configuration
 const navItems = [
@@ -398,15 +435,34 @@ const navItems = [
 
   { label: "MIS", icon: <PieChartSvg className="dept-nav-icon" /> },
 
-  {
+   {
     label: "House Keeping",
     icon: <SettingsSvg className="dept-nav-icon" />,
     hasDropdown: true,
-  },
+    items: [
+      { label: "User Maintenance",
+        hasSideMenu: true,
+        sideItems: [
+        "User Profile",
+        "Change Password (Dept.)",
+        "New User Creation",
+        "User Reset Password",
+        "Audit Trail",
+        "User Hierarchy",
+        "Reset Registration Password",
+        "User Transfer",
+        "PO Activation/Deactivation",
+        "OS File Transfer"
+        ]
+      },]
+    }, 
   { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
 
-  const renderHomeContent = () => (
+function HomeContent() {
+  const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
+
+  return (
     <>
       {/* Hero Section */}
       <section className="hero-section">
@@ -427,7 +483,10 @@ const navItems = [
               <p className="hero-text animate-fade-in-left delay-200">
                 A unified digital platform for Excise Licenses, Brands, Permits & Passes with transparent and efficient workflow.
               </p>
-              <button className="btn-explore-services animate-fade-in-up delay-300">
+              <button 
+                onClick={() => setIsExploreModalOpen(true)}
+                className="btn-explore-services animate-fade-in-up delay-300"
+              >
                 <LayoutGridSvg className="icon-sm" />
                 EXPLORE SERVICES
               </button>
@@ -672,6 +731,18 @@ const navItems = [
           </div>
         </div>
       </section>
+
+      {/* Floating Explore Services Guide Modal */}
+      <ExploreServicesModal
+        isOpen={isExploreModalOpen}
+        onClose={() => setIsExploreModalOpen(false)}
+        onNavigate={(path) => {
+          if (path.startsWith('/')) {
+            window.location.href = path;
+          }
+        }}
+      />
     </>
   );
+}
 
