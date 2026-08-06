@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetailsDto
 {
 
- public long FirmId { get; set; }
+    public long FirmId { get; set; }
 
     public string ApplicationIdNo { get; set; } = string.Empty;
 
@@ -25,7 +25,7 @@ public class LicenseCompanyDetailsDto
 
     public string? VATNO { get; set; }
 
-public string? IsExciseNominee { get; set; }
+    public string? IsExciseNominee { get; set; }
 
 
     public string? ExciseNomineeName { get; set; }
@@ -46,7 +46,7 @@ public string? IsExciseNominee { get; set; }
     public string? ExciseNomineePanImage { get; set; }
 
 
-    
+
 
 
     public string? FSSAILicenceNo { get; set; }
@@ -92,16 +92,16 @@ public string? IsExciseNominee { get; set; }
 
 public class AdditionalCompanyPartnersDetailsDto
 {
-    
 
-         public int? ID { get; set; }
+
+    public int? ID { get; set; }
 
     public string ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 
     public string? PPerShare { get; set; }
 
-    public string? PPanNo { get; set; }
+    public string? PPanNo { get; set; } 
 
     public string? PExciseNominee { get; set; }
 
@@ -116,7 +116,15 @@ public class AdditionalCompanyPartnersDetailsDto
 
     public string? PanFileUploaded { get; set; }
     public string? AddressFileUploaded { get; set; }
+    public int? SlNo { get; set; }
 
+}
+//using this dto to delete the records 
+public class DeletePartnerDto
+{
+    public int ID { get; set; }
+
+    public string ApplicationIdNo { get; set; } = string.Empty;
 }
 
 

@@ -13,11 +13,14 @@ namespace backend.Application.Interfaces.License
 
         Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
 
-        Task<string> SaveAndUpdateAdditionalHCRDetails(AdditionalHCRDetailsDto dto);
+        //Part for the Additional details --starting
+        Task<AdditionalHCRCompleteDto?> GetAdditionalHCRCompleteDetails(string applicationIdNo);
 
-        Task<AdditionalHCRDetailsDto?> GetAditionalDetailsIDWise(string applicationIdNo);
+        Task<string> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto);
 
+        Task<string> DeletePartner(int id, string applicationIdNo);
 
+        //--Ending(RM)
 
     }
 }
