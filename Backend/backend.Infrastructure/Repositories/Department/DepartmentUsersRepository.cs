@@ -50,10 +50,10 @@ namespace backend.Infrastructure.Repositories.Department
         }
         public async Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles)
         {
-          
+
 
             await _context.DepartmentUsers.AddAsync(DepartmentUser);
-            
+
             await _context.DeptUserRoles.AddAsync(DeptUserRoles);
 
             return await _context.SaveChangesAsync() > 0;
@@ -65,14 +65,10 @@ namespace backend.Infrastructure.Repositories.Department
 
             return maxId + 1;
         }
-        public async Task<bool> UpdateAsync(DepartmentUserDto user )
+        public async Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId)
         {
             var existingUser = await _context.DepartmentUsers
-                .Include(x => x.DeptUserRoles)
-                .FirstOrDefaultAsync(x => x.UserId == user.UserId);
-
-            if (existingUser == null)
-                return false;
+                .FirstAsync(x => x.UserId == user.UserId);
 
             existingUser.UserName = user.UserName;
             existingUser.UserDesignation = user.UserDesignation;
@@ -80,16 +76,22 @@ namespace backend.Infrastructure.Repositories.Department
             existingUser.IsActive = user.IsActive;
             existingUser.UpdatedDate = DateTime.Now;
 
-            _context.DeptUserRoles.RemoveRange(existingUser.DeptUserRoles);
+            var activeRole = await _context.DeptUserRoles
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId && x.IsActive == "Y");
 
-            //foreach (var roleId in roleIds)
-            //{
-            //    existingUser.DeptUserRoles.Add(new DeptUserRoles
-            //    {
-            //        UserId = existingUser.UserId,
-            //        RoleId = roleId
-            //    });
-            //}
+            if (activeRole != null && activeRole.RoleId != newRoleId)
+            {
+                // Deactivate old role
+                activeRole.IsActive = "N";
+
+                // Insert new role
+                _context.DeptUserRoles.Add(new DeptUserRoles
+                {
+                    UserId = user.UserId,
+                    RoleId = newRoleId,
+                    IsActive = "Y"
+                });
+            }
 
             return await _context.SaveChangesAsync() > 0;
         }

@@ -18,13 +18,7 @@ namespace backend.Infrastructure.Repositories.Department
         {
             _context = context;
         }
-        public async Task<string> GetRoleNameByRoleId(int roleId)
-        {
-            return await _context.MstRoles
-                .Where(r => r.RoleId == roleId)
-                .Select(r => r.RoleName)
-                .FirstOrDefaultAsync() ?? "";
-        }
+
 
         public async Task<IEnumerable<MstRoles>> GetRolesAsync()
         {
@@ -54,53 +48,21 @@ namespace backend.Infrastructure.Repositories.Department
 
             return maxRoleId + 1;
         }
-        public async Task<MstRoles> CreateRoleAsync(AddRoleDto model)
+        public async Task<bool> CreateRoleAsync(MstRoles role)
         {
-            try
-            {
-                var maxid = await GetNextRoleIdAsync();
-                var role = new MstRoles
-                {
-                    RoleId = maxid,
-                    RoleName = model.RoleName.Trim(),
-                    RoleDescription = model.RoleDescription.Trim(),
-                    IsActive = string.IsNullOrWhiteSpace(model.IsActive)
-                ? "Y"
-                : model.IsActive
-                };
 
-                _context.MstRoles.Add(role);
-                await _context.SaveChangesAsync();
+            _context.MstRoles.Add(role);
+            return await _context.SaveChangesAsync() > 0;
 
-                return role;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception here if you have logging
-
-                throw; // Let the controller or global exception handler deal with it
-            }
         }
-      
 
-        public async Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model)
+
+        public async Task<bool> UpdateRoleAsync(MstRoles model)
         {
             try
             {
-                var role = await _context.MstRoles.FindAsync(model.RoleId);
-
-                if (!string.IsNullOrWhiteSpace(model.RoleName))
-                    role.RoleName = model.RoleName.Trim();
-
-                if (!string.IsNullOrWhiteSpace(model.RoleDescription))
-                    role.RoleDescription = model.RoleDescription.Trim();
-
-                if (!string.IsNullOrWhiteSpace(model.IsActive))
-                    role.IsActive = model.IsActive.Trim();
-
-                _context.MstRoles.Update(role);
-                await _context.SaveChangesAsync();
-                return role;
+                _context.MstRoles.Update(model);
+                return await _context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
             {
@@ -131,6 +93,13 @@ namespace backend.Infrastructure.Repositories.Department
 
                 throw; // Let the controller or global exception handler deal with it
             }
+        }
+        public async Task<string> GetRoleNameByRoleId(int roleId)
+        {
+            return await _context.MstRoles
+                .Where(r => r.RoleId == roleId)
+                .Select(r => r.RoleName)
+                .FirstOrDefaultAsync() ?? "";
         }
     }
 }
