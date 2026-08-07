@@ -28,6 +28,8 @@ const RestaurantDetails = ({
   policeStations = [],
   onChange,
 }) => {
+
+  console.log("RestaurantDetails",siteForm)
   return (
     <div className="premium-form">
       {/* HEADER */}
@@ -126,12 +128,12 @@ const RestaurantDetails = ({
                 className="reg-select"
                 name="state"
                 value={siteForm.State}
-                onChange={(e) => onChange("State", e.target.value)}
+                onChange={(e) => onChange("State", e.target.value.trim())}
               >
                 <option value="">Select State</option>
 
                 {states.map((state) => (
-                  <option key={state.sid} value={state.stateCode}>
+                  <option key={state.sid} value={state.stateCode.trim()}>
                     {state.stateName}
                   </option>
                 ))}

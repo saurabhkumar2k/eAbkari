@@ -196,16 +196,27 @@ namespace backend.Infrastructure.Data
 
 
 
-            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-                .ToTable("ApplicantLicensePartnersDetails");
-            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-                .HasKey(x => x.ID);
-            modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
-            //modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-            //    .HasKey(x => x.ApplicationIdNo);
+            // modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            //     .ToTable("ApplicantLicensePartnersDetails");
+            // modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            //     .HasKey(x => x.ID);
+            // modelBuilder.Entity<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails");
+            // //modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            // //    .HasKey(x => x.ApplicationIdNo);
+
+            // modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+            //     .Property(ap => ap.PName).IsRequired().HasMaxLength(150);
 
             modelBuilder.Entity<ApplicantLicensePartnersDetails>()
-                .Property(ap => ap.PName).IsRequired().HasMaxLength(150);
+                .ToTable("ApplicantLicensePartnersDetails");
+
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+                .HasKey(x => x.ID);
+
+            modelBuilder.Entity<ApplicantLicensePartnersDetails>()
+                .Property(ap => ap.PName)
+                .IsRequired(false)
+                .HasMaxLength(150);
 
             modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
             modelBuilder.Entity<LicenseApplicationUserDetails>()
