@@ -1,6 +1,7 @@
 using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace backend.API.Licence.Controllers
 {
@@ -89,7 +90,8 @@ namespace backend.API.Licence.Controllers
 
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
-        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
+        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromForm] AdditionalHCRCompleteDto dto)
+        // public async Task<IActionResult> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
         {
             if (dto == null || dto.AdditionalDetails == null)
             {
@@ -101,9 +103,19 @@ namespace backend.API.Licence.Controllers
                 return BadRequest("ApplicationIdNo is required.");
             }
 
+            Console.WriteLine(
+                JsonSerializer.Serialize(dto, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                })
+            );
             var result = await _HCRservice.SaveAdditionalHCRCompleteDetails(dto);
 
-            return Ok(result);
+            // return Ok(result);
+            return Ok(new
+            {
+                message = result
+            });
         }
 
         [HttpGet]

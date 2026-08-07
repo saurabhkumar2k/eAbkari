@@ -96,7 +96,7 @@ public class AdditionalCompanyPartnersDetailsDto
 
     public int? ID { get; set; }
 
-    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? ApplicationIdNo { get; set; } 
     public string? PName { get; set; }
 
     public string? PPerShare { get; set; }
@@ -124,7 +124,7 @@ public class DeletePartnerDto
 {
     public int ID { get; set; }
 
-    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? ApplicationIdNo { get; set; } 
 }
 
 
