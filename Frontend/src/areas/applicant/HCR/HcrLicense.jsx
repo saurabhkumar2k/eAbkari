@@ -236,6 +236,7 @@ export default function HcrLicenseWizard({
     // }
 
     if (field === "DistrictCode") {
+      debugger;
       fetchSubDivisions(value); // 👈 Add this
       fetchPoliceStations(value);
     }
@@ -274,17 +275,17 @@ export default function HcrLicenseWizard({
   }, [siteForm.DistrictCode]);
 
   const handleInputChange = (field, value) => {
-    // setFormData(prev => ({
-    //   ...prev,
-    //   [field]: value
-    // }));
-    // // Clear error
-    // if (formErrors[field]) {
-    //   setFormErrors(prev => ({
-    //     ...prev,
-    //     [field]: null
-    //   }));
-    // }
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    // Clear error
+    if (formErrors[field]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [field]: null
+      }));
+    }
     applicantForm[field] = value;
   };
   const handleDirectorChange = (i, f, v) => {
@@ -543,6 +544,60 @@ export default function HcrLicenseWizard({
 
   console.log("selectedLicenseId", selectedLicenseId);
 
+
+  //  const [formData, setFormData] = useState({
+  //    // Step 1: Applicant Details
+  //    applicantName: "VISHAL DEVILAL JAISWAL",
+  //    companyName: "KRISTAL SPIRITS PVT LTD",
+  //    dob: "1980-01-01",
+  //    fatherName: "DEVILAL JAISWAL",
+  //    occupation: "business",
+  //    address1: "B-96, FIRST FLOOR, MAYAPURI, INDUSTRIAL AREA, PHASE-I, NE",
+  //    address2: "Phase-I, Mayapuri",
+  //    state: "Delhi",
+  //    district: "West",
+  //    subDivision: "Rajouri Garden",
+  //    pin: "110064",
+  //    email: "vishal@kristalspirits.com",
+  //    mobile: "9266024141",
+  //    landline: "011-45672910",
+  //    panNo: "AAFCM6267M",
+ 
+  //    // Step 2: Warehouse Details
+  //    warehouseName: "Kristal Mayapuri Bonded Depot",
+  //    warehouseAddress: "B-96, Mayapuri Industrial Area, Phase-I, West Delhi, 110064",
+  //    warehouseSize: "12500", // Sq. ft
+  //    hasFireSprinklers: "Yes",
+  //    cctvProvider: "SecureVision CCTV Systems Ltd",
+  //    lockerCount: "12",
+  //    hasTemperatureControl: "Yes",
+ 
+  //    // Step 3: Additional Details
+  //    annualTurnover: "45.50", // Crores
+  //    bankGuaranteeRef: "BG-2026-NCT-99120",
+  //    bankGuaranteeAmount: "5000000", // 50 Lakhs
+  //    pastExpYears: "8",
+  //    deliveryVehicles: "6",
+  //    priorLicensesDelhi: "Yes",
+ 
+  //    // Step 4: Personal Documents (Files Status)
+  //    personalPanUploaded: true,
+  //    personalAadhaarUploaded: true,
+  //    partnershipDeedUploaded: true,
+  //    itrReturnUploaded: true,
+ 
+  //    // Step 5: Site Documents (Files Status)
+  //    leaseDeedUploaded: true,
+  //    fireNocUploaded: true,
+  //    mcdTradeLicenseUploaded: true,
+  //    buildingPlanUploaded: true,
+ 
+  //    // Step 6: Declaration
+  //    undertakingAccept: false,
+  //    signatureName: "VISHAL DEVILAL JAISWAL",
+  //    signingPlace: "New Delhi"
+  //  });
+
   const handleNextStep = async () => {
     debugger;
     try {
@@ -733,7 +788,7 @@ export default function HcrLicenseWizard({
         }
 
 
-        console.log("Warehouse License Response:", data);
+        //console.log("HCR Additional License Response:", data);
       }
 
       if (currentStep === 7) {
@@ -746,7 +801,7 @@ export default function HcrLicenseWizard({
           localStorage.getItem("applicationId"),
         );
 
-        formData.append("MobileNo", applicant.mobile);
+        formData.append("MobileNo", applicantForm.mobile);
 
         let index = 0;
 
@@ -1579,8 +1634,9 @@ export default function HcrLicenseWizard({
                       }
                       className="input-box"
                     >
-                      <option value="">Select Hour of Sale</option>
-
+                      <option value="0">Select Hour of Sale</option>
+                      <option value="1">11 AM - 1 AM</option>
+                      <option value="2">11 AM - 1 AM</option>                      
                       {hoursOfSaleList.map((item) => (
                         <option key={item.value} value={item.value}>
                           {item.label}
@@ -1641,7 +1697,9 @@ export default function HcrLicenseWizard({
 
                 <button
                   type="button"
-                  onClick={() => setCurrentStep(8)}
+                  onClick={() =>{
+                     handleNextStep();
+                    setCurrentStep(8);}}
                   className="btn btn-primary"
                 >
                   <span>Proceed to Documents</span>
@@ -1673,7 +1731,9 @@ export default function HcrLicenseWizard({
 
                 <button
                   type="button"
-                  onClick={() => setCurrentStep(9)}
+                  onClick={() =>{
+                     handleNextStep();
+                    setCurrentStep(9);}}
                   className="btn btn-primary"
                 >
                   <span>Proceed to Documents</span>
