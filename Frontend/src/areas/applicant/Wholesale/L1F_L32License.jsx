@@ -978,7 +978,7 @@ if (currentStep === 5) {
 
   return (
      
-    <div className="brand-registration-page select-none text-slate-800 animate-fade">
+    <div className="app-registartion-page">
       
       {/* Top Banner Area with complete descriptive branding */}
       {/* <div className="w-full bg-[#1e40af] text-white py-3.5 px-6 rounded-2xl shadow-md mb-6 flex items-center justify-between">
@@ -996,13 +996,13 @@ if (currentStep === 5) {
 
       {/* 6 Step Progress Wizard Bar Header */}
       {!submitSuccess && (
-        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 mb-6 select-none overflow-x-auto">
-          <div className="flex items-center justify-between min-w-[768px] relative px-4">
+        <div className="appl-card-section">
+          <div className="header-row">
             
             {/* Horizontal progress bar line connector */}
-            <div className="absolute top-[22px] left-8 right-8 -translate-y-1/2 h-[3px] bg-slate-100 z-0">
+            <div className="app-progress-line">
               <div 
-                className="h-full bg-blue-600 transition-all duration-300"
+                className="app-progress-bar"
                 style={{ width: `${((currentStep - 1) / 5) * 100}%` }}
               />
             </div>
@@ -1012,7 +1012,7 @@ if (currentStep === 5) {
               const isActive = currentStep === st.num;
               const isCompleted = currentStep > st.num;
               return (
-                <div key={st.num} className="flex flex-col items-center flex-1 relative z-10">
+                <div key={st.num} className="app-step-item">
                   <div 
                     onClick={() => {
                       // Allow arbitrary jumps only to completed steps for superior navigation
@@ -1035,7 +1035,7 @@ if (currentStep === 5) {
                   }`}>
                     {st.label}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-semibold">{st.sub}</span>
+                  <span className="app-step-label">{st.sub}</span>
                 </div>
               );
             })}
