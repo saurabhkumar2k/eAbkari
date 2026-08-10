@@ -9,8 +9,9 @@ import {
   Info 
 } from "lucide-react";
 
-export default function IdentityDetailsPage({ formData, onChange, errors = {}, showToast }) {
-  const fileInputRef = useRef(null);
+export default function IdentityDetailsPage({ formData, onChange, errors = {}, showToast, onFileSelect }) {
+  
+    const fileInputRef = useRef(null);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
 
   // Fallback defaults
@@ -27,7 +28,6 @@ export default function IdentityDetailsPage({ formData, onChange, errors = {}, s
     { value: "Driving License", label: "Driving License (RTO)" }
   ];
 
-  // Handles standard file upload trigger
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -40,20 +40,67 @@ export default function IdentityDetailsPage({ formData, onChange, errors = {}, s
         return;
       }
       onChange("idProofFileName", file.name);
-      // Give a dummy content URL for mock viewing
       onChange("idProofFileUrl", URL.createObjectURL(file) || "#");
+      onFileSelect && onFileSelect(file);   // <-- pass the real File object up
       if (showToast) showToast(`Successfully uploaded: ${file.name}`, "success");
     }
   };
 
-  const handleDeleteFile = () => {
-    onChange("idProofFileName", "");
-    onChange("idProofFileUrl", "");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    if (showToast) showToast("Uploaded document removed", "success");
-  };
+// export default function IdentityDetailsPage({ formData, onChange, errors = {}, showToast }) {
+  // const fileInputRef = useRef(null);
+  // const [previewModalOpen, setPreviewModalOpen] = useState(false);
+
+  // // Fallback defaults
+  // const currentIdProof = formData.idProofType || "";
+  // const currentIdNumber = formData.idNumber || "";
+  // const uploadedFileName = formData.idProofFileName || "";
+
+  // // Standard official Identification items
+  // const ID_PROOF_OPTIONS = [
+  //   { value: "Aadhaar Card", label: "Aadhaar Card (UIDAI)" },
+  //   { value: "Voter ID Card", label: "Voter ID / Election Card" },
+  //   { value: "PAN Card", label: "Income Tax PAN Card" },
+  //   { value: "Passport", label: "Indian Passport" },
+  //   { value: "Driving License", label: "Driving License (RTO)" }
+  // ];
+
+//   // Handles standard file upload trigger
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       if (file.size > 2 * 1024 * 1024) {
+//         if (showToast) {
+//           showToast("File size expands over the 2MB limit. Please upload a smaller file.", "error");
+//         } else {
+//           alert("File size exceeds 2MB limit");
+//         }
+//         return;
+//       }
+//       onChange("idProofFileName", file.name);
+//       // Give a dummy content URL for mock viewing
+//       onChange("idProofFileUrl", URL.createObjectURL(file) || "#");
+//       if (showToast) showToast(`Successfully uploaded: ${file.name}`, "success");
+//     }
+//   };
+
+  // const handleDeleteFile = () => {
+  //   onChange("idProofFileName", "");
+  //   onChange("idProofFileUrl", "");
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.value = "";
+  //   }
+  //   if (showToast) showToast("Uploaded document removed", "success");
+  // };
+
+const handleDeleteFile = () => {
+  onChange("idProofFileName", "");
+  onChange("idProofFileUrl", "");
+  onFileSelect && onFileSelect(null);   // signal removal
+  if (fileInputRef.current) {
+    fileInputRef.current.value = "";
+  }
+  if (showToast) showToast("Uploaded document removed", "success");
+};
 
   const triggerUploadClick = () => {
     if (fileInputRef.current) {
@@ -120,7 +167,7 @@ export default function IdentityDetailsPage({ formData, onChange, errors = {}, s
             </label>
             <input
               type="text"
-              placeholder="Enter Identification Ref number"
+              placeholder="Enter ID Number"
               className={`w-full bg-slate-50/50 border rounded-lg px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
                 errors.idNumber ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
               }`}

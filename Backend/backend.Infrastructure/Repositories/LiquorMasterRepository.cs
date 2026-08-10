@@ -106,6 +106,13 @@ namespace backend.Infrastructure.Repositories
         }
 
 
+        public async Task<IEnumerable<MstLiquorType>> GetLiquorTypeAsync(string kindCode)
+          {
+              return await _context.MstLiquorType
+                  .Where(x => x.LiquorCatCode == "02" && x.LiquorKindCode == kindCode)
+                  .ToListAsync();
+          }
+
 
 
     }

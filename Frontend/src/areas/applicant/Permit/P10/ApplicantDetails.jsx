@@ -1,4 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  getApplicantByRegId,
+  getStates,
+  getDistricts,
+  getSubDivisions
+} from "../../../../api/permitApi";
 import {
   User,
   Calendar,
@@ -9,10 +15,298 @@ import {
   FileText,
   Building,
   Hash,
-  Compass
+  Compass,
+  Loader2
 } from "lucide-react";
 
-export default function ApplicantDetails({ formData, onChange, errors = {} }) {
+const pickByPattern = (item, patterns) => {
+  const keys = Object.keys(item || {});
+  for (const pattern of patterns) {
+    const found = keys.find((k) => pattern.test(k));
+    if (found && item[found] !== null && item[found] !== undefined) {
+      return item[found];
+    }
+  }
+  return undefined;
+};
+
+const normalizeOption = (item) => {
+  if (item === null || typeof item !== "object") {
+    return { code: String(item ?? "").trim(), name: String(item ?? "").trim() };
+  }
+  const code = pickByPattern(item, [/^code$/i, /^id$/i, /^value$/i, /code$/i, /^.*id$/i]);
+  const name = pickByPattern(item, [/^name$/i, /^label$/i, /name$/i, /label$/i]);
+  return { code: String(code ?? "").trim(), name: String(name ?? "").trim() };
+};
+
+const extractList = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === "object") {
+    for (const key of ["data", "Data", "result", "Result", "items", "Items", "list", "List"]) {
+      if (Array.isArray(payload[key])) return payload[key];
+    }
+    const firstArray = Object.values(payload).find((v) => Array.isArray(v));
+    if (firstArray) return firstArray;
+  }
+  return [];
+};
+
+const resolveOption = (rawValue, options) => {
+  if (!rawValue) return null;
+  const needle = String(rawValue).trim().toLowerCase();
+  if (!needle) return null;
+  return (
+    options.find((o) => o.code.toLowerCase() === needle) ||
+    options.find((o) => o.name.toLowerCase() === needle) ||
+    null
+  );
+};
+
+export default function ApplicantDetails({ formData, onChange, errors = {}, showToast }) {
+  const [loadingApplicant, setLoadingApplicant] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
+
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [subDivisions, setSubDivisions] = useState([]);
+
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
+  const [loadingSubDivisions, setLoadingSubDivisions] = useState(false);
+
+ const [pendingLocation, setPendingLocation] = useState({
+    state: null,
+    district: null,
+    subDivision: null
+  });
+
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    const regId = formData.regId;
+    if (!regId) return;
+
+    let isCancelled = false;
+
+    const fetchApplicantDetails = async () => {
+      setLoadingApplicant(true);
+      setFetchError(null);
+
+      try {
+        const response = await getApplicantByRegId(regId);
+        if (isCancelled) return;
+
+        const data = response.data;
+
+        if (data) {
+          if (data.firstName != null || data.lastName != null) {
+            const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ");
+            onChange("applicantName", fullName.toUpperCase());
+          }
+          if (data.dateOfBirth != null) {
+            const dobOnly = String(data.dateOfBirth).split("T")[0];
+            onChange("dob", dobOnly);
+          }
+          if (data.fatherHusbandName != null) onChange("fatherName", data.fatherHusbandName);
+          if (data.occupation != null) onChange("occupation", data.occupation);
+          if (data.panNo != null) onChange("panNo", data.panNo);
+          if (data.addressLine1 != null) onChange("address1", data.addressLine1);
+          if (data.addressLine2 != null) onChange("address2", data.addressLine2);
+          if (data.pin != null) onChange("pin", data.pin);
+          if (data.mobile != null) onChange("mobile", data.mobile);
+          if (data.email != null) onChange("email", data.email);
+          if (data.landline != null) onChange("landline", data.landline);
+
+          setPendingLocation({
+            state: data.stateUT != null ? String(data.stateUT).trim() : null,
+            district: data.district != null ? String(data.district).trim() : null,
+            subDivision: data.subDivision != null ? String(data.subDivision).trim() : null
+          });
+        }
+
+        if (showToast) showToast("Applicant details loaded from registry", "success");
+      } catch (error) {
+        if (isCancelled) return;
+        console.error("Failed to fetch applicant details:", error);
+        setFetchError("Could not load applicant details from registry");
+        if (showToast) showToast("Failed to load applicant details", "error");
+      } finally {
+        if (!isCancelled) {
+          setLoadingApplicant(false);
+          setIsInitialLoad(false);
+        }
+      }
+    };
+
+    fetchApplicantDetails();
+    return () => { isCancelled = true; };
+   
+  }, [formData.regId]);
+
+ 
+  useEffect(() => {
+    let isCancelled = false;
+
+    const fetchStates = async () => {
+      setLoadingStates(true);
+      try {
+        const response = await getStates();
+        if (isCancelled) return;
+        const list = extractList(response.data);
+        if (list.length === 0) {
+          console.warn("getStates() returned no array — raw response:", response.data);
+        }
+        setStates(list.map(normalizeOption));
+      } catch (error) {
+        console.error("Failed to fetch states:", error);
+        if (showToast) showToast("Failed to load states list", "error");
+      } finally {
+        if (!isCancelled) setLoadingStates(false);
+      }
+    };
+
+    fetchStates();
+    return () => { isCancelled = true; };
+    
+  }, []);
+
+
+  useEffect(() => {
+    if (!pendingLocation.state || states.length === 0) return;
+    const match = resolveOption(pendingLocation.state, states);
+    if (match) {
+      onChange("state", match.code);
+    } else {
+      console.warn(`Registry state "${pendingLocation.state}" not found in states list`);
+    }
+   
+    setPendingLocation((prev) => ({ ...prev, state: null }));
+  
+  }, [pendingLocation.state, states]);
+
+ 
+  useEffect(() => {
+    const stateCode = formData.state;
+    if (!stateCode) {
+      setDistricts([]);
+      return;
+    }
+
+    let isCancelled = false;
+
+    const fetchDistricts = async () => {
+      setLoadingDistricts(true);
+      try {
+        const response = await getDistricts(stateCode);
+        if (isCancelled) return;
+        const list = extractList(response.data);
+        if (list.length === 0) {
+          console.warn(`getDistricts("${stateCode}") returned no array — raw response:`, response.data);
+        }
+        const normalized = list.map(normalizeOption);
+        if (list.length > 0 && normalized.every((d) => !d.code)) {
+          console.warn("Districts loaded but every code came back empty — check property names:", list[0]);
+        }
+        setDistricts(normalized);
+
+        if (!isInitialLoad) {
+          const stillValid = normalized.some((d) => d.code === formData.district);
+          if (!stillValid) {
+            onChange("district", "");
+            onChange("subDivision", "");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch districts:", error);
+        if (showToast) showToast("Failed to load districts list", "error");
+      } finally {
+        if (!isCancelled) setLoadingDistricts(false);
+      }
+    };
+
+    fetchDistricts();
+    return () => { isCancelled = true; };
+  
+  }, [formData.state]);
+ 
+  useEffect(() => {
+    if (!pendingLocation.district || districts.length === 0) return;
+    const match = resolveOption(pendingLocation.district, districts);
+    if (match) {
+      onChange("district", match.code);
+    } else {
+      console.warn(`Registry district "${pendingLocation.district}" not found in districts list`);
+    }
+    setPendingLocation((prev) => ({ ...prev, district: null }));
+   
+  }, [pendingLocation.district, districts]);
+
+  useEffect(() => {
+    const districtCode = formData.district;
+    if (!districtCode) {
+      setSubDivisions([]);
+      return;
+    }
+
+    let isCancelled = false;
+    const fetchSubDivisions = async () => {
+      setLoadingSubDivisions(true);
+      try {
+        const response = await getSubDivisions(districtCode);
+        if (isCancelled) return;
+        console.log(`getSubDivisions("${districtCode}") raw response:`, response.data);
+        const list = extractList(response.data);
+        if (list.length === 0) {
+          console.warn(`getSubDivisions("${districtCode}") returned no array — raw response above.`);
+        }
+        const normalized = list.map(normalizeOption);
+        if (list.length > 0 && normalized.every((s) => !s.code)) {
+          console.warn("Sub-divisions loaded but every code came back empty — check property names:", list[0]);
+        }
+        setSubDivisions(normalized);
+        if (!isInitialLoad) {
+          const stillValid = normalized.some((s) => s.code === formData.subDivision);
+          if (!stillValid) {
+            onChange("subDivision", "");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch sub-divisions:", error);
+        if (showToast) showToast("Failed to load sub-divisions list", "error");
+      } finally {
+        if (!isCancelled) setLoadingSubDivisions(false);
+      }
+    };
+
+    fetchSubDivisions();
+    return () => { isCancelled = true; };
+   
+  }, [formData.district]);
+
+ 
+  useEffect(() => {
+    if (!pendingLocation.subDivision || subDivisions.length === 0) return;
+    const match = resolveOption(pendingLocation.subDivision, subDivisions);
+    if (match) {
+      onChange("subDivision", match.code);
+    } else {
+      console.warn(`Registry sub-division "${pendingLocation.subDivision}" not found in list`);
+    }
+    setPendingLocation((prev) => ({ ...prev, subDivision: null }));    
+    setIsInitialLoad(false);   
+  }, [pendingLocation.subDivision, subDivisions]);
+
+  const handleStateChange = (value) => {
+    onChange("state", value);
+    onChange("district", "");
+    onChange("subDivision", "");
+  };
+
+  const handleDistrictChange = (value) => {
+    onChange("district", value);
+    onChange("subDivision", "");
+  };
+
   return (
     <div className="space-y-8 animate-fade">
       {/* Informational banner reflecting registered status */}
@@ -20,11 +314,20 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
         <div className="w-10 h-10 bg-blue-600/10 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
           <User className="w-5 h-5 text-blue-600" />
         </div>
-        <div>
+        <div className="flex-1">
           <h4 className="text-sm font-bold text-blue-900">Pre-filled Registered Profile Information</h4>
           <p className="text-xs text-blue-700/85 mt-0.5 leading-relaxed">
             These applicant details are loaded automatically from your online user registry record. You can review and verify the demographic, residential, and verification fields.
           </p>
+          {loadingApplicant && (
+            <p className="text-xs text-blue-700 mt-2 flex items-center gap-1.5 font-bold">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              Loading applicant details...
+            </p>
+          )}
+          {fetchError && (
+            <p className="text-xs text-red-600 mt-2 font-bold">{fetchError}</p>
+          )}
         </div>
       </div>
 
@@ -217,7 +520,8 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
           {/* State */}
           <div className="reg-field">
             <label className="reg-label">
-              State <span className="text-red-500">*</span>
+              State {loadingStates && <Loader2 className="inline w-3 h-3 animate-spin ml-1" />}
+              <span className="text-red-500">*</span>
             </label>
             <div className="reg-input-group">
               <div className="reg-input-icon">
@@ -225,20 +529,27 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
               </div>
               <select
                 className="reg-select font-bold text-slate-800 cursor-pointer pl-12 pr-4 bg-[#fbfbfc] border border-slate-200"
-                value={formData.state || "Delhi"}
-                onChange={(e) => onChange("state", e.target.value)}
+                value={formData.state || ""}
+                onChange={(e) => handleStateChange(e.target.value)}
               >
-                <option value="Delhi">Delhi</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="">--Select--</option>
+                {states.map((st) => (
+                  <option key={st.code} value={st.code}>
+                    {st.name}
+                  </option>
+                ))}
               </select>
             </div>
+            {errors.state && (
+              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.state}</p>
+            )}
           </div>
 
           {/* District */}
           <div className="reg-field">
             <label className="reg-label">
-              District <span className="text-red-500">*</span>
+              District {loadingDistricts && <Loader2 className="inline w-3 h-3 animate-spin ml-1" />}
+              <span className="text-red-500">*</span>
             </label>
             <div className="reg-input-group">
               <div className="reg-input-icon">
@@ -246,23 +557,28 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
               </div>
               <select
                 className="reg-select font-bold text-slate-800 cursor-pointer pl-12 pr-4 bg-[#fbfbfc] border border-slate-200"
-                value={formData.district || "South"}
-                onChange={(e) => onChange("district", e.target.value)}
+                value={formData.district || ""}
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                disabled={!formData.state}
               >
-                <option value="South">South</option>
-                <option value="New Delhi">New Delhi</option>
-                <option value="Central">Central</option>
-                <option value="North">North</option>
-                <option value="East">East</option>
-                <option value="West">West</option>
+                <option value="">--Select--</option>
+                {districts.map((d) => (
+                  <option key={d.code} value={d.code}>
+                    {d.name}
+                  </option>
+                ))}
               </select>
             </div>
+            {errors.district && (
+              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.district}</p>
+            )}
           </div>
 
           {/* Sub Division */}
           <div className="reg-field">
             <label className="reg-label">
-              Sub Division <span className="text-red-500">*</span>
+              Sub Division {loadingSubDivisions && <Loader2 className="inline w-3 h-3 animate-spin ml-1" />}
+              <span className="text-red-500">*</span>
             </label>
             <div className="reg-input-group">
               <div className="reg-input-icon">
@@ -270,16 +586,21 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
               </div>
               <select
                 className="reg-select font-bold text-slate-800 cursor-pointer pl-12 pr-4 bg-[#fbfbfc] border border-slate-200"
-                value={formData.subDivision || "Saket"}
+                value={formData.subDivision || ""}
                 onChange={(e) => onChange("subDivision", e.target.value)}
+                disabled={!formData.district}
               >
-                <option value="Saket">Saket</option>
-                <option value="Vasant Vihar">Vasant Vihar</option>
-                <option value="Hauz Khas">Hauz Khas</option>
-                <option value="Mehrauli">Mehrauli</option>
-                <option value="Kalkaji">Kalkaji</option>
+                <option value="">--Select--</option>
+                {subDivisions.map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name}
+                  </option>
+                ))}
               </select>
             </div>
+            {errors.subDivision && (
+              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.subDivision}</p>
+            )}
           </div>
 
           {/* PIN */}
@@ -382,27 +703,10 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
               </div>
               <input
                 type="text"
-                placeholder="Landline number (Optional)"
+                placeholder="Landline Number "
                 className="reg-input font-bold text-slate-800"
                 value={formData.landline || ""}
                 onChange={(e) => onChange("landline", e.target.value.replace(/\D/g, ""))}
-              />
-            </div>
-          </div>
-
-          {/* FAX */}
-          <div className="reg-field">
-            <label className="reg-label">FAX Number</label>
-            <div className="reg-input-group">
-              <div className="reg-input-icon">
-                <FileText className="w-4 h-4 text-blue-600" />
-              </div>
-              <input
-                type="text"
-                placeholder="FAX number (Optional)"
-                className="reg-input font-bold text-slate-800"
-                value={formData.fax || ""}
-                onChange={(e) => onChange("fax", e.target.value)}
               />
             </div>
           </div>

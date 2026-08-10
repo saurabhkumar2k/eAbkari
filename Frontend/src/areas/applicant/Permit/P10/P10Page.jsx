@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { applyPermit, getApplicantByRegId, getPermitP10 } from "../../../../api/permitApi";
 import ApplicantDetails from "./ApplicantDetails";
 import EventDetailsPage from "./EventDetails";
 import IdentityDetailsPage from "./IdentityDetailPage";
 import LiquorDetailsPage from "./LiquorDetailPage";
+import GetPermit from "./GetPermit";
 import {
   User,
   Calendar,
@@ -31,88 +33,237 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
   const [currentStep, setCurrentStep] = useState(1);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [permitReceipt, setPermitReceipt] = useState(null);
+  const [submittedApplicationIdNo, setSubmittedApplicationIdNo] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
-    // Step 1: Applicant Details
-    applicantName: "MR. DEVENDER MITTAL",
-    dob: "1980-01-01",
-    fatherName: "MR. G. S. MITTAL",
-    occupation: "BUSINESS",
-    panNo: "AAKCA2158M",
-    address1: "A-3, DISTRICT CENTRE",
-    address2: "SELECT CITY WALK SAKET NEW DELHI",
-    state: "Delhi",
-    district: "South",
-    subDivision: "Saket",
-    pin: "110017",
-    email: "devender@advempl.com",
-    mobile: "9811042727",
+    // Step 1: Applicant Details — populated by ApplicantDetails.jsx via GetApplicantByRegId
+    applicantName: "",
+    dob: "",
+    fatherName: "",
+    occupation: "",
+    panNo: "",
+    address1: "",
+    address2: "",
+    state: "",
+    district: "",
+    subDivision: "",
+    pin: "",
+    email: "",
+    mobile: "",
     landline: "",
     fax: "",
+    licenseType: "4",
+    finYear: "2",
+    regId: Number(localStorage.getItem("regId")) || null,
 
     // Step 2: Event Details
     premisesType: "Farmhouse",
-    premiseName: "The Kundan Farmhouse",
-    premiseAddress: "Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-    venueCategory: "Farmhouse",
-    venueAddress: "The Kundan Farmhouse, Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-    latitude: "28.5284",
-    longitude: "77.0851",
+    premiseName: "",
+    premiseAddress: "",
+    venueCategory: "",
+    venueAddress: "",
+    latitude: "",
+    longitude: "",
     eventType: "Birthday",
-    occasionName: "Birthday Special Reception Event",
-    servingStartDate: "2026-06-25",
-    servingEndDate: "2026-06-25",
-    startTime: "18:30",
-    endTime: "23:45",
-    estimatedGuests: "180",
-    isVenueLicensed: "No",
+    occasionName: "",
+    servingStartDate: "",
+    servingEndDate: "",
+    startTime: "",
+    endTime: "",
+    estimatedGuests: "",
+    isVenueLicensed: "",
 
     // Step 3: Identity Details
-    idProofType: "Aadhaar Card",
-    idNumber: "482019348821",
-    idProofFileName: "aadhaar_card_devender.pdf",
+    idProofType: "",
+    idNumber: "",
+    idProofFileName: "",
     idProofFileUrl: "#",
 
     // Step 4: Liquor Details
-    sourcingType: "From Licensed Retail Vend (L-2)",
-    sourcingShed: "Vedic Retail Licensed Shop (L-2), Block-E Mayapuri",
-    brandsToServe: "WHISKY - SINGLE MALT (750ml), SINGLE MALT WHISKY - IMPORTED (700ml), BEER - PREMIUM LAGER (650ml)",
-    qtyImfl: "30",
-    qtyImported: "18",
-    qtyBeerWine: "72",
-    estimatedCost: "145000",
+    sourcingType: "",
+    eventendtime: "",
+    brandsToServe: "",
+    qtyImfl: "",
+    qtyImported: "",
+    qtyBeerWine: "",
+    estimatedCost: "",
     liquorItems: [
       {
         id: 1,
-        liquorType: "WHISKY - SINGLE MALT",
-        liquorCategory: "IMFL (Indian Manufactured Foreign Liquor)",
-        bottleSize: 750,
-        quantity: 30,
-      },
-      {
-        id: 2,
-        liquorType: "SINGLE MALT WHISKY - IMPORTED",
-        liquorCategory: "Imported Liquor (Foreign Sourced / BIO)",
-        bottleSize: 700,
-        quantity: 18,
-      },
-      {
-        id: 3,
-        liquorType: "BEER - PREMIUM LAGER",
-        liquorCategory: "Beer / Wine spirits",
-        bottleSize: 650,
-        quantity: 72,
+        liquorType: "",
+        liquorCategory: "",
+        bottleSize: 0,
+        quantity: 0,
       }
     ],
 
     // Step 5: Declaration
     undertakingAccept: true,
-    signatureName: "DEVENDER MITTAL",
+    signatureName: "", // Will be populated from API
     signingPlace: "New Delhi"
   });
 
   const [errors, setErrors] = useState({});
+
+  // Fetch user details when component mounts
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const regId = localStorage.getItem("regId");
+      
+      if (!regId) {
+        console.warn("No RegId found in localStorage");
+        setFormData(prev => ({
+          ...prev,
+          signatureName: "",
+          applicantName: ""
+        }));
+        return;
+      }
+
+      setLoadingUser(true);
+      try {
+        const response = await getApplicantByRegId(regId);
+        console.log("User Details Response:", response.data);
+
+        const userData = response.data;
+
+        // ========== FIX: Extract FirstName and LastName ==========
+        // Try to get FirstName and LastName from various possible field names
+        const firstName = userData.firstName || 
+                         userData.FirstName || 
+                         userData.firstname || 
+                         userData.Firstname || 
+                         userData.fName || 
+                         userData.FName || 
+                         "";
+
+        const lastName = userData.lastName || 
+                        userData.LastName || 
+                        userData.lastname || 
+                        userData.Lastname || 
+                        userData.lName || 
+                        userData.LName || 
+                        "";
+
+        // Concatenate FirstName and LastName
+        const fullName = [firstName, lastName]
+          .filter(name => name && name.trim() !== "")
+          .join(" ")
+          .trim();
+
+        // If fullName is empty, try other fallback fields
+        const userName = fullName || 
+                        userData.applicantName || 
+                        userData.userName || 
+                        userData.UserName || 
+                        userData.name || 
+                        userData.Name || 
+                        userData.fullName || 
+                        userData.FullName 
+                        
+
+        const userEmail = userData.email || userData.Email || userData.mail || userData.Mail || "";
+        const userMobile = userData.mobile || userData.Mobile || userData.phone || userData.Phone || "";
+        const userPanNo = userData.panNo || userData.PanNo || userData.pan || userData.Pan || "";
+        
+        // Extract father/husband name
+        const fatherName = userData.fatherHusbandName || 
+                          userData.FatherHusbandName || 
+                          userData.fatherName || 
+                          userData.FatherName || 
+                          "";
+
+        // Extract date of birth
+        const rawDob = userData.dateOfBirth || 
+                   userData.DateOfBirth || 
+                   userData.dob || 
+                   userData.Dob || 
+                   "";
+        const formattedDob = rawDob
+  ? new Date(rawDob).toISOString().split("T")[0]
+  : "";
+        // Extract address
+        const address1 = userData.addressLine1 || 
+                        userData.AddressLine1 || 
+                        userData.address1 || 
+                        userData.Address1 || 
+                        userData.presentAddress || 
+                        "";
+
+        const address2 = userData.addressLine2 || 
+                        userData.AddressLine2 || 
+                        userData.address2 || 
+                        userData.Address2 || 
+                        "";
+
+        // Extract state, district, etc.
+        const state = userData.stateUT || 
+                     userData.StateUT || 
+                     userData.state || 
+                     userData.State || 
+                     "";
+
+        const district = userData.district || 
+                        userData.District || 
+                        "";
+
+        const subDivision = userData.subDivision || 
+                           userData.SubDivision || 
+                           "";
+
+        const pin = userData.pin || 
+                   userData.PIN || 
+                   userData.pincode || 
+                   userData.Pincode || 
+                   "";
+
+        // Update form data with user details
+        setFormData(prev => ({
+          ...prev,
+          // Applicant name (full name)
+          applicantName: userName,
+          // Signature name (full name in uppercase)
+          signatureName: userName.toUpperCase(),
+          // Other details
+          email: userEmail,
+          mobile: userMobile || prev.mobile,
+          panNo: userPanNo || prev.panNo,
+          dob: formattedDob || prev.dob,
+          fatherName: fatherName || prev.fatherName,
+          occupation: userData.occupation || userData.Occupation || prev.occupation,
+          address1: address1 || prev.address1,
+          address2: address2 || prev.address2,
+          state: state || prev.state,
+          district: district || prev.district,
+          subDivision: subDivision || prev.subDivision,
+          pin: pin || prev.pin,
+        }));
+
+        if (showToast) {
+          showToast(`Welcome ${userName}!`, "success");
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+        // Set default name if API fails
+        setFormData(prev => ({
+          ...prev,
+          applicantName: "",
+          signatureName: ""
+        }));
+        if (showToast) {
+          showToast("Could not load user details. Using default values.", "error");
+        }
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, []); // Empty dependency array means this runs once on mount
 
   const steps = [
     { num: 1, label: "Step 1", desc: "Applicant Details" },
@@ -221,16 +372,15 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < 5) {
-        setCurrentStep(currentStep + 1);
-        if (showToast) showToast(`Moving to ${steps[currentStep].desc}`);
-      } else {
-        handleFinalSubmission();
-      }
+  const handleNext = async () => {
+    if (!validateStep(currentStep))
+      return;
+
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1);
     } else {
-      if (showToast) showToast("Please correct the highlighted validation errors before continuing.", "error");
+      // Final Step
+      await handleFinalSubmission();
     }
   };
 
@@ -242,52 +392,107 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
     }
   };
 
-  const handleFinalSubmission = () => {
-    const referenceNum = `P10-TRN-${Math.floor(100000 + Math.random() * 900000)}`;
-    const dateStamp = new Date().toLocaleDateString("en-IN");
-    
-    const receipt = {
-      permitNo: referenceNum,
-      permitCode: "P-10",
-      permitTitle: "Occasional Permit for Serving Liquor",
-      applicantName: formData.signatureName,
-      permitStartDate: formData.servingStartDate,
-      permitEndDate: formData.servingEndDate,
-      venue: formData.venueAddress,
-      feePaid: "₹ 15,000",
-      generatedAt: dateStamp,
-      status: "APPROVED - ACTIVE",
-      panNo: formData.panNo,
-      sourcingShed: formData.sourcingShed,
-      email: formData.email,
-      mobile: formData.mobile,
-      startTime: formData.startTime,
-      endTime: formData.endTime
-    };
-
-    setPermitReceipt(receipt);
-    setSubmitSuccess(true);
-    
-    if (onSubmitPermit) {
-      onSubmitPermit({
-        id: referenceNum,
-        permitType: "Service/Liquor at other premises (P-10)",
-        sourcePremise: formData.sourcingShed,
-        destPremise: formData.venueAddress,
-        consignmentDetails: `${formData.qtyImfl} IMFL, ${formData.qtyImported} IFL, ${formData.qtyBeerWine} Beer/Wine bottles`,
-        carrierLicense: "DL-1LM-TEMP-PASS-09",
-        status: "Approved",
-        submittedDate: dateStamp,
-        remarks: "Transit permit instant gateway pass issued"
-      });
+  const handleFinalSubmission = async () => {
+    if (!formData.regId) {
+      if (showToast) showToast("Session expired. Please log in again.", "error");
+      return;
     }
-    if (showToast) showToast("P-10 Special Occasional Permit approved and signed successfully!", "success");
+
+    const form = new FormData();
+
+    // Step 1: Applicant Details
+    form.append("ApplicantName", formData.applicantName);
+    form.append("DateOfBirth", formData.dob);
+    form.append("FatherHusbandName", formData.fatherName);
+    form.append("Occupation", formData.occupation);
+    form.append("PanNo", formData.panNo);
+
+    form.append("PresentAddress", formData.address1);
+    form.append("PermanentAddress", formData.address2);
+
+    form.append("StateUT", formData.state);
+    form.append("District", formData.district);
+    form.append("SubDivision", formData.subDivision);
+    form.append("PIN", formData.pin);
+
+    form.append("Mobile", formData.mobile);
+    form.append("Email", formData.email);
+    form.append("LandLine", formData.landline);
+
+    // Step 2: Event Details
+    form.append("PremiseType", formData.premisesType);
+    form.append("PremiseName", formData.premiseName);
+    form.append("PremiseAddress", formData.premiseAddress);
+
+    form.append("Latitude", formData.latitude);
+    form.append("Longitude", formData.longitude);
+
+    form.append("EventType", formData.eventType);
+
+    form.append("PremiseGuestNo", formData.estimatedGuests);
+
+    form.append("PremiseStartEventDate", formData.servingStartDate);
+    form.append("PremiseEndEventDate", formData.servingEndDate);
+
+    form.append("PremiseStartTime", formData.startTime);
+    form.append("PremiseEndTime", formData.endTime);
+
+    form.append("ApplicantMobile", formData.mobile);
+    form.append("TypeOfIdProof", formData.idProofType);
+    form.append("ProofIdNo", formData.idNumber);
+
+    // Other Details
+    form.append("LicenseType", formData.licenseType);
+    form.append("FinYear", formData.finYear);
+    form.append("RegId", formData.regId);
+
+    // Liquor Details
+    (formData.liquorItems || []).forEach((item, index) => {
+      form.append(`P10LiquorDetails[${index}].LiquorType`, item.liquorType);
+      form.append(`P10LiquorDetails[${index}].LiquorCategory`, item.liquorCategory);
+      form.append(`P10LiquorDetails[${index}].LiquorBottleSize`, item.bottleSize);
+      form.append(`P10LiquorDetails[${index}].Quantity`, item.quantity);
+    });
+
+    console.log("Files to submit:", selectedFiles);
+    selectedFiles.forEach((file, index) => {
+      form.append(`LicenseApplicationUploadedDocument[${index}].DocUrl`, file);
+      form.append(`LicenseApplicationUploadedDocument[${index}].DocStatus`, "P");
+      form.append(`LicenseApplicationUploadedDocument[${index}].MobileNo`, formData.mobile);
+    });
+
+    try {
+      const response = await applyPermit(form);
+      const apiData = response.data || {};
+      console.log("Submit response:", apiData);
+
+      const pick = (...vals) => vals.find(v => v !== undefined && v !== null && v !== "") ?? "";
+      // Unwrap common wrapper shapes so we can find the newly created ApplicationIdNo
+      const payload = apiData.data || apiData.result || apiData;
+      const newApplicationIdNo = pick(
+        payload.applicationIdNo, payload.ApplicationIdNo,
+        payload.applicationIdno, payload.ApplicationIdno
+      );
+
+      if (!newApplicationIdNo) {
+        console.warn("Submit response did not include an ApplicationIdNo:", apiData);
+      }
+
+      alert("Form submitted successfully!");
+      setSubmittedApplicationIdNo(newApplicationIdNo);
+      setSubmitSuccess(true);
+    } catch (error) {
+      console.error(error.response?.data || error);
+      if (showToast) showToast("Application submission failed", "error");
+    }
   };
 
   const triggerPrint = () => {
     if (showToast) showToast("Initializing printer spooler for local thermal receipts...");
     window.print();
-  };  return (
+  };
+
+  return (
     <div className="p10-container select-none text-slate-800 animate-fade">
       
       {/* Premium Header Banner matching requested style */}
@@ -383,7 +588,8 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                 onChange={handleInputChange}
                 errors={errors}
                 showToast={showToast}
-              />
+                onFileSelect={(file) => setSelectedFiles(file ? [file] : [])}
+              />      
             )}
 
             {/* Step 4: Liquor Details */}
@@ -430,6 +636,8 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                     </div>
                   </div>
 
+               
+
                   {/* Declaration checkboxes */}
                   <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-2xl space-y-3">
                     <label className="flex items-start gap-3 cursor-pointer select-none">
@@ -450,25 +658,32 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                     
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-700">Applicant Digital Signature (Enter Full Name) <span className="text-red-500">*</span></label>
+                      <label className="text-xs font-bold text-slate-700">Applicant Full Name <span className="text-red-500">*</span></label>
                       <input 
                         type="text"
                         value={formData.signatureName}
                         onChange={(e) => handleInputChange("signatureName", e.target.value.toUpperCase())}
-                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-black font-serif tracking-wider text-slate-800 transition text-center ${errors.signatureName ? "border-red-500" : "border-slate-250 focus:border-blue-500 focus:bg-white"}`}
-                        placeholder="DEVENDER MITTAL"
+                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-black font-serif tracking-wider text-slate-800 transition text-center ${
+                          errors.signatureName ? "border-red-500" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                        }`}
+                        placeholder=""
+                        disabled={true}
+                        
                       />
                       {errors.signatureName && <p className="text-[11px] text-red-600 font-bold">{errors.signatureName}</p>}
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-700">Place of Signing <span className="text-red-500">*</span></label>
+                      <label className="text-xs font-bold text-slate-700">Place <span className="text-red-500">*</span></label>
                       <input 
                         type="text"
                         value={formData.signingPlace}
                         onChange={(e) => handleInputChange("signingPlace", e.target.value)}
-                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${errors.signingPlace ? "border-red-500" : "border-slate-250 focus:border-blue-500"}`}
+                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
+                          errors.signingPlace ? "border-red-500" : "border-slate-250 focus:border-blue-500"
+                        }`}
                         placeholder="New Delhi"
+                        disabled={true}
                       />
                       {errors.signingPlace && <p className="text-[11px] text-red-650 font-black">{errors.signingPlace}</p>}
                     </div>
@@ -495,7 +710,7 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                 onClick={handleNext}
                 className="p10-btn bg-[#1d4ed8] hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer transition shadow-md font-sans"
               >
-                <span>{currentStep === 5 ? "Submit & Approve P-10" : "Next"}</span>
+                <span>{currentStep === 5 ? "Submit Permit-P10 Application" : "Next"}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -504,139 +719,18 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
         </>
       )}
 
-      {/* Success Receipt State View */}
-      {submitSuccess && permitReceipt && (
-        <div className="space-y-6 animate-fade">
-          
-          <div className="bg-white border-2 border-emerald-500/80 shadow-md rounded-3xl p-6 sm:p-8 text-center space-y-6 max-w-2xl mx-auto relative overflow-hidden">
-            
-            {/* Success Confirmed Banner */}
-            <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-4 animate-bounce">
-              <CheckCircle2 className="w-10 h-10 stroke-[2.5]" />
-            </div>
-
-            <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Approved Permit Issued</h2>
-              <p className="text-xs text-slate-500 font-bold">Your private occasional P-10 permit has been registered on the Delhi Excise registry.</p>
-            </div>
-
-            {/* Print Friendly Invoice Receipt Card */}
-            <div className="border border-slate-200 rounded-3xl bg-slate-50/50 p-5 text-left space-y-4 font-mono select-text print:p-0 print:border-none">
-              
-              {/* Receipt Header Title */}
-              <div className="pb-3 border-b border-dashed border-slate-300 flex items-center justify-between">
-                <div>
-                  <h3 className="text-xs font-black text-slate-900">DELHI EXCISE ACT - FORM P-10</h3>
-                  <p className="text-[10px] text-slate-500 font-bold">REGISTRY TRANSACTION RECORD</p>
-                </div>
-                <div className="bg-[#eff6ff] text-[#1d4ed8] font-bold text-[10px] px-2 py-0.5 rounded border border-[#dbeafe] uppercase">
-                  Approved
-                </div>
-              </div>
-
-              {/* Grid content standard labels */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5 text-xs">
-                
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Permit Number:</span>
-                  <span className="text-slate-900 font-bold tracking-wider">{permitReceipt.permitNo}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Ref PAN Number:</span>
-                  <span className="text-slate-900 font-bold">{permitReceipt.panNo}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Applicant Licensee:</span>
-                  <span className="text-slate-900 font-extrabold">{permitReceipt.applicantName}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Service Contact:</span>
-                  <span className="text-slate-900 font-extrabold">{permitReceipt.mobile}</span>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Event Venue Address:</span>
-                  <span className="text-slate-900 font-bold leading-normal text-[11px] block">{permitReceipt.venue}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Scheduled Execution Date:</span>
-                  <span className="text-slate-900 font-bold text-[11px]">{permitReceipt.permitStartDate}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Serving Duration hours:</span>
-                  <span className="text-slate-900 font-medium text-[11px]">{permitReceipt.startTime} - {permitReceipt.endTime}</span>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Sourcing Stock supplier:</span>
-                  <span className="text-slate-900 font-bold text-[11px] leading-relaxed">{permitReceipt.sourcingShed}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Statutory Fee Paid:</span>
-                  <span className="text-blue-700 font-black text-sm">{permitReceipt.feePaid}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Issue Date stamp:</span>
-                  <span className="text-slate-900 font-bold">{permitReceipt.generatedAt}</span>
-                </div>
-
-              </div>
-
-              {/* Graphic QR Verification segment replicating real government layouts */}
-              <div className="mt-4 pt-4 border-t border-dashed border-slate-300 flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 select-none">
-                <div className="p-2 border border-slate-200 rounded-xl bg-slate-50 shrink-0">
-                  <QrCode className="w-16 h-16 text-slate-800" />
-                </div>
-                <div className="space-y-1 text-left sm:flex-1">
-                  <p className="text-[10px] font-bold text-slate-900 flex items-center gap-1.5 uppercase">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Cryptographically Signed</span>
-                  </p>
-                  <p className="text-[9px] text-slate-500 font-medium leading-relaxed">
-                    This is a computer-generated statutory transit pass and does not require a physical ink seal signature. scan QR code to verify live credentials against registry portal.
-                  </p>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Card Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-              
-              <button
-                type="button"
-                onClick={triggerPrint}
-                className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition shadow-sm"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Print Transit Gate Pass</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSubmitSuccess(false);
-                  setPermitReceipt(null);
-                  setCurrentStep(1);
-                  onBackToDashboard();
-                }}
-                className="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-250 rounded-xl text-xs font-bold cursor-pointer transition"
-              >
-                Finish & Go to Dashboard
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
+      {/* Redirect to the GetPermit page after a successful submission */}
+      {submitSuccess && (
+        <GetPermit
+          applicationIdNo={submittedApplicationIdNo}
+          showToast={showToast}
+          onBackToDashboard={() => {
+            setSubmitSuccess(false);
+            setSubmittedApplicationIdNo(null);
+            setCurrentStep(1);
+            onBackToDashboard();
+          }}
+        />
       )}
 
     </div>

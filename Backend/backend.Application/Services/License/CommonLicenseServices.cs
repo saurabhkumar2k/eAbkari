@@ -36,7 +36,8 @@ namespace backend.Application.Services.License
                 {
                     //ApplicationIdNo = newAppId,
                     //RegNumber = user.RegId.ToString(),
-                    RegId = dto.RegId.ToString(),
+                    //RegId = dto.RegId.ToString(),
+                    RegId = dto.RegId,
                     ApplicantName = dto.ApplicantName,
                     //CompanyName = dto.CompanyName??"",
                     DateOfBirth = dto.Dob,

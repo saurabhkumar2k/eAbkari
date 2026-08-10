@@ -5,93 +5,68 @@ import {
   MapPin,
   Users,
   Compass,
-  ChevronDown
+  ChevronDown,
+  Loader2
 } from "lucide-react";
+import { getPremises } from "../../../../api/permitApi";
 
-// Premise Options & Addresses for Delhi
-const PREMISE_DATA = {
-  "Banquet Hall/Party Hall": [
-    {
-      name: "The Leela Ambience Banquet",
-      address: "NH 8, Ambience Island, DLF Phase 3, Delhi NCR 122002",
-      lat: "28.5035",
-      lng: "77.0975"
-    },
-    {
-      name: "Seven Heaven Banquets",
-      address: "A-53, West Shivaji Marg, Shivaji Place, Kirti Nagar, New Delhi 110015",
-      lat: "28.6496",
-      lng: "77.1211"
-    },
-    {
-      name: "Golden Tulip Banquet",
-      address: "Sector 2, Vasundhara, Delhi Border, Ghaziabad 201012",
-      lat: "28.6601",
-      lng: "77.3415"
-    }
-  ],
-  "Farmhouse": [
-    {
-      name: "Tivoli Garden Resort & Farm",
-      address: "Chattarpur Mandir Road, Chhattarpur Hills, New Delhi 110074",
-      lat: "28.4975",
-      lng: "77.1812"
-    },
-    {
-      name: "The Kundan Farmhouse",
-      address: "Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-      lat: "28.5284",
-      lng: "77.0851"
-    },
-    {
-      name: "Radiance Motel & Orchards",
-      address: "2, Tania Farm, Chattarpur Mandir Road, Chhattarpur, New Delhi 110074",
-      lat: "28.4921",
-      lng: "77.1793"
-    }
-  ],
-  "MCD Park/Community Hall": [
-    {
-      name: "MCD Community Park, Saket",
-      address: "J-Block Community Ground, Saket, New Delhi 110017",
-      lat: "28.5222",
-      lng: "77.2144"
-    },
-    {
-      name: "GK-2 Community Center Hall",
-      address: "M-Block Market Road, Greater Kailash II, New Delhi 110048",
-      lat: "28.5342",
-      lng: "77.2421"
-    }
-  ],
-  "Own Residence": [
-    {
-      name: "Private Home Terrace, Vasant Vihar",
-      address: "C-4, Vasant Vihar Lawns, New Delhi 110057",
-      lat: "28.5612",
-      lng: "77.1610"
-    },
-    {
-      name: "Rooftop Duplex, Rajouri Garden",
-      address: "J-12, Main Ring Road, Rajouri Garden, New Delhi 115027",
-      lat: "28.6415",
-      lng: "77.1215"
-    }
-  ]
-};
-
-export default function EventDetailsPage({ formData, onChange, errors = {} }) {
+export default function EventDetailsPage({ formData, onChange, errors = {}, showToast }) {
   const iframeRef = useRef(null);
+  const [premisesList, setPremisesList] = useState([]);
+  const [loadingPremises, setLoadingPremises] = useState(false);
+  const [selectedPremise, setSelectedPremise] = useState(null);
 
   // Initialize helper states if empty
-  const currentPremisesType = formData.premisesType || "Farmhouse";
+  const currentPremisesType = formData.premisesType || "";
   const currentPremiseName = formData.premiseName || "";
   const currentPremiseAddress = formData.premiseAddress || "";
-  const currentLatitude = formData.latitude || "28.5284";
-  const currentLongitude = formData.longitude || "77.1643";
+  const currentLatitude = formData.latitude || "";
+  const currentLongitude = formData.longitude || "";
   const currentEventType = formData.eventType || "Birthday";
 
-  const premiseOptions = PREMISE_DATA[currentPremisesType] || [];
+  // Fetch premises from API
+  useEffect(() => {
+    const fetchPremises = async () => {
+      setLoadingPremises(true);
+      try {
+        const response = await getPremises();
+        console.log("Premises API Response:", response.data);
+        
+        // Extract the list from the response
+        let premises = [];
+        if (response.data && Array.isArray(response.data)) {
+          premises = response.data;
+        } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+          premises = response.data.data;
+        } else if (response.data && response.data.result && Array.isArray(response.data.result)) {
+          premises = response.data.result;
+        }
+        
+        setPremisesList(premises);
+        
+        // If we have premises and formData has a premiseName, find and set it
+        if (formData.premiseName && premises.length > 0) {
+          const matched = premises.find(p => p.premiseName === formData.premiseName);
+          if (matched) {
+            setSelectedPremise(matched);
+            // Auto-fill address if found
+            const fullAddress = [matched.premiseAddress1, matched.premiseAddress2]
+              .filter(Boolean)
+              .join(", ");
+            onChange("premiseAddress", fullAddress);
+            onChange("venueAddress", `${matched.premiseName || ""}, ${fullAddress}`);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch premises:", error);
+        if (showToast) showToast("Failed to load premises list", "error");
+      } finally {
+        setLoadingPremises(false);
+      }
+    };
+
+    fetchPremises();
+  }, []);
 
   // Update map coordinates in iframe
   const syncMapCoordinates = (lat, lng) => {
@@ -130,56 +105,99 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
   // Handler for premises type radio selection
   const handlePremisesTypeChange = (value) => {
     onChange("premisesType", value);
+    
     // Synced with existing schema's venueCategory
     let category = "Hotel/Resort";
     if (value === "Banquet Hall/Party Hall") category = "Banquet Hall";
     if (value === "Farmhouse") category = "Farmhouse";
-    if (value === "MCD Park/Community Hall") category = "Club/Association";
-    if (value === "Own Residence") category = "Private Residence";
+    if (value === "Others") category = "Private Residence";
     onChange("venueCategory", category);
 
-    // Reset fields for the new group
+    // Reset fields
     onChange("premiseName", "");
     onChange("premiseAddress", "");
     onChange("venueAddress", "");
     onChange("latitude", "28.6139");
     onChange("longitude", "77.2090");
+    setSelectedPremise(null);
     syncMapCoordinates("28.6139", "77.2090");
   };
 
-  // Handler for premise name selection dropdown
-  const handlePremiseNameChange = (name) => {
-    onChange("premiseName", name);
-    const matched = premiseOptions.find((p) => p.name === name);
-    if (matched) {
-      onChange("premiseAddress", matched.address);
-      onChange("venueAddress", `${matched.name}, ${matched.address}`);
-      onChange("latitude", matched.lat);
-      onChange("longitude", matched.lng);
-      syncMapCoordinates(matched.lat, matched.lng);
-    } else {
+  // Handler for premise selection from dropdown
+  const handlePremiseSelect = (premise) => {
+    if (!premise) {
+      onChange("premiseName", "");
       onChange("premiseAddress", "");
       onChange("venueAddress", "");
-      onChange("latitude", "28.6139");
-      onChange("longitude", "77.2090");
-      syncMapCoordinates("28.6139", "77.2090");
+      setSelectedPremise(null);
+      return;
+    }
+
+    setSelectedPremise(premise);
+    onChange("premiseName", premise.premiseName || "");
+    
+    // Concatenate PremiseAddress1 and PremiseAddress2
+    const fullAddress = [premise.premiseAddress1, premise.premiseAddress2]
+      .filter(Boolean)
+      .join(", ");
+    
+    onChange("premiseAddress", fullAddress);
+    onChange("venueAddress", `${premise.premiseName || ""}, ${fullAddress}`);
+    
+    // If latitude and longitude are available from the API
+    if (premise.latitude && premise.longitude) {
+      onChange("latitude", premise.latitude);
+      onChange("longitude", premise.longitude);
+      syncMapCoordinates(premise.latitude, premise.longitude);
     }
   };
 
-  // Premise Address select / text handler
-  const handlePremiseAddressChange = (address) => {
+  // Free-text handler used only when Premises Type is "Others"
+  const handlePremiseNameTextChange = (name) => {
+    onChange("premiseName", name);
+    onChange(
+      "venueAddress",
+      currentPremiseAddress ? `${name}, ${currentPremiseAddress}` : name
+    );
+  };
+
+  // Free-text handler used only when Premises Type is "Others"
+  const handlePremiseAddressTextChange = (address) => {
     onChange("premiseAddress", address);
-    onChange("venueAddress", currentPremiseName ? `${currentPremiseName}, ${address}` : address);
+    onChange(
+      "venueAddress",
+      currentPremiseName ? `${currentPremiseName}, ${address}` : address
+    );
   };
 
   // Event Type handler
   const handleEventTypeChange = (value) => {
     onChange("eventType", value);
-    // Sync with existing occasionName parameter
     onChange("occasionName", `${value} Special Reception Event`);
   };
 
-  // Map Iframe content via safe and fast srcdoc
+  // Auto-fill End Time as Start Time + 6 hours, capped at midnight (23:59)
+  const calculateAutoEndTime = (startTimeValue) => {
+    if (!startTimeValue) return "";
+
+    const [hours, minutes] = startTimeValue.split(":").map(Number);
+    const startMinutes = hours * 60 + minutes;
+    const sixHoursLater = startMinutes + 6 * 60;
+
+    const cappedMinutes = Math.min(sixHoursLater, 23 * 60 + 59);
+
+    const endHours = Math.floor(cappedMinutes / 60);
+    const endMins = cappedMinutes % 60;
+
+    return `${String(endHours).padStart(2, "0")}:${String(endMins).padStart(2, "0")}`;
+  };
+
+  const handleStartTimeChange = (value) => {
+    onChange("startTime", value);
+    onChange("endTime", calculateAutoEndTime(value));
+  };
+
+  // Map Iframe content
   const mapSrcDoc = `
     <!DOCTYPE html>
     <html>
@@ -187,7 +205,6 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
       <meta charset="utf-8" />
       <style>
         body, html, #map { margin: 0; padding: 0; width: 100%; height: 100%; font-family: sans-serif; overflow: hidden; }
-        /* Map styling */
         .leaflet-control-zoom { border: 2px solid rgba(0,0,0,0.2) !important; border-radius: 4px !important; }
         .logo-attribution { display: none; }
       </style>
@@ -241,9 +258,37 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
     </html>
   `;
 
+  // Filter premises by selected type
+  const getFilteredPremises = () => {
+    if (!currentPremisesType || currentPremisesType === "Others") {
+      return [];
+    }
+    
+    // Filter based on PremiseType
+    return premisesList.filter(p => {
+      if (currentPremisesType === "Banquet Hall/Party Hall") {
+        return p.premiseType && p.premiseType.toLowerCase() === "banquet";
+      }
+      if (currentPremisesType === "Farmhouse") {
+        return p.premiseType && p.premiseType.toLowerCase() === "farm";
+      }
+      return false;
+    });
+  };
+
+  const filteredPremises = getFilteredPremises();
+  const isOthers = currentPremisesType === "Others";
+
+  // Only these three options
+  const PREMISE_OPTIONS = [
+    "Banquet Hall/Party Hall",
+    "Farmhouse",
+    "Others"
+  ];
+
   return (
     <div className="space-y-6 animate-fade">
-      {/* Dynamic Centered Sub-Header matches the Image blueprint */}
+      {/* Dynamic Centered Sub-Header */}
       <div className="w-full bg-[#0a3861] text-white py-2.5 px-4 text-center text-sm font-black rounded-lg select-none uppercase tracking-wider mb-2">
         Event Details
       </div>
@@ -255,95 +300,117 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
             Premises Type <span className="text-red-500 ml-1">*</span>
           </label>
           <div className="w-full border border-slate-200/80 rounded-xl p-3 bg-[#fdfdfd] flex flex-wrap gap-5 sm:gap-8 items-center">
-            {[
-              "Banquet Hall/Party Hall",
-              "Farmhouse",
-              "MCD Park/Community Hall",
-              "Own Residence"
-            ].map((option) => (
+            {/* Only three options: Banquet Hall/Party Hall, Farmhouse, Others */}
+            {PREMISE_OPTIONS.map((type) => (
               <label
-                key={option}
+                key={type}
                 className="flex items-center gap-2 cursor-pointer text-slate-750 text-xs font-bold select-none"
               >
                 <input
                   type="radio"
                   name="premisesType"
-                  value={option}
-                  checked={currentPremisesType === option}
-                  onChange={() => handlePremisesTypeChange(option)}
+                  value={type}
+                  checked={currentPremisesType === type}
+                  onChange={() => handlePremisesTypeChange(type)}
                   className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer accent-blue-600"
                 />
-                <span>{option}</span>
+                <span>{type}</span>
               </label>
             ))}
+            
+            {loadingPremises && <Loader2 className="w-4 h-4 animate-spin text-blue-500 ml-2" />}
           </div>
         </div>
 
         {/* 2. Premise Name and Premise Address Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Premise Name Dropdown */}
+          {/* Premise Name Dropdown / Text Input */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
               Premise Name <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <select
+            {isOthers ? (
+              <input
+                type="text"
                 value={currentPremiseName}
-                onChange={(e) => handlePremiseNameChange(e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition appearance-none cursor-pointer ${
+                onChange={(e) => handlePremiseNameTextChange(e.target.value)}
+                placeholder="Enter premise name"
+                className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
                   errors.premiseName ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
                 }`}
-              >
-                <option value="">--Select--</option>
-                {premiseOptions.map((opt) => (
-                  <option key={opt.name} value={opt.name}>
-                    {opt.name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+              />
+            ) : (
+              <div className="relative">
+                <select
+                  value={currentPremiseName}
+                  onChange={(e) => {
+                    const selected = filteredPremises.find(p => p.premiseName === e.target.value);
+                    handlePremiseSelect(selected);
+                  }}
+                  className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition appearance-none cursor-pointer ${
+                    errors.premiseName ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                  }`}
+                  disabled={loadingPremises || !currentPremisesType || currentPremisesType === "Others" || filteredPremises.length === 0}
+                >
+                  <option value="">--Select Premise--</option>
+                  {filteredPremises.map((premise, index) => (
+                    <option 
+                      key={`${premise.premiseId || 'premise'}-${index}`} 
+                      value={premise.premiseName}
+                    >
+                      {premise.premiseName}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  {loadingPremises ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                  )}
+                </div>
+                {!loadingPremises && filteredPremises.length === 0 && currentPremisesType && currentPremisesType !== "Others" && (
+                  <p className="text-[10px] text-amber-600 mt-1">No premises found for this type</p>
+                )}
               </div>
-            </div>
+            )}
             {errors.premiseName && (
               <p className="text-[11px] text-red-600 font-bold mt-1">{errors.premiseName}</p>
             )}
           </div>
 
-          {/* Premise Address Dropdown / text */}
+          {/* Premise Address - Auto-filled from selection or text input for Others */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
               Premise Address <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <select
+            {isOthers ? (
+              <input
+                type="text"
                 value={currentPremiseAddress}
-                onChange={(e) => handlePremiseAddressChange(e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition appearance-none cursor-pointer ${
+                onChange={(e) => handlePremiseAddressTextChange(e.target.value)}
+                placeholder="Enter full premise address"
+                className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
                   errors.venueAddress ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
                 }`}
-              >
-                <option value="">--Select--</option>
-                {currentPremiseAddress && (
-                  <option value={currentPremiseAddress}>{currentPremiseAddress}</option>
-                )}
-                {premiseOptions
-                  .filter((p) => p.address !== currentPremiseAddress)
-                  .map((opt) => (
-                    <option key={opt.address} value={opt.address}>
-                      {opt.address}
-                    </option>
-                  ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              </div>
-            </div>
+              />
+            ) : (
+              <input
+                type="text"
+                value={currentPremiseAddress}
+                readOnly
+                placeholder="Address will auto-fill"
+                className={`w-full bg-slate-100/80 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-600 outline-none select-all ${
+                  errors.venueAddress ? "border-red-500 bg-red-50/10" : "border-slate-250"
+                }`}
+              />
+            )}
             {errors.venueAddress && (
               <p className="text-[11px] text-red-600 font-bold mt-1">{errors.venueAddress}</p>
             )}
           </div>
         </div>
+<br />
 
         {/* 3. Fully Interactive Live Leaflet Map Container */}
         <div className="space-y-1">
@@ -414,7 +481,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
         </div>
 
         {/* 6. Four Column Inputs: No. of Guests, Start Date, Start Time, End Time */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           {/* No. of Guests */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
@@ -439,7 +506,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
           {/* Start Date of Event */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
-              Start Date of Event <span className="text-red-500">*</span>
+              Start Date <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -447,7 +514,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
                 value={formData.servingStartDate || ""}
                 onChange={(e) => {
                   onChange("servingStartDate", e.target.value);
-                  onChange("servingEndDate", e.target.value); // keep in sync
+                  onChange("servingEndDate", e.target.value);
                 }}
                 className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
                   errors.servingStartDate ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
@@ -465,13 +532,13 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
           {/* Event Start Time */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
-              Event Start Time <span className="text-red-500">*</span>
+              Start Time <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
                 type="time"
                 value={formData.startTime || ""}
-                onChange={(e) => onChange("startTime", e.target.value)}
+                onChange={(e) => handleStartTimeChange(e.target.value)}
                 className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
                   errors.startTime ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
                 }`}
@@ -488,7 +555,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
           {/* Event End Time */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
-              Event End Time <span className="text-red-500">*</span>
+              End Time <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input

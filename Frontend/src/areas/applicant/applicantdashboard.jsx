@@ -56,10 +56,11 @@ import {
   Hotel
 } from "lucide-react";
 import NewLicense from "./NewLicense";
-import NewPermitWizard from "./Permit/NewPermit";
+import NewPermit from "./Permit/NewPermit.jsx";
 import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
 
 import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
+import NewPermitWizard from "./Permit/NewPermit.jsx";
 
 //import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
 
@@ -843,6 +844,17 @@ const filteredLicenses = licenses.filter(
       {/* PAGE CONTENT */}
       {activeTab === "New License" ? (
         <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
+      ) : activeTab ==="New Permit" ? (
+        <NewPermitWizard 
+        onBackToDashboard={()=> setActiveTab("Home")}
+        showToast={showToast}
+        onSubmitPermit={(permitRecord)=>{
+          if (permitRecord) {
+            setPermitApplications (prev => [permitRecord, ...prev]);
+          }
+          setActiveTab("Applied Permit");
+        }}
+          />
       ) : (
         <main className="page-container max-w-7xl mx-auto w-full flex-grow p-6">
 
