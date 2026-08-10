@@ -7,6 +7,7 @@ import { createHCRAdditional } from "../../../Model/HCRAdditional";
 import DocumentUpload from "../../../components/DocumentsDetails";
 import RestaurantDetails from "../../../components/RestaurantDetails";
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
+import HcrQuestionList from "../../../components/HCRQuestionList";
 
 import {
   Building,
@@ -336,6 +337,72 @@ export default function HcrLicenseWizard({
     }
     applicantForm[field] = value;
   };
+
+  const [questions, setQuestions] = useState([]);
+
+  const fetchQuestions = async (catCode) => {
+    try {
+      debugger;
+      console.log("selectedLicenseId:", selectedLicenseId);
+      console.log("catCode:", catCode);
+      console.log("catCode type:", typeof catCode);
+
+      const res = await fetch(
+        `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`,
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch questions");
+      }
+
+      const data = await res.json();
+
+      console.log("Category:", catCode);
+      console.log("Questions:", data);
+      console.log("API response:", data);
+      console.log("Is array:", Array.isArray(data));
+      console.log("Length:", data?.length);
+
+      setQuestions(data);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      setQuestions([]);
+    }
+  };
+
+  useEffect(() => {
+    debugger;
+    if (currentStep === 6 && selectedLicenseId) {
+      fetchQuestions(selectedLicenseId);
+    }
+  }, [currentStep, selectedLicenseId]);
+
+  // const handleQuestions = (key) => {
+  //   setQuestions((prevQuestions) =>
+  //     prevQuestions.map((q) =>
+  //       q.questionId === key
+  //         ? {
+  //             ...q,
+  //             selected: !q.selected,
+  //           }
+  //         : q,
+  //     ),
+  //   );
+  // };
+
+  const handleQuestions = (questionId, answer) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) =>
+        q.questionId === questionId
+          ? {
+              ...q,
+              answer: answer,
+            }
+          : q,
+      ),
+    );
+  };
+
   const handleDirectorChange = (i, f, v) => {
     debugger;
     const d = [...(additionalFrom.directors || [])];
@@ -1498,15 +1565,6 @@ export default function HcrLicenseWizard({
                     </div>
 
                     {/* Additional Area */}
-                    <div className="form-group full-width">
-                      <DirectorsList
-                        directors={additionalFrom.directors || []}
-                        ConstitutionType={applicantForm.ConstitutionType}
-                        onChange={handleDirectorChange}
-                        onAdd={addRow}
-                        onDelete={deleteRow}
-                      />
-                    </div>
 
                     {/* No. of Managers */}
                     <div className="form-group">
@@ -1734,6 +1792,23 @@ export default function HcrLicenseWizard({
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    {/* <div className="form-group full-width">
+                      <HcrQuestionList
+                        questions={questions}
+                        onChange={handleQuestions}
+                      />
+                    </div> */}
+
+                    <div className="form-group full-width">
+                      <DirectorsList
+                        directors={additionalFrom.directors || []}
+                        ConstitutionType={applicantForm.ConstitutionType}
+                        onChange={handleDirectorChange}
+                        onAdd={addRow}
+                        onDelete={deleteRow}
+                      />
                     </div>
                   </div>
 
