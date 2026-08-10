@@ -14,10 +14,10 @@ import {
 
 export default function ApplicantDetails({ formData, onChange, errors = {} }) {
   return (
-    <div className="space-y-8 animate-fade">
+    <div className="app-form-section">
       {/* Informational banner reflecting registered status */}
-      <div className="bg-blue-50/70 border border-blue-200/60 rounded-2xl p-4 flex gap-4 text-left">
-        <div className="w-10 h-10 bg-blue-600/10 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+      <div className="reciept">
+        <div className="app-icon-box">
           <User className="w-5 h-5 text-blue-600" />
         </div>
         <div>
@@ -29,7 +29,7 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
       </div>
 
       {/* Section 1: Personal Details */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6 text-left">
+      <div className="appform-card">
         <div className="border-b border-slate-100 pb-4">
           <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
@@ -159,7 +159,7 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
       </div>
 
       {/* Section 2: Address Details */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6 text-left">
+      <div className="appform-card">
         <div className="border-b border-slate-100 pb-4">
           <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">
@@ -310,7 +310,7 @@ export default function ApplicantDetails({ formData, onChange, errors = {} }) {
       </div>
 
       {/* Section 3: Contact & Access */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6 text-left">
+      <div className="appform-card">
         <div className="border-b border-slate-100 pb-4">
           <h3 className="text-sm font-black text-[#012a52] uppercase tracking-wider flex items-center gap-2">
             <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">

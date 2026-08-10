@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  ArrowLeft, 
+  ChevronLeft, 
   Search, 
   CheckCircle2, 
   Info, 
   X, 
   Printer, 
-  FileText 
+  FileText,
+  Layers,
+  Save,
+  RotateCcw,
+  Edit2,
+  Trash2,
+  AlertCircle
 } from 'lucide-react';
 
 const INITIAL_LICENSE_TITLES = [
@@ -116,6 +122,12 @@ const LicenseTitleMaster = ({ onBack }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
+  // Trigger notification toast
+  const triggerToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   // Option list for dropdown derived from titles
   const dropdownOptions = useMemo(() => {
     return titles.map((title) => {
@@ -146,13 +158,13 @@ const LicenseTitleMaster = ({ onBack }) => {
   const handleCancel = () => {
     setSelectedCode('');
     setDescription('');
-    setToast({ type: 'info', message: 'Form cleared.' });
+    triggerToast('Form cleared.', 'info');
   };
 
   const handleSave = (e) => {
     e.preventDefault();
     if (!description.trim()) {
-      setToast({ type: 'error', message: 'Please enter or select a License Title Description.' });
+      triggerToast('Please enter or select a License Title Description.', 'error');
       return;
     }
 
@@ -166,11 +178,11 @@ const LicenseTitleMaster = ({ onBack }) => {
         }
         return t;
       }));
-      setToast({ type: 'success', message: `License Title "${selectedCode}" updated successfully!` });
+      triggerToast(`License Title "${selectedCode}" updated successfully!`, 'success');
     } else {
       // Add new item
       setTitles(prev => [description.trim(), ...prev]);
-      setToast({ type: 'success', message: 'New License Title added successfully!' });
+      triggerToast('New License Title added successfully!', 'success');
       setSelectedCode('');
       setDescription('');
     }
@@ -182,6 +194,26 @@ const LicenseTitleMaster = ({ onBack }) => {
     const code = commaIdx !== -1 ? titleStr.substring(0, commaIdx).trim() : titleStr.trim();
     setSelectedCode(code);
     setDescription(titleStr);
+    
+    // Scroll to form editor smooth
+    const formElement = document.getElementById("license-title-editor-section");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Delete row handler
+  const handleDelete = (titleStr) => {
+    const commaIdx = titleStr.indexOf(',');
+    const code = commaIdx !== -1 ? titleStr.substring(0, commaIdx).trim() : titleStr.trim();
+    if (window.confirm(`Are you sure you want to delete license title "${code}"?`)) {
+      setTitles(prev => prev.filter(t => t !== titleStr));
+      if (selectedCode === code) {
+        setSelectedCode('');
+        setDescription('');
+      }
+      triggerToast(`Deleted license title "${code}"`, 'success');
+    }
   };
 
   // Search filter
@@ -202,238 +234,324 @@ const LicenseTitleMaster = ({ onBack }) => {
   };
 
   return (
-    <div className="license-title-container">
+    <div className="tbs-container">
       
       {/* Toast Notification */}
       {toast && (
-        <div className="license-title-toast">
-          {toast.type === 'success' && <CheckCircle2 style={{ color: '#4ade80' }} size={18} />}
-          {toast.type === 'error' && <X style={{ color: '#f87171' }} size={18} />}
-          {toast.type === 'info' && <Info style={{ color: '#38bdf8' }} size={18} />}
+        <div className={`tbs-toast tbs-toast-${toast.type || 'info'}`}>
+          {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
+          {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-400" />}
+          {toast.type === 'info' && <Info className="w-5 h-5 text-sky-400" />}
           <span>{toast.message}</span>
           <button 
             type="button" 
             onClick={() => setToast(null)}
+            className="tbs-toast-close"
             style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', marginLeft: 'auto' }}
           >
-            <X size={14} />
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Top Navigation Bar */}
-      <div className="license-title-back-bar">
-        <button 
-          type="button" 
-          className="license-title-back-btn"
-          onClick={onBack || (() => window.location.href = '/departmentdashboard')}
-        >
-          <ArrowLeft size={14} />
-          <span>Back to Dashboard</span>
-        </button>
-      </div>
+      {/* Main Dashboard Card */}
+      <div className="tbs-card">
+        
+        {/* Dynamic Government Header with Authentic Arrow Ribbon */}
+        <div className="tbs-header-section">
+          <div className="tbs-header-row">
+            
+            <div className="tbs-brand-block">
+              <div className="tbs-icon-wrapper">
+                <FileText />
+              </div>
+              <div className="tbs-title-block">
+                <h1>License Title Master Dashboard</h1>
+                <p>Configure and manage official license title codes, descriptions, and category classifications for Excise Licensing.</p>
+              </div>
+            </div>
 
-      {/* Ribbon Banner Top Header */}
-      <div className="license-title-ribbon-wrapper">
-        <div className="license-title-ribbon-banner">
-          <div className="license-title-ribbon-arrow" />
-          <span>License Title</span>
+            {/* Light blue ribbon styled exactly like transport pass validity page */}
+            <div className="tbs-ribbon-wrapper">
+              <div className="tbs-ribbon-container">
+                <div className="tbs-ribbon-arrow"></div>
+                <div className="tbs-ribbon-body">
+                  <Layers />
+                  License Title Master
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
 
-      {/* Form Panel Container (Grey Panel) */}
-      <div className="license-title-form-panel">
-        <form onSubmit={handleSave}>
-          
-          {/* Row 1: License Title Code */}
-          <div className="license-title-form-row">
-            <label className="license-title-label">
-              License Title Code
-            </label>
-            <div className="license-title-control-wrap">
-              <select 
-                className="license-title-select"
-                value={selectedCode}
-                onChange={handleSelectCode}
-              >
-                <option value="">--Select--</option>
-                {dropdownOptions.map((opt, idx) => (
-                  <option key={idx} value={opt.code}>
-                    {opt.code}
-                  </option>
-                ))}
-              </select>
+        {/* Dynamic Statistics Panel */}
+        <div className="tbs-stats-panel">
+          <div className="tbs-stat-card">
+            <div className="tbs-stat-icon-wrapper tbs-stat-icon-sky">
+              <FileText />
+            </div>
+            <div>
+              <div className="tbs-stat-label">Total Title Records</div>
+              <div className="tbs-stat-value">{titles.length} Titles</div>
             </div>
           </div>
 
-          {/* Row 2: License Title Description */}
-          <div className="license-title-form-row">
-            <label className="license-title-label">
-              License Title Description
-            </label>
-            <div className="license-title-control-wrap">
-              <textarea 
-                className="license-title-textarea"
-                rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter or view license title description..."
-              />
+          <div className="tbs-stat-card">
+            <div className="tbs-stat-icon-wrapper tbs-stat-icon-blue">
+              <Search />
+            </div>
+            <div>
+              <div className="tbs-stat-label">Filtered Results</div>
+              <div className="tbs-stat-value">{filteredTitles.length} Titles</div>
             </div>
           </div>
 
-          {/* Row 3: Buttons */}
-          <div className="license-title-actions-row">
-            <button 
-              type="submit" 
-              className="license-title-btn license-title-btn-primary"
-            >
-              Save
-            </button>
-            <button 
-              type="button" 
-              className="license-title-btn"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
+          <div className="tbs-stat-card">
+            <div className="tbs-stat-icon-wrapper tbs-stat-icon-indigo">
+              <CheckCircle2 />
+            </div>
+            <div>
+              <div className="tbs-stat-label">Selected Title Code</div>
+              <div className="tbs-stat-value">{selectedCode || "New Item"}</div>
+            </div>
           </div>
-        </form>
-      </div>
-
-      {/* Mid Bar: Total Records & Print Grid As PDF */}
-      <div className="license-title-mid-bar">
-        <div className="license-title-records-count">
-          Total Records : {titles.length}
         </div>
-        <div className="license-title-print-wrap">
-          <span className="license-title-print-label">Print Grid As :</span>
-          <button 
-            type="button" 
-            className="license-title-pdf-btn"
-            onClick={handlePrint}
-            title="Print or export grid as PDF"
-          >
-            <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="2" y="2" width="28" height="28" rx="4" fill="#E53935" />
-              <path d="M9 11H15C16.1 11 17 11.9 17 13V15C17 16.1 16.1 17 15 17H11V21H9V11ZM11 13V15H15V13H11Z" fill="white" />
-              <path d="M18 11H21C22.7 11 24 12.3 24 14V18C24 19.7 22.7 21 21 21H18V11ZM20 13V19H21C21.6 19 22 18.6 22 18V14C22 13.4 21.6 13 21 13H20Z" fill="white" />
-            </svg>
-          </button>
-        </div>
-      </div>
 
-      {/* Search & Filter Bar */}
-      <div className="license-title-search-row">
-        <div className="license-title-search-input-wrap">
-          <Search className="license-title-search-icon" />
-          <input 
-            type="text" 
-            className="license-title-search-input"
-            placeholder="Search by title code or description..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
-        </div>
-        <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>
-          Showing {paginatedTitles.length} of {filteredTitles.length} filtered items
-        </div>
-      </div>
+        {/* Configuration Editor Panel */}
+        <div id="license-title-editor-section" className="tbs-editor-section">
+          <form onSubmit={handleSave}>
+            
+            <div className="tbs-form-row">
+              <h2 className="tbs-form-row-title">
+                <Edit2 className="w-4 h-4" />
+                <span>{selectedCode ? `Edit License Title [${selectedCode}]` : "Add or Select License Title"}</span>
+              </h2>
 
-      {/* Data Table Grid */}
-      <div className="license-title-table-container">
-        <table className="license-title-table">
-          <thead>
-            <tr>
-              <th className="col-sr">
-                Sl.<br />No.
-              </th>
-              <th>
-                Title
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedTitles.length > 0 ? (
-              paginatedTitles.map((item, idx) => {
-                const globalIndex = (currentPage - 1) * itemsPerPage + idx + 1;
-                const commaIdx = item.indexOf(',');
-                const code = commaIdx !== -1 ? item.substring(0, commaIdx).trim() : item.trim();
-                const isSelected = selectedCode === code;
-
-                return (
-                  <tr 
-                    key={globalIndex}
-                    className={isSelected ? 'selected-row' : ''}
-                    onClick={() => handleSelectRow(item)}
+              <div className="tbs-form-grid">
+                <div className="tbs-field-group">
+                  <label className="tbs-label">
+                    License Title Code
+                  </label>
+                  <select 
+                    className="tbs-select"
+                    value={selectedCode}
+                    onChange={handleSelectCode}
                   >
-                    <td className="cell-sr">
-                      {globalIndex}
-                    </td>
-                    <td>
-                      {item}
+                    <option value="">-Select Existing Title Code to Edit or Add New-</option>
+                    {dropdownOptions.map((opt, idx) => (
+                      <option key={idx} value={opt.code}>
+                        {opt.code}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="tbs-field-group">
+                  <label className="tbs-label">
+                    License Title Description <span>*</span>
+                  </label>
+                  <textarea 
+                    className="tbs-select"
+                    rows={2}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter complete license title description..."
+                    style={{ minHeight: '60px', resize: 'vertical' }}
+                  />
+                </div>
+              </div>
+
+              <div className="tbs-actions-row" style={{ marginTop: '1.25rem' }}>
+                <button 
+                  type="submit" 
+                  className="tbs-btn tbs-btn-sky"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{selectedCode ? "Update License Title" : "Save New License Title"}</span>
+                </button>
+                <button 
+                  type="button" 
+                  className="tbs-btn tbs-btn-slate"
+                  onClick={handleCancel}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Clear Form</span>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        {/* Directory / Table Section */}
+        <div className="tbs-directory-section">
+          <div className="tbs-directory-header">
+            <div>
+              <h2 className="tbs-directory-title">Official License Titles Directory</h2>
+              <p className="tbs-directory-subtitle">Registered excise license category titles and authorization definitions.</p>
+            </div>
+
+            <div className="tbs-directory-actions">
+              <button 
+                type="button" 
+                className="tbs-btn tbs-btn-sm tbs-btn-outline-green"
+                onClick={handlePrint}
+                title="Print or export grid as PDF"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Print Grid / Export PDF</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Search Box */}
+          <div className="tbs-search-box">
+            <div className="tbs-search-icon">
+              <Search />
+            </div>
+            <input 
+              type="text" 
+              className="tbs-search-input"
+              placeholder="Search by title code or description..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+            {searchTerm && (
+              <button 
+                type="button"
+                className="tbs-search-clear"
+                onClick={() => setSearchTerm('')}
+              >
+                <X />
+              </button>
+            )}
+          </div>
+
+          {/* Table Container */}
+          <div className="tbs-table-wrapper">
+            <table className="tbs-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '80px', textAlign: 'center' }}>Sl. No.</th>
+                  <th style={{ width: '180px' }}>Title Code</th>
+                  <th>License Title Description</th>
+                  <th style={{ width: '120px', textAlign: 'center' }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedTitles.length > 0 ? (
+                  paginatedTitles.map((item, idx) => {
+                    const globalIndex = (currentPage - 1) * itemsPerPage + idx + 1;
+                    const commaIdx = item.indexOf(',');
+                    const code = commaIdx !== -1 ? item.substring(0, commaIdx).trim() : item.trim();
+                    const isSelected = selectedCode === code;
+
+                    return (
+                      <tr 
+                        key={globalIndex}
+                        className={isSelected ? 'tbs-row-editing' : ''}
+                      >
+                        <td style={{ textAlign: 'center', fontWeight: '700', color: '#64748b' }}>
+                          {globalIndex}
+                        </td>
+                        <td className="tbs-cell-bold">
+                          <span className="inline-block px-2.5 py-1 bg-sky-100 text-sky-800 rounded-md font-bold text-xs border border-sky-200">
+                            {code}
+                          </span>
+                        </td>
+                        <td style={{ fontWeight: '500', color: '#1e293b' }}>
+                          {item}
+                        </td>
+                        <td className="tbs-cell-actions">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectRow(item)}
+                            className="tbs-icon-btn tbs-icon-btn-edit"
+                            title="Edit / Select Title"
+                          >
+                            <Edit2 />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item)}
+                            className="tbs-icon-btn tbs-icon-btn-delete"
+                            title="Delete Title"
+                          >
+                            <Trash2 />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="tbs-no-records">
+                      <FileText />
+                      <p>No matching license titles found</p>
+                      <span>Try clearing or refining your search filter</span>
                     </td>
                   </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={2} style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
-                  No matching license titles found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Footer */}
-      {totalPages > 1 && (
-        <div className="license-title-pagination">
-          <div>
-            Page {currentPage} of {totalPages}
+                )}
+              </tbody>
+            </table>
           </div>
-          <div className="license-title-page-btns">
-            <button 
-              type="button" 
-              className="license-title-page-btn"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            >
-              Previous
-            </button>
-            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-              let pageNum = i + 1;
-              if (totalPages > 5 && currentPage > 3) {
-                pageNum = currentPage - 3 + i;
-                if (pageNum > totalPages) pageNum = totalPages - (4 - i);
-              }
-              return (
+
+          {/* Pagination Footer */}
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1.25rem', padding: '0.5rem 0' }}>
+              <div style={{ fontSize: '0.8125rem', color: '#64748b', fontWeight: '500' }}>
+                Showing page <span style={{ fontWeight: '700', color: '#0f172a' }}>{currentPage}</span> of <span style={{ fontWeight: '700', color: '#0f172a' }}>{totalPages}</span> ({filteredTitles.length} total items)
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                 <button 
-                  key={pageNum}
-                  type="button"
-                  className={`license-title-page-btn ${currentPage === pageNum ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(pageNum)}
+                  type="button" 
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                  className="tbs-btn-sm tbs-btn-slate"
+                  style={{ borderRadius: '0.375rem', opacity: currentPage === 1 ? 0.5 : 1 }}
                 >
-                  {pageNum}
+                  Previous
                 </button>
-              );
-            })}
-            <button 
-              type="button" 
-              className="license-title-page-btn"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let pageNum = i + 1;
+                  if (totalPages > 5 && currentPage > 3) {
+                    pageNum = currentPage - 3 + i;
+                    if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                  }
+                  const isActive = currentPage === pageNum;
+                  return (
+                    <button 
+                      key={pageNum}
+                      type="button"
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`tbs-btn-sm ${isActive ? 'tbs-btn-sky' : 'tbs-btn-slate'}`}
+                      style={{ borderRadius: '0.375rem', minWidth: '2rem', textAlign: 'center' }}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                <button 
+                  type="button" 
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                  className="tbs-btn-sm tbs-btn-slate"
+                  style={{ borderRadius: '0.375rem', opacity: currentPage === totalPages ? 0.5 : 1 }}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
 
+        </div>
+
+      </div>
     </div>
   );
 };

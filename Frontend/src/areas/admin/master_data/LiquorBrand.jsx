@@ -22,7 +22,8 @@ import { Plus,
   Filter,
   Download,
   Clock,
-  Briefcase
+  Briefcase,
+  Building2
 } from 'lucide-react';
 import axios from "axios";
 
@@ -518,37 +519,41 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
   const showTable = Boolean(formData.category);
 
   return (
-      <div className="brand-registration-page">
+       <div className="tbs-container">
       
       {/* Toast Alert Notifications */}
       {toast && (
-        <div className={`brand-toast ${
+        <div className={`tbs-toast tbs-toast ${
           toast.type === 'success' ? 'brand-toast-success' :
           toast.type === 'error' ? 'brand-toast-error' :
           'brand-toast-info'
         }`}>
            {toast.type === 'success' && <CheckCircle2 className="toast-icon-success" />}
-                   {toast.type === 'error' && <AlertCircle className="toast-icon-error" />}
-                   {toast.type === 'info' && <Info className="toast-icon-info" />}
-                   <span className="toast-message">{toast.message}</span>
-                   <button onClick={() => setToast(null)} className="toast-close-btn">
-                     <X className="btn-icon" />
+                  {toast.type === 'success' && <CheckCircle2 className="w-5 h-5" />}
+          {toast.type === 'error' && <AlertCircle className="w-5 h-5" />}
+          {toast.type === 'info' && <Info className="w-5 h-5" />}
+          <span className="tbs-toast-message">{toast.message}</span>
+          <button onClick={() => setToast(null)} className="tbs-toast-close">
+          <X className="btn-icon" />
           </button>
         </div>
       )}
 
       {/* Main Container */}
-           <div className="brand-container">
+      <div className="tbs-card">
              
-             {/* Navigation Breadcrumbs / Portal Header */}
-             <div className="dept-brand-header">
-               <div className="brand-header-flex">
-                 <div>
-                   <div className="brand-subtitle">Master Registries</div>
-                   <h1 className="brand-title">Liquor Brand Registration</h1>
-                 </div>
-               </div>
-               
+       {/* Dynamic Header with Arrow Ribbon */}
+        <div className="tbs-header-section">
+          <div className="tbs-header-row">
+            <div className="tbs-brand-block">
+              <div className="tbs-icon-wrapper">
+                <Building2 />
+              </div>
+              <div className="tbs-title-block">
+                <h1>Bottler Master Directory</h1>
+            </div>
+            </div>
+            </div>
                {/* Simulation Helper */}
                <button
                  onClick={loadDefaultSamples}
@@ -571,14 +576,12 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-card-icon-wrapper stat-icon-emerald">
-                         <Activity className="stat-card-icon" />
-                       </div>
-            <div>
-              <p>Indian Liquor Registries</p>
-              <h3>
-                {brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('indian')).length}
-              </h3>
+          <div className="stat-card-icon-wrapper stat-icon-emerald">
+          <Activity className="stat-card-icon" />
+          </div>
+        <div>
+        <p>Indian Liquor Registries</p>
+        <h3>{brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('indian')).length}</h3>
             </div>
           </div>
            <div className="stat-card">

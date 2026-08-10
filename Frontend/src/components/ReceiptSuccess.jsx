@@ -141,13 +141,13 @@ Applicant Details
       {/* Applied Licence */}
 
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
+<div className="app-form-grid-md">
 
 {/* Applicant */}
 
-<div className="bg-slate-50 rounded-2xl border p-5">
+<div className="app-card">
 
-<div className="flex gap-4">
+<div className="reciept-container">
 
 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
 
@@ -157,13 +157,13 @@ Applicant Details
 
 <div>
 
-<p className="text-xs uppercase tracking-wider text-slate-500">
+<p className="receipt-label">
 
 Applicant Name
 
 </p>
 
-<h4 className="font-bold text-lg mt-1">
+<h4 className="receipt-title">
 
 {applicant?.applicantName}
 
@@ -179,11 +179,11 @@ Applicant Name
 
 {/* Company */}
 
-<div className="bg-slate-50 rounded-2xl border p-5">
+<div className="app-card">
 
-<div className="flex gap-4">
+<div className="reciept-container">
 
-<div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+<div className="iconbox">
 
 <Building2 className="text-indigo-600"/>
 
@@ -191,13 +191,13 @@ Applicant Name
 
 <div>
 
-<p className="text-xs uppercase tracking-wider text-slate-500">
+<p className="receipt-label">
 
 Company Name
 
 </p>
 
-<h4 className="font-bold text-lg mt-1">
+<h4 className="receipt-title">
 
 {applicant?.CompanyName}
 
@@ -213,9 +213,9 @@ Company Name
 
 {/* Email */}
 
-<div className="bg-slate-50 rounded-2xl border p-5">
+<div className="app-card">
 
-<div className="flex gap-4">
+<div className="reciept-container">
 
 <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
 
@@ -225,7 +225,7 @@ Company Name
 
 <div>
 
-<p className="text-xs uppercase tracking-wider text-slate-500">
+<p className="receipt-label">
 
 Email Address
 
@@ -247,9 +247,9 @@ Email Address
 
 {/* Mobile */}
 
-<div className="bg-slate-50 rounded-2xl border p-5">
+<div className="app-card">
 
-<div className="flex gap-4">
+<div className="reciept-container">
 
 <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
 
@@ -259,7 +259,7 @@ Email Address
 
 <div>
 
-<p className="text-xs uppercase tracking-wider text-slate-500">
+<p className="receipt-label">
 
 Mobile Number
 
@@ -279,11 +279,11 @@ Mobile Number
 
 </div>
 
-<div className="mt-6 bg-slate-50 rounded-2xl border p-5">
+<div className="mt-6 app-card">
 
-<div className="flex gap-4">
+<div className="reciept-container">
 
-<div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+<div className="reciept-box">
 
 <MapPin className="text-red-600"/>
 
@@ -291,7 +291,7 @@ Mobile Number
 
 <div>
 
-<p className="text-xs uppercase tracking-wider text-slate-500">
+<p className="receipt-label">
 
 Address
 
