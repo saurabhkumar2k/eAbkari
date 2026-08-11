@@ -14,6 +14,8 @@
 @import "./Premise.css";
 @import "./ownertype.css";
 
+@import "./HcrApp.css";
+
 :root {
   --brand-blue: #012a52;
   --brand-blue-dark: #00172e;
