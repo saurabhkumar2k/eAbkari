@@ -1849,7 +1849,7 @@
 }
 
 /* Header Section */
-.tbs-header-section {
+/* .tbs-header-section {
   position: relative;
   border-bottom: 1px solid #bae6fd;
   background: linear-gradient(to right, #f0f9ff, #e0f2fe);
@@ -1860,7 +1860,7 @@
   .tbs-header-section {
     padding: 1.5rem 2rem;
   }
-}
+} */
 
 .tbs-header-row {
   display: flex;

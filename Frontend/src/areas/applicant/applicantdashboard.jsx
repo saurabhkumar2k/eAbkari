@@ -856,7 +856,7 @@ const filteredLicenses = licenses.filter(
           }}
         />
       ) : (
-        <main className="page-container max-w-7xl mx-auto w-full flex-grow p-6">
+        <main className="page-container">
 
           {/* HOME TAB MAIN CONTENT */}
           {activeTab === "Home" && (
@@ -1064,7 +1064,7 @@ const filteredLicenses = licenses.filter(
 
 <button
   onClick={() => handleDownloadPdf(app.applicationIdNo)}
-  className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-md text-xs font-medium"
+  className="application-btn"
 >
   Download PDF
 </button>
@@ -1098,20 +1098,7 @@ const filteredLicenses = licenses.filter(
    <ReportHeader applicant={applicant}/>
 </View>
 </div>
-
-
-
-
-
-
-
-
 </div>
-
-
-
-    
-
    <div className="application-progress-grid">
   {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
     <div key={index} className="progress-step">
@@ -1126,20 +1113,16 @@ const filteredLicenses = licenses.filter(
         }`}
       >
       </div>
-
       <p className="progress-label">
         {label}
       </p>
-
     </div>
   ))}
 </div>
-
   </div>
 ))}
-            </div>
+      </div>
           )}
-
           {/* RENEWAL LICENSE VIEW */}
           {activeTab === "Renewal License" && (
             <div className="space-y-6">

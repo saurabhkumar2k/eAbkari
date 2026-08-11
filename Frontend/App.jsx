@@ -22,6 +22,7 @@ import TransportBulkSpiritValidity from './src/components/Department/TransportBu
 import TransportPackagedFL from './src/components/Department/TransportPackagedFL.jsx';
 import DADashbord from './src/components/Department/DA/DADashboard.jsx';
 import ExploreServicesModal from './src/Homepage/ExploreServicesModal.jsx';
+import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
 
 
 import {
@@ -58,8 +59,10 @@ export default function App() {
     console.log("Navigation:", view);
 
     switch (view?.trim()) {
-      case "Bottle":
-      case "BOTTLE":
+      case "Brand":
+      case "BRAND":
+      case "Liquor Brand":
+      case "LIQUOR BRAND":
         window.location.href = "/liquorbrand";
         break;
 
@@ -77,7 +80,7 @@ export default function App() {
       
       case "DIR_EXCISE_LICENSE":
       case "LICENSE TITLE":
-        window.location.href = "/departmentdashboard?directory=license-title";
+        window.location.href = "/departmentdashboard/directory=license-title";
         break;   
        case "TRANSPORT : BULK SPIRIT":
         window.location.href = "/TransportBulkSpiritValidity";
@@ -86,7 +89,10 @@ export default function App() {
       case "TRANSPORT : PACKAGED FL":
         window.location.href = "/TransportPackagedFL";
         break;
-
+      case "Owner Type":
+      case "OWNER TYPE":
+        window.location.href = "/departmentdashboard/owner-type";
+        break;
 
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
@@ -96,14 +102,14 @@ export default function App() {
       case "USER_CREATION":
       case "NEW_USER_CREATION":
       case "USER MAINTENANCE":
-        window.location.href = "/departmentdashboard?directory=user-creation";
+        window.location.href = "/departmentdashboard/user-creation";
         break;
         case "USER HIERARCHY":
       case "USER_HIERARCHY":
       case "FLOW HIERARCHY":
       case "FLOW_HIERARCHY":
       case "FLOW HIERARCHY MAPPING":
-        window.location.href = "/departmentdashboard?directory=flow-hierarchy";
+        window.location.href = "/departmentdashboard/flow-hierarchy";
         break;
 
       case "IMPORT : PACKAGED FL":
@@ -338,6 +344,19 @@ element={
   </div>
 }
 />
+<Route
+path="/departmentdashboard/owner-type"
+element={
+  <div className="admin-app-layout ">
+    <AdminHeader
+      navItems={navItems}
+      currentView="OWNER_TYPE"
+      onNavigate={handleAdminNavigate}
+    />
+    <OwnerType onBack={() => window.location.href = "/departmentdashboard"} />
+  </div>
+}
+/>
   {/* New Permit */}
       <Route
         path="/newpermit"
@@ -417,7 +436,7 @@ const navItems = [
       { label: "Packaged Liquor",
         hasSideMenu: true,
         sideItems: [
-          "Bottle",
+          "Brand",
           "Bottler",
           "Brand Owner"
         ],

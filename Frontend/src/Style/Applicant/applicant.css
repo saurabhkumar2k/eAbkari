@@ -1,8 +1,4 @@
-@import "./wholesale.css";
-@import "./hcr.css";
-@import "./L20.css";
-@import "./license.css";
-@import "./Permit.css";
+@import"./ApplyLicense.css";
 /* ===== GLOBAL STYLES ===== */
 body {
   margin: 0;
@@ -12,7 +8,7 @@ body {
   color: #1e293b;
 }
 
-/* ===== MAIN CONTAINER ===== */
+/* ====s= MAIN CONTAINER ===== */
 .dashboard-wrapper {
   min-height: 100vh;
   padding: 32px;
@@ -424,13 +420,6 @@ body {
   overflow-y: auto;
   display: flex;
   justify-content: center;
-}
-
-.page-container {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 32px;
 }
 
 /* Sidebar */
@@ -4236,7 +4225,7 @@ HCR License
 }
 
 /* Labels */
-.form-label {
+/* .form-label {
   display: block;
 
   margin-bottom: 8px;
@@ -4248,7 +4237,7 @@ HCR License
 
   letter-spacing: .8px;
   text-transform: uppercase;
-}
+} */
 
 /* Inputs */
 .brand-input,
@@ -5124,11 +5113,13 @@ HCR License
 
 /* GLOBAL SECTION SPACING */
 .page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 40px; 
+  max-width: 80rem; /* max-w-7xl = 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  flex-grow: 1;
+  padding: 1.5rem; /* p-6 = 24px */
 }
-
 .page-container > * {
   margin-bottom: 32px;
 }
@@ -5179,10 +5170,10 @@ HCR License
 }
 
 /* Label → Input spacing */
-.form-group label,
+/* .form-group label,
 .form-label {
   margin-bottom: 8px;
-}
+} */
 
 /* Input → Helper text spacing */
 .helper-text,
