@@ -246,7 +246,7 @@ return (
       <Route
         path="/departmentdashboard"
         element={
-          <div className="admin-app-layout flex-grow flex flex-col">
+          <div className="admin-app-layout ">
             <AdminHeader
               navItems={navItems}
               currentView="DEPARTMENT_DASHBOARD"
@@ -268,7 +268,7 @@ return (
       <Route
         path="/TransportPackagedFL"
         element={
-          <div className="admin-app-layout flex-grow flex flex-col">
+          <div className="admin-app-layout ">
             <AdminHeader
               navItems={navItems}
               currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
@@ -282,7 +282,7 @@ return (
       <Route
         path="/importpermitpass"
         element={
-          <div className="admin-app-layout flex-grow flex flex-col">
+          <div className="admin-app-layout ">
             <AdminHeader
               navItems={navItems}
               currentView="IMPORT_PERMIT_PASS"
@@ -297,7 +297,7 @@ return (
      <Route
         path="/importpackaged"  
       element={
-        <div className="admin-app-layout flex-grow flex flex-col">
+        <div className="admin-app-layout ">
           <AdminHeader  
           navItems={navItems}
           currentView="IMPORT_PACKAGED"
@@ -312,7 +312,7 @@ return (
       <Route
   path="/liquorbrand"
   element={
-    <div className="admin-app-layout flex-grow flex flex-col">
+    <div className="admin-app-layout ">
       <AdminHeader
         navItems={navItems}
         currentView="LIQUOR_BRAND"
@@ -326,9 +326,37 @@ return (
   }
 />
 <Route
+path= "/TransportBulkSpiritValidity"
+element={
+  <div className="admin-app-layout ">
+    <AdminHeader
+      navItems={navItems}
+      currentView="TRANSPORT_BULK_SPIRIT_VALIDITY"
+      onNavigate={handleAdminNavigate}
+    />
+    <TransportBulkSpiritValidity />
+  </div>
+}
+/>
+  {/* New Permit */}
+      <Route
+        path="/newpermit"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="New Permit"
+          />
+        }
+      />
+<Route
   path="/bottlermaster"
   element={
-    <div className="admin-app-layout flex-grow flex flex-col">
+    <div className="admin-app-layout ">
       <AdminHeader
         navItems={navItems}
         currentView="BOTTLER_MASTER"
@@ -344,7 +372,7 @@ return (
 <Route
   path="/brandowner"
   element={
-    <div className="admin-app-layout flex-grow flex flex-col">
+    <div className="admin-app-layout ">
       <AdminHeader
         navItems={navItems}
         currentView="BRAND_OWNER"

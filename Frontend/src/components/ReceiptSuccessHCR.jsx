@@ -15,12 +15,16 @@ import {
 
 
 
-const ReceiptSuccess = ({
+const ReceiptSuccessHCR = ({
   applicant,
+  siteForm,
   selectedLicense,
+  selectedLicenseId,
   triggerMockPrint,
   onBackToSelect
 }) => {
+
+    console.log('selectedLicense',selectedLicense)
   return (
     <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
 
@@ -141,13 +145,13 @@ Applicant Details
       {/* Applied Licence */}
 
 
-<div className="app-form-grid-md">
+<div className="grid md:grid-cols-2 gap-6 mt-8">
 
 {/* Applicant */}
 
-<div className="app-card">
+<div className="bg-slate-50 rounded-2xl border p-5">
 
-<div className="reciept-container">
+<div className="flex gap-4">
 
 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
 
@@ -157,13 +161,13 @@ Applicant Details
 
 <div>
 
-<p className="receipt-label">
+<p className="text-xs uppercase tracking-wider text-slate-500">
 
 Applicant Name
 
 </p>
 
-<h4 className="receipt-title">
+<h4 className="font-bold text-lg mt-1">
 
 {applicant?.applicantName}
 
@@ -179,11 +183,11 @@ Applicant Name
 
 {/* Company */}
 
-<div className="app-card">
+<div className="bg-slate-50 rounded-2xl border p-5">
 
-<div className="reciept-container">
+<div className="flex gap-4">
 
-<div className="iconbox">
+<div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
 
 <Building2 className="text-indigo-600"/>
 
@@ -191,15 +195,15 @@ Applicant Name
 
 <div>
 
-<p className="receipt-label">
+<p className="text-xs uppercase tracking-wider text-slate-500">
 
-Company Name
+Site Name
 
 </p>
 
-<h4 className="receipt-title">
+<h4 className="font-bold text-lg mt-1">
 
-{applicant?.CompanyName}
+{siteForm?.SiteName}
 
 </h4>
 
@@ -213,9 +217,9 @@ Company Name
 
 {/* Email */}
 
-<div className="app-card">
+<div className="bg-slate-50 rounded-2xl border p-5">
 
-<div className="reciept-container">
+<div className="flex gap-4">
 
 <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
 
@@ -225,7 +229,7 @@ Company Name
 
 <div>
 
-<p className="receipt-label">
+<p className="text-xs uppercase tracking-wider text-slate-500">
 
 Email Address
 
@@ -247,9 +251,9 @@ Email Address
 
 {/* Mobile */}
 
-<div className="app-card">
+<div className="bg-slate-50 rounded-2xl border p-5">
 
-<div className="reciept-container">
+<div className="flex gap-4">
 
 <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
 
@@ -259,7 +263,7 @@ Email Address
 
 <div>
 
-<p className="receipt-label">
+<p className="text-xs uppercase tracking-wider text-slate-500">
 
 Mobile Number
 
@@ -279,11 +283,11 @@ Mobile Number
 
 </div>
 
-<div className="mt-6 app-card">
+<div className="mt-6 bg-slate-50 rounded-2xl border p-5">
 
-<div className="reciept-container">
+<div className="flex gap-4">
 
-<div className="reciept-box">
+<div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
 
 <MapPin className="text-red-600"/>
 
@@ -291,7 +295,7 @@ Mobile Number
 
 <div>
 
-<p className="receipt-label">
+<p className="text-xs uppercase tracking-wider text-slate-500">
 
 Address
 
@@ -349,6 +353,11 @@ Address
 
           {/* {selectedLicense?.licenseeCatCode} -{" "} */}
           {selectedLicense?.licenseeCatDesc}
+          {/* {hoursOfSaleList.map((item) => (
+                <option key={item.value} value={item.value}>
+                {item.label}
+                </option>
+            ))} */}
 
         </h4>
 
@@ -447,4 +456,4 @@ Address
   );
 };
 
-export default ReceiptSuccess;
+export default ReceiptSuccessHCR;

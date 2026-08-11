@@ -210,17 +210,7 @@
   display: flex;
   flex-direction: column;
 }
-.dept-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.dept-card-body {
-  padding: 1.5rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: none;
-  border-radius: 0.75rem;
-}
+
 .form-label-flex {
   display: flex;
   align-items: center;
@@ -285,6 +275,20 @@
 /* Table cards custom layout */
 .brand-table-card {
   animation: fadeIn 0.3s ease;
+}
+
+.table-header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .table-header-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .table-title {
@@ -2099,13 +2103,24 @@
 .tbs-select {
   width: 100%;
   background-color: #ffffff;
-  padding: 0.625rem 0.75rem;
+  padding: 0.625rem 2.25rem 0.625rem 0.75rem;
   border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   color: #334155;
   font-weight: 500;
   transition: all 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.tbs-select::-ms-expand {
+  display: none;
 }
 
 .tbs-select:focus {

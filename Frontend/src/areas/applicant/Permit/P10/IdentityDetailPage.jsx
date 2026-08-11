@@ -125,26 +125,26 @@ const handleDeleteFile = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade">
-      {/* Centered blue heading banner perfectly mirroring the Event Details structure */}
-      <div className="w-full bg-[#0a3861] text-white py-2.5 px-4 text-center text-sm font-black rounded-lg select-none uppercase tracking-wider mb-2">
-        Identity Details
+    <div className="identity-page">
+      {/* Centered blue heading banner using identity-banner */}
+      <div className="identity-banner">
+        <h2>Identity Details</h2>
       </div>
 
-      <div className="space-y-6 text-left">
-        {/* Row 1: ID Proof Dropdown & ID Number Input */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="identity-card">
+        {/* Row 1: ID Proof Dropdown & ID Number Input using identity-grid */}
+        <div className="identity-grid">
           {/* Id Proof Selector */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
-              Id Proof <span className="text-red-500">*</span>
+          <div className="identity-form-group">
+            <label className="identity-field-label">
+              Id Proof <span className="identity-required-star">*</span>
             </label>
-            <div className="relative">
+            <div className="identity-select-wrapper">
               <select
                 value={currentIdProof}
                 onChange={(e) => onChange("idProofType", e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-lg px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition cursor-pointer ${
-                  errors.idProofType ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                className={`identity-select ${
+                  errors.idProofType ? "identity-input-error" : ""
                 }`}
               >
                 <option value="">--Select--</option>
@@ -156,68 +156,68 @@ const handleDeleteFile = () => {
               </select>
             </div>
             {errors.idProofType && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.idProofType}</p>
+              <p className="identity-error-text">{errors.idProofType}</p>
             )}
           </div>
 
           {/* Id Number Field */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Id Number <span className="text-red-500">*</span>
+          <div className="identity-form-group">
+            <label className="identity-field-label">
+              Id Number <span className="identity-required-star">*</span>
             </label>
             <input
               type="text"
-              placeholder="Enter ID Number"
-              className={`w-full bg-slate-50/50 border rounded-lg px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                errors.idNumber ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+              placeholder="Enter Identification Ref number"
+              className={`identity-input ${
+                errors.idNumber ? "identity-input-error" : ""
               }`}
               value={currentIdNumber}
               onChange={(e) => onChange("idNumber", e.target.value.toUpperCase())}
             />
             {errors.idNumber && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.idNumber}</p>
+              <p className="identity-error-text">{errors.idNumber}</p>
             )}
           </div>
         </div>
 
-        {/* Action Table matching the Blueprint screenshot */}
-        <div className="border border-slate-300 rounded-xl overflow-hidden shadow-xs bg-white">
-          <table className="w-full text-left border-collapse">
+        {/* Action Table matching the Blueprint screenshot exactly with modern gov upload-table wrapping */}
+        <div className="identity-upload-table-wrap">
+          <table className="identity-upload-table">
             <thead>
-              <tr className="bg-[#1b75bc] text-white">
-                <th colSpan="2" className="py-2.5 px-4 font-bold text-[12px] uppercase text-center border-r border-[#15609c]">
+              <tr className="identity-table-header-row">
+                <th colSpan="2" className="identity-th-main">
                   Applicant's Document
                 </th>
-                <th className="py-2.5 px-4 font-bold text-[12px] uppercase text-center w-[180px]">
+                <th className="identity-th-action">
                   Click To
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t border-slate-300 text-slate-700 text-xs font-medium">
+              <tr className="identity-table-body-row">
                 {/* ID Proof Doc Label Cell */}
-                <td className="py-5 px-4 font-bold text-slate-800 w-[180px] border-r border-slate-300 bg-slate-50/30 text-center">
+                <td className="identity-td-label">
                   ID Proof Doc
                 </td>
 
                 {/* File Uploader Cell */}
-                <td className="py-5 px-4 border-r border-slate-300 text-center">
-                  <div className="inline-flex flex-col items-center justify-center space-y-1.5">
-                    <div className="flex items-center gap-2">
+                <td className="identity-td-file">
+                  <div className="identity-file-upload-box">
+                    <div className="identity-file-row">
                       <button
                         type="button"
                         onClick={triggerUploadClick}
-                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-350 text-slate-800 rounded text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                        className="identity-btn-upload"
                       >
-                        <Upload className="w-3 h-3 text-slate-750" />
-                        Choose File
+                        <Upload style={{ width: '1rem', height: '1rem', color: '#334155' }} />
+                        <span>Choose File</span>
                       </button>
-                      <span className="text-slate-600 text-xs font-bold italic">
+                      <span className="identity-file-name">
                         {uploadedFileName || "No file chosen"}
                       </span>
                     </div>
                     {/* Size and specs feedback notice */}
-                    <p className="text-[10px] text-red-600 font-black">
+                    <p className="identity-file-specs">
                       (.pdf,.JPG/.JPEG) Max Size: 2MB
                     </p>
                   </div>
@@ -227,30 +227,30 @@ const handleDeleteFile = () => {
                     ref={fileInputRef}
                     accept=".pdf,image/jpeg,image/jpg"
                     onChange={handleFileChange}
-                    className="hidden"
+                    style={{ display: 'none' }}
                   />
                   {errors.idProofFileName && (
-                    <p className="text-[11px] text-red-600 font-bold mt-1 text-center">{errors.idProofFileName}</p>
+                    <p className="identity-error-text identity-error-center">{errors.idProofFileName}</p>
                   )}
                 </td>
 
                 {/* Action View/Delete Cell */}
-                <td className="py-5 px-4 text-center">
-                  <div className="flex items-center justify-center gap-4 text-xs font-bold">
+                <td className="identity-td-actions">
+                  <div className="identity-action-links">
                     {/* View Document */}
                     {uploadedFileName ? (
                       <button
                         type="button"
                         onClick={() => setPreviewModalOpen(true)}
-                        className="text-blue-600 hover:text-blue-800 transition flex items-center gap-1 cursor-pointer"
+                        className="identity-action-btn identity-action-view"
                         title="View Document"
                       >
-                        <Eye className="w-3.5 h-3.5" />
+                        <Eye style={{ width: '1rem', height: '1rem' }} />
                         <span>View</span>
                       </button>
                     ) : (
-                      <span className="text-slate-400 cursor-not-allowed flex items-center gap-1 select-none">
-                        <Eye className="w-3.5 h-3.5" />
+                      <span className="identity-action-disabled">
+                        <Eye style={{ width: '1rem', height: '1rem' }} />
                         <span>View</span>
                       </span>
                     )}
@@ -260,15 +260,15 @@ const handleDeleteFile = () => {
                       <button
                         type="button"
                         onClick={handleDeleteFile}
-                        className="text-red-600 hover:text-red-800 transition flex items-center gap-1 cursor-pointer"
+                        className="identity-action-btn identity-action-delete"
                         title="Delete Document"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 style={{ width: '1rem', height: '1rem' }} />
                         <span>Delete</span>
                       </button>
                     ) : (
-                      <span className="text-slate-400 cursor-not-allowed flex items-center gap-1 select-none">
-                        <Trash2 className="w-3.5 h-3.5" />
+                      <span className="identity-action-disabled">
+                        <Trash2 style={{ width: '1rem', height: '1rem' }} />
                         <span>Delete</span>
                       </span>
                     )}
@@ -279,12 +279,12 @@ const handleDeleteFile = () => {
           </table>
         </div>
 
-        {/* Blue Save Button at standard left spot of the form */}
-        <div className="pt-2">
+        {/* Save footer aligned beautifully with Save button class */}
+        <div className="identity-save-footer">
           <button
             type="button"
             onClick={handleSaveDoc}
-            className="px-5 py-2.5 bg-[#007bff] hover:bg-blue-600 text-white font-extrabold text-xs rounded-lg shadow-sm hover:shadow transition-all inline-flex items-center justify-center uppercase cursor-pointer"
+            className="identity-btn-save"
           >
             Save
           </button>
@@ -293,44 +293,49 @@ const handleDeleteFile = () => {
 
       {/* Styled File preview Modal popup */}
       {previewModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl border border-slate-200 animate-scale">
+        <div className="identity-modal-overlay">
+          <div className="identity-modal-card">
             {/* Modal Title bar */}
-            <div className="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
-              <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider">
+            <div className="identity-modal-header">
+              <h4 className="identity-modal-title">
                 ID Proof Verification Preview
               </h4>
               <button
                 type="button"
                 onClick={() => setPreviewModalOpen(false)}
-                className="text-slate-300 hover:text-white transition font-sans text-xs uppercase"
+                className="identity-modal-close"
               >
                 Close (✖)
               </button>
             </div>
             {/* Modal Body Info and preview canvas */}
-            <div className="p-6 space-y-4 text-center">
-              <div className="bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-xl p-3 inline-flex items-center gap-2 mx-auto justify-center">
-                <Check className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-bold">Document Active & Approved</span>
+            <div className="identity-modal-body">
+              <div className="identity-modal-badge">
+                <Check style={{ width: '1rem', height: '1rem', color: '#059669' }} />
+                <span>Document Active & Approved</span>
               </div>
-              <div className="border border-slate-200 rounded-xl bg-slate-50 p-4 flex flex-col justify-center items-center h-[200px] gap-2">
-                <FileText className="w-16 h-16 text-[#0a3861]" />
-                <p className="text-xs text-slate-800 font-extrabold">{uploadedFileName}</p>
-                <p className="text-[10px] text-slate-400 font-bold font-mono">
+              
+              <div className="identity-preview-doc-box">
+                <FileText style={{ width: '4rem', height: '4rem', color: '#0a3861' }} />
+                <p className="identity-doc-name">{uploadedFileName}</p>
+                <p className="identity-doc-meta">
                   TYPE: PDF/IMAGE • SIZE: MOCK VERIFIED • REGISTERED PASS
                 </p>
               </div>
-              <p className="text-xs text-slate-500 font-medium">
+
+              <p className="identity-modal-notice">
                 Official PDF/JPEG layout verification is approved instantly. In case of discrepancies during physical inspection, the licensee stays personally liable under the Delhi Excise Act, 2009.
               </p>
-              <button
-                type="button"
-                onClick={() => setPreviewModalOpen(false)}
-                className="w-full bg-[#1b75bc] text-white py-2.5 rounded-lg text-xs font-bold hover:bg-[#15609c] transition uppercase"
-              >
-                Done
-              </button>
+              
+              <div className="identity-modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setPreviewModalOpen(false)}
+                  className="identity-modal-btn-done"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
         </div>

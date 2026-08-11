@@ -813,7 +813,7 @@ const filteredLicenses = licenses.filter(
 );
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col relative">
+    <div className="app-layout">
 
       {/* HEADER WITH CENTERED HORIZONTAL MENU */}
       <Header
@@ -844,17 +844,17 @@ const filteredLicenses = licenses.filter(
       {/* PAGE CONTENT */}
       {activeTab === "New License" ? (
         <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
-      ) : activeTab ==="New Permit" ? (
-        <NewPermitWizard 
-        onBackToDashboard={()=> setActiveTab("Home")}
-        showToast={showToast}
-        onSubmitPermit={(permitRecord)=>{
-          if (permitRecord) {
-            setPermitApplications (prev => [permitRecord, ...prev]);
-          }
-          setActiveTab("Applied Permit");
-        }}
-          />
+      ) : activeTab === "New Permit" ? (
+        <NewPermitWizard
+          onBackToDashboard={() => setActiveTab("Home")}
+          showToast={showToast}
+          onSubmitPermit={(permitRecord) => {
+            if (permitRecord) {
+              setPermitApplications(prev => [permitRecord, ...prev]);
+            }
+            setActiveTab("Applied Permit");
+          }}
+        />
       ) : (
         <main className="page-container max-w-7xl mx-auto w-full flex-grow p-6">
 
@@ -2009,7 +2009,7 @@ const filteredLicenses = licenses.filter(
               )}
             </div>
           )}
-
+           
           {/* APPLIED DEALERS TAB */}
           {activeTab === "Applied Dealers" && (
             <div className="space-y-6">

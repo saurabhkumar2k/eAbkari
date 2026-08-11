@@ -287,32 +287,36 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
   ];
 
   return (
-    <div className="space-y-6 animate-fade">
-      {/* Dynamic Centered Sub-Header */}
-      <div className="w-full bg-[#0a3861] text-white py-2.5 px-4 text-center text-sm font-black rounded-lg select-none uppercase tracking-wider mb-2">
+    <div className="event-details-wrapper">
+      {/* Dynamic Centered Sub-Header matches the Image blueprint */}
+      <div className="event-details-banner">
         Event Details
       </div>
 
-      <div className="space-y-5 text-left">
+      <div className="event-details-content">
         {/* 1. Premises Type Container */}
         <div>
-          <label className="text-xs font-bold text-slate-700 flex items-center mb-1.5">
-            Premises Type <span className="text-red-500 ml-1">*</span>
+          <label className="event-field-label">
+            Premises Type <span className="event-required-star">*</span>
           </label>
-          <div className="w-full border border-slate-200/80 rounded-xl p-3 bg-[#fdfdfd] flex flex-wrap gap-5 sm:gap-8 items-center">
-            {/* Only three options: Banquet Hall/Party Hall, Farmhouse, Others */}
-            {PREMISE_OPTIONS.map((type) => (
+          <div className="event-radio-group">
+            {[
+              "Banquet Hall/Party Hall",
+              "Farmhouse",
+              "MCD Park/Community Hall",
+              "Own Residence"
+            ].map((option) => (
               <label
-                key={type}
-                className="flex items-center gap-2 cursor-pointer text-slate-750 text-xs font-bold select-none"
+                key={option}
+                className="event-radio-label"
               >
                 <input
                   type="radio"
                   name="premisesType"
-                  value={type}
-                  checked={currentPremisesType === type}
-                  onChange={() => handlePremisesTypeChange(type)}
-                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer accent-blue-600"
+                  value={option}
+                  checked={currentPremisesType === option}
+                  onChange={() => handlePremisesTypeChange(option)}
+                  className="event-radio-input"
                 />
                 <span>{type}</span>
               </label>
@@ -323,103 +327,80 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
         </div>
 
         {/* 2. Premise Name and Premise Address Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Premise Name Dropdown / Text Input */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Premise Name <span className="text-red-500">*</span>
+        <div className="event-grid-2">
+          {/* Premise Name Dropdown */}
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Premise Name <span className="event-required-star">*</span>
             </label>
-            {isOthers ? (
-              <input
-                type="text"
+            <div className="event-select-wrapper">
+              <select
                 value={currentPremiseName}
-                onChange={(e) => handlePremiseNameTextChange(e.target.value)}
-                placeholder="Enter premise name"
-                className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.premiseName ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                onChange={(e) => handlePremiseNameChange(e.target.value)}
+                className={`event-select-input ${
+                  errors.premiseName ? "event-input-error" : ""
                 }`}
-              />
-            ) : (
-              <div className="relative">
-                <select
-                  value={currentPremiseName}
-                  onChange={(e) => {
-                    const selected = filteredPremises.find(p => p.premiseName === e.target.value);
-                    handlePremiseSelect(selected);
-                  }}
-                  className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition appearance-none cursor-pointer ${
-                    errors.premiseName ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
-                  }`}
-                  disabled={loadingPremises || !currentPremisesType || currentPremisesType === "Others" || filteredPremises.length === 0}
-                >
-                  <option value="">--Select Premise--</option>
-                  {filteredPremises.map((premise, index) => (
-                    <option 
-                      key={`${premise.premiseId || 'premise'}-${index}`} 
-                      value={premise.premiseName}
-                    >
-                      {premise.premiseName}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  {loadingPremises ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-slate-400" />
-                  )}
-                </div>
-                {!loadingPremises && filteredPremises.length === 0 && currentPremisesType && currentPremisesType !== "Others" && (
-                  <p className="text-[10px] text-amber-600 mt-1">No premises found for this type</p>
-                )}
+              >
+                <option value="">--Select--</option>
+                {premiseOptions.map((opt) => (
+                  <option key={opt.name} value={opt.name}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+              <div className="event-select-icon-wrap">
+                <ChevronDown style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
             )}
             {errors.premiseName && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.premiseName}</p>
+              <p className="event-error-text">{errors.premiseName}</p>
             )}
           </div>
 
-          {/* Premise Address - Auto-filled from selection or text input for Others */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Premise Address <span className="text-red-500">*</span>
+          {/* Premise Address Dropdown / text */}
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Premise Address <span className="event-required-star">*</span>
             </label>
-            {isOthers ? (
-              <input
-                type="text"
+            <div className="event-select-wrapper">
+              <select
                 value={currentPremiseAddress}
-                onChange={(e) => handlePremiseAddressTextChange(e.target.value)}
-                placeholder="Enter full premise address"
-                className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.venueAddress ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                onChange={(e) => handlePremiseAddressChange(e.target.value)}
+                className={`event-select-input ${
+                  errors.venueAddress ? "event-input-error" : ""
                 }`}
-              />
-            ) : (
-              <input
-                type="text"
-                value={currentPremiseAddress}
-                readOnly
-                placeholder="Address will auto-fill"
-                className={`w-full bg-slate-100/80 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-600 outline-none select-all ${
-                  errors.venueAddress ? "border-red-500 bg-red-50/10" : "border-slate-250"
-                }`}
-              />
-            )}
+              >
+                <option value="">--Select--</option>
+                {currentPremiseAddress && (
+                  <option value={currentPremiseAddress}>{currentPremiseAddress}</option>
+                )}
+                {premiseOptions
+                  .filter((p) => p.address !== currentPremiseAddress)
+                  .map((opt) => (
+                    <option key={opt.address} value={opt.address}>
+                      {opt.address}
+                    </option>
+                  ))}
+              </select>
+              <div className="event-select-icon-wrap">
+                <ChevronDown style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
+              </div>
+            </div>
             {errors.venueAddress && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.venueAddress}</p>
+              <p className="event-error-text">{errors.venueAddress}</p>
             )}
           </div>
         </div>
 <br />
 
         {/* 3. Fully Interactive Live Leaflet Map Container */}
-        <div className="space-y-1">
-          <div className="w-full h-[280px] sm:h-[340px] rounded-2xl overflow-hidden border-2 border-slate-200/80 shadow-md relative bg-slate-100">
+        <div className="event-field-item">
+          <div className="event-map-container">
             <iframe
               ref={iframeRef}
               title="Excise Event Venue GIS Map Service"
               srcDoc={mapSrcDoc}
-              className="w-full h-full border-0 block"
+              className="event-map-iframe"
               referrerPolicy="no-referrer"
               sandbox="allow-scripts allow-same-origin"
             />
@@ -427,29 +408,29 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
         </div>
 
         {/* 4. Latitude & Longitude Input Fields side-by-side */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Latitude <span className="text-red-500">*</span>
+        <div className="event-grid-2">
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Latitude <span className="event-required-star">*</span>
             </label>
             <input
               type="text"
               readOnly
               value={currentLatitude}
-              className="w-full bg-slate-100/80 border border-slate-250 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-mono font-bold text-slate-600 outline-none select-all"
+              className="event-readonly-input"
               placeholder="e.g. 28.613900"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Longitude <span className="text-red-500">*</span>
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Longitude <span className="event-required-star">*</span>
             </label>
             <input
               type="text"
               readOnly
               value={currentLongitude}
-              className="w-full bg-slate-100/80 border border-slate-250 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-mono font-bold text-slate-600 outline-none select-all"
+              className="event-readonly-input"
               placeholder="e.g. 77.209000"
             />
           </div>
@@ -457,14 +438,14 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
 
         {/* 5. Event Type Container */}
         <div>
-          <label className="text-xs font-bold text-slate-700 flex items-center mb-1.5">
-            Event Type <span className="text-red-500 ml-1">*</span>
+          <label className="event-field-label">
+            Event Type <span className="event-required-star">*</span>
           </label>
-          <div className="w-full border border-slate-200/80 rounded-xl p-3 bg-[#fdfdfd] flex flex-wrap gap-5 sm:gap-8 items-center">
+          <div className="event-radio-group">
             {["Marriage", "Birthday", "Party", "Other"].map((option) => (
               <label
                 key={option}
-                className="flex items-center gap-2 cursor-pointer text-slate-750 text-xs font-bold select-none"
+                className="event-radio-label"
               >
                 <input
                   type="radio"
@@ -472,7 +453,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
                   value={option}
                   checked={currentEventType === option}
                   onChange={() => handleEventTypeChange(option)}
-                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer accent-blue-600"
+                  className="event-radio-input"
                 />
                 <span>{option}</span>
               </label>
@@ -481,34 +462,34 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
         </div>
 
         {/* 6. Four Column Inputs: No. of Guests, Start Date, Start Time, End Time */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="event-grid-4">
           {/* No. of Guests */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              No. of Guests <span className="text-red-500">*</span>
+          <div className="event-field-item">
+            <label className="event-field-label">
+              No. of Guests <span className="event-required-star">*</span>
             </label>
-            <div className="relative">
+            <div className="event-input-wrapper">
               <input
                 type="number"
                 value={formData.estimatedGuests || ""}
                 onChange={(e) => onChange("estimatedGuests", e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.estimatedGuests ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                className={`event-input ${
+                  errors.estimatedGuests ? "event-input-error" : ""
                 }`}
                 placeholder="No. of Guests"
               />
             </div>
             {errors.estimatedGuests && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.estimatedGuests}</p>
+              <p className="event-error-text">{errors.estimatedGuests}</p>
             )}
           </div>
 
           {/* Start Date of Event */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Start Date <span className="text-red-500">*</span>
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Start Date of Event <span className="event-required-star">*</span>
             </label>
-            <div className="relative">
+            <div className="event-input-wrapper">
               <input
                 type="date"
                 value={formData.servingStartDate || ""}
@@ -516,62 +497,62 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
                   onChange("servingStartDate", e.target.value);
                   onChange("servingEndDate", e.target.value);
                 }}
-                className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.servingStartDate ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                className={`event-input event-input-has-icon ${
+                  errors.servingStartDate ? "event-input-error" : ""
                 }`}
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <Calendar className="w-4 h-4 text-slate-400" />
+              <div className="event-input-icon-wrap">
+                <Calendar style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
             </div>
             {errors.servingStartDate && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.servingStartDate}</p>
+              <p className="event-error-text">{errors.servingStartDate}</p>
             )}
           </div>
 
           {/* Event Start Time */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              Start Time <span className="text-red-500">*</span>
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Event Start Time <span className="event-required-star">*</span>
             </label>
-            <div className="relative">
+            <div className="event-input-wrapper">
               <input
                 type="time"
                 value={formData.startTime || ""}
-                onChange={(e) => handleStartTimeChange(e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.startTime ? "border-red-500 bg-red-50/10" : "border-slate-250 focus:border-blue-500 focus:bg-white"
+                onChange={(e) => onChange("startTime", e.target.value)}
+                className={`event-input event-input-has-icon ${
+                  errors.startTime ? "event-input-error" : ""
                 }`}
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <Clock className="w-4 h-4 text-slate-400" />
+              <div className="event-input-icon-wrap">
+                <Clock style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
             </div>
             {errors.startTime && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.startTime}</p>
+              <p className="event-error-text">{errors.startTime}</p>
             )}
           </div>
 
           {/* Event End Time */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
-              End Time <span className="text-red-500">*</span>
+          <div className="event-field-item">
+            <label className="event-field-label">
+              Event End Time <span className="event-required-star">*</span>
             </label>
-            <div className="relative">
+            <div className="event-input-wrapper">
               <input
                 type="time"
                 value={formData.endTime || ""}
                 onChange={(e) => onChange("endTime", e.target.value)}
-                className={`w-full bg-slate-50/50 border rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${
-                  errors.endTime ? "border-red-500 bg-red-50/10" : "border-slate-350 focus:border-blue-500 focus:bg-white"
+                className={`event-input event-input-has-icon ${
+                  errors.endTime ? "event-input-error" : ""
                 }`}
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <Clock className="w-4 h-4 text-slate-400" />
+              <div className="event-input-icon-wrap">
+                <Clock style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
             </div>
             {errors.endTime && (
-              <p className="text-[11px] text-red-600 font-bold mt-1">{errors.endTime}</p>
+              <p className="event-error-text">{errors.endTime}</p>
             )}
           </div>
         </div>

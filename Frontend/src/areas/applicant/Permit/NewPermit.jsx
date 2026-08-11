@@ -322,7 +322,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
   }
 
   return (
-    <div className="brand-registration-page select-none text-slate-800 animate-fade">
+    <div className="app-registartion-page">
       
       {/* Premium Header with Monument Illustration resembling standard portal designs */}
       <div className="permit-banner relative overflow-hidden mb-6">
