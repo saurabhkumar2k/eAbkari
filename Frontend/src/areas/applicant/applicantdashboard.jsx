@@ -56,10 +56,11 @@ import {
   Hotel
 } from "lucide-react";
 import NewLicense from "./NewLicense";
-import NewPermitWizard from "./Permit/NewPermit";
+import NewPermit from "./Permit/NewPermit.jsx";
 import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
 
 import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
+import NewPermitWizard from "./Permit/NewPermit.jsx";
 
 //import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
 

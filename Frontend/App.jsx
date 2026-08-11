@@ -192,6 +192,15 @@ return (
           />
         }
       />
+      <Route 
+      path="/newpermit"
+      element={
+        <PermitForm
+          onBack={() => (window.location.href = "/applicantdashboard")}
+        />
+      }
+      
+      />
 
       {/* Department Login */}
       <Route
@@ -211,7 +220,7 @@ return (
           />
         }
       />
-
+      
       {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
       <Route
         path="/dadashboard"

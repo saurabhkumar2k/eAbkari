@@ -5,93 +5,68 @@ import {
   MapPin,
   Users,
   Compass,
-  ChevronDown
+  ChevronDown,
+  Loader2
 } from "lucide-react";
+import { getPremises } from "../../../../api/permitApi";
 
-// Premise Options & Addresses for Delhi
-const PREMISE_DATA = {
-  "Banquet Hall/Party Hall": [
-    {
-      name: "The Leela Ambience Banquet",
-      address: "NH 8, Ambience Island, DLF Phase 3, Delhi NCR 122002",
-      lat: "28.5035",
-      lng: "77.0975"
-    },
-    {
-      name: "Seven Heaven Banquets",
-      address: "A-53, West Shivaji Marg, Shivaji Place, Kirti Nagar, New Delhi 110015",
-      lat: "28.6496",
-      lng: "77.1211"
-    },
-    {
-      name: "Golden Tulip Banquet",
-      address: "Sector 2, Vasundhara, Delhi Border, Ghaziabad 201012",
-      lat: "28.6601",
-      lng: "77.3415"
-    }
-  ],
-  "Farmhouse": [
-    {
-      name: "Tivoli Garden Resort & Farm",
-      address: "Chattarpur Mandir Road, Chhattarpur Hills, New Delhi 110074",
-      lat: "28.4975",
-      lng: "77.1812"
-    },
-    {
-      name: "The Kundan Farmhouse",
-      address: "Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-      lat: "28.5284",
-      lng: "77.0851"
-    },
-    {
-      name: "Radiance Motel & Orchards",
-      address: "2, Tania Farm, Chattarpur Mandir Road, Chhattarpur, New Delhi 110074",
-      lat: "28.4921",
-      lng: "77.1793"
-    }
-  ],
-  "MCD Park/Community Hall": [
-    {
-      name: "MCD Community Park, Saket",
-      address: "J-Block Community Ground, Saket, New Delhi 110017",
-      lat: "28.5222",
-      lng: "77.2144"
-    },
-    {
-      name: "GK-2 Community Center Hall",
-      address: "M-Block Market Road, Greater Kailash II, New Delhi 110048",
-      lat: "28.5342",
-      lng: "77.2421"
-    }
-  ],
-  "Own Residence": [
-    {
-      name: "Private Home Terrace, Vasant Vihar",
-      address: "C-4, Vasant Vihar Lawns, New Delhi 110057",
-      lat: "28.5612",
-      lng: "77.1610"
-    },
-    {
-      name: "Rooftop Duplex, Rajouri Garden",
-      address: "J-12, Main Ring Road, Rajouri Garden, New Delhi 115027",
-      lat: "28.6415",
-      lng: "77.1215"
-    }
-  ]
-};
-
-export default function EventDetailsPage({ formData, onChange, errors = {} }) {
+export default function EventDetailsPage({ formData, onChange, errors = {}, showToast }) {
   const iframeRef = useRef(null);
+  const [premisesList, setPremisesList] = useState([]);
+  const [loadingPremises, setLoadingPremises] = useState(false);
+  const [selectedPremise, setSelectedPremise] = useState(null);
 
   // Initialize helper states if empty
-  const currentPremisesType = formData.premisesType || "Farmhouse";
+  const currentPremisesType = formData.premisesType || "";
   const currentPremiseName = formData.premiseName || "";
   const currentPremiseAddress = formData.premiseAddress || "";
-  const currentLatitude = formData.latitude || "28.5284";
-  const currentLongitude = formData.longitude || "77.1643";
+  const currentLatitude = formData.latitude || "";
+  const currentLongitude = formData.longitude || "";
   const currentEventType = formData.eventType || "Birthday";
 
-  const premiseOptions = PREMISE_DATA[currentPremisesType] || [];
+  // Fetch premises from API
+  useEffect(() => {
+    const fetchPremises = async () => {
+      setLoadingPremises(true);
+      try {
+        const response = await getPremises();
+        console.log("Premises API Response:", response.data);
+        
+        // Extract the list from the response
+        let premises = [];
+        if (response.data && Array.isArray(response.data)) {
+          premises = response.data;
+        } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+          premises = response.data.data;
+        } else if (response.data && response.data.result && Array.isArray(response.data.result)) {
+          premises = response.data.result;
+        }
+        
+        setPremisesList(premises);
+        
+        // If we have premises and formData has a premiseName, find and set it
+        if (formData.premiseName && premises.length > 0) {
+          const matched = premises.find(p => p.premiseName === formData.premiseName);
+          if (matched) {
+            setSelectedPremise(matched);
+            // Auto-fill address if found
+            const fullAddress = [matched.premiseAddress1, matched.premiseAddress2]
+              .filter(Boolean)
+              .join(", ");
+            onChange("premiseAddress", fullAddress);
+            onChange("venueAddress", `${matched.premiseName || ""}, ${fullAddress}`);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch premises:", error);
+        if (showToast) showToast("Failed to load premises list", "error");
+      } finally {
+        setLoadingPremises(false);
+      }
+    };
+
+    fetchPremises();
+  }, []);
 
   // Update map coordinates in iframe
   const syncMapCoordinates = (lat, lng) => {
@@ -130,56 +105,99 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
   // Handler for premises type radio selection
   const handlePremisesTypeChange = (value) => {
     onChange("premisesType", value);
+    
     // Synced with existing schema's venueCategory
     let category = "Hotel/Resort";
     if (value === "Banquet Hall/Party Hall") category = "Banquet Hall";
     if (value === "Farmhouse") category = "Farmhouse";
-    if (value === "MCD Park/Community Hall") category = "Club/Association";
-    if (value === "Own Residence") category = "Private Residence";
+    if (value === "Others") category = "Private Residence";
     onChange("venueCategory", category);
 
-    // Reset fields for the new group
+    // Reset fields
     onChange("premiseName", "");
     onChange("premiseAddress", "");
     onChange("venueAddress", "");
     onChange("latitude", "28.6139");
     onChange("longitude", "77.2090");
+    setSelectedPremise(null);
     syncMapCoordinates("28.6139", "77.2090");
   };
 
-  // Handler for premise name selection dropdown
-  const handlePremiseNameChange = (name) => {
-    onChange("premiseName", name);
-    const matched = premiseOptions.find((p) => p.name === name);
-    if (matched) {
-      onChange("premiseAddress", matched.address);
-      onChange("venueAddress", `${matched.name}, ${matched.address}`);
-      onChange("latitude", matched.lat);
-      onChange("longitude", matched.lng);
-      syncMapCoordinates(matched.lat, matched.lng);
-    } else {
+  // Handler for premise selection from dropdown
+  const handlePremiseSelect = (premise) => {
+    if (!premise) {
+      onChange("premiseName", "");
       onChange("premiseAddress", "");
       onChange("venueAddress", "");
-      onChange("latitude", "28.6139");
-      onChange("longitude", "77.2090");
-      syncMapCoordinates("28.6139", "77.2090");
+      setSelectedPremise(null);
+      return;
+    }
+
+    setSelectedPremise(premise);
+    onChange("premiseName", premise.premiseName || "");
+    
+    // Concatenate PremiseAddress1 and PremiseAddress2
+    const fullAddress = [premise.premiseAddress1, premise.premiseAddress2]
+      .filter(Boolean)
+      .join(", ");
+    
+    onChange("premiseAddress", fullAddress);
+    onChange("venueAddress", `${premise.premiseName || ""}, ${fullAddress}`);
+    
+    // If latitude and longitude are available from the API
+    if (premise.latitude && premise.longitude) {
+      onChange("latitude", premise.latitude);
+      onChange("longitude", premise.longitude);
+      syncMapCoordinates(premise.latitude, premise.longitude);
     }
   };
 
-  // Premise Address select / text handler
-  const handlePremiseAddressChange = (address) => {
+  // Free-text handler used only when Premises Type is "Others"
+  const handlePremiseNameTextChange = (name) => {
+    onChange("premiseName", name);
+    onChange(
+      "venueAddress",
+      currentPremiseAddress ? `${name}, ${currentPremiseAddress}` : name
+    );
+  };
+
+  // Free-text handler used only when Premises Type is "Others"
+  const handlePremiseAddressTextChange = (address) => {
     onChange("premiseAddress", address);
-    onChange("venueAddress", currentPremiseName ? `${currentPremiseName}, ${address}` : address);
+    onChange(
+      "venueAddress",
+      currentPremiseName ? `${currentPremiseName}, ${address}` : address
+    );
   };
 
   // Event Type handler
   const handleEventTypeChange = (value) => {
     onChange("eventType", value);
-    // Sync with existing occasionName parameter
     onChange("occasionName", `${value} Special Reception Event`);
   };
 
-  // Map Iframe content via safe and fast srcdoc
+  // Auto-fill End Time as Start Time + 6 hours, capped at midnight (23:59)
+  const calculateAutoEndTime = (startTimeValue) => {
+    if (!startTimeValue) return "";
+
+    const [hours, minutes] = startTimeValue.split(":").map(Number);
+    const startMinutes = hours * 60 + minutes;
+    const sixHoursLater = startMinutes + 6 * 60;
+
+    const cappedMinutes = Math.min(sixHoursLater, 23 * 60 + 59);
+
+    const endHours = Math.floor(cappedMinutes / 60);
+    const endMins = cappedMinutes % 60;
+
+    return `${String(endHours).padStart(2, "0")}:${String(endMins).padStart(2, "0")}`;
+  };
+
+  const handleStartTimeChange = (value) => {
+    onChange("startTime", value);
+    onChange("endTime", calculateAutoEndTime(value));
+  };
+
+  // Map Iframe content
   const mapSrcDoc = `
     <!DOCTYPE html>
     <html>
@@ -187,7 +205,6 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
       <meta charset="utf-8" />
       <style>
         body, html, #map { margin: 0; padding: 0; width: 100%; height: 100%; font-family: sans-serif; overflow: hidden; }
-        /* Map styling */
         .leaflet-control-zoom { border: 2px solid rgba(0,0,0,0.2) !important; border-radius: 4px !important; }
         .logo-attribution { display: none; }
       </style>
@@ -241,6 +258,34 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
     </html>
   `;
 
+  // Filter premises by selected type
+  const getFilteredPremises = () => {
+    if (!currentPremisesType || currentPremisesType === "Others") {
+      return [];
+    }
+    
+    // Filter based on PremiseType
+    return premisesList.filter(p => {
+      if (currentPremisesType === "Banquet Hall/Party Hall") {
+        return p.premiseType && p.premiseType.toLowerCase() === "banquet";
+      }
+      if (currentPremisesType === "Farmhouse") {
+        return p.premiseType && p.premiseType.toLowerCase() === "farm";
+      }
+      return false;
+    });
+  };
+
+  const filteredPremises = getFilteredPremises();
+  const isOthers = currentPremisesType === "Others";
+
+  // Only these three options
+  const PREMISE_OPTIONS = [
+    "Banquet Hall/Party Hall",
+    "Farmhouse",
+    "Others"
+  ];
+
   return (
     <div className="event-details-wrapper">
       {/* Dynamic Centered Sub-Header matches the Image blueprint */}
@@ -273,9 +318,11 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
                   onChange={() => handlePremisesTypeChange(option)}
                   className="event-radio-input"
                 />
-                <span>{option}</span>
+                <span>{type}</span>
               </label>
             ))}
+            
+            {loadingPremises && <Loader2 className="w-4 h-4 animate-spin text-blue-500 ml-2" />}
           </div>
         </div>
 
@@ -304,7 +351,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
               <div className="event-select-icon-wrap">
                 <ChevronDown style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
-            </div>
+            )}
             {errors.premiseName && (
               <p className="event-error-text">{errors.premiseName}</p>
             )}
@@ -344,6 +391,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
             )}
           </div>
         </div>
+<br />
 
         {/* 3. Fully Interactive Live Leaflet Map Container */}
         <div className="event-field-item">
@@ -447,7 +495,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {} }) {
                 value={formData.servingStartDate || ""}
                 onChange={(e) => {
                   onChange("servingStartDate", e.target.value);
-                  onChange("servingEndDate", e.target.value); // keep in sync
+                  onChange("servingEndDate", e.target.value);
                 }}
                 className={`event-input event-input-has-icon ${
                   errors.servingStartDate ? "event-input-error" : ""
