@@ -167,6 +167,19 @@ public LiquorMasterController(ILiquorMasterRepository liquorKindRepository
   }
 
 
+       [HttpGet("LiquorType/{kindCode}")]
+public async Task<IActionResult> GetLiquorType(string kindCode)
+{
+    var data = await _LiquorMasterRepository.GetLiquorTypeAsync(kindCode);
+
+    if (data == null || !data.Any())
+    {
+        return NotFound(new { message = "No liquor type found." });
+    }
+
+    return Ok(data);
+}
+
 
 
 

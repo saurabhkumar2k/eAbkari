@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { applyPermit, getApplicantByRegId, getPermitP10 } from "../../../../api/permitApi";
 import ApplicantDetails from "./ApplicantDetails";
 import EventDetailsPage from "./EventDetails";
 import IdentityDetailsPage from "./IdentityDetailPage";
 import LiquorDetailsPage from "./LiquorDetailPage";
+import GetPermit from "./GetPermit";
 import {
   User,
   Calendar,
@@ -31,88 +33,237 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
   const [currentStep, setCurrentStep] = useState(1);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [permitReceipt, setPermitReceipt] = useState(null);
+  const [submittedApplicationIdNo, setSubmittedApplicationIdNo] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
-    // Step 1: Applicant Details
-    applicantName: "MR. DEVENDER MITTAL",
-    dob: "1980-01-01",
-    fatherName: "MR. G. S. MITTAL",
-    occupation: "BUSINESS",
-    panNo: "AAKCA2158M",
-    address1: "A-3, DISTRICT CENTRE",
-    address2: "SELECT CITY WALK SAKET NEW DELHI",
-    state: "Delhi",
-    district: "South",
-    subDivision: "Saket",
-    pin: "110017",
-    email: "devender@advempl.com",
-    mobile: "9811042727",
+    // Step 1: Applicant Details — populated by ApplicantDetails.jsx via GetApplicantByRegId
+    applicantName: "",
+    dob: "",
+    fatherName: "",
+    occupation: "",
+    panNo: "",
+    address1: "",
+    address2: "",
+    state: "",
+    district: "",
+    subDivision: "",
+    pin: "",
+    email: "",
+    mobile: "",
     landline: "",
     fax: "",
+    licenseType: "4",
+    finYear: "2",
+    regId: Number(localStorage.getItem("regId")) || null,
 
     // Step 2: Event Details
     premisesType: "Farmhouse",
-    premiseName: "The Kundan Farmhouse",
-    premiseAddress: "Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-    venueCategory: "Farmhouse",
-    venueAddress: "The Kundan Farmhouse, Kapashera Estate, Opp Petrol Pump, Kapashera, New Delhi 110037",
-    latitude: "28.5284",
-    longitude: "77.0851",
+    premiseName: "",
+    premiseAddress: "",
+    venueCategory: "",
+    venueAddress: "",
+    latitude: "",
+    longitude: "",
     eventType: "Birthday",
-    occasionName: "Birthday Special Reception Event",
-    servingStartDate: "2026-06-25",
-    servingEndDate: "2026-06-25",
-    startTime: "18:30",
-    endTime: "23:45",
-    estimatedGuests: "180",
-    isVenueLicensed: "No",
+    occasionName: "",
+    servingStartDate: "",
+    servingEndDate: "",
+    startTime: "",
+    endTime: "",
+    estimatedGuests: "",
+    isVenueLicensed: "",
 
     // Step 3: Identity Details
-    idProofType: "Aadhaar Card",
-    idNumber: "482019348821",
-    idProofFileName: "aadhaar_card_devender.pdf",
+    idProofType: "",
+    idNumber: "",
+    idProofFileName: "",
     idProofFileUrl: "#",
 
     // Step 4: Liquor Details
-    sourcingType: "From Licensed Retail Vend (L-2)",
-    sourcingShed: "Vedic Retail Licensed Shop (L-2), Block-E Mayapuri",
-    brandsToServe: "WHISKY - SINGLE MALT (750ml), SINGLE MALT WHISKY - IMPORTED (700ml), BEER - PREMIUM LAGER (650ml)",
-    qtyImfl: "30",
-    qtyImported: "18",
-    qtyBeerWine: "72",
-    estimatedCost: "145000",
+    sourcingType: "",
+    eventendtime: "",
+    brandsToServe: "",
+    qtyImfl: "",
+    qtyImported: "",
+    qtyBeerWine: "",
+    estimatedCost: "",
     liquorItems: [
       {
         id: 1,
-        liquorType: "WHISKY - SINGLE MALT",
-        liquorCategory: "IMFL (Indian Manufactured Foreign Liquor)",
-        bottleSize: 750,
-        quantity: 30,
-      },
-      {
-        id: 2,
-        liquorType: "SINGLE MALT WHISKY - IMPORTED",
-        liquorCategory: "Imported Liquor (Foreign Sourced / BIO)",
-        bottleSize: 700,
-        quantity: 18,
-      },
-      {
-        id: 3,
-        liquorType: "BEER - PREMIUM LAGER",
-        liquorCategory: "Beer / Wine spirits",
-        bottleSize: 650,
-        quantity: 72,
+        liquorType: "",
+        liquorCategory: "",
+        bottleSize: 0,
+        quantity: 0,
       }
     ],
 
     // Step 5: Declaration
     undertakingAccept: true,
-    signatureName: "DEVENDER MITTAL",
+    signatureName: "", // Will be populated from API
     signingPlace: "New Delhi"
   });
 
   const [errors, setErrors] = useState({});
+
+  // Fetch user details when component mounts
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const regId = localStorage.getItem("regId");
+      
+      if (!regId) {
+        console.warn("No RegId found in localStorage");
+        setFormData(prev => ({
+          ...prev,
+          signatureName: "",
+          applicantName: ""
+        }));
+        return;
+      }
+
+      setLoadingUser(true);
+      try {
+        const response = await getApplicantByRegId(regId);
+        console.log("User Details Response:", response.data);
+
+        const userData = response.data;
+
+        // ========== FIX: Extract FirstName and LastName ==========
+        // Try to get FirstName and LastName from various possible field names
+        const firstName = userData.firstName || 
+                         userData.FirstName || 
+                         userData.firstname || 
+                         userData.Firstname || 
+                         userData.fName || 
+                         userData.FName || 
+                         "";
+
+        const lastName = userData.lastName || 
+                        userData.LastName || 
+                        userData.lastname || 
+                        userData.Lastname || 
+                        userData.lName || 
+                        userData.LName || 
+                        "";
+
+        // Concatenate FirstName and LastName
+        const fullName = [firstName, lastName]
+          .filter(name => name && name.trim() !== "")
+          .join(" ")
+          .trim();
+
+        // If fullName is empty, try other fallback fields
+        const userName = fullName || 
+                        userData.applicantName || 
+                        userData.userName || 
+                        userData.UserName || 
+                        userData.name || 
+                        userData.Name || 
+                        userData.fullName || 
+                        userData.FullName 
+                        
+
+        const userEmail = userData.email || userData.Email || userData.mail || userData.Mail || "";
+        const userMobile = userData.mobile || userData.Mobile || userData.phone || userData.Phone || "";
+        const userPanNo = userData.panNo || userData.PanNo || userData.pan || userData.Pan || "";
+        
+        // Extract father/husband name
+        const fatherName = userData.fatherHusbandName || 
+                          userData.FatherHusbandName || 
+                          userData.fatherName || 
+                          userData.FatherName || 
+                          "";
+
+        // Extract date of birth
+        const rawDob = userData.dateOfBirth || 
+                   userData.DateOfBirth || 
+                   userData.dob || 
+                   userData.Dob || 
+                   "";
+        const formattedDob = rawDob
+  ? new Date(rawDob).toISOString().split("T")[0]
+  : "";
+        // Extract address
+        const address1 = userData.addressLine1 || 
+                        userData.AddressLine1 || 
+                        userData.address1 || 
+                        userData.Address1 || 
+                        userData.presentAddress || 
+                        "";
+
+        const address2 = userData.addressLine2 || 
+                        userData.AddressLine2 || 
+                        userData.address2 || 
+                        userData.Address2 || 
+                        "";
+
+        // Extract state, district, etc.
+        const state = userData.stateUT || 
+                     userData.StateUT || 
+                     userData.state || 
+                     userData.State || 
+                     "";
+
+        const district = userData.district || 
+                        userData.District || 
+                        "";
+
+        const subDivision = userData.subDivision || 
+                           userData.SubDivision || 
+                           "";
+
+        const pin = userData.pin || 
+                   userData.PIN || 
+                   userData.pincode || 
+                   userData.Pincode || 
+                   "";
+
+        // Update form data with user details
+        setFormData(prev => ({
+          ...prev,
+          // Applicant name (full name)
+          applicantName: userName,
+          // Signature name (full name in uppercase)
+          signatureName: userName.toUpperCase(),
+          // Other details
+          email: userEmail,
+          mobile: userMobile || prev.mobile,
+          panNo: userPanNo || prev.panNo,
+          dob: formattedDob || prev.dob,
+          fatherName: fatherName || prev.fatherName,
+          occupation: userData.occupation || userData.Occupation || prev.occupation,
+          address1: address1 || prev.address1,
+          address2: address2 || prev.address2,
+          state: state || prev.state,
+          district: district || prev.district,
+          subDivision: subDivision || prev.subDivision,
+          pin: pin || prev.pin,
+        }));
+
+        if (showToast) {
+          showToast(`Welcome ${userName}!`, "success");
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+        // Set default name if API fails
+        setFormData(prev => ({
+          ...prev,
+          applicantName: "",
+          signatureName: ""
+        }));
+        if (showToast) {
+          showToast("Could not load user details. Using default values.", "error");
+        }
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, []); // Empty dependency array means this runs once on mount
 
   const steps = [
     { num: 1, label: "Step 1", desc: "Applicant Details" },
@@ -221,16 +372,15 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      if (currentStep < 5) {
-        setCurrentStep(currentStep + 1);
-        if (showToast) showToast(`Moving to ${steps[currentStep].desc}`);
-      } else {
-        handleFinalSubmission();
-      }
+  const handleNext = async () => {
+    if (!validateStep(currentStep))
+      return;
+
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1);
     } else {
-      if (showToast) showToast("Please correct the highlighted validation errors before continuing.", "error");
+      // Final Step
+      await handleFinalSubmission();
     }
   };
 
@@ -242,57 +392,110 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
     }
   };
 
-  const handleFinalSubmission = () => {
-    const referenceNum = `P10-TRN-${Math.floor(100000 + Math.random() * 900000)}`;
-    const dateStamp = new Date().toLocaleDateString("en-IN");
-    
-    const receipt = {
-      permitNo: referenceNum,
-      permitCode: "P-10",
-      permitTitle: "Occasional Permit for Serving Liquor",
-      applicantName: formData.signatureName,
-      permitStartDate: formData.servingStartDate,
-      permitEndDate: formData.servingEndDate,
-      venue: formData.venueAddress,
-      feePaid: "₹ 15,000",
-      generatedAt: dateStamp,
-      status: "APPROVED - ACTIVE",
-      panNo: formData.panNo,
-      sourcingShed: formData.sourcingShed,
-      email: formData.email,
-      mobile: formData.mobile,
-      startTime: formData.startTime,
-      endTime: formData.endTime
-    };
-
-    setPermitReceipt(receipt);
-    setSubmitSuccess(true);
-    
-    if (onSubmitPermit) {
-      onSubmitPermit({
-        id: referenceNum,
-        permitType: "Service/Liquor at other premises (P-10)",
-        sourcePremise: formData.sourcingShed,
-        destPremise: formData.venueAddress,
-        consignmentDetails: `${formData.qtyImfl} IMFL, ${formData.qtyImported} IFL, ${formData.qtyBeerWine} Beer/Wine bottles`,
-        carrierLicense: "DL-1LM-TEMP-PASS-09",
-        status: "Approved",
-        submittedDate: dateStamp,
-        remarks: "Transit permit instant gateway pass issued"
-      });
+  const handleFinalSubmission = async () => {
+    if (!formData.regId) {
+      if (showToast) showToast("Session expired. Please log in again.", "error");
+      return;
     }
-    if (showToast) showToast("P-10 Special Occasional Permit approved and signed successfully!", "success");
+
+    const form = new FormData();
+
+    // Step 1: Applicant Details
+    form.append("ApplicantName", formData.applicantName);
+    form.append("DateOfBirth", formData.dob);
+    form.append("FatherHusbandName", formData.fatherName);
+    form.append("Occupation", formData.occupation);
+    form.append("PanNo", formData.panNo);
+
+    form.append("PresentAddress", formData.address1);
+    form.append("PermanentAddress", formData.address2);
+
+    form.append("StateUT", formData.state);
+    form.append("District", formData.district);
+    form.append("SubDivision", formData.subDivision);
+    form.append("PIN", formData.pin);
+
+    form.append("Mobile", formData.mobile);
+    form.append("Email", formData.email);
+    form.append("LandLine", formData.landline);
+
+    // Step 2: Event Details
+    form.append("PremiseType", formData.premisesType);
+    form.append("PremiseName", formData.premiseName);
+    form.append("PremiseAddress", formData.premiseAddress);
+
+    form.append("Latitude", formData.latitude);
+    form.append("Longitude", formData.longitude);
+
+    form.append("EventType", formData.eventType);
+
+    form.append("PremiseGuestNo", formData.estimatedGuests);
+
+    form.append("PremiseStartEventDate", formData.servingStartDate);
+    form.append("PremiseEndEventDate", formData.servingEndDate);
+
+    form.append("PremiseStartTime", formData.startTime);
+    form.append("PremiseEndTime", formData.endTime);
+
+    form.append("ApplicantMobile", formData.mobile);
+    form.append("TypeOfIdProof", formData.idProofType);
+    form.append("ProofIdNo", formData.idNumber);
+
+    // Other Details
+    form.append("LicenseType", formData.licenseType);
+    form.append("FinYear", formData.finYear);
+    form.append("RegId", formData.regId);
+
+    // Liquor Details
+    (formData.liquorItems || []).forEach((item, index) => {
+      form.append(`P10LiquorDetails[${index}].LiquorType`, item.liquorType);
+      form.append(`P10LiquorDetails[${index}].LiquorCategory`, item.liquorCategory);
+      form.append(`P10LiquorDetails[${index}].LiquorBottleSize`, item.bottleSize);
+      form.append(`P10LiquorDetails[${index}].Quantity`, item.quantity);
+    });
+
+    console.log("Files to submit:", selectedFiles);
+    selectedFiles.forEach((file, index) => {
+      form.append(`LicenseApplicationUploadedDocument[${index}].DocUrl`, file);
+      form.append(`LicenseApplicationUploadedDocument[${index}].DocStatus`, "P");
+      form.append(`LicenseApplicationUploadedDocument[${index}].MobileNo`, formData.mobile);
+    });
+
+    try {
+      const response = await applyPermit(form);
+      const apiData = response.data || {};
+      console.log("Submit response:", apiData);
+
+      const pick = (...vals) => vals.find(v => v !== undefined && v !== null && v !== "") ?? "";
+      // Unwrap common wrapper shapes so we can find the newly created ApplicationIdNo
+      const payload = apiData.data || apiData.result || apiData;
+      const newApplicationIdNo = pick(
+        payload.applicationIdNo, payload.ApplicationIdNo,
+        payload.applicationIdno, payload.ApplicationIdno
+      );
+
+      if (!newApplicationIdNo) {
+        console.warn("Submit response did not include an ApplicationIdNo:", apiData);
+      }
+
+      alert("Form submitted successfully!");
+      setSubmittedApplicationIdNo(newApplicationIdNo);
+      setSubmitSuccess(true);
+    } catch (error) {
+      console.error(error.response?.data || error);
+      if (showToast) showToast("Application submission failed", "error");
+    }
   };
 
   const triggerPrint = () => {
     if (showToast) showToast("Initializing printer spooler for local thermal receipts...");
     window.print();
   };  return (
-    <div className="p10-container select-none text-slate-800 animate-fade">
+    <div className="p10-container">
       
       {/* Premium Header Banner matching requested style */}
-      <div className="w-full bg-[#003366] text-white py-3.5 px-6 rounded-t-xl mb-6 shadow-sm text-center flex items-center justify-center">
-        <h1 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-white leading-tight uppercase font-sans">
+      <div className="p10-header-banner">
+        <h1 className="p10-header-title">
           P-10 (Permit for Service of Indian Liquor and Foreign Liquor at a place other than the licensed premises)
         </h1>
       </div>
@@ -300,8 +503,8 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
       {!submitSuccess && (
         <>
           {/* Horizontal Stepper matching the card styling in the image */}
-          <div className="p10-stepper p10-stepper-card bg-slate-50 border border-slate-200 shadow-sm overflow-x-auto select-none">
-            <div className="flex items-center justify-between min-w-[780px] relative px-2">
+          <div className="p10-stepper-card">
+            <div className="p10-stepper-inner">
               
               {/* Stepper block list with chevron dividers */}
               {steps.map((st, idx) => {
@@ -314,31 +517,25 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                       onClick={() => {
                         if (isCompleted) setCurrentStep(st.num);
                       }}
-                      className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl border transition-all duration-300 flex-1 justify-center cursor-pointer ${
+                      className={`p10-step-item ${
                         isActive
-                          ? "bg-[#1d4ed8] border-[#1d4ed8] text-white shadow-lg shadow-blue-100 scale-[1.02]"
+                          ? "p10-step-active"
                           : isCompleted
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                          : "bg-white border-slate-200 text-slate-500"
+                          ? "p10-step-completed"
+                          : ""
                       }`}
                     >
                       {/* Circle Number */}
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
-                        isActive 
-                          ? "bg-white text-blue-600 font-black shadow-sm"
-                          : isCompleted
-                          ? "bg-emerald-600 text-white"
-                          : "bg-slate-100 text-slate-500"
-                      }`}>
-                        {isCompleted ? <Check className="w-4 h-4 stroke-[3]" /> : st.num}
+                      <div className="p10-step-num">
+                        {isCompleted ? <Check className="p10-step-num-icon" /> : st.num}
                       </div>
 
                       {/* Text tags */}
-                      <div className="text-left leading-snug">
-                        <p className={`p10-step-title uppercase tracking-wider font-extrabold ${isActive ? "text-blue-100" : isCompleted ? "text-emerald-600" : "text-slate-400"}`}>
+                      <div className="p10-step-text-wrap">
+                        <p className="p10-step-title">
                           {st.label}
                         </p>
-                        <p className={`p10-step-label whitespace-nowrap ${isActive ? "text-white" : isCompleted ? "text-emerald-900" : "text-slate-700"}`}>
+                        <p className="p10-step-desc">
                           {st.desc}
                         </p>
                       </div>
@@ -346,7 +543,7 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
 
                     {/* Chevron separator */}
                     {idx < steps.length - 1 && (
-                      <span className="text-slate-350 text-xl font-bold px-2 select-none">&gt;</span>
+                      <span className="p10-step-chevron">&gt;</span>
                     )}
                   </React.Fragment>
                 );
@@ -355,251 +552,252 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
             </div>
           </div>
 
-          {/* Form Content Body Card */}
-          <div className="p10-form-card p-6 sm:p-8 text-left">
-            
-            {/* Step 1: Applicant Details */}
-            {currentStep === 1 && (
-              <ApplicantDetails 
-                formData={formData}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-            )}
+          {/* Form Content Body Card or Standalone Liquor Details Page */}
+          {currentStep === 4 ? (
+            <LiquorDetailsPage 
+              formData={formData}
+              onChange={handleInputChange}
+              errors={errors}
+              showToast={showToast}
+              onBackStep={handleBack}
+              onNextStep={() => {
+                setCurrentStep(5);
+                if (showToast) showToast("Moving to Step-5 Declaration");
+              }}
+            />
+          ) : (
+            <div className="p10-form-card">
+              
+              {/* Step 1: Applicant Details */}
+              {currentStep === 1 && (
+                <ApplicantDetails 
+                  formData={formData}
+                  onChange={handleInputChange}
+                  errors={errors}
+                />
+              )}
 
-            {/* Step 2: Event Details */}
-            {currentStep === 2 && (
-              <EventDetailsPage 
-                formData={formData}
-                onChange={handleInputChange}
-                errors={errors}
-              />
-            )}
+              {/* Step 2: Event Details */}
+              {currentStep === 2 && (
+                <EventDetailsPage 
+                  formData={formData}
+                  onChange={handleInputChange}
+                  errors={errors}
+                />
+              )}
 
-            {/* Step 3: Identity Details */}
-            {currentStep === 3 && (
-              <IdentityDetailsPage 
-                formData={formData}
-                onChange={handleInputChange}
-                errors={errors}
-                showToast={showToast}
-              />
-            )}
+              {/* Step 3: Identity Details */}
+              {currentStep === 3 && (
+                <IdentityDetailsPage 
+                  formData={formData}
+                  onChange={handleInputChange}
+                  errors={errors}
+                  showToast={showToast}
+                />
+              )}
 
-            {/* Step 4: Liquor Details */}
-            {currentStep === 4 && (
-              <LiquorDetailsPage 
-                formData={formData}
-                onChange={handleInputChange}
-                errors={errors}
-                showToast={showToast}
-                onNextStep={() => {
-                  setCurrentStep(5);
-                  if (showToast) showToast("Moving to Step-5 Declaration");
-                }}
-              />
-            )}
-
-            {/* Step 5: Declaration & digital signature */}
-            {currentStep === 5 && (
-              <div className="space-y-6 animate-fade">
-                <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
-                  <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center shrink-0 border border-teal-100">
-                    <Award className="w-6 h-6 text-[#0d9488]" />
-                  </div>
-                  <div className="space-y-0.5 text-left">
-                    <h2 className="text-lg font-bold text-slate-900 tracking-tight">Statutory Undertaking</h2>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Review standard declarations and digital endorsement signature.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  
-                  {/* Informational advice */}
-                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-start gap-4">
-                    <div className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">
-                      !
+              {/* Step 5: Declaration & digital signature */}
+              {currentStep === 5 && (
+                <div className="p10-declaration-section">
+                  <div className="p10-declaration-header">
+                    <div className="p10-declaration-icon-wrap">
+                      <Award style={{ width: '1.5rem', height: '1.5rem', color: '#0d9488' }} />
                     </div>
-                    <div className="text-xs text-slate-700 font-semibold leading-relaxed">
-                      <p className="font-bold text-slate-900">Legal Endorsement Notice</p>
-                      <p className="text-slate-500 font-medium mt-0.5">
-                        Under Section 10 of the Delhi Excise Act, 2009, making false representations or serving illicit non-duty paid/commercial stock carries mandatory penalty of up to 3 years imprisonment and ₹1,00,000 fine.
+                    <div className="p10-declaration-title-wrap">
+                      <h2 className="p10-declaration-title">Statutory Undertaking</h2>
+                      <p className="p10-declaration-subtitle">
+                        Review standard declarations and digital endorsement signature.
                       </p>
                     </div>
                   </div>
 
-                  {/* Declaration checkboxes */}
-                  <div className="p-4 bg-blue-50/40 border border-blue-100 rounded-2xl space-y-3">
-                    <label className="flex items-start gap-3 cursor-pointer select-none">
-                      <input 
-                        type="checkbox"
-                        checked={formData.undertakingAccept}
-                        onChange={(e) => handleInputChange("undertakingAccept", e.target.checked)}
-                        className="w-4.5 h-4.5 text-blue-600 border-slate-300 rounded focus:ring-blue-500 mt-0.5 accent-blue-600"
-                      />
-                      <span className="text-xs font-bold text-slate-800 leading-normal">
-                        I hereby solemnly affirm and declare that the statements made above are true to the best of my knowledge and belief, and that I will serve only duty paid liquor procured from authorized L-2 retail vends. *
-                      </span>
-                    </label>
-                    {errors.undertakingAccept && <p className="text-[11px] text-red-650 font-black pl-7">{errors.undertakingAccept}</p>}
-                  </div>
-
-                  {/* Signature field */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="p10-declaration-body">
                     
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-700">Applicant Digital Signature (Enter Full Name) <span className="text-red-500">*</span></label>
-                      <input 
-                        type="text"
-                        value={formData.signatureName}
-                        onChange={(e) => handleInputChange("signatureName", e.target.value.toUpperCase())}
-                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-black font-serif tracking-wider text-slate-800 transition text-center ${errors.signatureName ? "border-red-500" : "border-slate-250 focus:border-blue-500 focus:bg-white"}`}
-                        placeholder="DEVENDER MITTAL"
-                      />
-                      {errors.signatureName && <p className="text-[11px] text-red-600 font-bold">{errors.signatureName}</p>}
+                    {/* Informational advice */}
+                    <div className="p10-notice-card">
+                      <div className="p10-notice-badge">
+                        !
+                      </div>
+                      <div className="p10-notice-content">
+                        <p className="p10-notice-title">Legal Endorsement Notice</p>
+                        <p className="p10-notice-desc">
+                          Under Section 10 of the Delhi Excise Act, 2009, making false representations or serving illicit non-duty paid/commercial stock carries mandatory penalty of up to 3 years imprisonment and ₹1,00,000 fine.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-700">Place of Signing <span className="text-red-500">*</span></label>
-                      <input 
-                        type="text"
-                        value={formData.signingPlace}
-                        onChange={(e) => handleInputChange("signingPlace", e.target.value)}
-                        className={`w-full bg-slate-50/50 border rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-800 transition ${errors.signingPlace ? "border-red-500" : "border-slate-250 focus:border-blue-500"}`}
-                        placeholder="New Delhi"
-                      />
-                      {errors.signingPlace && <p className="text-[11px] text-red-650 font-black">{errors.signingPlace}</p>}
+                    {/* Declaration checkboxes */}
+                    <div className="p10-checkbox-box">
+                      <label className="p10-checkbox-label">
+                        <input 
+                          type="checkbox"
+                          checked={formData.undertakingAccept || false}
+                          onChange={(e) => handleInputChange("undertakingAccept", e.target.checked)}
+                          className="p10-checkbox"
+                        />
+                        <span className="p10-checkbox-text">
+                          I hereby solemnly affirm and declare that the statements made above are true to the best of my knowledge and belief, and that I will serve only duty paid liquor procured from authorized L-2 retail vends. *
+                        </span>
+                      </label>
+                      {errors.undertakingAccept && <p className="p10-error-text">{errors.undertakingAccept}</p>}
+                    </div>
+
+                    {/* Signature field */}
+                    <div className="p10-signature-grid">
+                      
+                      <div className="p10-field-group">
+                        <label className="p10-field-label">Applicant Digital Signature (Enter Full Name) <span className="p10-required">*</span></label>
+                        <input 
+                          type="text"
+                          value={formData.signatureName || ""}
+                          onChange={(e) => handleInputChange("signatureName", e.target.value.toUpperCase())}
+                          className={`p10-input p10-signature-input ${errors.signatureName ? "p10-input-error" : ""}`}
+                          placeholder="DEVENDER MITTAL"
+                        />
+                        {errors.signatureName && <p className="p10-error-text">{errors.signatureName}</p>}
+                      </div>
+
+                      <div className="p10-field-group">
+                        <label className="p10-field-label">Place of Signing <span className="p10-required">*</span></label>
+                        <input 
+                          type="text"
+                          value={formData.signingPlace || ""}
+                          onChange={(e) => handleInputChange("signingPlace", e.target.value)}
+                          className={`p10-input ${errors.signingPlace ? "p10-input-error" : ""}`}
+                          placeholder="New Delhi"
+                        />
+                        {errors.signingPlace && <p className="p10-error-text">{errors.signingPlace}</p>}
+                      </div>
+
                     </div>
 
                   </div>
 
                 </div>
+              )}
+
+              {/* Action buttons footer for step Wizard */}
+              <div className="p10-footer">
+                <button 
+                  type="button" 
+                  onClick={handleBack}
+                  className="p10-btn p10-btn-back"
+                >
+                  <ArrowLeft style={{ width: '1rem', height: '1rem' }} />
+                  <span>{currentStep === 1 ? "Change Permit Type" : "Back"}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onClick={handleNext}
+                  className="p10-btn p10-btn-next"
+                >
+                  <span>{currentStep === 5 ? "Submit & Approve P-10" : "Next"}</span>
+                  <ArrowRight style={{ width: '1rem', height: '1rem' }} />
+                </button>
               </div>
-            )}
 
-            {/* Action buttons footer for step Wizard */}
-            <div className="p10-footer border-t border-slate-100 font-sans">
-              <button 
-                type="button" 
-                onClick={handleBack}
-                className="p10-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer transition shadow-xs"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>{currentStep === 1 ? "Change Permit Type" : "Back"}</span>
-              </button>
-
-              <button 
-                type="button" 
-                onClick={handleNext}
-                className="p10-btn bg-[#1d4ed8] hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer transition shadow-md font-sans"
-              >
-                <span>{currentStep === 5 ? "Submit & Approve P-10" : "Next"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
-
-          </div>
+          )}
         </>
       )}
 
       {/* Success Receipt State View */}
       {submitSuccess && permitReceipt && (
-        <div className="space-y-6 animate-fade">
+        <div className="p10-receipt-wrapper">
           
-          <div className="bg-white border-2 border-emerald-500/80 shadow-md rounded-3xl p-6 sm:p-8 text-center space-y-6 max-w-2xl mx-auto relative overflow-hidden">
+          <div className="p10-receipt-card">
             
             {/* Success Confirmed Banner */}
-            <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-4 animate-bounce">
-              <CheckCircle2 className="w-10 h-10 stroke-[2.5]" />
+            <div className="p10-success-icon-wrap">
+              <CheckCircle2 className="p10-success-icon" />
             </div>
 
-            <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Approved Permit Issued</h2>
-              <p className="text-xs text-slate-500 font-bold">Your private occasional P-10 permit has been registered on the Delhi Excise registry.</p>
+            <div className="p10-receipt-header">
+              <h2 className="p10-receipt-title">Approved Permit Issued</h2>
+              <p className="p10-receipt-subtitle">Your private occasional P-10 permit has been registered on the Delhi Excise registry.</p>
             </div>
 
             {/* Print Friendly Invoice Receipt Card */}
-            <div className="border border-slate-200 rounded-3xl bg-slate-50/50 p-5 text-left space-y-4 font-mono select-text print:p-0 print:border-none">
+            <div className="p10-receipt-body">
               
               {/* Receipt Header Title */}
-              <div className="pb-3 border-b border-dashed border-slate-300 flex items-center justify-between">
+              <div className="p10-receipt-top">
                 <div>
-                  <h3 className="text-xs font-black text-slate-900">DELHI EXCISE ACT - FORM P-10</h3>
-                  <p className="text-[10px] text-slate-500 font-bold">REGISTRY TRANSACTION RECORD</p>
+                  <h3 className="p10-receipt-doc-title">DELHI EXCISE ACT - FORM P-10</h3>
+                  <p className="p10-receipt-doc-subtitle">REGISTRY TRANSACTION RECORD</p>
                 </div>
-                <div className="bg-[#eff6ff] text-[#1d4ed8] font-bold text-[10px] px-2 py-0.5 rounded border border-[#dbeafe] uppercase">
+                <div className="p10-status-badge">
                   Approved
                 </div>
               </div>
 
               {/* Grid content standard labels */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5 text-xs">
+              <div className="p10-receipt-grid">
                 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Permit Number:</span>
-                  <span className="text-slate-900 font-bold tracking-wider">{permitReceipt.permitNo}</span>
+                  <span className="p10-grid-label">Permit Number:</span>
+                  <span className="p10-grid-value-bold">{permitReceipt.permitNo}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Ref PAN Number:</span>
-                  <span className="text-slate-900 font-bold">{permitReceipt.panNo}</span>
+                  <span className="p10-grid-label">Ref PAN Number:</span>
+                  <span className="p10-grid-value-bold">{permitReceipt.panNo}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Applicant Licensee:</span>
-                  <span className="text-slate-900 font-extrabold">{permitReceipt.applicantName}</span>
+                  <span className="p10-grid-label">Applicant Licensee:</span>
+                  <span className="p10-grid-value-black">{permitReceipt.applicantName}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Service Contact:</span>
-                  <span className="text-slate-900 font-extrabold">{permitReceipt.mobile}</span>
+                  <span className="p10-grid-label">Service Contact:</span>
+                  <span className="p10-grid-value-black">{permitReceipt.mobile}</span>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Event Venue Address:</span>
-                  <span className="text-slate-900 font-bold leading-normal text-[11px] block">{permitReceipt.venue}</span>
-                </div>
-
-                <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Scheduled Execution Date:</span>
-                  <span className="text-slate-900 font-bold text-[11px]">{permitReceipt.permitStartDate}</span>
+                <div className="p10-grid-col-2">
+                  <span className="p10-grid-label">Event Venue Address:</span>
+                  <span className="p10-grid-value-block">{permitReceipt.venue}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Serving Duration hours:</span>
-                  <span className="text-slate-900 font-medium text-[11px]">{permitReceipt.startTime} - {permitReceipt.endTime}</span>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Sourcing Stock supplier:</span>
-                  <span className="text-slate-900 font-bold text-[11px] leading-relaxed">{permitReceipt.sourcingShed}</span>
+                  <span className="p10-grid-label">Scheduled Execution Date:</span>
+                  <span className="p10-grid-value">{permitReceipt.permitStartDate}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Statutory Fee Paid:</span>
-                  <span className="text-blue-700 font-black text-sm">{permitReceipt.feePaid}</span>
+                  <span className="p10-grid-label">Serving Duration hours:</span>
+                  <span className="p10-grid-value">{permitReceipt.startTime} - {permitReceipt.endTime}</span>
+                </div>
+
+                <div className="p10-grid-col-2">
+                  <span className="p10-grid-label">Sourcing Stock supplier:</span>
+                  <span className="p10-grid-value">{permitReceipt.sourcingShed}</span>
                 </div>
 
                 <div>
-                  <span className="text-slate-450 block font-bold uppercase text-[9px] tracking-wide">Issue Date stamp:</span>
-                  <span className="text-slate-900 font-bold">{permitReceipt.generatedAt}</span>
+                  <span className="p10-grid-label">Statutory Fee Paid:</span>
+                  <span className="p10-grid-fee">{permitReceipt.feePaid}</span>
+                </div>
+
+                <div>
+                  <span className="p10-grid-label">Issue Date stamp:</span>
+                  <span className="p10-grid-value-bold">{permitReceipt.generatedAt}</span>
                 </div>
 
               </div>
 
               {/* Graphic QR Verification segment replicating real government layouts */}
-              <div className="mt-4 pt-4 border-t border-dashed border-slate-300 flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 select-none">
-                <div className="p-2 border border-slate-200 rounded-xl bg-slate-50 shrink-0">
-                  <QrCode className="w-16 h-16 text-slate-800" />
+              <div className="p10-qr-box">
+                <div className="p10-qr-wrap">
+                  <QrCode className="p10-qr-code" />
                 </div>
-                <div className="space-y-1 text-left sm:flex-1">
-                  <p className="text-[10px] font-bold text-slate-900 flex items-center gap-1.5 uppercase">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <div className="p10-qr-info">
+                  <p className="p10-qr-title">
+                    <ShieldCheck className="p10-shield-icon" />
                     <span>Cryptographically Signed</span>
                   </p>
-                  <p className="text-[9px] text-slate-500 font-medium leading-relaxed">
+                  <p className="p10-qr-text">
                     This is a computer-generated statutory transit pass and does not require a physical ink seal signature. scan QR code to verify live credentials against registry portal.
                   </p>
                 </div>
@@ -608,14 +806,14 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
             </div>
 
             {/* Card Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+            <div className="p10-receipt-actions">
               
               <button
                 type="button"
                 onClick={triggerPrint}
-                className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition shadow-sm"
+                className="p10-btn p10-btn-print"
               >
-                <Printer className="w-4 h-4" />
+                <Printer style={{ width: '1rem', height: '1rem' }} />
                 <span>Print Transit Gate Pass</span>
               </button>
 
@@ -627,7 +825,7 @@ export default function P10Page({ onBackToDashboard, showToast, onSubmitPermit }
                   setCurrentStep(1);
                   onBackToDashboard();
                 }}
-                className="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-250 rounded-xl text-xs font-bold cursor-pointer transition"
+                className="p10-btn p10-btn-finish"
               >
                 Finish & Go to Dashboard
               </button>

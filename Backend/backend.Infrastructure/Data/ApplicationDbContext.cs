@@ -43,6 +43,9 @@ namespace backend.Infrastructure.Data
 
         public DbSet<DocumentDto> DocumentDtos { get; set; }
 
+         public DbSet<P10LiquorDetails> P10LiquorDetails { get; set; }
+        public DbSet<PermitP10> PermitP10 { get; set; }
+        public DbSet<PremiseDetails> PremiseDetails { get; set; }
         public DbSet<MstFinancialYear> MstFinancialYear { get; set; }
 
 
@@ -326,6 +329,42 @@ namespace backend.Infrastructure.Data
    .ToTable("MstOwnerType");
 
 
+            
+            modelBuilder.Entity<PermitP10>(entity =>
+            {
+                entity.ToTable("PermitP10");
+
+                entity.HasKey(e => e.ID);
+
+                entity.HasAlternateKey(e => e.ApplicationIdNo);
+            });
+
+            modelBuilder.Entity<P10LiquorDetails>(entity =>
+            {
+                entity.ToTable("P10LiquorDetails");
+
+                entity.HasKey(e => e.ID);
+
+                entity.Property(e => e.ApplicationIdNo)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.HasOne(e => e.PermitP10)
+                      .WithMany(e => e.LiquorDetails)
+                      .HasForeignKey(e => e.ApplicationIdNo)
+                      .HasPrincipalKey(e => e.ApplicationIdNo)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
+            modelBuilder.Entity<PremiseDetails>(entity =>
+            {
+                entity.ToTable("PremiseDetails");
+
+                entity.HasKey(e => e.ID);
+
+                entity.HasAlternateKey(e => e.ApplicationIdNo);
+            });
 
 
 

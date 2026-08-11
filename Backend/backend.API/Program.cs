@@ -75,6 +75,7 @@ builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
 builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
+builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

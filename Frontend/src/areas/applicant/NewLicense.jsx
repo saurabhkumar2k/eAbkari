@@ -228,9 +228,9 @@ export default function NewLicense({ setActiveTab, showToast }) {
   };
 
   return (
-    <div className="flex-grow w-full py-8 font-sans">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        {isL30FlowActive ? (
+    <div className="content-section">
+      <div className="app-container">
+        {isL30FlowActive ? (  
           <L30SelectLicense
             applicant={newLicData}
             onChange={(key, value) => setNewLicData(prev => ({ ...prev, [key]: value }))}
@@ -269,7 +269,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
           />
         ) : appSubmissionCompleted ? (
           /* SUCCESS SCREEN - HIGH-END DESIGN */
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-8 animate-fade select-none">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto app-form-section select-none">
             <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse-subtle">
               <Check className="w-10 h-10 stroke-[3]" />
               <span className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-25"></span>
@@ -346,29 +346,29 @@ export default function NewLicense({ setActiveTab, showToast }) {
           </div>
         ) : (
           /* PROGRESSIVE 5-STEP LICENSE WIZARD */
-          <div className="space-y-8 animate-fade">
+          <div className="app-form-section">
 
             {/* 1. HERO BANNER WITH DELHI SKYLINE ILLUSTRATION AND BREADCRUMB */}
-            <div className="new-license-banner p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="app-license-banner">
               {/* Left part */}
-              <div className="flex items-start gap-4 flex-1">
-                <div className="p-3 bg-white/90 border border-blue-200 text-blue-600 rounded-2xl shadow-sm flex-shrink-0">
+              <div className="app-banner">
+                <div className="app-icon">
                   <FileText className="w-8 h-8" />
                 </div>
-                <div className="space-y-1.5 text-left">
+                <div className="app-content-text">
                   {/* Breadcrumbs */}
-                  <nav className="flex items-center gap-1.5 text-[11px] font-bold text-blue-700 uppercase tracking-wider">
-                    <span className="cursor-pointer hover:underline" onClick={() => setActiveTab("Home")}>Home</span>
+                  <nav className="app-label-text">
+                    <span className="clickable" onClick={() => setActiveTab("Home")}>Home</span>
                     <ChevronRight className="w-3 h-3 text-blue-400" />
                     <span className="text-blue-500">License</span>
                     <ChevronRight className="w-3 h-3 text-blue-400" />
                     <span className="text-blue-900">New License Application</span>
                   </nav>
                   
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none science-heading">
+                  <h2 className="app-heading">
                     New License Application
                   </h2>
-                  <p className="text-xs sm:text-sm text-slate-600 max-w-lg leading-relaxed font-semibold">
+                  <p className="description-text">
                     {newLicStep === 2 
                       ? "Select the license category that best fits your requirement, review details, and submit."
                       : "Let's get started! Fill in the basic details to begin your new license application."
@@ -378,7 +378,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
               </div>
 
               {/* Right part: Stylized SVG Delhi Skyline monument illustration */}
-              <div className="w-full md:w-64 lg:w-80 flex-shrink-0 opacity-90 block">
+              <div className="sidebar-image">
                 <svg viewBox="0 0 320 100" className="w-full h-auto text-blue-800/20 fill-current">
                   {/* Qutub Minar */}
                   <g>
@@ -509,18 +509,18 @@ export default function NewLicense({ setActiveTab, showToast }) {
             </div>
 
             {/* 4. BLUE INFORMATION ALERT */}
-            <div className="blue-info-alert animate-fade select-none text-left">
+            <div className="blue-info-alert">
               <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="space-y-1">
-                <p className="text-xs font-black text-blue-950">Filing Instructions Warning</p>
-                <p className="text-xs text-blue-700 font-semibold leading-relaxed">
+                <p className="app-label-text">Filing Instructions Warning</p>
+                <p className="app-description-text">
                   Please ensure all the details provided are correct. You can save as draft and continue later. Draft credentials are saved locally for 30 calendar days.
                 </p>
               </div>
             </div>
 
             {/* 5. ACTION CONTROLS / FOOTER BUTTONS (Bottom Right Aligned) */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 flex-wrap gap-4 select-none">
+            <div className="app-form-footer">
               <button
                 type="button"
                 onClick={() => {
@@ -535,13 +535,13 @@ export default function NewLicense({ setActiveTab, showToast }) {
                 <span>{newLicStep === 2 ? "Cancel Application" : "Go Back"}</span>
               </button>
 
-              <div className="flex items-center gap-3 text-right">
+              <div className="app-content-actions">
                 <button
                   type="button"
                   onClick={() => {
                     showToast("Filing details successfully saved as draft! You can access it anytime from Applied tab.");
                   }}
-                  className="outline-draft-btn border-blue-200 hover:border-blue-400 text-blue-700"
+                  className="outline-draft-btn "
                 >
                   <span>Save as Draft</span>
                 </button>

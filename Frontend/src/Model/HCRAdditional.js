@@ -21,6 +21,9 @@ export const createHCRAdditional = () => ({
   restaurantArea: "",
   hourOfSale: "",
 
+  // questionsList: [
+  // ],
+
   partners: [
     {
       PName: "",

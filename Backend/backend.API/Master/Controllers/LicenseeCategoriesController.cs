@@ -72,7 +72,8 @@ namespace backend.API.Controllers
                 {
                     //ApplicationIdNo = newAppId,
                     //RegNumber = user.RegId.ToString(),
-                    RegId = dto.RegId.ToString(),
+                    //RegId = dto.RegId.ToString(),
+                     RegId = dto.RegId,
                     ApplicantName = dto.ApplicantName,
                     //CompanyName = dto.CompanyName??"",
                     DateOfBirth = dto.Dob,
@@ -389,7 +390,8 @@ if (!ModelState.IsValid)
                     //DocumentvalidationYN = doc.DocumentvalidationYN,
                     LicenseeIdNo = doc.LicenseeIdNo,
                     DocStatus = "N",
-                    IsValid = false,
+                    //IsValid = false,
+                    IsValid = "N",
                     DocumentvalidationYN = "N",
                     DocUrl = fileName
                 };

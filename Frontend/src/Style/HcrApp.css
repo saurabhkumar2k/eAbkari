@@ -1,0 +1,73 @@
+.question-table {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.question-header,
+.question-row {
+  display: grid;
+  grid-template-columns: 80% 20%;
+}
+
+.question-header {
+  font-weight: 600;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.question-header > div,
+.question-row > div {
+  padding: 12px 15px;
+}
+
+.question-row {
+  border-bottom: 1px solid #ddd;
+}
+
+.question-row:last-child {
+  border-bottom: none;
+}
+
+.question-column {
+  line-height: 1.5;
+  border-right: 1px solid #ddd;
+}
+
+.answer-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.answer-column label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.answer-column input[type="radio"] {
+  cursor: pointer;
+}
+
+/* RestaurantAdditionalDetails.css */
+
+.hcr-additional-details {
+  width: 100%;
+}
+
+.hcr-additional-details .hcr-step-card-header,
+.hcr-additional-details .hcr-premises-form,
+.hcr-additional-details .hcr-form-grid,
+.hcr-additional-details .hcr-step-navigation {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .hcr-additional-details {
+    width: 100%;
+  }
+}

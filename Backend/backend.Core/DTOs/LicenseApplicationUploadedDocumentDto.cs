@@ -36,7 +36,7 @@ namespace backend.Core.DTOs
 
         public string? LicenseeIdNo { get; set; }
 
-
+          public IFormFile? DocUrl { get; set; }
 
 
 

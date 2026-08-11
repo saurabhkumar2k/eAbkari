@@ -18,7 +18,7 @@ namespace backend.Core.Interfaces
         Task<IEnumerable<MstLicenseeCategory>> GetWholesaleLicenseeCategoryAsync();
         Task<IEnumerable<MstLicenseeCategory>> GetHCRLicenseeCategoryAsync();
 
-
+         Task<IEnumerable<MstLiquorType>> GetLiquorTypeAsync(string kindCode);
 
     }
 
