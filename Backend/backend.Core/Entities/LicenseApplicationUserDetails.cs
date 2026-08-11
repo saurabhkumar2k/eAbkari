@@ -41,6 +41,7 @@ public class LicenseApplicationUserDetails
     public string? SubDivision { get; set; } = string.Empty;
 
     //public string ApplicantDesig { get; set; } = string.Empty;
+    public DateTime? CreatedDate { get; set; }
 
 
 
