@@ -8,6 +8,7 @@ import DocumentUpload from "../../../components/DocumentsDetails";
 import RestaurantDetails from "../../../components/RestaurantDetails";
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 import HcrQuestionList from "../../../components/HCRQuestionList";
+import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 
 import {
   Building,
@@ -47,6 +48,7 @@ import {
 import SelectLicenseType from "./SelectLicense";
 import L20 from "./L20";
 import HcrApplicantDetails from "./HcrApplicantDetail";
+
 
 export default function HcrLicenseWizard({
   onBackToDashboard,
@@ -720,7 +722,7 @@ export default function HcrLicenseWizard({
           LandLine: applicantForm.landline ? applicantForm.landline : "",
           CinNo: applicantForm.cinNo,
           OwnerType: applicantForm.ownerType,
-          CatCode: applicantForm.catCode,
+          CatCode: selectedLicenseId,
         };
 
         console.log("payload", payload);
@@ -1422,425 +1424,24 @@ export default function HcrLicenseWizard({
             )}
 
             {/* STEP 6: PREMISE DETAILS (NON L-20 ONLY) */}
+            {/* STEP 6: PREMISE DETAILS (NON L-20 ONLY) */}
             {currentStep === 6 && selectedLicenseId !== "L-20" && (
-              <div className="hcr-step-card animate-fade">
-                <div className="hcr-step-card-header">
-                  <h3 className="hcr-step-card-title">
-                    <Building className="hcr-step-card-icon" />
-                    <span className="font-sans">
-                      Step 6: Resturant Additional Details
-                    </span>
-                  </h3>
-                  <p className="hcr-step-card-description font-sans">
-                    Specify layout dimensions, local authorities compliance.
-                  </p>
-                </div>
-
-                <form
-                  onSubmit={handelResturantDetails}
-                  className="hcr-premises-form"
-                >
-                  <div className="hcr-form-grid">
-                    {/* Restaurant Area */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Restaurant Area (in Sq mtr.)
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Restaurant Area"
-                        value={additionalFrom.restaurantArea}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          // Allow numbers with decimal
-                          if (/^\d*\.?\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              restaurantArea: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* No. of Seat Covers */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        No. of Seat Covers
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="No. of Seat Covers"
-                        value={additionalFrom.numberOfSeatCovers}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          // Allow numbers only
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfSeatCovers: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* No. of Dispensing Counter */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        No. of Dispensing Counter
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="No. of Dispensing Counter"
-                        value={additionalFrom.numberOfDispensingCounter}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          // Allow numbers only
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfDispensingCounter: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* Additional Area */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Additional Area
-                        <span className="required">*</span>
-                      </label>
-
-                      <div className="radio-group">
-                        <label>
-                          <input
-                            type="radio"
-                            name="additionalArea"
-                            value="1"
-                            checked={additionalFrom.additionalArea === "1"}
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                additionalArea: e.target.value,
-                              }))
-                            }
-                          />
-                          Yes
-                        </label>
-
-                        <label>
-                          <input
-                            type="radio"
-                            name="additionalArea"
-                            value="0"
-                            checked={additionalFrom.additionalArea === "0"}
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                additionalArea: e.target.value,
-                              }))
-                            }
-                          />
-                          No
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Additional Area */}
-
-                    {/* No. of Managers */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        No. of Managers
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="No. of Managers"
-                        value={additionalFrom.numberOfManagers}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfManagers: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* No. of Kitchen Staff */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        No. of Kitchen Staff
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="No. of Kitchen Staff"
-                        value={additionalFrom.numberOfKitchenStaff}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfKitchenStaff: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* Utility Employees */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Utility Employees
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="Utility Employees"
-                        value={additionalFrom.numberOfUtlityEmployees}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfUtlityEmployees: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* No. of Restaurant Attendent */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        No. of Restaurant Attendent
-                        <span className="required">*</span>
-                      </label>
-
-                      <input
-                        type="text"
-                        placeholder="No. of Restaurant Attendent"
-                        value={additionalFrom.numberOfBarAttendent}
-                        onChange={(e) => {
-                          const value = e.target.value;
-
-                          if (/^\d*$/.test(value)) {
-                            setAdditionalFrom((prev) => ({
-                              ...prev,
-                              numberOfBarAttendent: value,
-                            }));
-                          }
-                        }}
-                        maxLength={10}
-                        className="input-box"
-                      />
-                    </div>
-
-                    {/* Educational Institution Distance */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Distance of Nearest Educational Institutions (Meters)
-                        <span className="required">*</span>
-                      </label>
-
-                      <div className="radio-group">
-                        <label>
-                          <input
-                            type="radio"
-                            name="eduInsDistance"
-                            value="Less than 100 Meters"
-                            checked={
-                              additionalFrom.educationalInsDist ===
-                              "Less than 100 Meters"
-                            }
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                educationalInsDist: e.target.value,
-                              }))
-                            }
-                          />
-                          Less than 100 Meters
-                        </label>
-
-                        <label>
-                          <input
-                            type="radio"
-                            name="eduInsDistance"
-                            value="Above 100 Meters"
-                            checked={
-                              additionalFrom.educationalInsDist ===
-                              "Above 100 Meters"
-                            }
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                educationalInsDist: e.target.value,
-                              }))
-                            }
-                          />
-                          Above 100 Meters
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Religious Place Distance */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Distance of Nearest Religious Places (Meters)
-                        <span className="required">*</span>
-                      </label>
-
-                      <div className="radio-group">
-                        <label>
-                          <input
-                            type="radio"
-                            name="religiousPlaceDistance"
-                            value="Less than 100 Meters"
-                            checked={
-                              additionalFrom.religiousPlaceDist ===
-                              "Less than 100 Meters"
-                            }
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                religiousPlaceDist: e.target.value,
-                              }))
-                            }
-                          />
-                          Less than 100 Meters
-                        </label>
-
-                        <label>
-                          <input
-                            type="radio"
-                            name="religiousPlaceDistance"
-                            value="Above 100 Meters"
-                            checked={
-                              additionalFrom.religiousPlaceDist ===
-                              "Above 100 Meters"
-                            }
-                            onChange={(e) =>
-                              setAdditionalFrom((prev) => ({
-                                ...prev,
-                                religiousPlaceDist: e.target.value,
-                              }))
-                            }
-                          />
-                          Above 100 Meters
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Hour of Sale */}
-                    <div className="form-group">
-                      <label className="hcr-form-label">
-                        Hour of Sale
-                        <span className="required">*</span>
-                      </label>
-
-                      <select
-                        value={additionalFrom.hourOfSale}
-                        onChange={(e) =>
-                          setAdditionalFrom((prev) => ({
-                            ...prev,
-                            hourOfSale: e.target.value,
-                          }))
-                        }
-                        className="input-box"
-                      >
-                        <option value="0">Select Hour of Sale</option>
-                        <option value="1">11 AM - 1 AM</option>
-                        <option value="2">11 AM - 1 AM</option>
-                        {hoursOfSaleList.map((item) => (
-                          <option key={item.value} value={item.value}>
-                            {item.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* <div className="form-group full-width">
-                      <HcrQuestionList
-                        questions={questions}
-                        onChange={handleQuestions}
-                      />
-                    </div> */}
-
-                    <div className="form-group full-width">
-                      <DirectorsList
-                        directors={additionalFrom.directors || []}
-                        ConstitutionType={applicantForm.ConstitutionType}
-                        onChange={handleDirectorChange}
-                        onAdd={addRow}
-                        onDelete={deleteRow}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Back and Continue */}
-                  <div className="hcr-step-navigation">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentStep(5)}
-                      className="btn btn-secondary"
-                    >
-                      <ChevronLeft className="hcr-nav-icon hcr-nav-icon-left" />
-                      <span>Go Back</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        //if (handelAdditionalDetails()) {
-                        handleNextStep();
-                        setCurrentStep(7); // Go to next step ()
-                        //}
-                      }}
-                      className="btn btn-primary"
-                    >
-                      <span>Proceed to Documents</span>
-                      <ChevronRight className="hcr-nav-icon hcr-nav-icon-right" />
-                    </button>
-                  </div>
-                </form>
-              </div>
+              <RestaurantAdditionalDetails
+                additionalFrom={additionalFrom}
+                hoursOfSaleList={hoursOfSaleList}
+                constitutionType={applicantForm.ConstitutionType}
+                onChange={handleAdditionalFromChange}
+                onDirectorChange={handleDirectorChange}
+                onAddDirector={addRow}
+                onDeleteDirector={deleteRow}
+                onBack={() => setCurrentStep(5)}
+                onContinue={() => {{
+                  handleNextStep();
+                  setCurrentStep(7);
+                }}}
+                onSubmit={handelResturantDetails}
+              />
             )}
-
             {/* STEP 7: DOCUMENTS & UPLOADS */}
             {currentStep === 7 && (
               <div className="hcr-license-card">

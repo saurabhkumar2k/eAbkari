@@ -351,7 +351,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
               <div className="event-select-icon-wrap">
                 <ChevronDown style={{ width: '1rem', height: '1rem', color: '#94a3b8' }} />
               </div>
-            )}
+            )
             {errors.premiseName && (
               <p className="event-error-text">{errors.premiseName}</p>
             )}
@@ -557,6 +557,7 @@ export default function EventDetailsPage({ formData, onChange, errors = {}, show
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

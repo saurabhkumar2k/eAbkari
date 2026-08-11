@@ -52,3 +52,22 @@
 .answer-column input[type="radio"] {
   cursor: pointer;
 }
+
+/* RestaurantAdditionalDetails.css */
+
+.hcr-additional-details {
+  width: 100%;
+}
+
+.hcr-additional-details .hcr-step-card-header,
+.hcr-additional-details .hcr-premises-form,
+.hcr-additional-details .hcr-form-grid,
+.hcr-additional-details .hcr-step-navigation {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .hcr-additional-details {
+    width: 100%;
+  }
+}
