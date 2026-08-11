@@ -38,7 +38,8 @@ namespace backend.Application.Services.Department
                 UserDesignation = x.UserDesignation,
                 Email = x.Email,
                 IsActive = x.IsActive,
-                RoleId = x.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0
+                RoleId = x.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0,
+                BranchCode = x.DeptUserRoles.FirstOrDefault()?.BranchCode ?? 0
             });
         }
 
@@ -58,7 +59,8 @@ namespace backend.Application.Services.Department
                 UserDesignation = user.UserDesignation,
                 Email = user.Email,
                 IsActive = user.IsActive,
-                RoleId = user.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0
+                RoleId = user.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0,
+                BranchCode = user.DeptUserRoles.FirstOrDefault()?.BranchCode ?? 0
             };
         }
 
@@ -96,6 +98,7 @@ namespace backend.Application.Services.Department
                 UserName = user.UserName.Trim(),
                 UserDesignation = user.UserDesignation.Trim(),
                 Email = user.Email,
+                MobileNo = user.MobileNo,
                 IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
                 CreatedDate = DateTime.Now
             };
@@ -124,7 +127,9 @@ namespace backend.Application.Services.Department
 
                 DeptUserRoleId = DeptUserRoleId,
                 UserId = usrId,
-                RoleId = user.RoleId      
+                RoleId = user.RoleId,
+                BranchCode = user.BranchCode,
+                IsActive = "Y"    
             };
 
             return await _departmentUsersRepository.CreateAsync(DepartmentUser, DeptUserRoles);
@@ -133,16 +138,37 @@ namespace backend.Application.Services.Department
 
 
 
-        public async Task<bool> UpdateAsync(DepartmentUserDto model)
-        {
-            var dto = JsonSerializer.Deserialize<DepartmentUserDto>(
-           JsonSerializer.Serialize(model));
+        public async Task<bool> UpdateAsync(DepartmentUserDto user)
+ {
+     if (user == null)
+         throw new ArgumentNullException(nameof(user));
 
-            if (dto == null)
-                throw new InvalidOperationException("Failed to map DepartmentUsers to DepartmentUserDto");
+     if (string.IsNullOrWhiteSpace(user.UserId))
+         throw new ArgumentException("UserId is required.");
 
-            return await _departmentUsersRepository.UpdateAsync(dto);
-        }
+     if (string.IsNullOrWhiteSpace(user.UserName))
+         throw new ArgumentException("UserName is required.");
+
+     if (string.IsNullOrWhiteSpace(user.Email))
+         throw new ArgumentException("Email is required.");
+
+     var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
+
+     if (existingUser == null)
+         throw new InvalidOperationException("User not exists.");
+
+     var DepartmentUser = new DepartmentUsers
+     {
+         UserId = user.UserId,
+         UserName = user.UserName.Trim(),
+         UserDesignation = user.UserDesignation.Trim(),
+         Email = user.Email,
+         MobileNo = user.MobileNo,
+         IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
+     };
+
+     return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId, user.BranchCode);
+ }
 
     }
 }

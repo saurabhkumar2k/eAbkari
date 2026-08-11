@@ -45,6 +45,10 @@ namespace backend.Core.Entities.Department
 
         public DateTime? RefreshTokenExpiry { get; set; }
 
+        [Required]
+        [StringLength(10)]
+        public string MobileNo { get; set; }
+
         public virtual ICollection<DeptUserRoles> DeptUserRoles { get; set; } = new List<DeptUserRoles>();
     }
 
@@ -60,12 +64,29 @@ namespace backend.Core.Entities.Department
         [ForeignKey(nameof(MstRoles))]
         public int RoleId { get; set; }
 
+        [ForeignKey(nameof(MstLicenseeCategoryBranch))]
+        public long BranchCode { get; set; }
+
         [StringLength(1)]
-        public string IsActive { get; set; }
+        public string IsActive { get; set; } = "Y";
 
         public virtual  DepartmentUsers? DepartmentUsers { get; set; }
 
         public virtual  MstRoles? MstRoles { get; set; }
+
+        public virtual  MstLicenseeCategoryBranch? MstLicenseeCategoryBranch { get; set; }
+    }
+
+    [Table("MstLicenseeCategoryBranch")]
+    public class MstLicenseeCategoryBranch
+    {
+        [Key]
+        public long BranchCode { get; set; } 
+
+        [StringLength(50)]
+        public string BranchName { get; set; }
+        
+        //public virtual ICollection<DeptUserRoles> DeptUserRoles { get; set; } = new List<DeptUserRoles>();
     }
 
 }
