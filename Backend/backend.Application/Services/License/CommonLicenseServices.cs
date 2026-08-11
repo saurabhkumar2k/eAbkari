@@ -8,12 +8,12 @@ namespace backend.Application.Services.License
 {
     public class CommonLicenseServices : ICommonLicenseServices
     {
-        private readonly ICommonLicenseRepository _Licenserepository;  
-        
+        private readonly ICommonLicenseRepository _Licenserepository;
+
         public CommonLicenseServices(ICommonLicenseRepository repository)
         {
             _Licenserepository = repository;
-           
+
         }
 
 
@@ -28,19 +28,24 @@ namespace backend.Application.Services.License
 
                 var FinYearV = await _Licenserepository.GetFinYear();
 
-                
+                if (string.IsNullOrWhiteSpace(FinYearV))
+                {
+                    throw new Exception("Financial Year is not available.");
+                }
 
-                string prefix = $"REF{dto.CatCode}";
+                string activeYear = FinYearV.Substring(2, 2); // 2026-2027 → 26
+
+                string prefix = $"REF{dto.CatCode}{activeYear}";
 
                 int sequence = 1;
 
                 if (!string.IsNullOrWhiteSpace(lastappid))
                 {
-                    string lastFour = lastappid.Substring(lastappid.Length - 4);
+                    string lastFour = lastappid.Substring(lastappid.Length - 5);
                     sequence = int.Parse(lastFour) + 1;
                 }
 
-                string newappid = $"{prefix}{sequence:0000}";
+                string newappid = $"{prefix}{sequence:00000}";
 
                 // if (string.IsNullOrWhiteSpace(lastappid))
                 // {
@@ -75,7 +80,7 @@ namespace backend.Application.Services.License
                     Mobile = dto.Mobile ?? "",
                     LandLine = dto.LandLine ?? "",
                     CreatedDate = DateTime.Now,
-                    
+
                     //OprDate= DateTime.Now
                     // Map other fields
                 };
