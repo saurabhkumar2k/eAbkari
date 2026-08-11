@@ -15,8 +15,11 @@ namespace backend.Core.DTOs
 
         public string Email { get; set; }
 
-        public string? IsActive { get; set; } = "Y";
+        public string MobileNo { get; set; }
+
+        public string? IsActive { get; set; } = "Y";    
         public int RoleId { get; set; }
+        public long BranchCode { get; set; }
     }
 }
       
