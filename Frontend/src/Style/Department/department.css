@@ -1,10 +1,11 @@
-@import "./user_creation.css";
-@import "./da.css";
-@import "./papplication.css";
-@import "./userhierarchy.css";
-@import "./licensetitle.css";
 @import "./bottle.css";
-
+@import "./ownertype.css";
+@import "./bottler.css";
+@import "./da.css";
+@import "./departmenthead.css";
+@import "./dept_master.css";
+@import "./licensetitle.css";
+@import "./papplication.css";
 .dept-login-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);

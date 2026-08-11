@@ -1486,4 +1486,327 @@
   background-color: #15609c;
 }
 
+/* Liquor Details Page Styles */
+.liquor-page {
+  animation: p10FadeIn 0.3s ease-in-out;
+}
+
+.liquor-card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.liquor-header {
+  width: 100%;
+  background-color: #0a3861;
+  color: #ffffff;
+  padding: 0.625rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 900;
+  border-radius: 0.5rem;
+  user-select: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.liquor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+.btn-add {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-add:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-delete {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+
+.btn-save {
+  padding: 0.5rem 1.25rem;
+  background-color: #059669;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-save:hover {
+  background-color: #047857;
+}
+
+.liquor-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.liquor-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.liquor-table thead tr {
+  background-color: #1b75bc;
+  color: #ffffff;
+}
+
+.liquor-table th {
+  padding: 0.875rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-right: 1px solid #15609c;
+}
+
+.liquor-table th.th-left {
+  text-align: left;
+}
+
+.liquor-table th.th-center {
+  text-align: center;
+  width: 160px;
+}
+
+.liquor-table th.sl-cell {
+  width: 60px;
+  text-align: center;
+}
+
+.liquor-table td {
+  padding: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.liquor-table td.sl-cell {
+  width: 60px;
+  text-align: center;
+  border-right: 1px solid #edf2f7;
+  background-color: rgba(248, 250, 252, 0.2);
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 0.875rem;
+}
+
+.liquor-table td.td-center {
+  text-align: center;
+  width: 160px;
+}
+
+.liquor-input {
+  width: 100%;
+  background-color: rgba(248, 250, 252, 0.5);
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.liquor-input:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+}
+
+.liquor-select {
+  width: 100%;
+  background-color: rgba(248, 250, 252, 0.5);
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.liquor-select:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+}
+
+.qty-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-align: center;
+  text-transform: none;
+}
+
+.liquor-input-error {
+  border-color: #ef4444 !important;
+  background-color: rgba(254, 242, 242, 0.4) !important;
+}
+
+.liquor-error-text {
+  font-size: 0.6875rem;
+  color: #dc2626;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  padding-left: 0.25rem;
+  margin-bottom: 0;
+}
+
+.liquor-error-center {
+  padding-left: 0;
+  text-align: center;
+}
+
+.liquor-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.summary-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .summary-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .summary-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.summary-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  user-select: none;
+}
+
+.summary-card-highlight {
+  background-color: rgba(236, 253, 245, 0.5);
+  border-color: #a7f3d0;
+}
+
+.summary-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.025em;
+}
+
+.summary-card-highlight .summary-label {
+  color: #047857;
+}
+
+.summary-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #0f172a;
+}
+
+.summary-card-highlight .summary-value {
+  color: #065f46;
+}
+
+.liquor-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-back {
+  padding: 0.625rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #f8fafc;
+}
+
+.btn-next {
+  padding: 0.625rem 1.75rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.btn-next:hover {
+  background-color: #1d4ed8;
+}
+
 
