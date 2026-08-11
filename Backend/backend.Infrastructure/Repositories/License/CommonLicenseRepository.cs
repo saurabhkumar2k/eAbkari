@@ -57,5 +57,9 @@ namespace backend.Infrastructure.Repositories.License
 
             return user;
         }
+        public async Task<string?> GetFinYear()
+        {
+                return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+        }
     }
 }
