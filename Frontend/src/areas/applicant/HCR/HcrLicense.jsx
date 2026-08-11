@@ -49,7 +49,6 @@ import SelectLicenseType from "./SelectLicense";
 import L20 from "./L20";
 import HcrApplicantDetails from "./HcrApplicantDetail";
 
-
 export default function HcrLicenseWizard({
   onBackToDashboard,
   showToast,
@@ -258,7 +257,10 @@ export default function HcrLicenseWizard({
   };
 
   const handleAdditionalFromChange = (field, value) => {
-    setAdditionalFrom((prev) => ({ ...prev, [field]: value }));
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleFinalSubmission = () => {
@@ -1435,13 +1437,14 @@ export default function HcrLicenseWizard({
                 onAddDirector={addRow}
                 onDeleteDirector={deleteRow}
                 onBack={() => setCurrentStep(5)}
-                onContinue={() => {{
+                onContinue={() => {
                   handleNextStep();
                   setCurrentStep(7);
-                }}}
+                }}
                 onSubmit={handelResturantDetails}
               />
             )}
+
             {/* STEP 7: DOCUMENTS & UPLOADS */}
             {currentStep === 7 && (
               <div className="hcr-license-card">

@@ -49,7 +49,7 @@ export default function RestaurantAdditionalDetails({
             const value = e.target.value;
 
             // Allow numbers with decimal
-            if (/^\d*\.?\d*$/.test(value)) {
+             if (/^\d*\.?\d*$/.test(value)) {
               onChange("restaurantArea", value);
             }
           }}
