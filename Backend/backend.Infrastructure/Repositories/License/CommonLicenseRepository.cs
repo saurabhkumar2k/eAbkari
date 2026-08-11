@@ -9,17 +9,36 @@ namespace backend.Infrastructure.Repositories.License
     public class CommonLicenseRepository : ICommonLicenseRepository
     {
         private readonly ApplicationDbContext _context;
-        public CommonLicenseRepository(ApplicationDbContext context) 
+        public CommonLicenseRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<string?> GetLastApplicationId()
         {
-            return await _context.LicenseApplications
-                .OrderByDescending(x => x.ApplicationIdNo)
-                .Select(x =>  x.ApplicationIdNo)
-                .FirstOrDefaultAsync();
+
+            var FinYearV = await GetFinYear();
+
+            if (string.IsNullOrWhiteSpace(FinYearV))
+            {
+                throw new Exception("Financial Year is not available.");
+            }
+
+            string activeYear = FinYearV.Substring(2, 2);
+
+
+            // return await _context.LicenseApplications
+            //     .OrderByDescending(x => x.ApplicationIdNo)
+            //     .Select(x => x.ApplicationIdNo)
+            //     .FirstOrDefaultAsync();
+
+             return await _context.LicenseApplications
+                .Where(x => x.ApplicationIdNo != null &&
+                    x.ApplicationIdNo.Length >= 7 &&
+                    x.ApplicationIdNo.Substring(5, 2) == activeYear)
+                    .OrderByDescending(x => x.ApplicationIdNo)
+                    .Select(x => x.ApplicationIdNo)
+                    .FirstOrDefaultAsync();
         }
 
         public async Task<string> SaveApplicantDetails(LicenseApplicationUserDetails userDetails, LicenseApplication application)
@@ -59,7 +78,7 @@ namespace backend.Infrastructure.Repositories.License
         }
         public async Task<string?> GetFinYear()
         {
-                return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+            return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
         }
     }
 }
