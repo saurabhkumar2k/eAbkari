@@ -43,7 +43,7 @@ namespace backend.Infrastructure.Data
 
         public DbSet<DocumentDto> DocumentDtos { get; set; }
 
-         public DbSet<P10LiquorDetails> P10LiquorDetails { get; set; }
+        public DbSet<P10LiquorDetails> P10LiquorDetails { get; set; }
         public DbSet<PermitP10> PermitP10 { get; set; }
         public DbSet<PremiseDetails> PremiseDetails { get; set; }
         public DbSet<MstFinancialYear> MstFinancialYear { get; set; }
@@ -69,11 +69,11 @@ namespace backend.Infrastructure.Data
         public DbSet<MstRoles> MstRoles { get; set; }
         public DbSet<DeptUserRoles> DeptUserRoles { get; set; }
         public DbSet<LicenseSiteDetails> LicenseSiteDetails { get; set; }
-        public DbSet<QuestionDetails> QuestionDetails { get; set; }
+        public DbSet<MstQuestionDetails> MstQuestionDetails { get; set; }
 
-        public DbSet<CategoryWiseQuestions> CategoryWiseQuestions { get; set; }
+        public DbSet<LicenseApplicationCategoryWiseQuestion> LicenseApplicationCategoryWiseQuestion { get; set; }
 
-        public DbSet<CategoryWiseAnswers> CategoryWiseAnswers { get; set; }
+        public DbSet<LicenseApplicationCategoryWiseAnswers> LicenseApplicationCategoryWiseAnswers { get; set; }
 
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
 
@@ -308,14 +308,15 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<LicenseSiteDetails>()
                .HasKey(x => x.ApplicationIdNo);
 
-            modelBuilder.Entity<QuestionDetails>()
+            modelBuilder.Entity<MstQuestionDetails>()
                .HasKey(x => x.QuestionId);
 
-            modelBuilder.Entity<CategoryWiseQuestions>()
+            modelBuilder.Entity<LicenseApplicationCategoryWiseQuestion>()
                 .HasKey(x => x.Id);
 
-            modelBuilder.Entity<CategoryWiseAnswers>()
+            modelBuilder.Entity<LicenseApplicationCategoryWiseAnswers>()
                 .HasKey(x => x.Id);
+
             modelBuilder.Entity<AdditionalHCRDetails>()
                 .HasKey(x => x.ApplicationIdNo);
 
@@ -329,7 +330,7 @@ namespace backend.Infrastructure.Data
    .ToTable("MstOwnerType");
 
 
-            
+
             modelBuilder.Entity<PermitP10>(entity =>
             {
                 entity.ToTable("PermitP10");

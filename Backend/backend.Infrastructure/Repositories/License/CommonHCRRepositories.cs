@@ -65,8 +65,8 @@ namespace backend.Infrastructure.Repositories.License
         {
 
             var Questions = await (
-                from cq in _context.CategoryWiseQuestions
-                join q in _context.QuestionDetails
+                from cq in _context.LicenseApplicationCategoryWiseQuestion
+                join q in _context.MstQuestionDetails
                 on cq.QuestionId equals q.QuestionId
                 where cq.LicenseeCatCode == catCode
                     && cq.ActiveStatus == "Y"
@@ -85,40 +85,10 @@ namespace backend.Infrastructure.Repositories.License
             return Questions;
 
         }
-        public async Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            if (dto == null || dto.Count == 0)
-                return "No Data Found";
 
-            string appId = dto.First().ApplicationIdNo;
-
-            var oldRecords = _context.CategoryWiseAnswers
-                            .Where(x => x.ApplicationIdNo == appId);
-
-            _context.CategoryWiseAnswers.RemoveRange(oldRecords);
-
-            int slNo = 1;
-
-            foreach (var item in dto)
-            {
-                CategoryWiseAnswers obj = new CategoryWiseAnswers
-                {
-                    ApplicationIdNo = item.ApplicationIdNo,
-                    QuestionId = item.QuestionId,
-                    AnswerGiven = item.AnswerGiven,
-                    SlNo = slNo++
-                };
-
-                _context.CategoryWiseAnswers.Add(obj);
-            }
-
-            await _context.SaveChangesAsync();
-
-            return "Saved Successfully";
-        }
         public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
         {
-            var answers = await _context.CategoryWiseAnswers
+            var answers = await _context.LicenseApplicationCategoryWiseAnswers
                 .Where(x => x.ApplicationIdNo == applicationIdNo)
                 .OrderBy(x => x.SlNo)
                 .Select(x => new GetApplicationAnswerResponseDto
@@ -134,29 +104,6 @@ namespace backend.Infrastructure.Repositories.License
             }
 
             return answers;
-        }
-
-        public async Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            if (dto == null || dto.Count == 0)
-                return "No Data Found";
-
-            foreach (var item in dto)
-            {
-                var answer = await _context.CategoryWiseAnswers
-                    .FirstOrDefaultAsync(x =>
-                        x.ApplicationIdNo == item.ApplicationIdNo &&
-                        x.QuestionId == item.QuestionId);
-
-                if (answer != null)
-                {
-                    answer.AnswerGiven = item.AnswerGiven;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            return "Updated Successfully";
         }
 
 
@@ -264,10 +211,45 @@ namespace backend.Infrastructure.Repositories.License
 
                     _context.ApplicantLicensePartnersDetails.Add(partner);
                 }
+                //==========================
+                // STEP 3 : ApplicantAnswers
+                //==========================
 
-                await _context.SaveChangesAsync();
+                if (dto.ApplicantAnswers != null && dto.ApplicantAnswers.Count > 0)
+                {
+                    foreach (var item in dto.ApplicantAnswers)
+                    {
+                        var answer = await _context.LicenseApplicationCategoryWiseAnswers
+                            .FirstOrDefaultAsync(x =>
+                                x.ApplicationIdNo == appId &&
+                                x.QuestionId == item.QuestionId);
 
-                return "Saved Successfully";
+                        if (answer != null)
+                        {
+                            // Existing QuestionId -> Update Answer
+                            answer.AnswerGiven = item.AnswerGiven;
+                            answer.SlNo = item.SlNo;
+                        }
+                        else
+                        {
+                            // New QuestionId -> Insert
+                            LicenseApplicationCategoryWiseAnswers newAnswer = new LicenseApplicationCategoryWiseAnswers
+                            {
+                                ApplicationIdNo = appId,
+                                QuestionId = item.QuestionId,
+                                AnswerGiven = item.AnswerGiven,
+                                SlNo = item.SlNo
+                            };
+
+                            _context.LicenseApplicationCategoryWiseAnswers.Add(newAnswer);
+                        }
+
+                    }
+                }
+                    await _context.SaveChangesAsync();
+
+                    return "Saved Successfully";
+                
             }
             catch (Exception ex)
             {
@@ -280,74 +262,91 @@ namespace backend.Infrastructure.Repositories.License
             try
             {
 
-            
-            var additionalDetails = await _context.AdditionalHCRDetails
-                .Where(x => x.ApplicationIdNo == applicationIdNo)
-                .Select(x => new AdditionalHCRDetailsDto
+
+                var additionalDetails = await _context.AdditionalHCRDetails
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .Select(x => new AdditionalHCRDetailsDto
+                    {
+                        ApplicationIdNo = x.ApplicationIdNo,
+                        NumberOfClubMember = x.NumberOfClubMember,
+                        NumberOfSeatCovers = x.NumberOfSeatCovers,
+                        NumberOfDispensingCounter = x.NumberOfDispensingCounter,
+                        AdditionalArea = x.AdditionalArea,
+                        NumberOfManagers = x.NumberOfManagers,
+                        NumberOfKitchenStaff = x.NumberOfKitchenStaff,
+                        NumberOfUtlityEmployees = x.NumberOfUtlityEmployees,
+                        TotalRoom = x.TotalRoom,
+                        StaffStrength = x.StaffStrength,
+                        StarCategory = x.StarCategory,
+                        ServiceCounter = x.ServiceCounter,
+                        TotalArea = x.TotalArea,
+                        EducationalInsDist = x.EducationalInsDist,
+                        ReligiousPlaceDist = x.ReligiousPlaceDist,
+                        IsSuitableGagdget = x.IsSuitableGagdget,
+                        IsLocalAuthorityApproved = x.IsLocalAuthorityApproved,
+                        IsIndicatingLiquor = x.IsIndicatingLiquor,
+                        NumberOfBarAttendent = x.NumberOfBarAttendent,
+                        StarCategoryRating = x.StarCategoryRating,
+                        RestaurantArea = x.RestaurantArea,
+                        HourOfSale = x.HourOfSale
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (additionalDetails == null)
                 {
-                    ApplicationIdNo = x.ApplicationIdNo,
-                    NumberOfClubMember = x.NumberOfClubMember,
-                    NumberOfSeatCovers = x.NumberOfSeatCovers,
-                    NumberOfDispensingCounter = x.NumberOfDispensingCounter,
-                    AdditionalArea = x.AdditionalArea,
-                    NumberOfManagers = x.NumberOfManagers,
-                    NumberOfKitchenStaff = x.NumberOfKitchenStaff,
-                    NumberOfUtlityEmployees = x.NumberOfUtlityEmployees,
-                    TotalRoom = x.TotalRoom,
-                    StaffStrength = x.StaffStrength,
-                    StarCategory = x.StarCategory,
-                    ServiceCounter = x.ServiceCounter,
-                    TotalArea = x.TotalArea,
-                    EducationalInsDist = x.EducationalInsDist,
-                    ReligiousPlaceDist = x.ReligiousPlaceDist,
-                    IsSuitableGagdget = x.IsSuitableGagdget,
-                    IsLocalAuthorityApproved = x.IsLocalAuthorityApproved,
-                    IsIndicatingLiquor = x.IsIndicatingLiquor,
-                    NumberOfBarAttendent = x.NumberOfBarAttendent,
-                    StarCategoryRating = x.StarCategoryRating,
-                    RestaurantArea = x.RestaurantArea,
-                    HourOfSale = x.HourOfSale
-                })
-                .FirstOrDefaultAsync();
+                    return null;
+                }
 
-            if (additionalDetails == null)
-            {
-                return null;
-            }
+                var partners = await _context.ApplicantLicensePartnersDetails
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .OrderBy(x => x.SlNo)
+                    .Select(x => new AdditionalCompanyPartnersDetailsDto
+                    {
+                        ID = x.ID,
+                        ApplicationIdNo = x.ApplicationIdNo,
+                        PName = x.PName,
+                        PPerShare = x.PPerShare,
+                        PPanNo = x.PPanNo,
+                        PExciseNominee = x.PExciseNominee,
+                        DINNo = x.DINNo,
 
-            var partners = await _context.ApplicantLicensePartnersDetails
-                .Where(x => x.ApplicationIdNo == applicationIdNo)
-                .OrderBy(x => x.SlNo)
-                .Select(x => new AdditionalCompanyPartnersDetailsDto
+                        PhotoURLPanNo = x.PhotoURLPanNo,
+
+                        PanFileUploaded = x.PhotoURLPanNo,
+
+                        AddressFileUploaded = x.PhotoURLAddressProof,
+
+                        SlNo = x.SlNo
+                    })
+                    .ToListAsync();
+
+                //==========================
+                // STEP 3 : Applicant Answers
+                //==========================
+
+                var applicantAnswers = await _context.LicenseApplicationCategoryWiseAnswers
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .OrderBy(x => x.SlNo)
+                    .Select(x => new CategoryWiseAnswersDto
+                    {
+                        ApplicationIdNo = x.ApplicationIdNo,
+                        QuestionId = x.QuestionId,
+                        AnswerGiven = x.AnswerGiven
+                        //SlNo = x.SlNo
+                    })
+                    .ToListAsync();
+
+                return new AdditionalHCRCompleteDto
                 {
-                    ID = x.ID,
-                    ApplicationIdNo = x.ApplicationIdNo,
-                    PName = x.PName,
-                    PPerShare = x.PPerShare,
-                    PPanNo = x.PPanNo,
-                    PExciseNominee = x.PExciseNominee,
-                    DINNo = x.DINNo,
-
-                    PhotoURLPanNo = x.PhotoURLPanNo,
-
-                    PanFileUploaded = x.PhotoURLPanNo,
-
-                    AddressFileUploaded = x.PhotoURLAddressProof,
-
-                    SlNo = x.SlNo
-                })
-                .ToListAsync();
-
-            return new AdditionalHCRCompleteDto
-            {
-                AdditionalDetails = additionalDetails,
-                Partners = partners
-            };
+                    AdditionalDetails = additionalDetails,
+                    Partners = partners,
+                    ApplicantAnswers = applicantAnswers
+                };
             }
             catch (Exception ex)
             {
-                var error = ex.Message; 
-                return null ;
+                var error = ex.Message;
+                return null;
             }
         }
         public async Task<string> DeletePartner(int id, string applicationIdNo)

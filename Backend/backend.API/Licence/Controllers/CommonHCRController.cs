@@ -55,18 +55,6 @@ namespace backend.API.Licence.Controllers
         }
 
         [HttpPost]
-        [Route("SaveCategoryWiseAnswers")]
-        public async Task<IActionResult> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _HCRservice.SaveCategoryWiseAnswers(dto);
-
-            return Ok(result);
-        }
-
-        [HttpPost]
         [Route("GetAppIdWiseAnswers")]
         public async Task<IActionResult> GetAppIdWiseAnswers(GetApplicationAnswerRequestDto dto)
         {
@@ -78,20 +66,10 @@ namespace backend.API.Licence.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        [Route("UpdateCategoryWiseAnswers")]
-        public async Task<IActionResult> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            var result = await _HCRservice.UpdateCategoryWiseAnswers(dto);
-
-            return Ok(result);
-        }
-
 
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
-        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromForm] AdditionalHCRCompleteDto dto)
-        // public async Task<IActionResult> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
+        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromBody] AdditionalHCRCompleteDto dto)
         {
             if (dto == null || dto.AdditionalDetails == null)
             {

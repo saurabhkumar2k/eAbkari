@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Core.Entities.Licence
 {
-    [Table("MstQuestionDetails")]
-    public class QuestionDetails
+   // [Table("MstQuestionDetails")]
+    public class MstQuestionDetails
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
@@ -21,8 +21,8 @@ namespace backend.Core.Entities.Licence
 
     } 
      
-    [Table("LicenseApplicationCategoryWiseQuestion")]
-    public class CategoryWiseQuestions
+    //[Table("LicenseApplicationCategoryWiseQuestion")]
+    public class LicenseApplicationCategoryWiseQuestion
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -43,8 +43,8 @@ namespace backend.Core.Entities.Licence
     }
 
 
-    [Table("LicenseApplicationCategoryWiseAnswers")]
-    public class CategoryWiseAnswers
+    //[Table("LicenseApplicationCategoryWiseAnswers")]
+    public class LicenseApplicationCategoryWiseAnswers
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
