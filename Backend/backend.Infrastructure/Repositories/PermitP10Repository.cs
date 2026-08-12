@@ -136,7 +136,8 @@ public class PermitP10Repository : IPermitP10Repository
                 PIN = dto.PIN,
                 Mobile = dto.Mobile,
                 Email = dto.Email,
-                LandLine = dto.LandLine
+                LandLine = dto.LandLine,
+                CreatedDate=DateTime.Now
             };
 
             _context.LicenseApplicationUserDetails.Add(applicantDetails);
