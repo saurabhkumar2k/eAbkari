@@ -6,5 +6,7 @@ namespace backend.Core.DTOs
         public AdditionalHCRDetailsDto AdditionalDetails { get; set; } = new();
 
         public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
+
+        public List <CategoryWiseAnswersDto> ApplicantAnswers {get; set;} = new();
     }
 }

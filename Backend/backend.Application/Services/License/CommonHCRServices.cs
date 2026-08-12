@@ -79,19 +79,7 @@ namespace backend.Application.Services.License
             }
 
         }
-        public async Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            try
-            {
-                return await _HcrRepositry.SaveCategoryWiseAnswers(dto);
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-
-        }
+       
         public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
         {
             try
@@ -100,19 +88,6 @@ namespace backend.Application.Services.License
             }
             catch (Exception ex)
             {
-                return null;
-            }
-        }
-
-        public async Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto)
-        {
-            try
-            {
-                return await _HcrRepositry.UpdateCategoryWiseAnswers(dto);
-            }
-            catch (Exception ex)
-            {
-
                 return null;
             }
         }

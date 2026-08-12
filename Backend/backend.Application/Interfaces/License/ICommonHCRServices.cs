@@ -8,10 +8,8 @@ namespace backend.Application.Interfaces.License
 
         Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode);
 
-        Task<string> SaveCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
         Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo);
 
-        Task<string> UpdateCategoryWiseAnswers(List<CategoryWiseAnswersDto> dto);
 
         //Part for the Additional details --starting
         Task<AdditionalHCRCompleteDto?> GetAdditionalHCRCompleteDetails(string applicationIdNo);
