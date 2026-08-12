@@ -1,0 +1,343 @@
+.act-new-license-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: #000;
+}
+
+/* --------------------------------
+   HEADER
+-------------------------------- */
+
+.act-page-header {
+  height: 28px;
+  background: linear-gradient(
+    to right,
+    #ffffff 0%,
+    #ffffff 60%,
+    #39a8cc 60%,
+    #2b9fc4 100%
+  );
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding-right: 20px;
+
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: italic;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.act-page-header span {
+  padding-right: 5px;
+}
+
+
+/* --------------------------------
+   SEARCH SECTION
+-------------------------------- */
+
+.act-search-section {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  padding: 8px 5px 4px 5px;
+}
+
+.act-date-field {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.act-date-field label {
+  font-weight: bold;
+}
+
+.act-date-field input {
+  width: 74px;
+  height: 20px;
+
+  padding: 1px 3px;
+
+  border: 1px solid #888;
+  border-radius: 0;
+
+  font-size: 11px;
+  color: #000;
+}
+
+.act-search-button {
+  height: 20px;
+
+  padding: 0 8px;
+
+  border: 1px solid #777;
+  border-radius: 0;
+
+  background: #eeeeee;
+
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.act-search-button:hover {
+  background: #dddddd;
+}
+
+
+/* --------------------------------
+   COUNT
+-------------------------------- */
+
+.act-count {
+  text-align: center;
+
+  margin-top: 3px;
+  margin-bottom: 3px;
+
+  font-size: 12px;
+}
+
+.act-count strong {
+  font-weight: bold;
+}
+
+
+/* --------------------------------
+   TABLE WRAPPER
+-------------------------------- */
+
+.act-table-wrapper {
+  margin: 0 5px;
+
+  border: 1px solid #5d8db2;
+
+  padding: 3px;
+
+  overflow-x: auto;
+}
+
+
+/* --------------------------------
+   TABLE
+-------------------------------- */
+
+.act-license-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+
+  font-size: 12px;
+}
+
+.act-license-table th {
+  background: #82a6c3;
+
+  color: #ffffff;
+
+  border: 1px solid #ffffff;
+
+  height: 26px;
+
+  font-weight: bold;
+
+  text-align: center;
+
+  vertical-align: middle;
+}
+
+.act-license-table td {
+  border: 1px solid #777;
+
+  vertical-align: top;
+
+  padding: 6px;
+}
+
+
+/* --------------------------------
+   COLUMN WIDTHS
+-------------------------------- */
+
+.sl-column {
+  width: 5%;
+}
+
+.application-column {
+  width: 65%;
+}
+
+.view-column {
+  width: 15%;
+}
+
+.action-column {
+  width: 15%;
+}
+
+
+/* --------------------------------
+   SERIAL NUMBER
+-------------------------------- */
+
+.sl-cell {
+  width: 5%;
+
+  text-align: center;
+
+  vertical-align: middle !important;
+
+  font-size: 12px;
+}
+
+
+/* --------------------------------
+   APPLICATION DETAILS
+-------------------------------- */
+
+.application-details {
+  padding: 6px 4px !important;
+}
+
+.detail-row {
+  display: flex;
+
+  line-height: 19px;
+
+  margin-bottom: 2px;
+}
+
+.detail-label {
+  min-width: 135px;
+
+  font-weight: normal;
+}
+
+.colon {
+  width: 12px;
+
+  text-align: center;
+
+  margin-right: 2px;
+}
+
+.license-description {
+  font-weight: bold;
+
+  line-height: 18px;
+}
+
+
+/* --------------------------------
+   VIEW ACTIONS
+-------------------------------- */
+
+.view-actions {
+  text-align: center;
+
+  vertical-align: middle !important;
+
+  padding: 8px 4px !important;
+}
+
+.table-link {
+  display: block;
+
+  width: 100%;
+
+  margin: 0 auto 7px auto;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #0000ee;
+
+  text-decoration: underline;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.table-link:hover {
+  color: #551a8b;
+}
+
+.table-link:last-child {
+  margin-bottom: 0;
+}
+
+
+/* --------------------------------
+   MAIN ACTIONS
+-------------------------------- */
+
+.main-actions {
+  text-align: center;
+
+  vertical-align: middle !important;
+
+  padding: 8px 4px !important;
+}
+
+.primary-action {
+  margin-bottom: 7px;
+}
+
+.secondary-action {
+  color: #0000ee;
+}
+
+
+/* --------------------------------
+   NO RECORD
+-------------------------------- */
+
+.no-record {
+  text-align: center;
+
+  padding: 25px;
+
+  font-weight: bold;
+
+  color: #555;
+}
+
+
+/* --------------------------------
+   RESPONSIVE
+-------------------------------- */
+
+@media (max-width: 768px) {
+
+  .act-page-header {
+    justify-content: center;
+
+    font-size: 13px;
+  }
+
+  .act-search-section {
+    flex-wrap: wrap;
+
+    gap: 12px;
+  }
+
+  .act-license-table {
+    min-width: 850px;
+  }
+
+}
