@@ -7,7 +7,6 @@ import { createHCRAdditional } from "../../../Model/HCRAdditional";
 import DocumentUpload from "../../../components/DocumentsDetails";
 import RestaurantDetails from "../../../components/RestaurantDetails";
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
-import HcrQuestionList from "../../../components/HCRQuestionList";
 import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 
 import {
@@ -49,7 +48,6 @@ import SelectLicenseType from "./SelectLicense";
 import L20 from "./L20";
 import HcrApplicantDetails from "./HcrApplicantDetail";
 
-
 export default function HcrLicenseWizard({
   onBackToDashboard,
   showToast,
@@ -86,6 +84,8 @@ export default function HcrLicenseWizard({
   const [additionalFormErrors, setAdditionalFormErrors] = useState({});
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
+  const [questions, setQuestions] = useState([]);
+
 
   // Applicant Submission validation helper
   const handleApplicantSubmit = () => {
@@ -258,7 +258,10 @@ export default function HcrLicenseWizard({
   };
 
   const handleAdditionalFromChange = (field, value) => {
-    setAdditionalFrom((prev) => ({ ...prev, [field]: value }));
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleFinalSubmission = () => {
@@ -340,7 +343,6 @@ export default function HcrLicenseWizard({
     applicantForm[field] = value;
   };
 
-  const [questions, setQuestions] = useState([]);
 
   const fetchQuestions = async (catCode) => {
     try {
@@ -366,6 +368,8 @@ export default function HcrLicenseWizard({
       console.log("Length:", data?.length);
 
       setQuestions(data);
+
+      console.log("Questions state updated:", questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
       setQuestions([]);
@@ -1426,22 +1430,27 @@ export default function HcrLicenseWizard({
             {/* STEP 6: PREMISE DETAILS (NON L-20 ONLY) */}
             {/* STEP 6: PREMISE DETAILS (NON L-20 ONLY) */}
             {currentStep === 6 && selectedLicenseId !== "L-20" && (
-              <RestaurantAdditionalDetails
-                additionalFrom={additionalFrom}
-                hoursOfSaleList={hoursOfSaleList}
-                constitutionType={applicantForm.ConstitutionType}
-                onChange={handleAdditionalFromChange}
-                onDirectorChange={handleDirectorChange}
-                onAddDirector={addRow}
-                onDeleteDirector={deleteRow}
-                onBack={() => setCurrentStep(5)}
-                onContinue={() => {{
-                  handleNextStep();
-                  setCurrentStep(7);
-                }}}
-                onSubmit={handelResturantDetails}
-              />
+              <div className="form-group full-width">
+                <RestaurantAdditionalDetails
+                  additionalFrom={additionalFrom}
+                  hoursOfSaleList={hoursOfSaleList}
+                  constitutionType={applicantForm.ConstitutionType}
+                  onChange={handleAdditionalFromChange}
+                  questions={questions}
+                  onQuestionsChange={handleQuestions}
+                  onDirectorChange={handleDirectorChange}
+                  onAddDirector={addRow}
+                  onDeleteDirector={deleteRow}
+                  onBack={() => setCurrentStep(5)}
+                  onContinue={() => {
+                    handleNextStep();
+                    setCurrentStep(7);
+                  }}
+                  onSubmit={handelResturantDetails}
+                />
+              </div>
             )}
+
             {/* STEP 7: DOCUMENTS & UPLOADS */}
             {currentStep === 7 && (
               <div className="hcr-license-card">

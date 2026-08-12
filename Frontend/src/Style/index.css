@@ -26,6 +26,7 @@
 @import "./Applicant/Permit.css";
 
 @import "./HcrApp.css";
+@import "./ActOnNewLicenseApplication.css";
 
 :root {
   --brand-blue: #012a52;

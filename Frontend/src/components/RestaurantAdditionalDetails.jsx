@@ -2,12 +2,15 @@ import React from "react";
 import { Building, ChevronLeft, ChevronRight } from "lucide-react";
 import DirectorsList from "./DirectorsList";
 //import AdditionalDetailsCSS from "../Style/RestaurantAdditionalDetails.css";
+import HcrQuestionList from "./HCRQuestionList";
 
 export default function RestaurantAdditionalDetails({
   additionalFrom,
   hoursOfSaleList,
   constitutionType,
   onChange,
+  onQuestionsChange,
+  questions,
   onDirectorChange,
   onAddDirector,
   onDeleteDirector,
@@ -15,6 +18,9 @@ export default function RestaurantAdditionalDetails({
   onContinue,
   onSubmit,
 }) {
+
+    console.log("Questions state updated RestaurantAdditionalDetails:", questions);
+
   return (
 <div className="hcr-additional-details hcr-step-card animate-fade">
   <div className="hcr-step-card-header">
@@ -49,7 +55,7 @@ export default function RestaurantAdditionalDetails({
             const value = e.target.value;
 
             // Allow numbers with decimal
-            if (/^\d*\.?\d*$/.test(value)) {
+             if (/^\d*\.?\d*$/.test(value)) {
               onChange("restaurantArea", value);
             }
           }}
@@ -345,12 +351,12 @@ export default function RestaurantAdditionalDetails({
         </select>
       </div>
 
-      {/* <div className="form-group full-width">
+      <div className="form-group full-width">
         <HcrQuestionList
           questions={questions}
-          onChange={handleQuestions}
+          onChange={onQuestionsChange}
         />
-      </div> */}
+      </div>
 
       <div className="form-group full-width">
         <DirectorsList
