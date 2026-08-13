@@ -76,6 +76,9 @@ namespace backend.Infrastructure.Data
         public DbSet<LicenseApplicationCategoryWiseAnswers> LicenseApplicationCategoryWiseAnswers { get; set; }
 
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
+        public DbSet<MstFlowApplicable> MstFlowApplicable { get; set; }
+        public DbSet<MstFlowUpto> MstFlowUpto { get; set; }
+
 
 
 
@@ -319,6 +322,12 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<AdditionalHCRDetails>()
                 .HasKey(x => x.ApplicationIdNo);
+
+                modelBuilder.Entity<MstFlowApplicable>()
+                .HasKey(x => x.Id);
+
+                modelBuilder.Entity<MstFlowUpto>()
+                .HasKey(x => x.Id);
 
             base.OnModelCreating(modelBuilder);
 

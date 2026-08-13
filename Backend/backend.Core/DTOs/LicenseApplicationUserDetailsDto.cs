@@ -46,6 +46,10 @@ namespace backend.Core.DTOs
 
         public string OwnerType { get; set; } = string.Empty;
 
+        public string ActivityId { get; set; } = string.Empty;
+
+
+
         //public DateTime? CreatedDate { get; set; }
 
     }

@@ -9,5 +9,7 @@ namespace backend.Core.Interfaces.License
         Task<string> SaveApplicantDetails(LicenseApplicationUserDetails userDetails, LicenseApplication application);
         Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId);
         Task<string?> GetFinYear();
+
+        Task<string?>GetFlowUpto( string CatCode, string ActivityId);
     }
 }
