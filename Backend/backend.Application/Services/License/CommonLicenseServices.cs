@@ -57,6 +57,8 @@ namespace backend.Application.Services.License
                 //     newappid = $"REFL{(number + 1):00000}";
                 // }
 
+                var ApplicationFlowUpto = await _Licenserepository.GetFlowUpto(dto.CatCode,dto.ActivityId);
+
                 var license = new LicenseApplicationUserDetails
                 {
                     ApplicationIdNo = newappid,
@@ -96,9 +98,10 @@ namespace backend.Application.Services.License
                     CatCode = dto.CatCode,
                     LicenseType = dto.OwnerType,
                     IsApplicationCompleted = "N",
-                    ApplicationFlag = "A",
+                    ApplicationFlag = dto.ActivityId,
                     IsLicenseGenerated = "N",
-                    IsApproveYN = "N"
+                    IsApproveYN = "N",
+                    FlowUptoCode = ApplicationFlowUpto
                 };
 
                 return await _Licenserepository.SaveApplicantDetails(license, application);

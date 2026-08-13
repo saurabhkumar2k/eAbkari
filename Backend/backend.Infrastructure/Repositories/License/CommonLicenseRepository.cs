@@ -3,6 +3,7 @@ using backend.Core.Entities.Licence;
 using backend.Core.Interfaces.License;
 using backend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace backend.Infrastructure.Repositories.License
 {
@@ -13,6 +14,8 @@ namespace backend.Infrastructure.Repositories.License
         {
             _context = context;
         }
+
+       
 
         public async Task<string?> GetLastApplicationId()
         {
@@ -79,6 +82,10 @@ namespace backend.Infrastructure.Repositories.License
         public async Task<string?> GetFinYear()
         {
             return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
+        }
+         public async Task<string?> GetFlowUpto( string CatCode,string ActivityId)
+        {
+            return await _context.MstFlowApplicable.Where(x => x.ActivityId == ActivityId && x.LicenseCategory == CatCode ).Select(x => x.FlowUptoCode).FirstOrDefaultAsync(); 
         }
     }
 }
