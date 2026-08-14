@@ -37,4 +37,12 @@ export const createHCRAdditional = () => ({
       addressFile: null,
     },
   ],
+
+  applicantAnswers: [
+    {
+      "applicationIdNo": "",
+      "questionId": "",
+      "answerGiven": "",
+    }
+  ]
 });

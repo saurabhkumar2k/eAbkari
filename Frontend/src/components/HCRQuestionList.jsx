@@ -32,10 +32,10 @@ const HcrQuestionList = ({ questions, onChange }) => {
                   <input
                     type="radio"
                     name={`question_${q.questionId}`}
-                    value="Yes"
-                    checked={q.answer === "Yes"}
+                    value="Y"
+                    checked={q.answer === "Y"}
                     onChange={() =>
-                      onChange(q.questionId, "Yes")
+                      onChange(q.questionId, "Y")
                     }
                   />
                   <span>Yes</span>
@@ -45,10 +45,10 @@ const HcrQuestionList = ({ questions, onChange }) => {
                   <input
                     type="radio"
                     name={`question_${q.questionId}`}
-                    value="No"
-                    checked={q.answer === "No"}
+                    value="N"
+                    checked={q.answer === "N"}
                     onChange={() =>
-                      onChange(q.questionId, "No")
+                      onChange(q.questionId, "N")
                     }
                   />
                   <span>No</span>
