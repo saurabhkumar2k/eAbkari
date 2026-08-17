@@ -69,7 +69,8 @@ namespace backend.API.Licence.Controllers
 
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
-        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromBody] AdditionalHCRCompleteDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromForm] AdditionalHCRCompleteDto dto)
         {
             if (dto == null || dto.AdditionalDetails == null)
             {
@@ -114,6 +115,7 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
+
         [HttpPost]
         [Route("DeletePartner")]
         public async Task<IActionResult> DeletePartner(DeletePartnerDto dto)
@@ -136,7 +138,7 @@ namespace backend.API.Licence.Controllers
             var result = await _HCRservice.DeletePartner(dto.ID, dto.ApplicationIdNo);
 
             return Ok(result);
-        }
+        }  
 
     }
 }

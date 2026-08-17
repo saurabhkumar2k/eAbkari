@@ -85,7 +85,7 @@ export default function HcrLicenseWizard({
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
   const [questions, setQuestions] = useState([]);
-
+  const [questionsAnswers, setQuestionsAnswers] = useState([]);
 
   // Applicant Submission validation helper
   const handleApplicantSubmit = () => {
@@ -343,7 +343,6 @@ export default function HcrLicenseWizard({
     applicantForm[field] = value;
   };
 
-
   const fetchQuestions = async (catCode) => {
     try {
       debugger;
@@ -367,7 +366,20 @@ export default function HcrLicenseWizard({
       console.log("Is array:", Array.isArray(data));
       console.log("Length:", data?.length);
 
-      setQuestions(data);
+      // Step 6 fetches again whenever the user returns with Go Back. Merge the
+      // API questions with the answers already chosen in this wizard so the
+      // radio buttons stay selected after navigating away and back.
+      setQuestions(
+        data.map((question) => {
+          const savedAnswer = questionsAnswers.find(
+            (answer) => answer.questionId === question.questionId,
+          );
+
+          return savedAnswer
+            ? { ...question, answer: savedAnswer.answerGiven }
+            : question;
+        }),
+      );
 
       console.log("Questions state updated:", questions);
     } catch (error) {
@@ -396,7 +408,22 @@ export default function HcrLicenseWizard({
   //   );
   // };
 
+  // const handleQuestions = (questionId, answer) => {
+  //   setQuestions((prevQuestions) =>
+  //     prevQuestions.map((q) =>
+  //       q.questionId === questionId
+  //         ? {
+  //             ...q,
+  //             answer: answer,
+  //           }
+  //         : q,
+  //     ),
+  //   );
+  //   applicantAnswers = questions.map((q) => ({})
+
+  // };
   const handleQuestions = (questionId, answer) => {
+    // Update questions state
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
         q.questionId === questionId
@@ -407,6 +434,46 @@ export default function HcrLicenseWizard({
           : q,
       ),
     );
+
+    // Update applicant answers
+    setQuestionsAnswers((prevAnswers) => {
+      // Find question's original position
+      const questionIndex = questions.findIndex(
+        (q) => q.questionId === questionId,
+      );
+
+      const slNo = questionIndex + 1;
+
+      // Check whether answer already exists
+      const existingAnswer = prevAnswers.find(
+        (a) => a.questionId === questionId,
+      );
+
+      if (existingAnswer) {
+        // Update existing answer
+        return prevAnswers.map((a) =>
+          a.questionId === questionId
+            ? {
+                ...a,
+                applicationIdNo: applicationId || "",
+                answerGiven: answer,
+                slNo: slNo,
+              }
+            : a,
+        );
+      }
+
+      // Add new answer
+      return [
+        ...prevAnswers,
+        {
+          applicationIdNo: applicationId || "",
+          questionId: questionId,
+          answerGiven: answer,
+          slNo: slNo,
+        },
+      ];
+    });
   };
 
   const handleDirectorChange = (i, f, v) => {
@@ -788,45 +855,58 @@ export default function HcrLicenseWizard({
         try {
           const formData = new FormData();
 
-          const applicationId = localStorage.getItem("applicationId");
+          const applicationId = localStorage.getItem("applicationId") || "";
 
+          // =========================================================
+          // 1. Additional Details
+          // =========================================================
           Object.entries(additionalFrom).forEach(([key, value]) => {
-            // Skip directors array
+            // Skip directors because they go under Partners
             if (key === "directors") return;
 
             const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
 
             if (key === "additionalArea") {
+              const boolValue =
+                value === true || value === "true" || value === "1";
+
               formData.append(
                 `AdditionalDetails.${propertyName}`,
-                value === true || value === "true" || value === "1",
+                boolValue.toString(),
               );
             } else {
               formData.append(`AdditionalDetails.${propertyName}`, value ?? "");
             }
           });
 
-          // ApplicationId
+          // Always use applicationId from localStorage
           formData.set("AdditionalDetails.ApplicationIdNo", applicationId);
 
+          // =========================================================
+          // 2. Partners
+          // =========================================================
           additionalFrom.directors.forEach((partner, index) => {
-            formData.append(`Partners[${index}].Id`, 0);
+            formData.append(`Partners[${index}].Id`, "0");
+
             formData.append(
               `Partners[${index}].ApplicationIdNo`,
               applicationId,
             );
-            formData.append(`Partners[${index}].SlNo`, index + 1);
 
             formData.append(`Partners[${index}].PName`, partner.PName ?? "");
+
             formData.append(
               `Partners[${index}].PPerShare`,
               partner.PPerShare ?? "",
             );
+
             formData.append(`Partners[${index}].PPanNo`, partner.PPanNo ?? "");
+
             formData.append(
               `Partners[${index}].PExciseNominee`,
               partner.PExciseNominee ?? "",
             );
+
             formData.append(`Partners[${index}].DINNo`, partner.DINNo ?? "");
 
             formData.append(`Partners[${index}].PhotoURLPanNo`, "");
@@ -834,6 +914,7 @@ export default function HcrLicenseWizard({
             // PAN File
             if (partner.panFile instanceof File) {
               formData.append(`Partners[${index}].PanFile`, partner.panFile);
+
               formData.append(
                 `Partners[${index}].PanFileUploaded`,
                 partner.panFile.name,
@@ -845,9 +926,10 @@ export default function HcrLicenseWizard({
             // Address File
             if (partner.addressFile instanceof File) {
               formData.append(
-                `Partners[${index}].addressFile`,
+                `Partners[${index}].AddressFile`,
                 partner.addressFile,
               );
+
               formData.append(
                 `Partners[${index}].AddressFileUploaded`,
                 partner.addressFile.name,
@@ -855,11 +937,45 @@ export default function HcrLicenseWizard({
             } else {
               formData.append(`Partners[${index}].AddressFileUploaded`, "");
             }
+
+            // Serial Number
+            formData.append(`Partners[${index}].SlNo`, String(index + 1));
           });
 
+          // =========================================================
+          // 3. Applicant Answers
+          // =========================================================
+
+          questionsAnswers.forEach((item, index) => {
+            formData.append(
+              `ApplicantAnswers[${index}].ApplicationIdNo`,
+              applicationId,
+            );
+            formData.append(
+              `ApplicantAnswers[${index}].QuestionId`,
+              item.questionId,
+            );
+            formData.append(
+              `ApplicantAnswers[${index}].AnswerGiven`,
+              item.answerGiven ?? "",
+            );
+            formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
+          });
+
+          // =========================================================
+          // 4. Debug FormData
+          // =========================================================
+
           for (const [key, value] of formData.entries()) {
-            console.log(key, value);
+            console.log(
+              key,
+              value instanceof File ? `FILE: ${value.name}` : value,
+            );
           }
+
+          // =========================================================
+          // 5. API Call
+          // =========================================================
 
           const response = await fetch(
             "http://localhost:5214/api/CommonHCR/SaveAdditionalHCRCompleteDetails",
@@ -869,18 +985,17 @@ export default function HcrLicenseWizard({
             },
           );
 
-          const result = await response.text(); // because API returns string
+          const result = await response.text();
 
-          console.log(result);
+          console.log("API Result:", result);
 
           if (!response.ok) {
-            throw new Error("Failed to save data.");
+            throw new Error(result || "Failed to save data.");
           }
 
           alert("Saved Successfully");
         } catch (error) {
-          console.error(error);
-
+          console.error("Save Additional Details Error:", error);
           alert("Something went wrong.");
         }
 
@@ -936,6 +1051,28 @@ export default function HcrLicenseWizard({
       if (currentStep === 9) {
         debugger;
         handleFinalSubmission();
+
+        const finalSubmission = {
+          ApplicationIdNo: applicationId || localStorage.getItem("applicationId"),
+          ApplicationStatus: "02",
+        };
+
+        const response = await fetch(
+          "http://localhost:5214/api/CommonLicense/SubmitApplication",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(finalSubmission),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        console.log(await response.text());
       }
     } catch (error) {
       console.log(error);

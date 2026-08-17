@@ -37,5 +37,28 @@ namespace backend.API.Licence.Controllers
 
             return user;
         }
+
+        [HttpPost]
+        [Route("SubmitApplication")]
+        public async Task<IActionResult> SubmitApplication(SubmitApplicationDTO dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _LicenseService.SubmitApplication(dto.ApplicationIdNo, dto.ApplicationStatus);
+            if (result == null)
+            {
+                return NotFound("Application not found.");
+            }
+
+            return Ok("Application submitted successfully.");
+        }
     }
 }

@@ -94,7 +94,7 @@ namespace backend.Application.Services.License
                     ApplicationIdNo = newappid,
                     ApplicationDate = DateTime.Now,
                     FinYear = FinYearV,
-                    ApplicationStatus = "P",
+                    ApplicationStatus = "01",
                     CatCode = dto.CatCode,
                     LicenseType = dto.OwnerType,
                     IsApplicationCompleted = "N",
@@ -114,6 +114,24 @@ namespace backend.Application.Services.License
         public async Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId)
         {
             return await _Licenserepository.GetApplicantDetails(AppId);
+        }
+
+        public async Task<string> SubmitApplication(string applicationIdNo, string applicationStatus)
+        {
+            try
+            {
+                // var applicationStatus = new LicenseApplication
+                // {
+                //     ApplicationStatus = "02" // Update the status to "02" (Submitted)
+                   
+                // };
+
+                return await _Licenserepository.SubmitApplication(applicationIdNo, applicationStatus);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }
