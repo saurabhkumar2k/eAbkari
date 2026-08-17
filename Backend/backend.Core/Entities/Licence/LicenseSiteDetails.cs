@@ -60,7 +60,7 @@ namespace backend.Core.Entities.Licence
         public string SitePin { get; set; }
 
         [StringLength(5)]
-        [Required(ErrorMessage = "Mandatory fields are required.")]
+        //[Required(ErrorMessage = "Mandatory fields are required.")]
         public string SiteAssembly { get; set; }
 
         [StringLength(150)]

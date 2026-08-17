@@ -39,9 +39,9 @@ namespace backend.Core.DTOs
         public string SitePin { get; set; } 
 
         
-        public string SiteAssembly { get; set; } 
+        //public string SiteAssembly { get; set; } 
 
-        public string? SiteWard { get; set; }
+        //public string? SiteWard { get; set; }
 
         
         public string SiteEmail { get; set; } 
