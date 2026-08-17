@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
 using backend.Core.Interfaces;
 using backend.Infrastructure.Data;
+using backend.Core.Entities.Department;
 
 namespace backend.Infrastructure.Repositories
 {
@@ -66,5 +67,30 @@ namespace backend.Infrastructure.Repositories
             return await _context.MstUsReg
                 .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
         }
+
+
+        public async Task<DepartmentUsers?> AuthenticateDeptUserAsync(string userId, string password)
+        {
+
+            return await _context.DepartmentUsers
+                .FirstOrDefaultAsync(u => u.UserId == userId && u.PasswordHash == password);
+
+        }
+
+        public async Task SaveTokenPairDeptUserAsync(string userId, string accessToken, string refreshToken, DateTime refreshTokenExpiry)
+        {
+            var user = await _context.DepartmentUsers.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user is null)
+            {
+                return;
+            }
+
+            user.Token = accessToken;
+            user.Token_Generated_At = DateTime.UtcNow;
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = refreshTokenExpiry;
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
