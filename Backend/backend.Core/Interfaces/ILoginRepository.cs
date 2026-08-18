@@ -1,3 +1,4 @@
+using backend.Core.DTOs;
 using backend.Core.Entities;
 using backend.Core.Entities.Department;
 
@@ -16,7 +17,7 @@ namespace backend.Core.Interfaces
 
 
 
-        Task<DepartmentUsers?> AuthenticateDeptUserAsync(string userId, string password);
+        Task<DepartmentUserLoginDto?> AuthenticateDeptUserAsync(string userId, string password);
         Task SaveTokenPairDeptUserAsync(string userId, string accessToken, string refreshToken, DateTime refreshTokenExpiry);
 
     }
