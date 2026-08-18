@@ -168,6 +168,7 @@ namespace backend.API.Controllers
                     RefreshToken = tokenPair.RefreshToken,
                     ExpiresAt = tokenPair.ExpiresAt,
                     UserId = DeptUser.UserId,
+                    UserRole = DeptUser.RoleName,
                     UserType = "DEPT",
                     RedirectUrl = "/applicantdashboard"
                 });
