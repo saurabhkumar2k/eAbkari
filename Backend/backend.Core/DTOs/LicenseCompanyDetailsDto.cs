@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetailsDto
 {
 
- public long FirmId { get; set; }
+
 
     public string ApplicationIdNo { get; set; } = string.Empty;
 
@@ -43,11 +43,13 @@ public string? IsExciseNominee { get; set; }
     public string? ExciseNomineePAN { get; set; }
 
 
-    public string? ExciseNomineePanImage { get; set; }
+    //public string? ExciseNomineePanImage { get; set; }
 
+    public IFormFile? ExciseNomineePanImage { get; set; }
 
     
 
+    public string? ExciseNomineePanImageUploaded { get; set; }
 
     public string? FSSAILicenceNo { get; set; }
 
@@ -96,7 +98,7 @@ public class AdditionalCompanyPartnersDetailsDto
 
          public int? ID { get; set; }
 
-    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 
     public string? PPerShare { get; set; }
@@ -113,6 +115,7 @@ public class AdditionalCompanyPartnersDetailsDto
 
     public IFormFile? addressFile { get; set; }
 
+   
 
     public string? PanFileUploaded { get; set; }
     public string? AddressFileUploaded { get; set; }

@@ -10,9 +10,9 @@ namespace backend.Core.DTOs
 {
     public class LicenseApplicationUploadedDocumentDto
     {
-        //public string ApplicationIdNo { get; set; } = string.Empty;
+        public string ApplicationIdNo { get; set; } = string.Empty;
 
-        //public string? MobileNo { get; set; }
+        public string? MobileNo { get; set; }
 
         public string? ApplicantSl { get; set; }
 
@@ -26,7 +26,7 @@ namespace backend.Core.DTOs
 
         public string? MobileNoReleaseStatus { get; set; }
 
-        public bool? IsValid { get; set; }
+        public string? IsValid { get; set; }
 
         public string? Remarks { get; set; }
 
@@ -36,7 +36,7 @@ namespace backend.Core.DTOs
 
         public string? LicenseeIdNo { get; set; }
 
-
+        public string? DocUrl { get; set; }
 
 
 

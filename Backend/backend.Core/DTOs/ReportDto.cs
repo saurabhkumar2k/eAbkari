@@ -75,5 +75,12 @@ namespace backend.Core.DTOs
     }
 
 
+    public class UpdateApplicationStatusDto
+    {
+        public string ApplicationIdNo { get; set; } = string.Empty;
+        public string ApplicationStatus { get; set; } = string.Empty;
+    }
+
+
 }
 

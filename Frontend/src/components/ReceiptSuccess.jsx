@@ -199,7 +199,7 @@ Company Name
 
 <h4 className="font-bold text-lg mt-1">
 
-{applicant?.CompanyName}
+{applicant?.companyName}
 
 </h4>
 
