@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Core.Entities;
 using backend.Core.Entities.Licence;
 using backend.Core.Entities.Department;
+using backend.Core.Entities.ApplicationFlow;
 
 namespace backend.Infrastructure.Data
 {
@@ -78,6 +79,11 @@ namespace backend.Infrastructure.Data
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
         public DbSet<MstFlowApplicable> MstFlowApplicable { get; set; }
         public DbSet<MstFlowUpto> MstFlowUpto { get; set; }
+
+        public DbSet<FlowHierarchyMapping> FlowHierarchyMapping { get; set; }
+        public DbSet<PlaAccessPermissionHistory> PlaAccessPermissionHistory { get; set; }
+        public DbSet<MstForwardingHierarchy> MstForwardingHierarchy { get; set; }
+
 
 
 
@@ -375,6 +381,58 @@ namespace backend.Infrastructure.Data
 
                 entity.HasAlternateKey(e => e.ApplicationIdNo);
             });
+
+
+            modelBuilder.Entity<MstForwardingHierarchy>(entity =>
+            {
+                entity.ToTable("MstForwardingHierarchy");   
+
+                entity.HasKey(x => new
+                    {
+                        x.ImplementingStateCode,
+                        x.FlowUpto,
+                        x.SLNo
+                    });               
+             
+            });
+
+
+            modelBuilder.Entity<PlaAccessPermissionHistory>(entity =>
+            {
+                entity.ToTable("PlaAccessPermissionHistory");     
+
+                entity.HasKey(e => e.Id);     
+
+                entity.Property(e => e.ApplicationIdNo)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.FlowUpto)
+                      .IsRequired()
+                      .HasMaxLength(2);
+                
+                entity.Property(e => e.SenderUserTypeCode)
+                      .IsRequired()
+                      .HasMaxLength(2);
+     
+     
+             
+            });
+
+
+            modelBuilder.Entity<FlowHierarchyMapping>(entity =>
+            {
+                entity.ToTable("FlowHierarchyMapping"); 
+
+                entity.HasKey(x => new
+                    {
+                        x.SlNo,
+                        x.FlowUpto,
+                        x.HierarchyID
+                    });           
+             
+            });
+
 
 
 
