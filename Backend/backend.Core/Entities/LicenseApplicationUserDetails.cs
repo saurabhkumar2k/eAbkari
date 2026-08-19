@@ -7,7 +7,7 @@ public class LicenseApplicationUserDetails
     [Key]
     public long Id { get; set; }
 
-    public long RegId { get; set; }
+    public int RegId { get; set; }
 
     public string? Mobile { get; set; }
     public string? ApplicantName { get; set; } = string.Empty;
