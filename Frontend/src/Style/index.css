@@ -1,17 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @import "./main.css";
 @import "./main_head.css";
-
-@import "./department.css";
-@import "./departmenthead.css";
-@import "./dept_master.css";
-
-@import "./applicant.css";
-@import "./applicanthead.css";
 @import "./header.css";
-@import "./Premise.css";
+@import "./font.css";
+
+@import "./Department/department.css";
+@import "./Department/departmenthead.css";
+@import "./Department/dept_master.css";
+@import "./Department/user_creation.css";
+@import "./Department/da.css";
+@import "./Department/papplication.css";
+@import "./Department/userhierarchy.css";
+@import "./Department/licensetitle.css";
+@import "./Department/bottle.css";
+@import "./Department/ownertype.css";
+
+@import "./Applicant/applicant.css";
+@import "./Applicant/applicanthead.css";
+@import "./Applicant/Premise.css";
+@import "./Applicant/wholesale.css";
+@import "./Applicant/hcr.css";
+@import "./Applicant/L20.css";
+@import "./Applicant/license.css";
+@import "./Applicant/Permit.css";
+
+@import "./HcrApp.css";
+@import "./ActOnNewLicenseApplication.css";
 
 :root {
   --brand-blue: #012a52;

@@ -12,7 +12,12 @@ namespace backend.Core.DTOs
 
         //public long RegNumber { get; set; }
 
+<<<<<<< HEAD
         public int RegId { get; set; }
+=======
+        //public long RegId { get; set; }
+         public int RegId { get; set; }
+>>>>>>> origin/master
         public string? Mobile { get; set; }
         public string ApplicantName { get; set; } = string.Empty;
         //public string CompanyName { get; set; } = string.Empty;
@@ -45,7 +50,11 @@ namespace backend.Core.DTOs
 
         public string OwnerType { get; set; } = string.Empty;
 
+        public string ActivityId { get; set; } = string.Empty;
 
+
+
+        //public DateTime? CreatedDate { get; set; }
 
     }
 

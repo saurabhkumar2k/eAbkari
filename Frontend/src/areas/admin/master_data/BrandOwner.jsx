@@ -156,7 +156,7 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
     try {
       const [originsResponse, statesResponse] = await Promise.all([
         axios.get(`${API}/origins`),
-        axios.get(`${LG_API}/getState`)
+        axios.get(`${API}/states`)
       ]);
 
       setOriginOptions(buildOriginOptions(originsResponse.data));
@@ -233,7 +233,8 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
       try {
         const [originsResponse, statesResponse] = await Promise.all([
           axios.get(`${API}/origins`),
-          axios.get(`${LG_API}/getState`)
+          axios.get(`${API}/states`)
+          
         ]);
 
         loadedStates = toArray(statesResponse.data);
@@ -563,13 +564,14 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
   }, [totalPages, currentPage]);
 
   return (
-    <div className="bottler-master-container">
+      <div className="bottler-master-container">
+      {/* Toast Notification */}
       {toast && (
-        <div
-          className={`toast-notification ${
-            toast.type === 'success' ? 'toast-success' : toast.type === 'error' ? 'toast-error' : 'toast-default'
-          }`}
-        >
+        <div className={`toast-notification ${
+          toast.type === "success" ? "toast-success" :
+          toast.type === "error" ? "toast-error" :
+          "toast-default"
+        }`}>
           {toast.type === 'success' && <CheckCircle2 className="toast-success-icon" />}
           {toast.type === 'error' && <AlertCircle className="toast-error-icon" />}
           {toast.type === 'info' && <Info className="toast-info-icon" />}
@@ -579,15 +581,15 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
           </button>
         </div>
       )}
-
-      <div className="wizard-container">
-        <div className="wizard-header-actions">
-          <div className="wizard-title-banner" style={{ minWidth: '220px' }}>
-            <span className="wizard-title-text">Brand Owner Master</span>
-            <div className="wizard-title-arrow" />
+      <div className="owner-type-wizard-container">
+        <div className="owner-type-wizard-header-actions">
+          <div className="owner-type-wizard-title-banner" style={{ minWidth: "220px" }}>
+            <span className="owner-type-wizard-title-text">Brand Owner Master</span>
+            <div className="owner-type-wizard-title-arrow"></div>
           </div>
         </div>
-
+        
+{/* 
         <div className="wizard-section">
           <button onClick={onNavigateHome} className="wizard-back-button">
             <ChevronLeft className="wizard-back-icon" />
@@ -600,7 +602,7 @@ export default function BrandOwnerMaster({ onNavigateHome }) {
           <p className="bottler-directory-description">
             Register and maintain master records of brand owners, breweries, and distilleries.
           </p>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSave} className="bottler-form">
           <div className="bottler-form-grid">

@@ -34,8 +34,8 @@ namespace backend.Application.Services.License
                     SubDivisionCode = dto.SubDivisionCode,
                     PoliceStationCode = dto.PoliceStationCode,
                     SitePin = dto.SitePin,
-                    SiteAssembly = dto.SiteAssembly,
-                    SiteWard = dto.SiteWard,
+                    //SiteAssembly = dto.SiteAssembly,
+                    //SiteWard = dto.SiteWard,
                     SiteEmail = dto.SiteEmail,
                     SiteMobile = dto.SiteMobile,
                     SiteLandline = dto.SiteLandline,
@@ -56,16 +56,79 @@ namespace backend.Application.Services.License
         {
             try
             {
-                return await _HcrRepositry.GetSiteDetailsRepo( AppId);
+                return await _HcrRepositry.GetSiteDetailsRepo(AppId);
             }
             catch (Exception ex)
             {
-                
+
                 return null;
             }
-            
+
         }
 
+        public async Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode)
+        {
+            try
+            {
+                return await _HcrRepositry.GetCategoryWiseQuestions(catCode);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+       
+        public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.GetAppIdWiseAnswers(applicationIdNo);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //Part for the HCR AdditionalDetails --starting
+        public async Task<AdditionalHCRCompleteDto?> GetAdditionalHCRCompleteDetails(string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.GetAdditionalHCRCompleteDetails(applicationIdNo);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
+        {
+            try
+            {
+                return await _HcrRepositry.SaveAdditionalHCRCompleteDetails(dto);
+            }
+            catch
+            {
+                return "Operation Failed";
+            }
+        }
+
+        public async Task<string> DeletePartner(int id, string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.DeletePartner(id, applicationIdNo);
+            }
+            catch
+            {
+                return "Delete Failed";
+            }
+        }
+        //--ending
 
     }
 }

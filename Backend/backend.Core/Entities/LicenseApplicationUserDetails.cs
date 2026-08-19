@@ -7,7 +7,9 @@ public class LicenseApplicationUserDetails
     [Key]
     public long Id { get; set; }
 
+
     public int? RegId { get; set; }
+
 
     public string? Mobile { get; set; }
     public string? ApplicantName { get; set; } = string.Empty;
@@ -41,6 +43,7 @@ public class LicenseApplicationUserDetails
     public string? SubDivision { get; set; } = string.Empty;
 
     //public string ApplicantDesig { get; set; } = string.Empty;
+    public DateTime? CreatedDate { get; set; }
 
 
 

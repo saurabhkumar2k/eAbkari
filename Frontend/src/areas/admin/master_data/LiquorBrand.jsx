@@ -22,7 +22,8 @@ import { Plus,
   Filter,
   Download,
   Clock,
-  Briefcase
+  Briefcase,
+  Building2
 } from 'lucide-react';
 import axios from "axios";
 
@@ -518,45 +519,49 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
   const showTable = Boolean(formData.category);
 
   return (
-      <div className="brand-registration-page">
+       <div className="tbs-container">
       
       {/* Toast Alert Notifications */}
       {toast && (
-        <div className={`brand-toast ${
+        <div className={`tbs-toast tbs-toast ${
           toast.type === 'success' ? 'brand-toast-success' :
           toast.type === 'error' ? 'brand-toast-error' :
           'brand-toast-info'
         }`}>
            {toast.type === 'success' && <CheckCircle2 className="toast-icon-success" />}
-                   {toast.type === 'error' && <AlertCircle className="toast-icon-error" />}
-                   {toast.type === 'info' && <Info className="toast-icon-info" />}
-                   <span className="toast-message">{toast.message}</span>
-                   <button onClick={() => setToast(null)} className="toast-close-btn">
-                     <X className="btn-icon" />
+                  {toast.type === 'success' && <CheckCircle2 className="w-5 h-5" />}
+          {toast.type === 'error' && <AlertCircle className="w-5 h-5" />}
+          {toast.type === 'info' && <Info className="w-5 h-5" />}
+          <span className="tbs-toast-message">{toast.message}</span>
+          <button onClick={() => setToast(null)} className="tbs-toast-close">
+          <X className="btn-icon" />
           </button>
         </div>
       )}
 
       {/* Main Container */}
-           <div className="brand-container">
+      <div className="tbs-card">
              
-             {/* Navigation Breadcrumbs / Portal Header */}
-             <div className="brand-header">
-               <div className="brand-header-flex">
-                 <div>
-                   <div className="brand-subtitle">Master Registries</div>
-                   <h1 className="brand-title">Liquor Brand Registration</h1>
-                 </div>
-               </div>
-               
+       {/* Dynamic Header with Arrow Ribbon */}
+        <div className="tbs-header-section">
+          <div className="tbs-header-row">
+            <div className="tbs-brand-block">
+              <div className="tbs-icon-wrapper">
+                <Building2 />
+              </div>
+              <div className="tbs-title-block">
+                <h1>Liquor Brand Registration</h1>
+            </div>
+            </div>
+            </div>
                {/* Simulation Helper */}
-               <button
+               {/* <button
                  onClick={loadDefaultSamples}
                  className="btn-load-sample"
                >
                  <Clock className="btn-load-sample-icon" />
                  <span>Load Sample Dataset</span>
-               </button>
+               </button> */}
              </div>
 
         {/* Statistics Cards */}
@@ -571,14 +576,12 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
             </div>
           </div>
           <div className="stat-card">
-            <div className="stat-card-icon-wrapper stat-icon-emerald">
-                         <Activity className="stat-card-icon" />
-                       </div>
-            <div>
-              <p>Indian Liquor Registries</p>
-              <h3>
-                {brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('indian')).length}
-              </h3>
+          <div className="stat-card-icon-wrapper stat-icon-emerald">
+          <Activity className="stat-card-icon" />
+          </div>
+        <div>
+        <p>Indian Liquor Registries</p>
+        <h3>{brandsList.filter(b => getCategoryDesc(b.category).toLowerCase().includes('indian')).length}</h3>
             </div>
           </div>
            <div className="stat-card">
@@ -622,13 +625,13 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
         </div>
         </div>
               
-        <div className="brand-card-body">
+        <div className="dept-card-body">
         <form onSubmit={handleSave} className="brand-form">
               {/* Form Grid */}
               <div className="form-grid">
                 
                 {/* 1. Category Dropdown */}
-                 <div className="form-group form-group-flex">
+                 <div className="form-group-flex">
                                   <label htmlFor="category" className="form-label form-label-flex">
                                     Liquor Category <span className="form-label-required">*</span>
                                   </label>
@@ -638,7 +641,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                                       id="category"
                                       value={formData.category}
                                       onChange={handleCategoryChange}
-                                      className={`field-control brand-select ${
+                                      className={`field-control${
                                         formErrors.category ? 'field-error-border' : ''
                                       }`}
                                     >
@@ -663,7 +666,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                  
 
                 {/* 2. Kind of Liquor (Responsive options based on category) */}                   
-                <div className="form-group form-group-flex">   
+                <div className="form-group-flex">   
                 <label htmlFor="kindOfLiquor" className="form-label form-label-flex"> Kind of Liquor {formData.category && 
                 <span className="text-rose-600 font-bold">*</span>}
                 </label>
@@ -675,7 +678,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 onChange={handleKindOfChange}
                 disabled={!formData.category}
                 style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
-                className={`field-control brand-select ${
+                className={`field-control${
                 !formData.category ? 'field-disabled' :
                 formErrors.kindOfLiquor ? 'field-error-border' : '' 
               }`} >  
@@ -697,15 +700,12 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 )}
                 {formErrors.kindOfLiquor && (
                 <span className="field-error">
-                                      <AlertCircle className="field-error-icon" />
-
-                                      {formErrors.kindOfLiquor}
-                                    </span>
-                                  )}
+                <AlertCircle className="field-error-icon" />{formErrors.kindOfLiquor}</span>
+              )}
                                 </div>
 
                 {/* 3. Liquor Type (Responsive options based on Kind of Liquor) */}
-                <div className="form-group form-group-flex">
+                <div className="form-group-flex">
                   <label htmlFor="liquorType" className="form-label form-label-flex">
                     Liquor Type {formData.kindOfLiquor &&  <span className="form-label-required">*</span>}
                   </label>
@@ -729,7 +729,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                           }}
                       disabled={!formData.kindOfLiquor}
                       style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
-                      className={`field-control brand-select ${
+                      className={`field-control${
                          !formData.kindOfLiquor ? 'field-disabled' :
                         formErrors.liquorType ? 'field-error-border' : ''
                       }`}
@@ -761,7 +761,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 
 
                 {/* 5. Brand Code */}
-               <div className="form-group form-group-flex">
+               <div className="form-group-flex">
                   <label htmlFor="brandCode" className="form-label form-label-flex">
                     Brand Code
                   </label>
@@ -783,8 +783,8 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                 </div>
 
                 {/* 6. Quarts Measure */}
-                <div className="form-group form-group-flex">
-                  <label htmlFor="measure" className="form-label form-label-flex">
+                <div className="form-group-flex">
+                  <label htmlFor="measure" className="form-label-flex">
                     Quarts / Measure Size
                   </label>
                   <div className="field-wrapper">
@@ -794,7 +794,7 @@ const loadMeasures = async (catCode, kindCode, typeCode) => {
                       value={formData.measure}
                       onChange={(e) => handleInputChange('measure', e.target.value)}
                       style={{ appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', paddingRight: '3rem' }}
-                      className={`field-control brand-select ${
+                      className={`field-control${
                         formErrors.measure ? 'border-red-500' : ''
                       }`}
                     >

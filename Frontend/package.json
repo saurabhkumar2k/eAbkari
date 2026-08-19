@@ -11,12 +11,14 @@
     "lint": "echo 'Linting skipped'"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.1",
+    "html2pdf.js": "^0.14.0",
     "lucide-react": "^1.16.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
-    "react-router-dom": "^7.15.1",
+    "react-router-dom": "^7.11.0",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {

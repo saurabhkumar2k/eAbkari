@@ -1,6 +1,7 @@
 using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace backend.API.Licence.Controllers
 {
@@ -25,11 +26,9 @@ namespace backend.API.Licence.Controllers
 
             var AppId = await _HCRservice.SaveApplicantSiteDetails(dto);
 
-            return Ok(new{  AppId });
+            return Ok(new { AppId });
         }
 
-        [HttpPost]
-        [Route("GetSiteDetails")]
         [HttpGet("GetSiteDetails/{appId}")]
         public async Task<IActionResult> GetSiteDetails(string appId)
         {
@@ -40,6 +39,106 @@ namespace backend.API.Licence.Controllers
 
             return Ok(siteDetails);
         }
+
+
+
+        [HttpGet]
+        [Route("GetCategoryWiseQuestions")]
+        public async Task<IActionResult> GetCategoryWiseQuestions(string catCode)
+        {
+            var result = await _HCRservice.GetCategoryWiseQuestions(catCode);
+
+            if (result == null || result.Count == 0)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetAppIdWiseAnswers")]
+        public async Task<IActionResult> GetAppIdWiseAnswers(GetApplicationAnswerRequestDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                return BadRequest("ApplicationIdNo is required.");
+
+            var result = await _HCRservice.GetAppIdWiseAnswers(dto.ApplicationIdNo);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("SaveAdditionalHCRCompleteDetails")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromForm] AdditionalHCRCompleteDto dto)
+        {
+            if (dto == null || dto.AdditionalDetails == null)
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.AdditionalDetails.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            Console.WriteLine(
+                JsonSerializer.Serialize(dto, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                })
+            );
+            var result = await _HCRservice.SaveAdditionalHCRCompleteDetails(dto);
+
+            // return Ok(result);
+            return Ok(new
+            {
+                message = result
+            });
+        }
+
+        [HttpGet]
+        [Route("GetAdditionalHCRCompleteDetails")]
+        public async Task<IActionResult> GetAdditionalHCRCompleteDetails([FromQuery] string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.GetAdditionalHCRCompleteDetails(applicationIdNo);
+
+            if (result == null)
+            {
+                return NotFound("Record Not Found");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("DeletePartner")]
+        public async Task<IActionResult> DeletePartner(DeletePartnerDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (dto.ID <= 0)
+            {
+                return BadRequest("Invalid Partner Id");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _HCRservice.DeletePartner(dto.ID, dto.ApplicationIdNo);
+
+            return Ok(result);
+        }  
 
     }
 }

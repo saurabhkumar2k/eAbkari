@@ -14,6 +14,9 @@ using backend.Application.Services.License;
 using backend.Core.Interfaces.License;
 using backend.Infrastructure.Repositories.License;
 using Microsoft.Extensions.FileProviders;
+using backend.Application.Interfaces.Department;
+using backend.Application.Services.Department;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,7 +74,13 @@ builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
 builder.Services.AddScoped<IApplicationProgressRepository, ApplicationProgressRepository>();
+
+builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
+builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
+builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
+
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

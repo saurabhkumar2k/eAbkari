@@ -239,6 +239,8 @@ namespace backend.Core.Entities.Licence
         public string? IsLicenseGenerated { get; set; }
 
         public string? IsApproveYN { get; set; }
+
+        public string? FlowUptoCode {get; set;}
     }
 
 

@@ -1,6 +1,4 @@
-@import "./wholesale.css";
-@import "./hcr.css";
-@import "./L20.css";
+@import"./ApplyLicense.css";
 /* ===== GLOBAL STYLES ===== */
 body {
   margin: 0;
@@ -10,7 +8,7 @@ body {
   color: #1e293b;
 }
 
-/* ===== MAIN CONTAINER ===== */
+/* ====s= MAIN CONTAINER ===== */
 .dashboard-wrapper {
   min-height: 100vh;
   padding: 32px;
@@ -422,13 +420,6 @@ body {
   overflow-y: auto;
   display: flex;
   justify-content: center;
-}
-
-.page-container {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 32px;
 }
 
 /* Sidebar */
@@ -1976,21 +1967,21 @@ HCR License
 /* =========================
    FORM GRID
 ========================= */
-
+/* 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
-}
+} */
 
 .full-width {
   grid-column: 1 / -1;
 }
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
-}
+} */
 
 /* =========================
    INPUTS
@@ -2706,10 +2697,10 @@ HCR License
 }
 
 /* Form Layout */
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
-}
+} */
 
 /* Inputs */
 
@@ -3780,22 +3771,23 @@ HCR License
 
 /* Form Controls */
 .form-grid {
+
   display: grid;
-  grid-template-columns: repeat(2,1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
-.form-group {
+/* .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
+} */
 
-.form-group label {
+/* .form-group label {
   font-size: 14px;
   font-weight: 600;
   color: #334155;
-}
+} */
 
 .form-control {
   height: 54px;
@@ -4233,7 +4225,7 @@ HCR License
 }
 
 /* Labels */
-.form-label {
+/* .form-label {
   display: block;
 
   margin-bottom: 8px;
@@ -4245,7 +4237,7 @@ HCR License
 
   letter-spacing: .8px;
   text-transform: uppercase;
-}
+} */
 
 /* Inputs */
 .brand-input,
@@ -4625,9 +4617,9 @@ HCR License
   margin-bottom: 24px;
 }
 
-.form-grid {
+/* .form-grid {
   margin-top: 12px;
-}
+} */
 
 /* Section Header for Select License Category */
 .section-header {
@@ -5121,11 +5113,13 @@ HCR License
 
 /* GLOBAL SECTION SPACING */
 .page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 40px; 
+  max-width: 80rem; /* max-w-7xl = 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  flex-grow: 1;
+  padding: 1.5rem; /* p-6 = 24px */
 }
-
 .page-container > * {
   margin-bottom: 32px;
 }
@@ -5176,10 +5170,10 @@ HCR License
 }
 
 /* Label → Input spacing */
-.form-group label,
+/* .form-group label,
 .form-label {
   margin-bottom: 8px;
-}
+} */
 
 /* Input → Helper text spacing */
 .helper-text,

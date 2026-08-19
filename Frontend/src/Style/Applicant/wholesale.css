@@ -164,13 +164,16 @@
 }
 
 .wizard-container {
-  background: #ffffff;
+  position: relative;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  overflow: hidden;
+  background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 24px;
-  padding: 20px;
-  margin-bottom: 32px; /* Space between stepper and content */
-  overflow-x: auto;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.08);
 }
 
 /* Steps Wrapper */
@@ -342,7 +345,8 @@
   border: 1px solid #e2e8f0;
   border-radius: 22px;
   padding: 20px;
-  min-height: 320px;
+  /* min-height: 320px; */
+  min-height: 150px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -481,7 +485,8 @@
     grid-template-columns: 1fr;
   }
   .license-selection-container .license-card {
-  min-height: 340px;
+  /* min-height: 340px; */
+  min-height: 150px;
   height: auto;
   max-height: none;
   }

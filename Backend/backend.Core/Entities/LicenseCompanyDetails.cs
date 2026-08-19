@@ -112,6 +112,8 @@ public class ApplicantLicensePartnersDetails
 
     public string? PhotoURLAddressProof { get; set; }
 
+    public int? SlNo { get; set; }
+
    
 }
 

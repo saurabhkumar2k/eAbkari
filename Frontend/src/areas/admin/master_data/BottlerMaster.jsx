@@ -410,7 +410,7 @@ export default function BottlerMaster({ onNavigateHome }) {
           {toast.type === 'success' && <CheckCircle2 className="toast-success-icon" />}
           {toast.type === 'error' && <AlertCircle className="toast-error-icon" />}
           {toast.type === 'info' && <Info className="toast-info-icon" />}
-          <span className="toast-message">{toast.message}</span>
+          <span className="tbs-toast-message">{toast.message}</span>
           <button onClick={() => setToast(null)} className="toast-close-btn">
            <X className="toast-close-icon" />
           </button>
@@ -418,20 +418,22 @@ export default function BottlerMaster({ onNavigateHome }) {
       )}
 
       {/* Ribbon header container */}
-      <div className="wizard-container">
+       <div className="owner-type-wizard-container">
         
         {/* Ribbon element precisely modeled from picture */}
-        <div className="wizard-header-actions">
-          <div className="wizard-title-banner" style={{ minWidth: "180px" }}>
-            <span className="wizard-title-text">Bottler Master</span>
-            {/* Ribbon tail cut */}
-            <div className="wizard-title-arrow">
+          <div className="tbs-header-section">
+          <div className="tbs-header-row">
+            <div className="tbs-brand-block">
+              <div className="tbs-icon-wrapper">
+                <Building2 />
+              </div>
+              <span className="owner-type-wizard-title-text">Brand Owner Master</span>
             </div>
-          </div>
-        </div>
+            </div>
+            </div>
 
         {/* Back and Title section */}
-        <div className="wizard-section">
+        {/* <div className="wizard-section">
           <button 
             onClick={onNavigateHome}
            className="wizard-back-button"
@@ -446,7 +448,7 @@ export default function BottlerMaster({ onNavigateHome }) {
           <p className="bottler-directory-description">
             Register and maintain master records of active domestic and foreign distillery bottlers.
           </p>
-        </div>
+        </div> */}
 
         {/* Form area in double-column layout matching picture fields */}
         <form onSubmit={handleSave} className="bottler-form">

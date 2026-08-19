@@ -1,7 +1,7 @@
 import React from "react";
 import DirectorRow from "./DirectorRow";
 
-import "../Style/ApplyLicense.css";
+import "../Style/ApplyLicense.css"; // Import the CSS file for styling
 
 const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType }) => {
   return (

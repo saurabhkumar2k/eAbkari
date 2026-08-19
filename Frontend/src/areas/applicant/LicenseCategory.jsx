@@ -69,6 +69,20 @@ export default function LicenseCategory({ newLicData, setNewLicData, showToast, 
       },
       licenseType: "L-1 (Wholesale Vend of Indian Liquor)",
       defaultSub: "L-1 (A) Domestic Registered Indian Spirits Wholesale"
+    },
+    {
+      id: "L-30",
+      title: "L-30",
+      subtitle: "liquor at home in excess of individual possession limit",
+      icon: Package,
+      colorStyle: {
+        bgBadge: "bg-pink-50 text-pink-600 border border-pink-100",
+        activeBorder: "border-pink-600 bg-pink-50/10 shadow-lg ring-4 ring-pink-50",
+        unselectedBorder: "border-slate-200 hover:border-pink-300 hover:bg-slate-50/20",
+        arrow: "bg-pink-50 text-pink-600 border border-pink-200 group-hover:bg-pink-100/80"
+      },
+      licenseType: "L-30 (Liquor at Home in Excess of Individual Possession Limit)",
+      defaultSub: "L-30 (A) Registered User of Liquor at Home in Excess of Individual Possession Limit"
     }
   ];
 

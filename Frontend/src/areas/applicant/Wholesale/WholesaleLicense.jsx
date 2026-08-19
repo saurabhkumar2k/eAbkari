@@ -926,7 +926,7 @@ if (selectedLicenseId === "37" && currentStep > 3) {
                 const isActive = currentStep === st.num;
                 const isCompleted = currentStep > st.num;
                 return (
-                  <div key={st.num} className="flex flex-col items-center flex-1 relative z-10">
+                  <div key={st.num} className="app-step-item">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-extrabold text-xs border-2 transition ${
                       isCompleted ? "bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-50" :
                       isActive ? "bg-purple-700 border-purple-700 text-white shadow-md shadow-purple-50 scale-110" :
