@@ -680,6 +680,19 @@ const handlePrint = () => {
   window.print();
 };
 
+const handleForwardApplication = async (applicationIdNo) => {
+  debugger;
+  try {
+
+
+
+
+  } catch (err) {
+    console.error(err);
+    alert("Unable to forward application`.");
+  }
+};
+
 
 
 // useEffect(() => {
@@ -735,8 +748,10 @@ const loadApplicantData = async (regId) => {
 
 const getStatusText = (status) => {
   switch (status) {
+    case "F":  
+      return "Forwarded";
     case "P":
-      return "Scrutiny in Progress";
+      return "Scrutiny in Progress";  
     case "A":
       return "Approved";
     case "R":
@@ -754,18 +769,24 @@ const getStatusText = (status) => {
 
 const getCurrentStage = (status) => {
   switch (status) {
+
+    case "F":
+      return 2; // Forwarded
+
     case "P":
-      return 2; // Scrutiny
+      return 3; // Scrutiny
 
     case "I":
-      return 3; // Inspection
+      return 4; // Inspection
 
     case "G":
     case "A":
-      return 4; // Grant / Approved
+      return 5; // Grant / Approved
 
     case "R":
-      return 2;
+      return 2; // Rejected
+
+    
 
     default:
       return 1; // Submission
@@ -782,6 +803,9 @@ const getStatusClass = (status) => {
 
     case "R":
       return "application-status application-status-rejected";
+
+    case "F":
+      return "application-status application-status-forwarded";
 
     case "P":
     default:
@@ -1075,6 +1099,13 @@ const filteredLicenses = licenses.filter(
   Download PDF
 </button>
 
+<button
+  onClick={() => handleForwardApplication(app.applicationIdNo)}
+  className="application-btn"
+>
+  Forward Application
+</button>
+
 {/* <PDFDownloadLink
   document={<ReportPrintL1 applicant={applicant} />}
   fileName={`Application_${applicant?.applicationIdNo || "Report"}.pdf`}
@@ -1106,7 +1137,7 @@ const filteredLicenses = licenses.filter(
 </div>
 </div>
    <div className="application-progress-grid">
-  {["Submission", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
+  {["Submission", "Forward", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
     <div key={index} className="progress-step">
 
       <div
