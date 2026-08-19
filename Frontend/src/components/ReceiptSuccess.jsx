@@ -199,7 +199,7 @@ Company Name
 
 <h4 className="receipt-title">
 
-{applicant?.CompanyName}
+{applicant?.companyName}
 
 </h4>
 

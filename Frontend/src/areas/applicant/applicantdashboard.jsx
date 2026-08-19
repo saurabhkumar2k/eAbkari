@@ -821,10 +821,16 @@ const getStatusClass = (status) => {
 
 
 useEffect(() => {
-  debugger;
-    fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
-        .then(res => res.json())
-        .then(data => setApplications(data));
+  fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        setApplications(data);
+      } else {
+        setApplications([]);
+      }
+    })
+    .catch(() => setApplications([]));
 }, []);
 
 

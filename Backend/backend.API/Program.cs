@@ -18,6 +18,7 @@ using backend.Application.Interfaces.Department;
 using backend.Application.Services.Department;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to container
@@ -73,9 +74,13 @@ builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
+builder.Services.AddScoped<IApplicationProgressRepository, ApplicationProgressRepository>();
+
 builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
 builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
 builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
+
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -107,16 +112,27 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
+
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+//    RequestPath = "/Documents"
+//});
+
+//app.UseStaticFiles();
 
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Documents"
+        )
+    ),
     RequestPath = "/Documents"
 });
-
-
 
 
 app.UseRouting();

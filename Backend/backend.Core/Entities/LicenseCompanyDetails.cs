@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 public class LicenseCompanyDetails
 {
     [Key]
- public long Id { get; set; }
+ public long? Id { get; set; }
 
-    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? ApplicationIdNo { get; set; } = string.Empty;
 
     public string? CompanyName { get; set; }
 
@@ -94,10 +94,10 @@ public class ApplicantLicensePartnersDetails
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int ID { get; set; }
+    public int? ID { get; set; }
 
     [Required]
-    public string ApplicationIdNo { get; set; } = string.Empty;
+    public string? ApplicationIdNo { get; set; } = string.Empty;
     public string? PName { get; set; }
 
     public string? PPerShare { get; set; }

@@ -135,11 +135,11 @@ const WarehouseDetails = ({
         <div className="reg-input-icon">
           <MapPinned className="w-4 h-4 text-blue-600" />
         </div>
-
+{/* 
         <select
           className="reg-select"
           name="state"
-          value={applicant.warehouseState || ""}
+           value={(applicant.warehouseState || "").trim()}
           onChange={(e) => onChange("warehouseState", e.target.value)}
         >
           <option value="">Select State</option>
@@ -149,8 +149,24 @@ const WarehouseDetails = ({
               {state.stateName}
             </option>
           ))}
-        </select>
+        </select> */}
+<select
+  className="reg-select"
+  name="state"
+  value={String(applicant.warehouseState || "").trim()}
+  onChange={(e) => onChange("warehouseState", e.target.value)}
+>
+  <option value="">Select State</option>
 
+  {(Array.isArray(states) ? states : []).map((state) => (
+<option
+  key={state.sid}
+  value={String(state.stateCode || "").trim()}
+>
+  {state.stateName}
+</option>
+  ))}
+</select>
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />
         </div>
@@ -168,7 +184,7 @@ const WarehouseDetails = ({
           <Building2 className="w-4 h-4 text-blue-600" />
         </div>
 
-        <select
+        {/* <select
           className="reg-select"
           value={applicant.warehouseDistrict || ""}
           disabled={!applicant.warehouseState}
@@ -181,7 +197,29 @@ const WarehouseDetails = ({
               {d.districtName}
             </option>
           ))}
-        </select>
+        </select> */}
+
+
+<select
+  className="reg-select"
+  value={String(applicant.warehouseDistrict || "").trim()}
+  disabled={!applicant.warehouseState}
+  onChange={(e) =>
+    onChange("warehouseDistrict", e.target.value)
+  }
+>
+  <option value="">Select District</option>
+
+  {Array.isArray(districts) &&
+    districts.map((d) => (
+      <option
+        key={d.did}
+        value={String(d.districtCode || "").trim()}
+      >
+        {d.districtName}
+      </option>
+    ))}
+</select>
 
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />
@@ -224,7 +262,7 @@ const WarehouseDetails = ({
           <Map className="w-4 h-4 text-blue-600" />
         </div>
 
-        <select
+        {/* <select
           className="reg-select"
           value={applicant.WarehouseSubDivision || ""}
           onChange={(e) => onChange("WarehouseSubDivision", e.target.value)}
@@ -239,7 +277,27 @@ const WarehouseDetails = ({
               {s.subDivisionName}
             </option>
           ))}
-        </select>
+        </select> */}
+
+
+<select
+  className="reg-select"
+  value={String(applicant.warehouseSubDivision || "").trim()}
+  onChange={(e) =>
+    onChange("warehouseSubDivision", e.target.value)
+  }
+>
+  <option value="">Select Sub Division</option>
+
+  {(Array.isArray(subDivisions) ? subDivisions : []).map((s) => (
+    <option
+      key={s.dvid}
+      value={String(s.subDivisionCode || "").trim()}
+    >
+      {s.subDivisionName}
+    </option>
+  ))}
+</select>
 
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />
@@ -258,7 +316,7 @@ const WarehouseDetails = ({
           <Shield className="w-4 h-4 text-blue-600" />
         </div>
 
-        <select
+        {/* <select
           className="reg-select"
           value={applicant.WarehousePoliceStation || ""}
           onChange={(e) => onChange("WarehousePoliceStation", e.target.value)}
@@ -270,7 +328,28 @@ const WarehouseDetails = ({
               {p.psName}
             </option>
           ))}
-        </select>
+        </select> */}
+
+
+
+        <select
+  className="reg-select"
+  value={String(applicant.warehousePoliceStation || "").trim()}
+  onChange={(e) =>
+    onChange("warehousePoliceStation", e.target.value)
+  }
+>
+  <option value="">Select Police Station</option>
+
+{(Array.isArray(policeStations) ? policeStations : []).map((p, index) => (
+  <option
+    key={`${String(p.psCode || "").trim()}-${index}`}
+    value={String(p.psCode || "").trim()}
+  >
+    {p.psName}
+  </option>
+))}
+</select>
 
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />
@@ -386,8 +465,8 @@ const WarehouseDetails = ({
 
         <select
           className="reg-select"
-          value={applicant.LeasePremise || ""}
-          onChange={(e) => onChange("LeasePremise", e.target.value)}
+          value={applicant.leasePremise || ""}
+          onChange={(e) => onChange("leasePremise", e.target.value)}
         >
           <option value="">Select</option>
           <option value="Owned">Owned</option>
@@ -414,9 +493,9 @@ const WarehouseDetails = ({
 
         <input
           className="reg-input"
-          value={applicant.LeaseRegistration || ""}
+          value={applicant.leaseRegistration || ""}
           onChange={(e) =>
-            onChange("LeaseRegistration", e.target.value)
+            onChange("leaseRegistration", e.target.value)
           }
         />
       </div>
@@ -436,9 +515,9 @@ const WarehouseDetails = ({
         <input
           type="date"
           className="reg-input"
-          value={applicant.LeaseRegistrationDate || ""}
+          value={applicant.leaseRegistrationDate || ""}
           onChange={(e) =>
-            onChange("LeaseRegistrationDate", e.target.value)
+            onChange("leaseRegistrationDate", e.target.value)
           }
         />
       </div>
@@ -458,9 +537,9 @@ const WarehouseDetails = ({
         <input
           type="date"
           className="reg-input"
-          value={applicant.LeaseRegistrationExpiryDate || ""}
+          value={applicant.leaseRegistrationExpiryDate || ""}
           onChange={(e) =>
-            onChange("LeaseRegistrationExpiryDate", e.target.value)
+            onChange("leaseRegistrationExpiryDate", e.target.value)
           }
         />
       </div>
@@ -479,9 +558,9 @@ const WarehouseDetails = ({
 
         <input
           className="reg-input"
-          value={applicant.ArchitectRegistrationNo || ""}
+          value={applicant.architectRegistrationNo || ""}
           onChange={(e) =>
-            onChange("ArchitectRegistrationNo", e.target.value)
+            onChange("architectRegistrationNo", e.target.value)
           }
         />
       </div>
@@ -501,10 +580,10 @@ const WarehouseDetails = ({
         <input
           type="date"
           className="reg-input"
-          value={applicant.ArchitectRegistrationNoValidUpto || ""}
+          value={applicant.architectRegistrationNoValidUpto || ""}
           onChange={(e) =>
             onChange(
-              "ArchitectRegistrationNoValidUpto",
+              "architectRegistrationNoValidUpto",
               e.target.value
             )
           }
@@ -527,10 +606,10 @@ const WarehouseDetails = ({
           type="text"
           className="reg-input"
           placeholder="Enter Super Area"
-          value={applicant.SuperAreaofLicensePremise || ""}
+          value={applicant.superAreaofLicensePremise || ""}
           onChange={(e) =>
             onChange(
-              "SuperAreaofLicensePremise",
+              "superAreaofLicensePremise",
               e.target.value.replace(/\D/g, "")
             )
           }
@@ -553,10 +632,10 @@ const WarehouseDetails = ({
           type="text"
           className="reg-input"
           placeholder="Enter Carpet Area"
-          value={applicant.CarpetAreaofLicensePremise || ""}
+          value={applicant.carpetAreaofLicensePremise || ""}
           onChange={(e) =>
             onChange(
-              "CarpetAreaofLicensePremise",
+              "carpetAreaofLicensePremise",
               e.target.value.replace(/\D/g, "")
             )
           }
@@ -579,10 +658,10 @@ const WarehouseDetails = ({
           type="text"
           className="reg-input"
           placeholder="Enter Distance"
-          value={applicant.DistanceofDistillery || ""}
+          value={applicant.distanceofDistilleryCP || ""}
           onChange={(e) =>
             onChange(
-              "DistanceofDistillery",
+              "distanceofDistilleryCP",
               e.target.value.replace(/\D/g, "")
             )
           }
@@ -603,8 +682,8 @@ const WarehouseDetails = ({
 
  <select
   className="reg-select"
-  value={applicant.HoursOfSale || ""}
-  onChange={(e) => onChange("HoursOfSale", e.target.value)}
+  value={applicant.hoursofSale || ""}
+  onChange={(e) => onChange("hoursofSale", e.target.value)}
 >
   <option value="">Select</option>
   <option value="9-5">9 AM - 5 PM</option>

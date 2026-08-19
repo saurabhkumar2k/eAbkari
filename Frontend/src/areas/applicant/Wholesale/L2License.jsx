@@ -52,7 +52,7 @@ import {
 
 
 
-export default function L1FAndL32License({ ownerType,catCode,onBackToSelect, showToast }) {
+export default function L2License({ ownerType,catCode,onBackToSelect, showToast }) {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicant, setApplicant] = useState(createApplicant());
@@ -2155,7 +2155,7 @@ const handleFinalSubmission = async () => {
 
   return (
      
-    <div className="app-registartion-page">
+    <div className="brand-registration-page select-none text-slate-800 animate-fade">
       
       {/* Top Banner Area with complete descriptive branding */}
       {/* <div className="w-full bg-[#1e40af] text-white py-3.5 px-6 rounded-2xl shadow-md mb-6 flex items-center justify-between">
@@ -2173,13 +2173,13 @@ const handleFinalSubmission = async () => {
 
       {/* 6 Step Progress Wizard Bar Header */}
       {!submitSuccess && (
-        <div className="appl-card-section">
-          <div className="header-row">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 mb-6 select-none overflow-x-auto">
+          <div className="flex items-center justify-between min-w-[768px] relative px-4">
             
             {/* Horizontal progress bar line connector */}
-            <div className="app-progress-line">
+            <div className="absolute top-[22px] left-8 right-8 -translate-y-1/2 h-[3px] bg-slate-100 z-0">
               <div 
-                className="app-progress-bar"
+                className="h-full bg-blue-600 transition-all duration-300"
                 style={{ width: `${((currentStep - 1) / 5) * 100}%` }}
               />
             </div>
@@ -2189,7 +2189,7 @@ const handleFinalSubmission = async () => {
               const isActive = currentStep === st.num;
               const isCompleted = currentStep > st.num;
               return (
-                <div key={st.num} className="app-step-item">
+                <div key={st.num} className="flex flex-col items-center flex-1 relative z-10">
                   <div 
                     onClick={() => {
                       // Allow arbitrary jumps only to completed steps for superior navigation
@@ -2212,7 +2212,7 @@ const handleFinalSubmission = async () => {
                   }`}>
                     {st.label}
                   </span>
-                  <span className="app-step-label">{st.sub}</span>
+                  <span className="text-[10px] text-slate-400 font-semibold">{st.sub}</span>
                 </div>
               );
             })}
