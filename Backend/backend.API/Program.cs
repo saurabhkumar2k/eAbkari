@@ -16,6 +16,10 @@ using backend.Infrastructure.Repositories.License;
 using Microsoft.Extensions.FileProviders;
 using backend.Application.Interfaces.Department;
 using backend.Application.Services.Department;
+using backend.Application.Interfaces.ApplicationFlow;
+using backend.Application.Services.ApplicationFlow;
+using backend.Core.Interfaces.ApplicationFlow;
+using backend.Infrastructure.Repositories.ApplicationFlow;
 
 
 
@@ -80,6 +84,8 @@ builder.Services.AddScoped<IApplicationProgressRepository, ApplicationProgressRe
 builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
 builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
 builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
+builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
+builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
 
 // Swagger
