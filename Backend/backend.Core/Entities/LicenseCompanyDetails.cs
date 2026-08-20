@@ -85,7 +85,7 @@ public class LicenseCompanyDetails
     public int? LitreAppyingFor { get; set; }
 
 
-    public List<ApplicantLicensePartnersDetails>? CompanyPartnersDetails { get; set; } = [];
+    public List<ApplicantLicensePartnersDetails>? CompanyPartnersDetails { get; set; }
 
 }
 
