@@ -15,6 +15,19 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             _context = context;
         }
 
+        public async Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistory accessPermissionHistory)
+        {
+            if (accessPermissionHistory == null)
+            {
+                throw new ArgumentNullException(nameof(accessPermissionHistory), "Access permission history data cannot be null.");
+            }
+
+            _context.PlaAccessPermissionHistory.Add(accessPermissionHistory);
+            await _context.SaveChangesAsync();
+
+            return accessPermissionHistory.ApplicationIdNo;
+        }
+
         public async Task<List<PlaAccessPermissionHistoryDto>> GetAccessPermissionHistory(string applicationIdNo)
         {
             var history = await _context.PlaAccessPermissionHistory

@@ -6,15 +6,15 @@ namespace backend.Core.DTOs
 {
     public class PlaAccessPermissionHistoryDto
     {
-        public string? ApplicationIdNo { get; set; }
+        public string ApplicationIdNo { get; set; }
 
-        public string? FlowUpto { get; set; }
+        public string FlowUpto { get; set; }
 
         public long TransactionSiNo { get; set; }
 
         public DateTime? TransactionDate { get; set; }
 
-        public string SenderUserTypeCode { get; set; } = string.Empty;
+        public string SenderUserTypeCode { get; set; } 
 
         public string? SenderUserID { get; set; }
 

@@ -13,11 +13,11 @@ namespace backend.Core.Entities.ApplicationFlow
 
         [Required]
         [StringLength(50)]
-        public string? ApplicationIdNo { get; set; }
+        public string ApplicationIdNo { get; set; }
 
         [Required]
         [StringLength(2)]
-        public string? FlowUpto { get; set; }
+        public string FlowUpto { get; set; }
 
         
         public long TransactionSiNo { get; set; } 
@@ -26,7 +26,7 @@ namespace backend.Core.Entities.ApplicationFlow
 
         [Required]
         [StringLength(2)]
-        public string SenderUserTypeCode { get; set; } = string.Empty;
+        public string SenderUserTypeCode { get; set; } 
 
         [StringLength(50)]
         public string? SenderUserID { get; set; }

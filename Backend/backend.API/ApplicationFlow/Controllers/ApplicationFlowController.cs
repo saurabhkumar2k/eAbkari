@@ -17,15 +17,27 @@ namespace backend.API.ApplicationFlow.Controllers
         }
 
         [HttpPost("AccessPermissionHistory")]
-        public async Task<IActionResult> CreateAccessPermissionHistory([FromBody] PlaAccessPermissionHistoryDto historyDto)
+        public async Task<IActionResult> CreateAccessPermissionHistory([FromBody] PlaAccessPermissionHistoryDto Dto)
         {
-            if (historyDto == null)
+            if (!ModelState.IsValid)
+            {          
+                return BadRequest(ModelState);
+            }
+
+            if (Dto == null)
             {
                 return BadRequest("Invalid access permission history data.");
             }
 
-            //await _applicationFlowService.CreateAccessPermissionHistory(historyDto);
-            return CreatedAtAction(nameof(GetAccessPermissionHistory), new { applicationIdNo = historyDto.ApplicationIdNo }, historyDto);
+            //await _applicationFlowService.CreateAccessPermissionHistory(Dto);
+            //return CreatedAtAction(nameof(GetAccessPermissionHistory), new { applicationIdNo = Dto.ApplicationIdNo }, Dto);
+
+            var user = await _applicationFlowService.SaveAccessPermissionHistory(Dto);
+            return Ok(new
+                    {
+                        applicationId = user,
+                        message = "Access Permission History Saved Successfully"
+                    });
         }
 
         [HttpGet("GetAccessPermissionHistory/{applicationIdNo}")]
