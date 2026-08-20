@@ -20,7 +20,7 @@ namespace backend.Core.DTOs
 
         public string? DocSl { get; set; }
 
-        public IFormFile? DocumentFile { get; set; }
+
 
         public string? DocStatus { get; set; }
 
@@ -36,9 +36,14 @@ namespace backend.Core.DTOs
 
         public string? LicenseeIdNo { get; set; }
 
-        //public string? DocUrl { get; set; }
+       // public IFormFile? DocUrl { get; set; }
 
-          public IFormFile? DocUrl { get; set; }
+
+        public string? DocUrl { get; set; }       // ✅ GET filename
+        public IFormFile? DocumentFile { get; set; } // ✅ POST upload
+
+
+        // public IFormFile? DocUrl { get; set; }
 
 
 

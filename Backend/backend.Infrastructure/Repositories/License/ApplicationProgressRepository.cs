@@ -74,12 +74,12 @@ namespace backend.Infrastructure.Repositories.License
  .Where(w => w.ApplicationIdNo == applicationId)
  .Select(w => new WarehouseDetailsDto
  {
-                    LicenseYear = w.FinYear,
+     LicenseYear = w.FinYear,
 
-                    WarehouseName = w.WarehouseName,
+     WarehouseName = w.WarehouseName,
 
-                    WarehouseAddress1 = w.WarehouseAddress1,
-                    WarehouseAddress2 = w.WarehouseAddress2,
+     WarehouseAddress1 = w.WarehouseAddress1,
+     WarehouseAddress2 = w.WarehouseAddress2,
 
      WarehouseState = w.WarehouseState,
      WarehouseDistrict = w.WarehouseDistrict,
@@ -97,36 +97,36 @@ namespace backend.Infrastructure.Repositories.License
 
      WarehousePin = w.WarehousePin,
 
-                    WarehouseEmail = w.WarehouseEmail,
+     WarehouseEmail = w.WarehouseEmail,
 
-                    WarehouseMobile = w.WarehouseMobile,
+     WarehouseMobile = w.WarehouseMobile,
 
-                    LeasePremise = w.LeasePremise,
+     LeasePremise = w.LeasePremise,
 
-                    LeaseRegistration = w.LeaseRegistration,
+     LeaseRegistration = w.LeaseRegistration,
 
-                    LeaseRegistrationDate = w.LeaseRegistrationDate,
+     LeaseRegistrationDate = w.LeaseRegistrationDate,
 
-                    LeaseRegistrationExpiryDate = w.LeaseRegistrationExpiryDate,
+     LeaseRegistrationExpiryDate = w.LeaseRegistrationExpiryDate,
 
-                    ArchitectRegistrationNo = w.ArchitectRegistrationNo,
+     ArchitectRegistrationNo = w.ArchitectRegistrationNo,
 
-                    ArchitectRegistrationNoValidUpto = w.ArchitectRegistrationNoValidUpto,
+     ArchitectRegistrationNoValidUpto = w.ArchitectRegistrationNoValidUpto,
 
-                    SuperAreaofLicensePremise = w.SuperAreaofLicensePremise,
+     SuperAreaofLicensePremise = w.SuperAreaofLicensePremise,
 
-                    CarpetAreaofLicensePremise = w.CarpetAreaofLicensePremise,
+     CarpetAreaofLicensePremise = w.CarpetAreaofLicensePremise,
 
-                    DistanceofDistilleryCP = w.DistanceofDistilleryCP,
+     DistanceofDistilleryCP = w.DistanceofDistilleryCP,
 
-                    HoursofSale = w.HoursofSale,
+     HoursofSale = w.HoursofSale,
 
-                    ApplicationIdNo =w.ApplicationIdNo,
+     ApplicationIdNo = w.ApplicationIdNo,
 
-                    CatCode=w.CatCode
+     CatCode = w.CatCode
 
 
-                }
+ }
 
             ).FirstOrDefaultAsync();
         }
@@ -392,33 +392,33 @@ namespace backend.Infrastructure.Repositories.License
 
 
 
-        public async Task<ApplicationDocumentUploadDto?>GetUploadedDocumentsByApplicationIdAsync(string applicationId)
+        public async Task<ApplicationDocumentUploadDto?> GetUploadedDocumentsByApplicationIdAsync(string applicationId)
         {
             var result = await _context
-                .LicenseApplicationUploadedDocument
-                .Where(x => x.ApplicationIdNo == applicationId)
-                .Select(x => new LicenseApplicationUploadedDocumentDto
-                {
-                    ApplicationIdNo = x.ApplicationIdNo,
-                    MobileNo = x.MobileNo,
+     .LicenseApplicationUploadedDocument
+     .Where(x => x.ApplicationIdNo == applicationId)
+     .Select(x => new LicenseApplicationUploadedDocumentDto
+     {
+         ApplicationIdNo = x.ApplicationIdNo,
+         MobileNo = x.MobileNo,
 
-                    ApplicantSl = x.ApplicantSl,
-                    DocId = x.DocId,
-                    DocSl = x.DocSl,
+         ApplicantSl = x.ApplicantSl,
+         DocId = x.DocId,
+         DocSl = x.DocSl,
 
-                    Remarks = x.Remarks,
-                    DateOfValidity = x.DateOfValidity,
+         Remarks = x.Remarks,
+         DateOfValidity = x.DateOfValidity,
 
-                    LicenseeIdNo = x.LicenseeIdNo,
+         LicenseeIdNo = x.LicenseeIdNo,
 
-                    DocStatus = x.DocStatus,
-                    IsValid = x.IsValid,
-                    DocumentvalidationYN = x.DocumentvalidationYN,
+         DocStatus = x.DocStatus,
+         IsValid = x.IsValid,
+         DocumentvalidationYN = x.DocumentvalidationYN,
 
-                    // DB me saved filename
-                    DocUrl = x.DocUrl
-                })
-                .ToListAsync();
+         // ✅ DB filename
+         DocUrl = x.DocUrl
+     })
+     .ToListAsync();
 
             if (result.Count == 0)
                 return null;
@@ -432,10 +432,14 @@ namespace backend.Infrastructure.Repositories.License
 
                 Documents = result
             };
+
         }
 
 
-
-
     }
+
+
+
+
+        
 }

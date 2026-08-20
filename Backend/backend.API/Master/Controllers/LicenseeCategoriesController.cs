@@ -1236,8 +1236,7 @@ if (!ModelState.IsValid)
                         if (!string.IsNullOrWhiteSpace(
                             newFileName))
                         {
-                            existingDocument.DocUrl =
-                                newFileName;
+                            existingDocument.DocUrl = newFileName;
                         }
 
                         // No Add()

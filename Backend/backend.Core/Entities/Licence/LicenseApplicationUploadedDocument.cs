@@ -29,11 +29,7 @@ namespace backend.Core.Entities.Licence
 
         // public string? MobileNoReleaseStatus { get; set; }
 
-<<<<<<< HEAD
-        //public bool? IsValid { get; set; }
 
-=======
->>>>>>> origin/master
         public string? IsValid { get; set; }
 
         public string? Remarks { get; set; }
