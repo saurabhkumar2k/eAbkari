@@ -12,13 +12,13 @@ namespace backend.Application.Services.Department
     public class DepartmentUsersService : IDepartmentUsersService
     {
         private readonly IDepartmentUserRepository _departmentUsersRepository;
-        private readonly IRolesRepository _rolesRepository;
+        private readonly IRoleService _roleService;
 
 
-        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository,IRolesRepository rolesRepository)
+        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository,IRoleService roleService)
         {
             _departmentUsersRepository = departmentUsersRepository;
-            _rolesRepository = rolesRepository;
+            _roleService = roleService;
         }
 
 
@@ -65,8 +65,6 @@ namespace backend.Application.Services.Department
         }
 
 
-
-
         public async Task<bool> CreateAsync(DepartmentUserDto user)
         {
             if (user == null)
@@ -87,14 +85,26 @@ namespace backend.Application.Services.Department
             if (existingUser != null)
                 throw new InvalidOperationException("User already exists.");
 
-            var roleName = await _rolesRepository.GetRoleNameByRoleId(user.RoleId);
+            // Get role through RoleService
+            var role = await _roleService.GetByIdAsync(user.RoleId);
 
-            var firstName = user.UserName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+            if (role == null)
+                throw new InvalidOperationException("Role not found or inactive.");
 
-            var usrId = $"{roleName}-{firstName}";
+            var roleName = role.RoleName?.Trim();
+
+            if (string.IsNullOrWhiteSpace(roleName))
+                throw new InvalidOperationException("Role name is not available.");
+
+            // var firstName = user.UserName
+            //     .Trim()
+            //     .Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+
+            // var usrId = $"{roleName}-{firstName}";
+
             var DepartmentUser = new DepartmentUsers
             {
-                UserId = usrId,
+                UserId = user.UserId.Trim(),
                 UserName = user.UserName.Trim(),
                 UserDesignation = user.UserDesignation.Trim(),
                 Email = user.Email,
@@ -126,7 +136,7 @@ namespace backend.Application.Services.Department
             {
 
                 DeptUserRoleId = DeptUserRoleId,
-                UserId = usrId,
+                UserId = user.UserId.Trim(),
                 RoleId = user.RoleId,
                 BranchCode = user.BranchCode,
                 IsActive = "Y"    
@@ -156,6 +166,12 @@ namespace backend.Application.Services.Department
 
      if (existingUser == null)
          throw new InvalidOperationException("User not exists.");
+
+    // Validate role through RoleService
+     var role = await _roleService.GetByIdAsync(user.RoleId);
+
+     if (role == null)
+         throw new InvalidOperationException("Role not found or inactive.");
 
      var DepartmentUser = new DepartmentUsers
      {

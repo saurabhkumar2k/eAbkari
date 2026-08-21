@@ -113,3 +113,4 @@ Backend/backend.API/Documents/Registration/
 /Backend/backend.API/backend.API.csproj.user
 /wwwroot/Documents/ApplicationDocuments
 
+Backend/backend.Infrastructure/bin/Debug/net9.0/backend.Infrastructure.deps.json

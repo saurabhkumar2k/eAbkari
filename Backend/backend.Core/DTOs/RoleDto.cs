@@ -1,4 +1,6 @@
-public class AddRoleDto
+namespace backend.Core.DTOs
+{
+    public class AddRoleDto
 {
     public string RoleName { get; set; }
     public string RoleDescription { get; set; }
@@ -10,4 +12,6 @@ public class UpdateRoleDto
     public string? RoleName { get; set; }
     public string? RoleDescription { get; set; }
     public string? IsActive { get; set; } 
+}
+    
 }

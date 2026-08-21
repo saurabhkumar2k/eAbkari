@@ -12,5 +12,6 @@ namespace backend.Application.Interfaces.Department
         Task<bool> CreateAsync(DepartmentUserDto model);
 
         Task<bool> UpdateAsync(DepartmentUserDto model);
+        
     }
 }
