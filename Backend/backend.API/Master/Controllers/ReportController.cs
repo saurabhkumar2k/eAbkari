@@ -92,7 +92,12 @@ namespace backend.API.Controllers
         }
 
 
-
+        [HttpGet("GetMyDraftApplications/{regId}")]
+        public async Task<IActionResult> GetMyDraftApplications(long regId)
+        {
+            var result = await _reportRepository.GetMyApplicationsAsync(regId);
+            return Ok(result);
+        }
 
 
 

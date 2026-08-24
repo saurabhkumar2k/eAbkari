@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { 
   Building, 
+  
+
   Warehouse, 
   Wine, 
   Check, 
@@ -32,6 +35,7 @@ import { createApplicant } from "../../../Model/Applicant";
 
 import L1AndL31License from "./L1_L31License";
 import L1FAndL31License from "./L1F_L32License";
+import L2License from "./L2License";
 
 
 
@@ -91,6 +95,14 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
   const [applicant, setApplicant] = useState(createApplicant());
   const [ownerTypes, setOwnerTypes] = useState([]);
   // Brand form state
+
+
+
+
+
+
+
+  
   const [brandForm, setBrandForm] = useState({
     category: 'Indian Liquor',
     kindOfLiquor: 'Indian Made Foreign Liquor (IMFL)',
@@ -104,6 +116,8 @@ export default function WholesaleLicenseWizard({ onBackToDashboard, showToast, r
   const [searchTerm, setSearchTerm] = useState('');
   const [sortColumn, setSortColumn] = useState('brandName');
   const [sortDirection, setSortDirection] = useState('asc');
+
+const [applications, setApplications] = useState([]);
 
   const [licenseGroups, setLicenseGroups] = useState([]);
 
@@ -161,6 +175,10 @@ const fetchLicenseCategories = async () => {
 console.log("OwnerType:", applicant?.ownerType);
 console.log("SelectedLicenseId:", selectedLicenseId);
 
+console.log("Current Step:", currentStep);
+console.log("Selected License:", selectedLicenseId);
+
+// console.log("Applications:", applications);
 
 useEffect(() => {
   console.log("Calling OwnerType API...");
@@ -178,7 +196,446 @@ useEffect(() => {
 }, []);
 
 
+// useEffect(() => {
+//   debugger;
+//   fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
+//     .then(res => res.json())
+//     .then(data => {
+//       debugger;
+//       console.log("API Response:", data);
+//       setApplications(Array.isArray(data) ? data : []);
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       setApplications([]);
+//     });
+// }, []);
 
+
+
+console.log("Selected License:", selectedLicenseId);
+console.log("Applications:", applications);
+console.log("Current Step:", currentStep);
+
+
+
+
+
+
+// const handleContinueApplication = async () => {
+//   debugger;
+//   try {
+//     const selectedLicense = JSON.parse(
+//       localStorage.getItem("selectedLicense")
+//     );
+
+//     const application = applications?.find(
+//       (app) =>
+//         app.licenseeCatDesc?.trim() ===
+//         selectedLicense?.licenseeCatDesc?.trim()
+//     );
+
+//     if (
+//       application &&
+//       application.applicationStatus?.trim() === "P"
+
+//     ) {
+//       localStorage.setItem(
+//         "applicationId",
+//         application.applicationIdNo
+//       );
+
+//       const response = await axios.get(
+//         `http://localhost:5214/api/ApplicationProgress/GetCurrentStep/${application.applicationIdNo}`
+//       );
+//       console.log("Current Step:", currentStep);
+
+//       setCurrentStep(response.data.currentStep);
+//     } else {
+//       localStorage.removeItem("applicationId");
+//       setCurrentStep(4);
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+// const handleContinueApplication = async () => {
+//   const applicationId = localStorage.getItem("applicationId");
+
+//   // Draft flag
+//   const isDraft = !!applicationId;
+
+//   if (isDraft) {
+//     // Draft Flow
+//     const response = await axios.get(
+//       `http://localhost:5214/api/ApplicationProgress/GetCurrentStep/${applicationId}`
+//     );
+
+//     setCurrentStep(response.data.currentStep);
+//   } else {
+//     // Fresh Application
+//     setCurrentStep(4);
+//   }
+// };
+
+
+// const handleContinueApplication = async () => {
+//   debugger;
+
+//   try {
+//     console.log(
+//       "========== CONTINUE APPLICATION =========="
+//     );
+
+
+
+    
+
+//     console.log(
+//       "Selected License ID:",
+//       selectedLicenseId
+//     );
+
+//     console.log(
+//       "Applications:",
+//       applications
+//     );
+
+//     // ---------------------------------------
+//     // VALIDATION
+//     // ---------------------------------------
+
+//     if (!selectedLicenseId) {
+//       alert("Please select License Type");
+//       return;
+//     }
+
+//     if (!applicant?.ownerType) {
+//       alert("Please select Owner Type");
+//       return;
+//     }
+
+//     // ---------------------------------------
+//     // FIND EXISTING APPLICATION
+//     // ---------------------------------------
+
+//     const application = applications.find(
+//       (app) => {
+
+//         if (
+//           app.catCode != null &&
+//           String(app.catCode).trim() ===
+//             String(selectedLicenseId).trim()
+//         ) {
+//           return true;
+//         }
+
+//         if (
+//           app.licenseeCatCode != null &&
+//           String(app.licenseeCatCode).trim() ===
+//             String(selectedLicenseId).trim()
+//         ) {
+//           return true;
+//         }
+
+//         return false;
+//       }
+//     );
+
+//     console.log(
+//       "Matched Application:",
+//       application
+//     );
+
+//     // ---------------------------------------
+//     // EXISTING DRAFT
+//     // ---------------------------------------
+
+//     if (
+//       application &&
+//       application.applicationStatus?.trim() === "P"
+//     ) {
+
+//       const applicationId =
+//         application.applicationIdNo;
+
+//       console.log(
+//         "Draft Application ID:",
+//         applicationId
+//       );
+
+//       if (!applicationId) {
+//         console.error(
+//           "Application ID missing in draft"
+//         );
+//         return;
+//       }
+
+//       // ⭐ Save ApplicationIdNo
+//       localStorage.setItem(
+//         "applicationId",
+//         applicationId
+//       );
+
+//       // ⭐ Save CatCode
+//       localStorage.setItem(
+//         "catCode",
+//         selectedLicenseId
+//       );
+
+//       console.log(
+//         "Saved ApplicationId:",
+//         localStorage.getItem("applicationId")
+//       );
+
+//       // -----------------------------------
+//       // GET CURRENT STEP
+//       // -----------------------------------
+
+//       const response = await axios.get(
+//         `http://localhost:5214/api/ApplicationProgress/GetCurrentStep/${applicationId}`
+//       );
+
+//       console.log(
+//         "Progress API Response:",
+//         response.data
+//       );
+
+//       const savedStep =
+//         Number(response.data?.currentStep);
+
+//       console.log(
+//         "Saved Current Step:",
+//         savedStep
+//       );
+
+//       // -----------------------------------
+//       // SET NEXT SCREEN
+//       // -----------------------------------
+
+//       if (savedStep >= 4) {
+//         setCurrentStep(savedStep);
+//       } else {
+//         setCurrentStep(4);
+//       }
+
+//       return;
+//     }
+
+//     // ---------------------------------------
+//     // NEW APPLICATION
+//     // ---------------------------------------
+
+//     console.log(
+//       "No draft found - starting new application"
+//     );
+
+//     localStorage.removeItem(
+//       "applicationId"
+//     );
+
+//     localStorage.setItem(
+//       "catCode",
+//       selectedLicenseId
+//     );
+
+//     setCurrentStep(4);
+
+//   } catch (error) {
+
+//     console.error(
+//       "Continue Application Error:",
+//       error
+//     );
+//   }
+// };
+
+
+
+
+const handleContinueApplication = async () => {
+  debugger;
+
+  try {
+    console.log("========== CONTINUE APPLICATION ==========");
+
+    console.log("Selected License ID:", selectedLicenseId);
+    console.log("Applications:", applications);
+
+    // ---------------------------------------
+    // VALIDATION
+    // ---------------------------------------
+
+    if (!selectedLicenseId) {
+      alert("Please select License Type");
+      return;
+    }
+
+    if (!applicant?.ownerType) {
+      alert("Please select Owner Type");
+      return;
+    }
+
+    // ---------------------------------------
+    // FIND EXISTING APPLICATION
+    // ---------------------------------------
+
+    const application = applications.find((app) => {
+
+      if (
+        app.catCode != null &&
+        String(app.catCode).trim() ===
+          String(selectedLicenseId).trim()
+      ) {
+        return true;
+      }
+
+      if (
+        app.licenseeCatCode != null &&
+        String(app.licenseeCatCode).trim() ===
+          String(selectedLicenseId).trim()
+      ) {
+        return true;
+      }
+
+      return false;
+    });
+
+    console.log(
+      "Matched Application:",
+      application
+    );
+
+    // ---------------------------------------
+    // EXISTING DRAFT
+    // ---------------------------------------
+
+    if (
+      application &&
+      String(application.applicationStatus)
+        .trim()
+        .toUpperCase() === "P"
+    ) {
+
+      const applicationId =
+        application.applicationIdNo;
+
+      console.log(
+        "Draft Application ID:",
+        applicationId
+      );
+
+      if (!applicationId) {
+        console.error(
+          "Application ID missing in draft"
+        );
+        return;
+      }
+
+      // Save ApplicationIdNo
+      localStorage.setItem(
+        "applicationId",
+        applicationId
+      );
+
+      // Save CatCode
+      localStorage.setItem(
+        "catCode",
+        String(selectedLicenseId)
+      );
+
+      console.log(
+        "Saved ApplicationId:",
+        localStorage.getItem("applicationId")
+      );
+
+      console.log(
+        "Saved CatCode:",
+        localStorage.getItem("catCode")
+      );
+
+      // ---------------------------------------
+      // DIRECTLY OPEN STEP 4
+      // ---------------------------------------
+
+      setCurrentStep(4);
+
+      return;
+    }
+
+    // ---------------------------------------
+    // NEW APPLICATION
+    // ---------------------------------------
+
+    console.log(
+      "No draft found - starting new application"
+    );
+
+    localStorage.removeItem(
+      "applicationId"
+    );
+
+    localStorage.setItem(
+      "catCode",
+      String(selectedLicenseId)
+    );
+
+    setCurrentStep(4);
+
+  } catch (error) {
+
+    console.error(
+      "Continue Application Error:",
+      error
+    );
+  }
+};
+
+
+
+
+
+
+
+
+
+useEffect(() => {
+  const regId = localStorage.getItem("regId");
+
+  if (!regId) {
+    console.log("RegId not found");
+    return;
+  }
+
+  const loadApplications = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/Report/GetMyApplications/${regId}`
+      );
+
+      if (!response.ok) {
+        console.log("Applications API Error:", response.status);
+        setApplications([]);
+        return;
+      }
+
+      const data = await response.json();
+
+      console.log("Applications API:", data);
+
+      setApplications(
+        Array.isArray(data) ? data : []
+      );
+
+    } catch (error) {
+      console.error("Applications Error:", error);
+      setApplications([]);
+    }
+  };
+
+  loadApplications();
+}, []);
 
   useEffect(() => {
     if (toast) {
@@ -328,19 +785,73 @@ useEffect(() => {
   };
 console.log("Parent ownerType:", applicant.ownerType);
 console.log("Parent catCode:", selectedLicenseId);
-if (selectedLicenseId === "10" && currentStep > 3) {
+console.log("selectedLicenseId:", selectedLicenseId);
+console.log("currentStep:", currentStep);
+// if (selectedLicenseId === "10" && currentStep > 2) {
+   
+//   return (
+// <L1AndL31License
+//   ownerType={applicant.ownerType}
+//   catCode={selectedLicenseId}
+//   onBackToSelect={() => {
+//     setSelectedLicenseId("");
+//     setCurrentStep(currentStep);
+//   }}
+//   showToast={showToast || triggerToast}
+// />
+//   );
+// }
+
+console.log(
+  "Parent ownerType:",
+  applicant.ownerType
+);
+
+console.log(
+  "Parent catCode:",
+  selectedLicenseId
+);
+
+console.log(
+  "Current Step:",
+  currentStep
+);
+
+if (
+  String(selectedLicenseId) === "10" &&
+  currentStep > 3
+) {
+
   return (
-<L1AndL31License
-  ownerType={applicant.ownerType}
-  catCode={selectedLicenseId}
-  onBackToSelect={() => {
-    setSelectedLicenseId("");
-    setCurrentStep(3);
-  }}
-  showToast={showToast || triggerToast}
-/>
+    <L1AndL31License
+      ownerType={applicant.ownerType}
+      catCode={selectedLicenseId}
+
+      onBackToSelect={() => {
+        setSelectedLicenseId("");
+        setCurrentStep(3);
+      }}
+
+      showToast={
+        showToast || triggerToast
+      }
+    />
   );
 }
+
+// if (selectedLicenseId === "16" && currentStep > 3) {
+//   return (
+// <L1FAndL31License
+//   ownerType={applicant.ownerType}
+//   catCode={selectedLicenseId}
+//   onBackToSelect={() => {
+//     setSelectedLicenseId("");
+//     setCurrentStep(3);
+//   }}
+//   showToast={showToast || triggerToast}
+// />
+//   );
+// }
 
 if (selectedLicenseId === "16" && currentStep > 3) {
   return (
@@ -356,7 +867,19 @@ if (selectedLicenseId === "16" && currentStep > 3) {
   );
 }
 
-
+if (selectedLicenseId === "37" && currentStep > 3) {
+  return (
+<L2License
+  ownerType={applicant.ownerType}
+  catCode={selectedLicenseId}
+  onBackToSelect={() => {
+    setSelectedLicenseId("");
+    setCurrentStep(3);
+  }}
+  showToast={showToast || triggerToast}
+/>
+  );
+}
 
 
 
@@ -431,41 +954,124 @@ if (selectedLicenseId === "16" && currentStep > 3) {
           {/* STEP 3: SELECT WHOLESALE LICENSE TYPE */}
           {currentStep === 3 && (
             <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+{/* <SelectWholesaleType
+  applicant={applicant}
+  onChange={handleApplicantChange}
+  licenseGroups={licenseGroups}
+  selectedType={selectedLicenseId}
+  ownerTypes={ownerTypes}
+   applications={applications}
+onSelectType={(id) => {
+  setSelectedLicenseId(id);
+}}
+
+  onBack={onBackToDashboard}
+/> */}
+
+
 <SelectWholesaleType
   applicant={applicant}
   onChange={handleApplicantChange}
   licenseGroups={licenseGroups}
   selectedType={selectedLicenseId}
   ownerTypes={ownerTypes}
+  applications={applications}
+
   onSelectType={(id) => {
-  setSelectedLicenseId(id);
-  setCurrentStep(4);
-}}
+    console.log(
+      "License Selected:",
+      id
+    );
+
+    setSelectedLicenseId(
+      String(id)
+    );
+  }}
+
   onBack={onBackToDashboard}
 />
               
               {/* Continue button row */}
               <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+{/* <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+<button
+onClick={async () => {
+  debugger;
+
+  console.log("Button Clicked");
+  console.log("Owner Type:", applicant?.ownerType);
+  console.log("Selected License:", applications.applicationIdNo);
+
+  if (!applicant?.ownerType) {
+    alert("Please select Owner Type");
+    return;
+  }
+
+  if (!selectedLicenseId) {
+    alert("Please select License Type");
+    return;
+  }
+
+  //console.log("Calling handleContinueApplication");
+
+  await handleContinueApplication();
+}}
+  className="btn btn-primary bg-purple-700 hover:bg-purple-800 px-8 py-3.5"
+>
+  <span>Continue Application</span>
+  <ArrowRight className="w-4 h-4 ml-1.5" />
+</button>
+</div> */}
+
 <div className="flex items-center justify-end mt-8 pt-6 border-t border-slate-100">
+
   <button
-    onClick={() => {
+    type="button"
+    onClick={async () => {
+
+      debugger;
+
+      console.log(
+        "Continue Button Clicked"
+      );
+
+      console.log(
+        "Owner Type:",
+        applicant?.ownerType
+      );
+
+      console.log(
+        "Selected License:",
+        selectedLicenseId
+      );
+
       if (!applicant?.ownerType) {
-        alert("Please select Owner Type");
+        alert(
+          "Please select Owner Type"
+        );
         return;
       }
 
       if (!selectedLicenseId) {
-        alert("Please select License Type");
+        alert(
+          "Please select License Type"
+        );
         return;
       }
 
-      setCurrentStep(4);
+      await handleContinueApplication();
     }}
     className="btn btn-primary bg-purple-700 hover:bg-purple-800 px-8 py-3.5"
   >
-    <span>Continue Application</span>
+
+    <span>
+      Continue Application
+    </span>
+
     <ArrowRight className="w-4 h-4 ml-1.5" />
+
   </button>
+
 </div>
               </div>
             </div>

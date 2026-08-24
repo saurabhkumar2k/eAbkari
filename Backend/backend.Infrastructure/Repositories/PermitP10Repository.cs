@@ -233,13 +233,13 @@ public class PermitP10Repository : IPermitP10Repository
                         continue;
 
                     string fileName = Guid.NewGuid() +
-                                      Path.GetExtension(doc.DocUrl.FileName);
+                                      Path.GetExtension(doc.DocumentFile.FileName);
 
                     string physicalPath = Path.Combine(folder, fileName);
 
                     using (var stream = new FileStream(physicalPath, FileMode.Create))
                     {
-                        await doc.DocUrl.CopyToAsync(stream);
+                        await doc.DocumentFile.CopyToAsync(stream);
                     }
 
                     var document = new LicenseApplicationUploadedDocument

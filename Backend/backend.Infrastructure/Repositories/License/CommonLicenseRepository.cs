@@ -15,7 +15,7 @@ namespace backend.Infrastructure.Repositories.License
             _context = context;
         }
 
-       
+
 
         public async Task<string?> GetLastApplicationId()
         {
@@ -28,27 +28,83 @@ namespace backend.Infrastructure.Repositories.License
             }
 
             string activeYear = FinYearV.Substring(2, 2);
-
-
-            // return await _context.LicenseApplications
-            //     .OrderByDescending(x => x.ApplicationIdNo)
-            //     .Select(x => x.ApplicationIdNo)
-            //     .FirstOrDefaultAsync();
-
-             return await _context.LicenseApplications
+          
+            return await _context.LicenseApplications
                 .Where(x => x.ApplicationIdNo != null &&
-                    x.ApplicationIdNo.Length >= 7 &&
-                    x.ApplicationIdNo.Substring(5, 2) == activeYear)
-                    .OrderByDescending(x => x.ApplicationIdNo)
-                    .Select(x => x.ApplicationIdNo)
-                    .FirstOrDefaultAsync();
+                 x.ApplicationIdNo.Length >= 7 &&
+                 x.ApplicationIdNo.Substring(5, 2) == activeYear)
+                .OrderByDescending(x => x.Id)
+                .Select(x => x.ApplicationIdNo)
+            .FirstOrDefaultAsync();
+            // return await _context.LicenseApplications
+            //     .Where(x => x.ApplicationIdNo != null &&
+            //     x.ApplicationIdNo.Length >= 7 &&
+            //     x.ApplicationIdNo.Substring(5, 2) == activeYear)
+            //     .OrderByDescending(x => x.ApplicationIdNo.Substring(x.ApplicationIdNo.Length - 5, 5))
+            //     .Select(x => x.ApplicationIdNo)
+            //      .FirstOrDefaultAsync();
         }
 
-        public async Task<string> SaveApplicantDetails(LicenseApplicationUserDetails userDetails, LicenseApplication application)
+        public async Task<string> SaveApplicantDetails(
+                    LicenseApplicationUserDetails userDetails,
+                     LicenseApplication application)
         {
+            // ==========================================
+            // UPDATE Applicant Details
+            // ==========================================
+
+            int updatedUser =
+                await _context.LicenseApplicationUserDetails
+                    .Where(x =>
+                        x.ApplicationIdNo == userDetails.ApplicationIdNo)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.RegId, userDetails.RegId)
+                        .SetProperty(x => x.ApplicantName, userDetails.ApplicantName)
+                        .SetProperty(x => x.DateOfBirth, userDetails.DateOfBirth)
+                        .SetProperty(x => x.FatherHusbandName, userDetails.FatherHusbandName)
+                        .SetProperty(x => x.Occupation, userDetails.Occupation)
+                        .SetProperty(x => x.PanNo, userDetails.PanNo)
+                        .SetProperty(x => x.PresentAddress, userDetails.PresentAddress)
+                        .SetProperty(x => x.PermanentAddress, userDetails.PermanentAddress)
+                        .SetProperty(x => x.StateUT, userDetails.StateUT)
+                        .SetProperty(x => x.District, userDetails.District)
+                        .SetProperty(x => x.SubDivision, userDetails.SubDivision)
+                        .SetProperty(x => x.PIN, userDetails.PIN)
+                        .SetProperty(x => x.Email, userDetails.Email)
+                        .SetProperty(x => x.Mobile, userDetails.Mobile)
+                        .SetProperty(x => x.LandLine, userDetails.LandLine)
+                    );
+
+
+            // ==========================================
+            // If record was updated
+            // ==========================================
+
+            if (updatedUser > 0)
+            {
+                // Update LicenseApplication table
+
+                await _context.LicenseApplications
+                    .Where(x =>
+                        x.ApplicationIdNo == application.ApplicationIdNo)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.RegId, application.RegId)
+                        .SetProperty(x => x.CatCode, application.CatCode)
+                        .SetProperty(x => x.LicenseType, application.LicenseType)
+                        .SetProperty(x => x.ApplicationFlag, application.ApplicationFlag)
+                    );
+
+                return application.ApplicationIdNo;
+            }
+
+
+            // ==========================================
+            // INSERT NEW RECORD
+            // ==========================================
+
             _context.LicenseApplicationUserDetails.Add(userDetails);
             _context.LicenseApplications.Add(application);
-            _context.ChangeTracker.Entries();
+
             await _context.SaveChangesAsync();
 
             return application.ApplicationIdNo;
@@ -83,9 +139,9 @@ namespace backend.Infrastructure.Repositories.License
         {
             return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
         }
-         public async Task<string?> GetFlowUpto( string CatCode,string ActivityId)
+        public async Task<string?> GetFlowUpto(string CatCode, string ActivityId)
         {
-            return await _context.MstFlowApplicable.Where(x => x.ActivityId == ActivityId && x.LicenseCategory == CatCode ).Select(x => x.FlowUptoCode).FirstOrDefaultAsync(); 
+            return await _context.MstFlowApplicable.Where(x => x.ActivityId == ActivityId && x.LicenseCategory == CatCode).Select(x => x.FlowUptoCode).FirstOrDefaultAsync();
         }
 
         public async Task<string> SubmitApplication(string applicationIdNo, string applicationStatus)
@@ -98,5 +154,6 @@ namespace backend.Infrastructure.Repositories.License
             }
             return application?.ApplicationStatus ?? string.Empty;
         }
+
     }
 }

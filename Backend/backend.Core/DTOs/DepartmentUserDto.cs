@@ -21,5 +21,12 @@ namespace backend.Core.DTOs
         public int RoleId { get; set; }
         public long BranchCode { get; set; }
     }
+    public class DepartmentUserLoginDto
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string RoleName { get; set; }
+        //public long BranchName { get; set; }
+    }
 }
       

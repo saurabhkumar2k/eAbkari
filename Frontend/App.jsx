@@ -23,6 +23,7 @@ import TransportPackagedFL from './src/components/Department/TransportPackagedFL
 import DADashbord from './src/components/Department/DA/DADashboard.jsx';
 import ExploreServicesModal from './src/Homepage/ExploreServicesModal.jsx';
 import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
+import UserCreation from './src/components/Department/UserCreation.jsx';
 
 
 import {
@@ -98,9 +99,13 @@ export default function App() {
         window.location.href = "/importpermitpass";
         break;
        case "NEW USER CREATION":
+        window.location.href = "/departmentdashboard/user-creation";
+        break;
       case "USER CREATION":
       case "USER_CREATION":
       case "NEW_USER_CREATION":
+         window.location.href = "/departmentdashboard/user-creation";
+        break;
       case "USER MAINTENANCE":
         window.location.href = "/departmentdashboard/user-creation";
         break;
@@ -345,7 +350,7 @@ element={
 }
 />
 <Route
-path="/departmentdashboard/owner-type"
+path="/departmentdashboard/user-creation"
 element={
   <div className="admin-app-layout ">
     <AdminHeader
@@ -353,7 +358,8 @@ element={
       currentView="OWNER_TYPE"
       onNavigate={handleAdminNavigate}
     />
-    <OwnerType onBack={() => window.location.href = "/departmentdashboard"} />
+    {/* <OwnerType onBack={() => window.location.href = "/departmentdashboard"} /> */}
+    <UserCreation onBack={() => window.location.href = "/departmentdashboard"} />
   </div>
 }
 />
@@ -402,6 +408,19 @@ element={
       />
     </div>
   }
+/>
+<Route
+path="/departmentdashboard/owner-type"
+element={
+  <div className="admin-app-layout ">
+    <AdminHeader
+      navItems={navItems}
+      currentView="OWNER_TYPE"
+      onNavigate={handleAdminNavigate}
+    />
+    <OwnerType onBack={() => window.location.href = "/departmentdashboard"} />
+  </div>
+}
 />
 </Routes>
   </BrowserRouter>

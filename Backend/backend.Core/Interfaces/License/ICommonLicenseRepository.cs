@@ -13,5 +13,7 @@ namespace backend.Core.Interfaces.License
         Task<string?>GetFlowUpto( string CatCode, string ActivityId);
 
         Task<string> SubmitApplication(string applicationIdNo, string applicationStatus);
+
+        
     }
 }

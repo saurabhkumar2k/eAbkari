@@ -22,18 +22,81 @@ namespace backend.Application.Services.License
         {
             try
             {
-                //fetch application id
-                string? lastappid = await _Licenserepository.GetLastApplicationId();
-                //var user = await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == dto.RegId);
+                // ==========================================
+                // STEP 0 : DTO NULL CHECK
+                // ==========================================
 
-                var FinYearV = await _Licenserepository.GetFinYear();
+                if (dto == null)
+                {
+                    return "Request data is null";
+                }
+                // ==========================================
+                // STEP 1 : CHECK EXISTING APPLICATION
+                // ==========================================
+
+                if (!string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                {
+                    var existingApplicant =
+                        await _Licenserepository.GetApplicantDetails(dto.ApplicationIdNo);
+
+                    if (existingApplicant != null)
+                    {
+                        // ==========================================
+                        // EXISTING RECORD -> UPDATE
+                        // ==========================================
+
+                        var Existinglicense = new LicenseApplicationUserDetails
+                        {
+                            ApplicationIdNo = dto.ApplicationIdNo,
+                            RegId = dto.RegId,
+                            ApplicantName = dto.ApplicantName,
+                            DateOfBirth = dto.Dob,
+                            FatherHusbandName = dto.FatherHusbandName ?? "",
+                            Occupation = dto.Occupation ?? "",
+                            PanNo = dto.PanNo ?? "",
+                            PresentAddress = dto.PresentAddress ?? "",
+                            PermanentAddress = dto.PermanentAddress ?? "",
+                            StateUT = dto.StateUT ?? "",
+                            District = dto.District ?? "",
+                            SubDivision = dto.SubDivision ?? "",
+                            PIN = dto.PIN ?? "",
+                            Email = dto.Email ?? "",
+                            Mobile = dto.Mobile ?? "",
+                            LandLine = dto.LandLine ?? ""
+                        };
+
+                        var Existingapplication = new LicenseApplication
+                        {
+                            RegId = (int)dto.RegId,
+                            ApplicationIdNo = dto.ApplicationIdNo,
+                            CatCode = dto.CatCode,
+                            LicenseType = dto.OwnerType,
+                            ApplicationFlag = dto.ActivityId
+                        };
+
+                        return await _Licenserepository.SaveApplicantDetails(
+                            Existinglicense,
+                            Existingapplication);
+                    }
+                }
+
+
+                // ==========================================
+                // STEP 2 : NEW RECORD
+                // ==========================================
+
+                string? lastappid =
+                    await _Licenserepository.GetLastApplicationId();
+
+                var FinYearV =
+                    await _Licenserepository.GetFinYear();
 
                 if (string.IsNullOrWhiteSpace(FinYearV))
                 {
-                    throw new Exception("Financial Year is not available.");
+                    return "Financial Year is not available.";
                 }
 
-                string activeYear = FinYearV.Substring(2, 2); // 2026-2027 → 26
+                string activeYear = FinYearV.Substring(2, 2);
 
                 string prefix = $"REF{dto.CatCode}{activeYear}";
 
@@ -41,32 +104,32 @@ namespace backend.Application.Services.License
 
                 if (!string.IsNullOrWhiteSpace(lastappid))
                 {
-                    string lastFour = lastappid.Substring(lastappid.Length - 5);
-                    sequence = int.Parse(lastFour) + 1;
+                    string lastFive = lastappid.Substring(lastappid.Length - 5);
+                    sequence = int.Parse(lastFive) + 1;
                 }
 
                 string newappid = $"{prefix}{sequence:00000}";
 
-                // if (string.IsNullOrWhiteSpace(lastappid))
-                // {
-                //     newappid = "REFL10001";
-                // }
-                // else
-                // {
-                //     int number = int.Parse(lastappid.Substring(4));
-                //     newappid = $"REFL{(number + 1):00000}";
-                // }
 
-                var ApplicationFlowUpto = await _Licenserepository.GetFlowUpto(dto.CatCode,dto.ActivityId);
+                // ==========================================
+                // STEP 3 : GET FLOW
+                // ==========================================
+
+                var ApplicationFlowUpto =
+                    await _Licenserepository.GetFlowUpto(
+                        dto.CatCode,
+                        dto.ActivityId);
+
+
+                // ==========================================
+                // STEP 4 : CREATE NEW LICENSE
+                // ==========================================
 
                 var license = new LicenseApplicationUserDetails
                 {
                     ApplicationIdNo = newappid,
-                    //RegNumber = user.RegId.ToString(),
-                    //RegId = dto.RegId.ToString(),
                     RegId = dto.RegId,
                     ApplicantName = dto.ApplicantName,
-                    //CompanyName = dto.CompanyName??"",
                     DateOfBirth = dto.Dob,
                     FatherHusbandName = dto.FatherHusbandName ?? "",
                     Occupation = dto.Occupation ?? "",
@@ -77,19 +140,19 @@ namespace backend.Application.Services.License
                     District = dto.District ?? "",
                     SubDivision = dto.SubDivision ?? "",
                     PIN = dto.PIN ?? "",
-                    //PoliceStation = dto.PoliceStation ??"",
                     Email = dto.Email ?? "",
                     Mobile = dto.Mobile ?? "",
                     LandLine = dto.LandLine ?? "",
-                    CreatedDate = DateTime.Now,
-
-                    //OprDate= DateTime.Now
-                    // Map other fields
+                    CreatedDate = DateTime.Now
                 };
+
+
+                // ==========================================
+                // STEP 5 : CREATE NEW APPLICATION
+                // ==========================================
 
                 var application = new LicenseApplication
                 {
-                    // IPAddress = HttpContent.Connection.RemoteIpAddress?.ToString(),
                     RegId = (int)dto.RegId,
                     ApplicationIdNo = newappid,
                     ApplicationDate = DateTime.Now,
@@ -104,7 +167,14 @@ namespace backend.Application.Services.License
                     FlowUptoCode = ApplicationFlowUpto
                 };
 
-                return await _Licenserepository.SaveApplicantDetails(license, application);
+
+                // ==========================================
+                // STEP 6 : INSERT
+                // ==========================================
+
+                return await _Licenserepository.SaveApplicantDetails(
+                    license,
+                    application);
             }
             catch (Exception ex)
             {
@@ -123,7 +193,7 @@ namespace backend.Application.Services.License
                 // var applicationStatus = new LicenseApplication
                 // {
                 //     ApplicationStatus = "02" // Update the status to "02" (Submitted)
-                   
+
                 // };
 
                 return await _Licenserepository.SubmitApplication(applicationIdNo, applicationStatus);

@@ -14,6 +14,82 @@ namespace backend.Infrastructure.Repositories.Department
     public class RolesRepository : IRolesRepository
     {
         private readonly ApplicationDbContext _context;
+
+        public RolesRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<MstRoles>> GetRolesAsync()
+        {
+            return await _context.MstRoles
+                .Where(r => r.IsActive == "Y")
+                .ToListAsync();
+        }
+
+        public async Task<MstRoles?> GetRoleByRoleId(int roleId)
+        {
+            return await _context.MstRoles
+                .FirstOrDefaultAsync(r => r.RoleId == roleId);
+        }
+
+        public async Task<MstRoles?> GetRoleByRoleNameAsync(string roleName)
+        {
+            return await _context.MstRoles
+                .FirstOrDefaultAsync(r => r.RoleName == roleName);
+        }
+
+        public async Task<bool> RoleExistsAsync(int roleId)
+        {
+            return await _context.MstRoles
+                .AnyAsync(r => r.RoleId == roleId);
+        }
+
+        public async Task<int> GetNextRoleIdAsync()
+        {
+            int maxRoleId = await _context.MstRoles
+                .MaxAsync(r => (int?)r.RoleId) ?? 0;
+
+            return maxRoleId + 1;
+        }
+
+        public async Task<MstRoles> CreateRoleAsync(MstRoles role)
+        {
+            _context.MstRoles.Add(role);
+
+            await _context.SaveChangesAsync();
+
+            return role;
+        }
+
+        public async Task<MstRoles> UpdateRoleAsync(MstRoles role)
+        {
+            _context.MstRoles.Update(role);
+
+            await _context.SaveChangesAsync();
+
+            return role;
+        }
+
+        public async Task DeleteRoleAsync(MstRoles role)
+        {
+            _context.MstRoles.Update(role);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+    }
+}
+
+/*namespace backend.Infrastructure.Repositories.Department
+{
+    public class RolesRepository : IRolesRepository
+    {
+        private readonly ApplicationDbContext _context;
         public RolesRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -80,9 +156,7 @@ namespace backend.Infrastructure.Repositories.Department
 
                 throw; // Let the controller or global exception handler deal with it
             }
-        }
-      
-
+        }     
         public async Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model)
         {
             try
@@ -133,5 +207,5 @@ namespace backend.Infrastructure.Repositories.Department
             }
         }
     }
-}
+}*/
 

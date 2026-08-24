@@ -4,6 +4,8 @@ using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories.Department;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.Application.Interfaces.Department;
+using backend.Core.DTOs;
 
 namespace backend.API.Master.Controllers
 {
@@ -11,11 +13,11 @@ namespace backend.API.Master.Controllers
     [Route("api/[controller]")]
     public class RoleController : Controller
     {
-        private readonly IRolesRepository _repository;
+        private readonly IRoleService _service;
 
-        public RoleController(IRolesRepository repository)
+        public RoleController(IRoleService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
 
@@ -24,7 +26,7 @@ namespace backend.API.Master.Controllers
         public async Task<IActionResult> GetRole()
         {
 
-            var data = await _repository.GetRolesAsync();
+            var data = await _service.GetAllAsync();
 
             if (data == null || !data.Any())
             {
@@ -42,7 +44,8 @@ namespace backend.API.Master.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool exists = await _repository.RoleExistsByNameAsync(model.RoleName);
+            var exists = (await _service.GetAllAsync())
+                .Any(role => role.RoleName == model.RoleName);
 
             if (exists)
             {
@@ -53,7 +56,7 @@ namespace backend.API.Master.Controllers
                 });
             }
 
-            var role = await _repository.CreateRoleAsync(model);
+            var role = await _service.CreateAsync(model);
 
             return Ok(new
             {
@@ -70,9 +73,9 @@ namespace backend.API.Master.Controllers
                 return BadRequest(ModelState);
 
             // Check if the role exists
-            var existRole = await _repository.RoleExistsAsync(model.RoleId);
+            var existRole = await _service.GetByIdAsync(model.RoleId);
 
-            if (!existRole)
+            if (existRole == null)
             {
                 return NotFound(new
                 {
@@ -83,7 +86,7 @@ namespace backend.API.Master.Controllers
 
             // Check if another role already has the same name
 
-            var updatedRole = await _repository.UpdateRoleAsync(model);
+            var updatedRole = await _service.UpdateAsync(model);
 
             return Ok(new
             {

@@ -10,9 +10,9 @@ namespace backend.Core.DTOs
 {
     public class LicenseApplicationUploadedDocumentDto
     {
-        //public string ApplicationIdNo { get; set; } = string.Empty;
+        public string ApplicationIdNo { get; set; } = string.Empty;
 
-        //public string? MobileNo { get; set; }
+        public string? MobileNo { get; set; }
 
         public string? ApplicantSl { get; set; }
 
@@ -20,13 +20,13 @@ namespace backend.Core.DTOs
 
         public string? DocSl { get; set; }
 
-        public IFormFile? DocumentFile { get; set; }
+
 
         public string? DocStatus { get; set; }
 
         public string? MobileNoReleaseStatus { get; set; }
 
-        public bool? IsValid { get; set; }
+        public string? IsValid { get; set; }
 
         public string? Remarks { get; set; }
 
@@ -36,7 +36,15 @@ namespace backend.Core.DTOs
 
         public string? LicenseeIdNo { get; set; }
 
-          public IFormFile? DocUrl { get; set; }
+       // public IFormFile? DocUrl { get; set; }
+
+
+        public string? DocUrl { get; set; }       // ✅ GET filename
+        public IFormFile? DocumentFile { get; set; } // ✅ POST upload
+
+
+        // public IFormFile? DocUrl { get; set; }
+
 
 
 

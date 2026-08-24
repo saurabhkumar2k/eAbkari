@@ -7,6 +7,7 @@ namespace backend.Application.Interfaces.License
         Task<string> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto);
         Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId);
 
-         Task<string> SubmitApplication(string applicationIdNo, string applicationStatus);
+        Task<string> SubmitApplication(string applicationIdNo, string applicationStatus);
+
     }
 }

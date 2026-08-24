@@ -16,7 +16,7 @@ namespace backend.Core.DTOs
 
         public string? LicenseeCatDesc { get; set; }
 
-        
+        public string CatCode { get; set; } = string.Empty;
 
 
     }

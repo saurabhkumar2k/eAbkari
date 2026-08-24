@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useNavigate } from "react-router-dom";
 import {
   ShieldSvg,
   UserSvg,
@@ -8,39 +9,72 @@ import {
 import DepartmentHeader from "../DepartmentHeader.jsx";
 
 export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
+  
+  const DEPT_LOGIN_API_URL = 'http://localhost:5214/api/Login/DeptLogin';
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     const trimmedId = userId.trim();
     const cleanIdUpper = trimmedId.toUpperCase();
+    try {
+      const response = await fetch(DEPT_LOGIN_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: userId.trim(),
+          password: password.trim()
+          })
+      });
 
-    // Check Password
-    if (password !== 'Test@1234') {
-      setError('Invalid password. Please enter the correct password (Test@1234).');
-      return;
-    }
+    
 
-    // Check User ID condition
-    if (cleanIdUpper === 'DA') {
-      if (onLoginSuccess) {
-        onLoginSuccess('DA');
-      } else {
-        window.location.href = '/dadashboard';
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
       }
-    } else if (cleanIdUpper === 'ADMIN') {
-      if (onLoginSuccess) {
-        onLoginSuccess('Admin');
+
+      console.log("API Response:", data);
+
+      // // Check Password
+      // if (password !== 'Test@1234') {
+      //   setError('Invalid password. Please enter the correct password (Test@1234).');
+      //   return;
+      // }
+
+      // Check User ID condition
+      if (data.userRole.toUpperCase() === 'DA') {
+        if (onLoginSuccess) {
+          onLoginSuccess('DA');
+        } else {
+          window.location.href = '/dadashboard';
+        }
+      } else if (data.userRole.toUpperCase() === 'ADMIN') {
+        if (onLoginSuccess) {
+          onLoginSuccess('Admin');
+        } else {
+          window.location.href = '/departmentdashboard';
+        }
       } else {
-        window.location.href = '/departmentdashboard';
+        setError("Invalid Officer ID. Enter 'DA' for DADashbord or 'Admin' for DepartmentDashboard.");
       }
-    } else {
-      setError("Invalid Officer ID. Enter 'DA' for DADashbord or 'Admin' for DepartmentDashboard.");
+    } catch (error) {
+      
     }
+    //API Call
+    
   };
 
   const handleQuickFill = (id, pwd) => {
@@ -62,13 +96,12 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
               <h1 className="dept-login-title">Department Portal</h1>
               <p className="dept-login-subtitle">Internal Access Only - Authorized Personnel Only</p>
             </div>
-
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-300 text-red-700 text-xs font-semibold rounded text-center">
                 {error}
               </div>
             )}
-
+            <br />
             <form onSubmit={handleSubmit} className="dept-login-form">
               <div className="form-group">
                 <label className="dept-input-label">Officer ID / Email</label>

@@ -3,6 +3,7 @@ using backend.Core.Entities;
 using backend.Core.Interfaces;
 using backend.Infrastructure.Data;
 using backend.Core.Entities.Department;
+using backend.Core.DTOs;
 
 namespace backend.Infrastructure.Repositories
 {
@@ -69,11 +70,42 @@ namespace backend.Infrastructure.Repositories
         }
 
 
-        public async Task<DepartmentUsers?> AuthenticateDeptUserAsync(string userId, string password)
+        public async Task<DepartmentUserLoginDto?> AuthenticateDeptUserAsync(string userId, string password)
         {
 
+
+            //var DepartmentUserLoginDto = await _context.DepartmentUsers
+            //    .Include(x => x.DeptUserRoles)
+            //    .ThenInclude(x => x.MstRoles)
+            //    .FirstOrDefaultAsync(x => x.UserId == userId && x.PasswordHash == password);
+
+            //return (DepartmentUserLoginDto.UserId, DepartmentUserLoginDto.UserName, DepartmentUserLoginDto.rolename, DepartmentUserLoginDto)
+
+            var user = await _context.DepartmentUsers
+       .Include(x => x.DeptUserRoles)
+       .ThenInclude(x => x.MstRoles)
+       .FirstOrDefaultAsync(x =>
+           x.UserId == userId &&
+           x.PasswordHash == password);
+            
+            
+            if (user == null)
+                return null;
+
+            var userRole = user.DeptUserRoles.FirstOrDefault();
+
+
             return await _context.DepartmentUsers
-                .FirstOrDefaultAsync(u => u.UserId == userId && u.PasswordHash == password);
+                .Where(x => x.UserId == userId && x.PasswordHash == password)
+                .Select(x => new DepartmentUserLoginDto
+                {
+                    UserId = x.UserId,
+                    UserName = x.UserName,
+                    RoleName = x.DeptUserRoles
+                                .Select(r => r.MstRoles.RoleName)
+                                .FirstOrDefault()
+                })
+                .FirstOrDefaultAsync();
 
         }
 

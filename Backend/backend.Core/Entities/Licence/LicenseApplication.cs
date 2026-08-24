@@ -225,6 +225,7 @@ namespace backend.Core.Entities.Licence
 
         public string? IsApplicationCompleted { get; set; }
 
+       // public int CurrentStep { get; set; } = 1;
         public string? ApplicationFlag { get; set; }
 
         public string? RejectExcomRemark { get; set; }

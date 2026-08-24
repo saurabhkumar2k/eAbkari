@@ -543,6 +543,8 @@ namespace backend.Infrastructure.Repositories
 
                     ApplicationStatus = la.ApplicationStatus,
 
+                    CatCode=la.CatCode,
+
                     //CurrentStage = la.CurrentStage
                 }
 

@@ -16,6 +16,11 @@ using backend.Infrastructure.Repositories.License;
 using Microsoft.Extensions.FileProviders;
 using backend.Application.Interfaces.Department;
 using backend.Application.Services.Department;
+using backend.Application.Interfaces.ApplicationFlow;
+using backend.Application.Services.ApplicationFlow;
+using backend.Core.Interfaces.ApplicationFlow;
+using backend.Infrastructure.Repositories.ApplicationFlow;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,9 +78,16 @@ builder.Services.AddScoped<ICommonHCRServices, CommonHCRServices>();
 builder.Services.AddScoped<ICommonLicenseServices, CommonLicenseServices>();
 builder.Services.AddScoped<ICommonLicenseRepository, CommonLicenseRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
+builder.Services.AddScoped<IApplicationProgressRepository, ApplicationProgressRepository>();
+
 builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
 builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
 builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
+builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
+builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
+
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -107,16 +119,27 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
+
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+//    RequestPath = "/Documents"
+//});
+
+//app.UseStaticFiles();
 
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Documents")),
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Documents"
+        )
+    ),
     RequestPath = "/Documents"
 });
-
-
 
 
 app.UseRouting();

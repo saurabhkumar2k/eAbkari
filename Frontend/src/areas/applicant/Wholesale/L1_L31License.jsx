@@ -57,7 +57,7 @@ export default function L1AndL31License({ ownerType,catCode,onBackToSelect, show
 
   const [applicant, setApplicant] = useState(createApplicant());
 
-
+const [warehouse, setWarehouse] = useState()
 
 const [applicantDistricts, setApplicantDistricts] = useState([]);
 const [warehouseDistricts, setWarehouseDistricts] = useState([]);
@@ -78,10 +78,10 @@ const [applicationId, setApplicationId] = useState(null);
 
   const [innerStep, setInnerStep] = useState(1);
 
-  const [fssai, setFssai] = useState({ FSSAILicenceNo: "", FSSAILicenceStartDate: "", FSSAILicenceEndDate: "" });
-  const [vat, setVat] = useState({ VATGSTCertNo: "", VATGSTCertEnddate: "" });
-  const [distillery, setDistillery] = useState({ DistilleryLicNo: "", DistilleryLicEnddate: "" });
-  const [bwh, setBwh] = useState({ BWHInsuranceEndDate: "", BWHRentAgreementEndDate: "",BWHInsuranceNo: "",BWHLeaseRentAgreementNo:"" });
+  const [fssai, setFssai] = useState({ fssaiLicenceNo: "", fssaiLicenceStartDate: "", fssaiLicenceEndDate: "" });
+  const [vat, setVat] = useState({ vatGstCertNo: "", vatGstCertEnddate: "" });
+  const [distillery, setDistillery] = useState({ distilleryLicNo: "", distilleryLicEnddate: "" });
+  const [bwh, setBwh] = useState({ bwhInsuranceEndDate: "", bwhRentAgreementEndDate: "",bwhInsuranceNo: "",bwhLeaseRentAgreementNo:"" });
 
  const [nominee, setNominee] = useState({
      isExciseNominee: "0",
@@ -205,12 +205,12 @@ if (field === "warehouseDistrict") {
     fetchSubDivisions(value);   // 👈 Add this
   }
 
-if (field === "WarehouseSubDivision") {
+if (field === "warehouseSubDivision") {
 fetchPoliceStations(applicant.warehouseDistrict);   // 👈 Add this
 
 }
 
- if (field === "ConstitutionType") {
+ if (field === "constitutionType") {
     console.log("Selected:", value);
   }
 
@@ -347,6 +347,7 @@ const fetchApplicantSubdivisions = async (districtCode) => {
 
 
 const fetchPoliceStations = async (districtCode) => {
+  debugger;
   try {
     const res = await fetch(
       `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
@@ -372,6 +373,7 @@ const fetchPoliceStations = async (districtCode) => {
 
 
 const fetchSubDivisions = async (districtCode) => {
+  debugger;
   try {
     const res = await fetch(
       `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
@@ -516,60 +518,522 @@ await fetchApplicantSubdivisions(data.district);
   }
 };
 
+// useEffect(() => {
+//     const applicationId = localStorage.getItem("applicationId");
+
+//     console.log("ApplicationId:", applicationId);
+
+//     if (applicationId) {
+//         console.log("Calling Warehouse API...");
+//         loadWarehouseData(applicationId);
+//     }
+// }, []);
+
+useEffect(() => {
+  debugger;
+  console.log("🔥 L1_L31License mounted");
+
+  const applicationId =
+    localStorage.getItem("applicationId");
+
+  console.log(
+    "📌 applicationId:",
+    applicationId
+  );
+
+  if (!applicationId) {
+    console.log(
+      "❌ applicationId nahi mila"
+    );
+    return;
+  }
+
+  loadWarehouseData(applicationId);
+}, []);
+
+useEffect(() => {
+  debugger;
+    const applicationId = localStorage.getItem("applicationId");
+
+    console.log("ApplicationId:", applicationId);
+
+    if (applicationId) {
+        console.log("Calling Company Details API...");
+        loadCompanyDetails(applicationId);
+    }
+}, []);
 
 
 
-  
-  const validateStep = (step) => {
-    const errors = {};
-    if (step === 1) {
-      if (!formData.companyName || !formData.companyName.trim()) {
-        errors.companyName = "Name of Company/Firm/LLP/Society/Individual is required";
-      }
-      if (!formData.address1 || !formData.address1.trim()) {
-        errors.address1 = "Address 1 is required";
-      }
-      if (!formData.pin || formData.pin.length !== 6) {
-        errors.pin = "Enter a valid 6-digit PIN code";
-      }
-      if (!formData.email || !formData.email.includes("@")) {
-        errors.email = "Enter a valid email address";
-      }
-      if (!formData.mobile || formData.mobile.length < 10) {
-        errors.mobile = "Enter a valid mobile number";
-      }
-      if (!formData.panNo || formData.panNo.length !== 10) {
-        errors.panNo = "Enter a valid 10-character PAN number";
-      }
-    } else if (step === 2) {
-      if (!formData.warehouseName || !formData.warehouseName.trim()) {
-        errors.warehouseName = "Warehouse Name is required";
-      }
-      if (!formData.warehouseAddress || !formData.warehouseAddress.trim()) {
-        errors.warehouseAddress = "Warehouse Address is required";
-      }
-      if (!formData.warehouseSize || Number(formData.warehouseSize) < 500) {
-        errors.warehouseSize = "Warehouse area must be at least 500 Sq. Ft";
-      }
-    } else if (step === 3) {
-      if (!formData.annualTurnover || Number(formData.annualTurnover) <= 0) {
-        errors.annualTurnover = "Prior and anticipated annual turnover must be positive";
-      }
-      if (!formData.bankGuaranteeRef || !formData.bankGuaranteeRef.trim()) {
-        errors.bankGuaranteeRef = "Bank Guarantee / Security reference number is required";
-      }
-    } else if (step === 6) {
-      if (!formData.undertakingAccept) {
-        errors.undertakingAccept = "You must select and accept the regulatory undertaking declarations";
-      }
-      if (!formData.signatureName || !formData.signatureName.trim()) {
-        errors.signatureName = "Authorized signatory signature name is required";
-      }
+const loadWarehouseData = async (applicationId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5214/api/ApplicationProgress/GetWarehouseByApplicationId/${applicationId}`
+    );
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+ console.log(data);
+    console.log("Warehouse State:", data);
+
+
+   // 2. State ke basis par District list
+    await fetchDistricts(
+      (data.stateCode || "").trim(),
+      "warehouse"
+    );
+
+//     const subDivisionCode = String(
+//   data.warehouseSubDivision || ""
+// ).trim();
+
+  //await fetchDistricts(data.stateUT, "applicant");
+await fetchSubDivisions(data.warehouseDistrict);
+
+
+await fetchPoliceStations(data.warehouseDistrict); 
+
+setApplicant((prev) => ({
+    ...prev,
+    warehouseName: data.warehouseName,
+    warehouseAddress1: data.warehouseAddress1,
+    warehouseAddress2: data.warehouseAddress2,
+//  warehouseState: stateCode,
+//   warehouseDistrict: districtCode,
+
+      warehouseState: (data.warehouseState || "").trim(),
+  warehouseSubDivision: (data.warehouseSubDivision || "").trim(),
+    // warehouseState: data.warehouseState,
+     warehouseDistrict: data.warehouseDistrict,
+    // warehouseSubDivision: data.warehouseSubDivision,
+    warehousePin: data.warehousePin,
+    warehousePoliceStation: data.warehousePoliceStation,
+    warehouseMobile: data.warehouseMobile,
+    warehouseEmail: data.warehouseEmail,
+
+    leasePremise: data.leasePremise,
+    leaseRegistration: data.leaseRegistration,
+    leaseRegistrationDate: data.leaseRegistrationDate
+        ? data.leaseRegistrationDate.split("T")[0]
+        : "",
+
+    leaseRegistrationExpiryDate: data.leaseRegistrationExpiryDate
+        ? data.leaseRegistrationExpiryDate.split("T")[0]
+        : "",
+
+    architectRegistrationNo: data.architectRegistrationNo,
+    architectRegistrationNoValidUpto: data.architectRegistrationNoValidUpto
+        ? data.architectRegistrationNoValidUpto.split("T")[0]
+        : "",
+
+    carpetAreaofLicensePremise: data.carpetAreaofLicensePremise,
+    superAreaofLicensePremise: data.superAreaofLicensePremise,
+    distanceofDistilleryCP: data.distanceofDistilleryCP,
+    hoursofSale: data.hoursofSale,
+    licenseYear: data.licenseYear,
+}));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+// const loadWarehouseData = async (applicationId) => {
+//   debugger;
+
+//   console.log("🚀 Warehouse GET function called");
+//   console.log("📌 ApplicationId:", applicationId);
+
+//   try {
+//     const url =
+//       `http://localhost:5214/api/ApplicationProgress/GetWarehouseByApplicationId/${applicationId}`;
+
+//     console.log("🌐 Warehouse GET URL:", url);
+
+//     const response = await fetch(url);
+
+//     console.log("📡 Warehouse API response:", response);
+//     console.log("📡 Status:", response.status);
+//     console.log("📡 OK:", response.ok);
+
+//     if (!response.ok) {
+//       console.error(
+//         "❌ Warehouse API failed:",
+//         response.status
+//       );
+//       return;
+//     }
+
+//     const data = await response.json();
+
+//     console.log("✅ Warehouse GET DATA:", data);
+
+//   } catch (error) {
+//     console.error(
+//       "❌ Warehouse GET ERROR:",
+//       error
+//     );
+//   }
+// };
+
+
+
+
+const loadCompanyDetails = async (applicationId) => {
+  debugger;
+
+  try {
+    console.log("Company API ApplicationId:", applicationId);
+
+    const response = await fetch(
+      `http://localhost:5214/api/ApplicationProgress/GetCompanyDetailsByApplicationId/${applicationId}`
+    );
+
+    console.log("Company API Status:", response.status);
+    console.log("Company API OK:", response.ok);
+
+    if (!response.ok) {
+      console.log(
+        "Company Details API failed:",
+        response.status
+      );
+      return;
     }
 
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    const data = await response.json();
+debugger;
+console.log("Company Details Data:", data);
+
+// -------------------------------
+// COMPANY / APPLICANT
+// -------------------------------
+
+setApplicant((prev) => ({
+  ...prev,
+
+  applicationIdNo: data.applicationIdNo || "",
+
+  registrationNo: data.registrationNo || "",
+  companyName: data.companyName || "",
+  constitutionType: data.constitutionType || "",
+
+  regDate: data.regDate
+    ? data.regDate.split("T")[0]
+    : "",
+
+  companyPAN: data.companyPAN || "",
+  vatno: data.vatno || "",
+  cinno: data.cinno || "",
+
+  isExciseNominee: data.isExciseNominee || "",
+  exciseNomineeName: data.exciseNomineeName || "",
+  exciseNomineeAddress: data.exciseNomineeAddress || "",
+  exciseNomineeEmailID: data.exciseNomineeEmailID || "",
+  exciseNomineeMobileNo: data.exciseNomineeMobileNo || "",
+  exciseNomineePAN: data.exciseNomineePAN || "",
+  exciseNomineePanImage: data.exciseNomineePanImage || "",
+
+
+
+
+  bwhInsuranceEndDate: data.bwhInsuranceEndDate
+    ? data.bwhInsuranceEndDate.split("T")[0]
+    : "",
+
+  bwhRentAgreementEndDate: data.bwhRentAgreementEndDate
+    ? data.bwhRentAgreementEndDate.split("T")[0]
+    : "",
+
+  bwhLeaseRentAgreementNo:
+    data.bwhLeaseRentAgreementNo || "",
+
+  bwhInsuranceNo:
+    data.bwhInsuranceNo || "",
+
+
+
+ directors:
+        (data.companyPartnersDetails || []).map(
+          (partner) => ({
+            ID:
+              partner.id ?? null,
+
+            PName:
+              partner.pName || "",
+
+            PPerShare:
+              partner.pPerShare || "",
+
+            PPanNo:
+              partner.pPanNo || "",
+
+            PExciseNominee:
+              partner.pExciseNominee || "",
+
+            DINNo:
+              partner.dinNo || "",
+
+            panFile:
+              null,
+
+            addressFile:
+              null,
+
+            PanFileUploaded:
+              partner.panFileUploaded || "",
+
+            AddressFileUploaded:
+              partner.addressFileUploaded || "",
+
+
+
+
+              
+          })
+        )
+
+
+
+
+
+
+}));
+
+// -------------------------------
+// FSSAI STATE
+// -------------------------------
+
+setFssai((prev) => ({
+  ...prev,
+
+  fssaiLicenceNo:
+    data.fssaiLicenceNo ?? "",
+
+  fssaiLicenceStartDate:
+    data.fssaiLicenceStartDate
+      ? data.fssaiLicenceStartDate.split("T")[0]
+      : "",
+
+  fssaiLicenceEndDate:
+    data.fssaiLicenceEndDate
+      ? data.fssaiLicenceEndDate.split("T")[0]
+      : "",
+}));
+
+
+console.log("Distillery API:", {
+  no: data.distilleryLicNo,
+  enddate: data.distilleryLicEnddate
+});
+
+setDistillery((prev) => ({
+  ...prev,
+  distilleryLicNo: data.distilleryLicNo || "",
+  distilleryLicEnddate: data.distilleryLicEnddate
+    ? data.distilleryLicEnddate.split("T")[0]
+    : "",
+}));
+
+
+
+setVat((prev) => ({
+  ...prev,
+
+  vatGstCertNo: data.vatgstCertNo ?? "",
+
+  vatGstCertEnddate: data.vatgstCertEnddate
+    ? data.vatgstCertEnddate.split("T")[0]
+    : ""
+}));
+
+
+setBwh((prev) => ({
+  ...prev,
+
+  bwhInsuranceEndDate:
+    data.bwhInsuranceEndDate
+      ? data.bwhInsuranceEndDate.split("T")[0]
+      : "",
+
+bwhInsuranceNo:
+    data.bwhInsuranceNo ?? "",
+
+bwhRentAgreementEndDate:
+    data.bwhRentAgreementEndDate
+      ? data.bwhRentAgreementEndDate.split("T")[0]
+      : "",
+bwhLeaseRentAgreementNo:
+    data.bwhLeaseRentAgreementNo ?? ""
+
+}));
+
+
+setNominee((prev) => ({
+  ...prev,
+
+  exciseNomineeName:
+    data.exciseNomineeName || "",
+
+  exciseNomineeAddress:
+    data.exciseNomineeAddress || "",
+
+  exciseNomineeEmailID:
+    data.exciseNomineeEmailID || "",
+
+  exciseNomineeMobileNo:
+    data.exciseNomineeMobileNo || "",
+
+  exciseNomineePAN:
+    data.exciseNomineePAN || "",
+
+  exciseNomineePanImage:
+    data.exciseNomineePanImage || "",
+
+
+
+
+    
+}));
+
+
+
+console.log("FSSAI API No:", data.fssaiLicenceNo);
+
+  } catch (error) {
+    console.error(
+      "Company Details API Error:",
+      error
+    );
+  }
+};
+
+
+
+
+// const loadCompanyDetails = async (applicationId) => {
+//   debugger;
+//   try {
+//     const response = await fetch(
+//       `http://localhost:5214/api/ApplicationProgress/GetCompanyDetailsByApplicationId/${applicationId}`
+//     );
+
+//     if (!response.ok) {
+//       console.log("Company Details API:", response.status);
+//       return;
+//     }
+
+//     const data = await response.json();
+
+//     console.log("Company Details GET:", data);
+
+//     setApplicant((prev) => ({
+//       ...prev,
+
+//       applicationIdNo: data.applicationIdNo || "",
+
+//       registrationNo: data.registrationNo || "",
+//       companyName: data.companyName || "",
+//       constitutionType: data.constitutionType || "",
+//       regDate: data.regDate
+//         ? data.regDate.split("T")[0]
+//         : "",
+
+//       companyPAN: data.companyPAN || "",
+//       vatno: data.vatno || "",
+//       cinno: data.cinno || "",
+
+//       isExciseNominee: data.isExciseNominee || "",
+//       exciseNomineeName: data.exciseNomineeName || "",
+//       exciseNomineeAddress: data.exciseNomineeAddress || "",
+//       exciseNomineeEmailID: data.exciseNomineeEmailID || "",
+//       exciseNomineeMobileNo: data.exciseNomineeMobileNo || "",
+//       exciseNomineePAN: data.exciseNomineePAN || "",
+//       exciseNomineePanImage: data.exciseNomineePanImage || "",
+
+//       fssaiLicenceNo: data.fssaiLicenceNo || "",
+//       fssaiLicenceStartDate: data.fssaiLicenceStartDate
+//         ? data.fssaiLicenceStartDate.split("T")[0]
+//         : "",
+//       fssaiLicenceEndDate: data.fssaiLicenceEndDate
+//         ? data.fssaiLicenceEndDate.split("T")[0]
+//         : "",
+
+//       vatgstCertNo: data.vatgstCertNo || "",
+//       vatgstCertEnddate: data.vatgstCertEnddate
+//         ? data.vatgstCertEnddate.split("T")[0]
+//         : "",
+
+//       distilleryLicNo: data.distilleryLicNo || "",
+//       distilleryLicEnddate: data.distilleryLicEnddate
+//         ? data.distilleryLicEnddate.split("T")[0]
+//         : "",
+
+//       bwhInsuranceEndDate: data.bwhInsuranceEndDate
+//         ? data.bwhInsuranceEndDate.split("T")[0]
+//         : "",
+//       bwhRentAgreementEndDate: data.bwhRentAgreementEndDate
+//         ? data.bwhRentAgreementEndDate.split("T")[0]
+//         : "",
+//       bwhLeaseRentAgreementNo:
+//         data.bwhLeaseRentAgreementNo || "",
+//       bwhInsuranceNo:
+//         data.bwhInsuranceNo || ""
+//     }));
+
+//   } catch (error) {
+//     console.error("Company Details GET Error:", error);
+//   }
+// };
+
+  
+//   const loadWarehouseData = async () => {
+//     debugger;
+//   const applicationIdNo =
+//     localStorage.getItem("applicationId");
+
+//   console.log(
+//     "Warehouse ApplicationIdNo:",
+//     applicationIdNo
+//   );
+
+//   if (!applicationIdNo) {
+//     console.log("ApplicationIdNo not found");
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch(
+//       `http://localhost:5214/api/LicenseeCategories/GetWarehouseByApplicationId/${applicationIdNo}`
+//     );
+
+//     console.log(
+//       "Warehouse GET status:",
+//       response.status
+//     );
+
+//     if (!response.ok) {
+//       console.log("Warehouse GET failed");
+//       return;
+//     }
+
+//     const data = await response.json();
+
+//     console.log(
+//       "Warehouse Data:",
+//       data
+//     );
+
+//     // yahan setApplicant(...)
+    
+//   } catch (error) {
+//     console.error(
+//       "Warehouse GET Error:",
+//       error
+//     );
+//   }
+// };
 
   // const handleNextStep = () => {
   //   if (validateStep(currentStep)) {
@@ -584,6 +1048,148 @@ await fetchApplicantSubdivisions(data.district);
   //     if (showToast) showToast("Please review marked fields before advancing.", "error");
   //   }
   // };
+
+
+
+const validateStep = (step) => {
+  console.log("Validating step:", step);
+  return true;
+};
+
+
+
+
+
+
+
+const loadUploadedDocuments = async (applicationId) => {
+  debugger;
+
+  if (!applicationId) {
+    console.log("ApplicationId missing");
+    return;
+  }
+
+  try {
+    console.log(
+      "Loading documents for ApplicationId:",
+      applicationId
+    );
+
+    const response = await fetch(
+      `http://localhost:5214/api/ApplicationProgress/GetUploadedDocumentsByApplicationId/${applicationId}`
+    );
+
+    console.log(
+      "Documents API Status:",
+      response.status
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Documents API failed:",
+        response.status
+      );
+      return;
+    }
+
+    const data = await response.json();
+
+    console.log(
+      "Uploaded Documents API Response:",
+      data
+    );
+
+  const existingFiles = {};
+
+(data.documents || []).forEach((doc) => {
+
+  existingFiles[doc.docId] = {
+    existingFile: doc.docUrl,
+    file: null,
+    previewUrl: null,
+
+    documentId: doc.id,
+    applicationIdNo: doc.applicationIdNo,
+  };
+
+});
+
+console.log("Existing Files:", existingFiles);
+
+setUploadedFiles(existingFiles);
+
+  } catch (error) {
+    console.error(
+      "Load Documents Error:",
+      error
+    );
+  }
+};
+
+
+useEffect(() => {
+
+  const savedApplicationId =
+    localStorage.getItem("applicationId");
+
+  console.log(
+    "Saved ApplicationId:",
+    savedApplicationId
+  );
+
+  if (!savedApplicationId) {
+    console.log(
+      "ApplicationId not available"
+    );
+    return;
+  }
+
+  loadUploadedDocuments(
+    savedApplicationId
+  );
+
+}, []);
+
+
+
+
+
+
+
+
+
+
+
+
+const formatDateForApi = (value) => {
+  if (!value) return null;
+
+  if (value instanceof Date) {
+    return value.toISOString().split("T")[0];
+  }
+
+  const str = String(value).trim();
+
+  if (!str) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    return str.split("T")[0];
+  }
+
+  const parts = str.split("/");
+
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  return null;
+};
+
+
+
 
 
 const handleNextStep = async () => {
@@ -657,33 +1263,371 @@ debugger;
     }
 
 
-if (currentStep === 2 ) {
-debugger;
-
-const payload = {
-  ...applicant,
-  regId: localStorage.getItem("regId"),
- ApplicationIdNo: localStorage.getItem("applicationId"),
- CatCode:localStorage.getItem("catCode")
-};
+// if (currentStep === 2) {
+//   debugger;
 
 
-      const response = await fetch(
-        "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        }
-      );
+// console.log(
+//   "Architect Date:",
+//   applicant.architectRegistrationNoValidUpto
+// );
 
-      const data = await response.json();
+// console.log(
+//   "Formatted Architect Date:",
+//   formatDateForApi(
+//     applicant.architectRegistrationNoValidUpto
+//   )
+// );
 
-      console.log("Warehouse License Response:", data);
+// console.log("FINAL PAYLOAD:", payload);
 
+
+  
+// const payload = {
+//   ...applicant,
+
+//   regId: Number(localStorage.getItem("regId")),
+//   ApplicationIdNo: localStorage.getItem("applicationId"),
+//   CatCode: localStorage.getItem("catCode"),
+
+//   LeaseRegistrationDate: formatDateForApi(
+//     applicant.leaseRegistrationDate
+//   ),
+
+//   LeaseRegistrationExpiryDate: formatDateForApi(
+//     applicant.leaseRegistrationExpiryDate
+//   ),
+
+//   ArchitectRegistrationNoValidUpto:
+//     formatDateForApi(
+//       applicant.architectRegistrationNoValidUpto
+//     )
+// };
+
+//   console.log("Warehouse Payload:", payload);
+
+//   try {
+//     const response = await fetch(
+//       "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json"
+//         },
+//         body: JSON.stringify(payload)
+//       }
+//     );
+
+//     const data = await response.json();
+
+//     console.log("Warehouse Response:", data);
+
+//     if (!response.ok) {
+//       console.error("Warehouse API Error:", data);
+//       return;
+//     }
+
+//     setCurrentStep(3);
+
+//   } catch (error) {
+//     console.error("Warehouse API Error:", error);
+//   }
+// }
+
+
+if (currentStep === 2) {
+  debugger;
+
+  const applicationId =
+    localStorage.getItem("applicationId");
+
+  console.log(
+    "applicationId:",
+    applicationId
+  );
+
+  const payload = {
+    ...applicant,
+
+    RegId: Number(
+      localStorage.getItem("regId")
+    ),
+
+    ApplicationIdNo: applicationId,
+
+    CatCode:
+      localStorage.getItem("catCode"),
+
+    LeaseRegistrationDate:
+      formatDateForApi(
+        applicant.leaseRegistrationDate
+      ),
+
+    LeaseRegistrationExpiryDate:
+      formatDateForApi(
+        applicant.leaseRegistrationExpiryDate
+      ),
+
+    ArchitectRegistrationNoValidUpto:
+      formatDateForApi(
+        applicant.architectRegistrationNoValidUpto
+      ),
+
+ SuperAreaofLicensePremise:
+    applicant.superAreaofLicensePremise === ""
+      ? null
+      : Number(
+          applicant.superAreaofLicensePremise
+        ),
+
+ CarpetAreaofLicensePremise:
+    applicant.carpetAreaofLicensePremise === ""
+      ? null
+      : Number(
+          applicant.carpetAreaofLicensePremise
+        ),
+
+  DistanceofDistilleryCP:
+    applicant.distanceofDistilleryCP === ""
+      ? null
+      : Number(
+          applicant.distanceofDistilleryCP
+        ),
+    WarehouseState: String(
+      applicant.warehouseState || ""
+    ).trim(),
+
+    WarehouseDistrict: String(
+      applicant.warehouseDistrict || ""
+    ).trim(),
+
+    WarehouseSubDivision: String(
+      applicant.warehouseSubDivision || ""
+    ).trim(),
+
+    WarehousePoliceStation: String(
+      applicant.warehousePoliceStation || ""
+    ).trim()
+  };
+
+  console.log(
+    "Architect Date:",
+    applicant.architectRegistrationNoValidUpto
+  );
+
+  console.log(
+    "Formatted Architect Date:",
+    formatDateForApi(
+      applicant.architectRegistrationNoValidUpto
+    )
+  );
+
+  console.log(
+  "Super Area:",
+  payload.SuperAreaofLicensePremise,
+  typeof payload.SuperAreaofLicensePremise
+);
+
+  console.log(
+    "FINAL PAYLOAD:",
+    payload
+  );
+
+  const response = await fetch(
+    "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  console.log(
+    "Warehouse API Status:",
+    response.status
+  );
+
+  const data = await response.json();
+
+  console.log(
+    "Warehouse API Response:",
+    data
+  );
 }
+
+
+
+
+
+// if (currentStep === 3) {
+//   debugger;
+
+//   console.log("Directors:", applicant.directors);
+
+//   const formData = new FormData();
+
+
+
+// const payload = {
+//   ApplicationIdNo:
+//     localStorage.getItem("applicationId"),
+
+//   RegistrationNo:
+//     applicant.registrationNo || "",
+
+//   CompanyName:
+//     applicant.companyName || "",
+
+//   ConstitutionType:
+//     applicant.constitutionType || "",
+
+//   RegDate:
+//     applicant.regDate || null,
+
+//   CompanyPAN:
+//     applicant.companyPAN || "",
+
+//   VATNO:
+//     applicant.vatno || "",
+
+//   CINNO:
+//     applicant.cinno || "",
+
+//   IsExciseNominee:
+//     applicant.isExciseNominee || "",
+
+//   ExciseNomineeName:
+//     applicant.exciseNomineeName || "",
+
+//   ExciseNomineeAddress:
+//     applicant.exciseNomineeAddress || "",
+
+//   ExciseNomineeEmailID:
+//     applicant.exciseNomineeEmailID || "",
+
+//   ExciseNomineeMobileNo:
+//     applicant.exciseNomineeMobileNo || "",
+
+//   ExciseNomineePAN:
+//     applicant.exciseNomineePAN || "",
+
+//   FSSAILicenceNo:
+//     fssai.fssaiLicenceNo || "",
+
+//   FSSAILicenceStartDate:
+//     fssai.fssaiLicenceStartDate || null,
+
+//   FSSAILicenceEndDate:
+//     fssai.fssaiLicenceEndDate || null,
+
+//   VATGSTCertNo:
+//     vat.vatGstCertNo || "",
+
+//   VATGSTCertEnddate:
+//     vat.vatGstCertEndDate || null,
+
+//   DistilleryLicNo:
+//     distillery.distilleryLicNo || "",
+
+//   DistilleryLicEnddate:
+//     distillery.distilleryLicEndDate || null,
+
+//   BWHInsuranceEndDate:
+//     bwh.bwhInsuranceEndDate || null,
+
+//   BWHRentAgreementEndDate:
+//     bwh.bwhRentAgreementEndDate || null,
+
+//   BWHLeaseRentAgreementNo:
+//     bwh.bwhLeaseRentAgreementNo || "",
+
+//   BWHInsuranceNo:
+//     bwh.bwhInsuranceNo || ""
+// };
+
+
+
+
+
+
+
+//   // Append normal fields
+//   Object.keys(payload).forEach((key) => {
+//     // Skip file and list
+//     if (
+//       key !== "ExciseNomineePanImage" &&
+//       key !== "CompanyPartnersDetails"
+//     ) {
+//       formData.append(key, payload[key] ?? "");
+//     }
+//   });
+
+//   // Append file
+//   if (nominee.ExciseNomineePanImage) {
+//     formData.append(
+//       "ExciseNomineePanImage",
+//       nominee.ExciseNomineePanImage
+//     );
+//   }
+
+// applicant.directors.forEach((director, index) => {
+// debugger;
+//     formData.append(
+//         `CompanyPartnersDetails[${index}].PName`,
+//         director.PName || ""
+//     );
+
+//     formData.append(
+//         `CompanyPartnersDetails[${index}].PPerShare`,
+//         director.PPerShare || ""
+//     );
+
+//     formData.append(
+//         `CompanyPartnersDetails[${index}].PPanNo`,
+//         director.PPanNo || ""
+//     );
+
+//     formData.append(
+//         `CompanyPartnersDetails[${index}].PExciseNominee`,
+//         director.PExciseNominee || ""
+//     );
+
+// formData.append(
+//         `CompanyPartnersDetails[${index}].DINNo`,
+//         director.DINNo || ""
+//     );
+
+
+//     // PAN File
+//     if (director.panFile) {
+//         formData.append(
+//             `CompanyPartnersDetails[${index}].PanFile`,
+//             director.panFile
+//         );
+//     }
+//         if (director.addressFile) {
+//         formData.append(
+//             `CompanyPartnersDetails[${index}].addressFile`,
+//             director.addressFile
+//         );
+//     }
+// });
+
+//   const response = await fetch(
+//     "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+//     {
+//       method: "POST",
+//       body: formData
+//     }
+//   );
+
+//   const data = await response.json();
+
+//   console.log("Warehouse License Response:", data);
+// }
+
 
 if (currentStep === 3) {
   debugger;
@@ -692,80 +1636,211 @@ if (currentStep === 3) {
 
   const formData = new FormData();
 
-  // Merge all objects
+  // ---------------------------------------
+  // COMPANY + FSSAI + VAT + DISTILLERY + BWH
+  // ---------------------------------------
+
   const payload = {
-    ...applicant,
-    ...nominee,
-    ...fssai,
-    ...vat,
-    ...distillery,
-    ...bwh,
-    regId: localStorage.getItem("regId"),
-    ApplicationIdNo: localStorage.getItem("applicationId"),
-    CatCode: localStorage.getItem("catCode")
+    ApplicationIdNo:
+      localStorage.getItem("applicationId") || "",
+
+    RegistrationNo:
+      applicant.registrationNo || "",
+
+    CompanyName:
+      applicant.companyName || "",
+
+    ConstitutionType:
+      applicant.constitutionType || "",
+
+    RegDate:
+      applicant.regDate || "",
+
+    CompanyPAN:
+      applicant.companyPAN || "",
+
+    VATNO:
+      applicant.vatno || "",
+
+    CINNO:
+      applicant.cinno || "",
+
+    IsExciseNominee:
+      applicant.isExciseNominee || "",
+
+    ExciseNomineeName:
+      applicant.exciseNomineeName || "",
+
+    ExciseNomineeAddress:
+      applicant.exciseNomineeAddress || "",
+
+    ExciseNomineeEmailID:
+      applicant.exciseNomineeEmailID || "",
+
+    ExciseNomineeMobileNo:
+      applicant.exciseNomineeMobileNo || "",
+
+    ExciseNomineePAN:
+      applicant.exciseNomineePAN || "",
+
+    FSSAILicenceNo:
+      fssai.fssaiLicenceNo || "",
+
+    FSSAILicenceStartDate:
+      fssai.fssaiLicenceStartDate || "",
+
+    FSSAILicenceEndDate:
+      fssai.fssaiLicenceEndDate || "",
+
+    VATGSTCertNo:
+      vat.vatGstCertNo || "",
+
+    VATGSTCertEnddate:
+      vat.vatGstCertEndDate || "",
+
+    DistilleryLicNo:
+      distillery.distilleryLicNo || "",
+
+    DistilleryLicEnddate:
+      distillery.distilleryLicEnddate || "",
+
+    BWHInsuranceEndDate:
+      bwh.bwhInsuranceEndDate || "",
+
+    BWHRentAgreementEndDate:
+      bwh.bwhRentAgreementEndDate || "",
+
+    BWHLeaseRentAgreementNo:
+      bwh.bwhLeaseRentAgreementNo || "",
+
+    BWHInsuranceNo:
+      bwh.bwhInsuranceNo || "",
+      ExciseNomineeName:
+  nominee.exciseNomineeName || "",
+
+ExciseNomineeAddress:
+  nominee.exciseNomineeAddress || "",
+
+ExciseNomineeEmailID:
+  nominee.exciseNomineeEmailID || "",
+
+ExciseNomineeMobileNo:
+  nominee.exciseNomineeMobileNo || "",
+
+ExciseNomineePAN:
+  nominee.exciseNomineePAN || "",
   };
 
-  // Append normal fields
+  console.log("FINAL PAYLOAD:", payload);
+
+  // ---------------------------------------
+  // APPEND NORMAL FIELDS
+  // ---------------------------------------
+
   Object.keys(payload).forEach((key) => {
-    // Skip file and list
-    if (
-      key !== "ExciseNomineePanImage" &&
-      key !== "CompanyPartnersDetails"
-    ) {
-      formData.append(key, payload[key] ?? "");
-    }
+    formData.append(
+      key,
+      payload[key] ?? ""
+    );
   });
 
-  // Append file
-  if (nominee.ExciseNomineePanImage) {
+  // ---------------------------------------
+  // EXCISE NOMINEE PAN FILE
+  // ---------------------------------------
+
+console.log(
+  "PAN FILE BEFORE POST:",
+  nominee.exciseNomineePanImage
+);
+
+if (nominee?.exciseNomineePanImage) {
+  formData.append(
+    "ExciseNomineePanImage",
+    nominee.exciseNomineePanImage
+  );
+}
+
+console.log(
+  "PAN FILE IN FORMDATA:",
+  formData.get("ExciseNomineePanImage")
+);
+
+  // ---------------------------------------
+  // DIRECTORS / PARTNERS
+  // ---------------------------------------
+
+  (applicant.directors || []).forEach(
+    
+  (director, index) => {
+
     formData.append(
-      "ExciseNomineePanImage",
-      nominee.ExciseNomineePanImage
+      `CompanyPartnersDetails[${index}].ApplicationIdNo`,
+      localStorage.getItem("applicationId") || ""
     );
+
+    formData.append(
+      `CompanyPartnersDetails[${index}].PName`,
+      director.PName || ""
+    );
+
+    formData.append(
+      `CompanyPartnersDetails[${index}].PPerShare`,
+      director.PPerShare || ""
+    );
+
+    formData.append(
+      `CompanyPartnersDetails[${index}].PPanNo`,
+      director.PPanNo || ""
+    );
+
+    formData.append(
+      `CompanyPartnersDetails[${index}].PExciseNominee`,
+      director.PExciseNominee || ""
+    );
+
+    formData.append(
+      `CompanyPartnersDetails[${index}].DINNo`,
+      director.DINNo || ""
+    );
+
+    if (director.panFile) {
+      formData.append(
+        `CompanyPartnersDetails[${index}].PanFile`,
+        director.panFile
+      );
+    }
+
+    if (director.addressFile) {
+      formData.append(
+        `CompanyPartnersDetails[${index}].addressFile`,
+        director.addressFile
+      );
+    }
+  }
+);
+
+  // ---------------------------------------
+  // DEBUG FINAL FORMDATA
+  // ---------------------------------------
+
+  console.log(
+    "========== FINAL FORM DATA =========="
+  );
+
+  for (const [key, value] of formData.entries()) {
+
+    console.log(
+      key,
+      value instanceof File
+        ? `FILE: ${value.name}`
+        : value
+    );
+
   }
 
-applicant.directors.forEach((director, index) => {
-debugger;
-    formData.append(
-        `CompanyPartnersDetails[${index}].PName`,
-        director.PName || ""
-    );
-
-    formData.append(
-        `CompanyPartnersDetails[${index}].PPerShare`,
-        director.PPerShare || ""
-    );
-
-    formData.append(
-        `CompanyPartnersDetails[${index}].PPanNo`,
-        director.PPanNo || ""
-    );
-
-    formData.append(
-        `CompanyPartnersDetails[${index}].PExciseNominee`,
-        director.PExciseNominee || ""
-    );
-
-formData.append(
-        `CompanyPartnersDetails[${index}].DINNo`,
-        director.DINNo || ""
-    );
-
-
-    // PAN File
-    if (director.panFile) {
-        formData.append(
-            `CompanyPartnersDetails[${index}].PanFile`,
-            director.panFile
-        );
-    }
-        if (director.addressFile) {
-        formData.append(
-            `CompanyPartnersDetails[${index}].addressFile`,
-            director.addressFile
-        );
-    }
-});
+  // ---------------------------------------
+  // POST
+  // ---------------------------------------
 
   const response = await fetch(
     "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
@@ -775,10 +1850,32 @@ formData.append(
     }
   );
 
+  console.log(
+    "Company POST Status:",
+    response.status
+  );
+
   const data = await response.json();
 
-  console.log("Warehouse License Response:", data);
+  console.log(
+    "Company POST Response:",
+    data
+  );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if (currentStep === 4) {
@@ -917,17 +2014,19 @@ if (currentStep === 5) {
 
 
 
-    if (currentStep < 6) {
-      setCurrentStep(currentStep + 1);
+if (currentStep < 6) {
+  setCurrentStep(currentStep + 1);
 
-      if (showToast) {
-        showToast(
-          `Step ${currentStep} completed successfully!`
-        );
-      }
-    } else {
-      handleFinalSubmission();
-    }
+  if (showToast) {
+    showToast(
+      `Step ${currentStep} completed successfully!`
+    );
+  }
+} else {
+  console.log("🔥 ELSE HIT - calling final submission");
+
+  handleFinalSubmission();
+}
 
   } catch (error) {
     console.error(error);
@@ -945,16 +2044,74 @@ if (currentStep === 5) {
 
 
 
-
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  const handleFinalSubmission = () => {
-    const appNo = `AP-L1L31-${Math.floor(100000 + Math.random() * 900000)}`;
-    const feeAmount = 850000; // 8.5 Lakhs combined fee
+
+
+const handleFinalSubmission = async () => {
+  debugger;
+  console.log("🔥 FINAL SUBMISSION HIT");
+
+  const applicationId =
+    localStorage.getItem("applicationId");
+
+  console.log("ApplicationId:", applicationId);
+
+  if (!applicationId) {
+    alert("Application ID not found");
+    return;
+  }
+
+  try {
+    console.log("🚀 Calling API...");
+
+    const response = await fetch(
+      "http://localhost:5214/api/ApplicationProgress/UpdateApplicationStatus",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          applicationIdNo: applicationId,
+          applicationStatus: "S",
+        }),
+      }
+    );
+
+    console.log(
+      "API Response Status:",
+      response.status
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      console.error(
+        "❌ API Error:",
+        errorText
+      );
+
+      return;
+    }
+
+    const data = await response.json();
+
+    console.log(
+      "✅ Status Updated:",
+      data
+    );
+
+    // Existing receipt
+    const appNo =
+      `AP-L1L31-${Math.floor(
+        100000 + Math.random() * 900000
+      )}`;
+
     const receipt = {
       applicationNo: appNo,
       applicantName: formData.applicantName,
@@ -962,17 +2119,34 @@ if (currentStep === 5) {
       exciseFee: "₹ 8,50,000",
       bondGuarantee: "₹ 50,000",
       totalFeePaid: "₹ 9,00,000",
-      dateFiled: new Date().toLocaleDateString("en-IN"),
-      warehouseAddress: formData.warehouseAddress,
+      dateFiled:
+        new Date().toLocaleDateString("en-IN"),
+      warehouseAddress:
+        formData.warehouseAddress,
       pincode: formData.pin,
       district: formData.district,
-      status: "Filing Registered"
+      status: "Filing Registered",
     };
 
     setReceiptData(receipt);
     setSubmitSuccess(true);
-    if (showToast) showToast("Integrated L-1 & L-31 Excise application docket registered successfully!");
-  };
+
+    if (showToast) {
+      showToast(
+        "Integrated L-1 & L-31 Excise application docket registered successfully!"
+      );
+    }
+
+  } catch (error) {
+    console.error(
+      "❌ Final Submission Error:",
+      error
+    );
+  }
+};
+
+
+ 
 
   const triggerMockPrint = () => {
     if (showToast) showToast("Printing license application dossier to connected local PDF writer...", "success");
@@ -1105,9 +2279,9 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={applicant.CompanyName || ""}
+          value={applicant.companyName || ""}
           onChange={(e) =>
-            handleApplicantChange("CompanyName", e.target.value)
+            handleApplicantChange("companyName", e.target.value)
           }
         />
       </div>
@@ -1123,9 +2297,9 @@ if (currentStep === 5) {
 
         <select
           className="reg-select"
-          value={applicant.ConstitutionType || ""}
+          value={applicant.constitutionType || ""}
           onChange={(e) =>
-            handleApplicantChange("ConstitutionType", e.target.value)
+            handleApplicantChange("constitutionType", e.target.value)
           }
         >
           <option value="">Select</option>
@@ -1147,7 +2321,7 @@ if (currentStep === 5) {
     </div>
 
     {/* CIN */}
-    {applicant.ConstitutionType === "01" && (
+    {applicant.constitutionType === "01" && (
       <div className="reg-field">
         <label className="reg-label">CIN No.(in case of Company)</label>
         <div className="reg-input-group">
@@ -1158,9 +2332,9 @@ if (currentStep === 5) {
           <input
             type="text"
             className="reg-input"
-            value={applicant.CINNO || ""}
+            value={applicant.cinNo || ""}
             onChange={(e) =>
-              handleApplicantChange("CINNO", e.target.value)
+              handleApplicantChange("cinNo", e.target.value)
             }
           />
         </div>
@@ -1178,9 +2352,9 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={applicant.RegistrationNo || ""}
+          value={applicant.registrationNo || ""}
           onChange={(e) =>
-            handleApplicantChange("RegistrationNo", e.target.value)
+            handleApplicantChange("registrationNo", e.target.value)
           }
         />
       </div>
@@ -1197,9 +2371,9 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={applicant.RegDate || ""}
+          value={applicant.regDate || ""}
           onChange={(e) =>
-            handleApplicantChange("RegDate", e.target.value)
+            handleApplicantChange("regDate", e.target.value)
           }
         />
       </div>
@@ -1216,10 +2390,10 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={applicant.companyPan || ""}
+          value={applicant.companyPAN || ""}
           onChange={(e) =>
             handleApplicantChange(
-              "companyPan",
+              "companyPAN",
               e.target.value.toUpperCase()
             )
           }
@@ -1238,9 +2412,9 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={applicant.vatNo || ""}
+          value={applicant.vatno || ""}
           onChange={(e) =>
-            handleApplicantChange("vatNo", e.target.value)
+            handleApplicantChange("vatno", e.target.value)
           }
         />
       </div>
@@ -1255,7 +2429,7 @@ if (currentStep === 5) {
 
 <DirectorsList
   directors={applicant.directors || []}
-  ConstitutionType={applicant.ConstitutionType}
+  ConstitutionType={applicant.constitutionType}
   onChange={handleDirectorChange}
   onAdd={addRow}
   onDelete={deleteRow}
@@ -1333,11 +2507,11 @@ if (currentStep === 5) {
 
     <input
       className="reg-input"
-      value={nominee.ExciseNomineeName}
+      value={nominee.exciseNomineeName}
       onChange={(e) =>
         setNominee({
           ...nominee,
-          ExciseNomineeName: e.target.value,
+          exciseNomineeName: e.target.value,
         })
       }
     />
@@ -1354,11 +2528,11 @@ if (currentStep === 5) {
 
     <input
       className="reg-input"
-      value={nominee.address}
+      value={nominee.exciseNomineeAddress}
       onChange={(e) =>
         setNominee({
           ...nominee,
-          address: e.target.value,
+          exciseNomineeAddress: e.target.value,
         })
       }
     />
@@ -1376,11 +2550,11 @@ if (currentStep === 5) {
     <input
       type="email"
       className="reg-input"
-      value={nominee.ExciseNomineeEmailID}
+      value={nominee.exciseNomineeEmailID}
       onChange={(e) =>
         setNominee({
           ...nominee,
-          ExciseNomineeEmailID: e.target.value,
+          exciseNomineeEmailID: e.target.value,
         })
       }
     />
@@ -1399,11 +2573,11 @@ if (currentStep === 5) {
     <input
       className="reg-input"
       maxLength={10}
-      value={nominee.ExciseNomineeMobileNo}
+      value={nominee.exciseNomineeMobileNo}
       onChange={(e) =>
         setNominee({
           ...nominee,
-          ExciseNomineeMobileNo: e.target.value.replace(/\D/g, ""),
+          exciseNomineeMobileNo: e.target.value.replace(/\D/g, ""),
         })
       }
     />
@@ -1421,11 +2595,11 @@ if (currentStep === 5) {
 
     <input
       className="reg-input"
-      value={nominee.ExciseNomineePAN || ""}
+      value={nominee.exciseNomineePAN || ""}
       onChange={(e) =>
         setNominee({
           ...nominee,
-          ExciseNomineePAN: e.target.value.toUpperCase(),
+          exciseNomineePAN: e.target.value.toUpperCase(),
         })
       }
     />
@@ -1441,7 +2615,7 @@ if (currentStep === 5) {
       <Upload className="w-4 h-4 text-blue-600" />
     </div>
 
-    {!nominee.ExciseNomineePanImage ? (
+    {!nominee.exciseNomineePanImage ? (
       <label
         className="reg-input"
         style={{
@@ -1460,7 +2634,7 @@ if (currentStep === 5) {
           onChange={(e) =>
             setNominee({
               ...nominee,
-              ExciseNomineePanImage: e.target.files?.[0] || null,
+              exciseNomineePanImage: e.target.files?.[0] || null,
             })
           }
         />
@@ -1469,7 +2643,7 @@ if (currentStep === 5) {
       <>
         <input
           className="reg-input"
-          value={nominee.ExciseNomineePanImage.name}
+          value={nominee.exciseNomineePanImage.name}
           readOnly
         />
 
@@ -1485,7 +2659,7 @@ if (currentStep === 5) {
             className="btn btn-light"
             onClick={() =>
               window.open(
-                URL.createObjectURL(nominee.ExciseNomineePanImage),
+                URL.createObjectURL(nominee.exciseNomineePanImage),
                 "_blank"
               )
             }
@@ -1503,7 +2677,7 @@ if (currentStep === 5) {
               onChange={(e) =>
                 setNominee({
                   ...nominee,
-                  ExciseNomineePanImage: e.target.files?.[0] || null,
+                  exciseNomineePanImage: e.target.files?.[0] || null,
                 })
               }
             />
@@ -1515,7 +2689,7 @@ if (currentStep === 5) {
             onClick={() =>
               setNominee({
                 ...nominee,
-                ExciseNomineePanImage: null,
+                exciseNomineePanImage: null,
               })
             }
           >
@@ -1554,11 +2728,11 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={fssai.FSSAILicenceNo}
+          value={fssai.fssaiLicenceNo}
           onChange={(e) =>
             setFssai({
               ...fssai,
-              FSSAILicenceNo: e.target.value,
+              fssaiLicenceNo: e.target.value,
             })
           }
         />
@@ -1577,11 +2751,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={fssai.FSSAILicenceStartDate}
+          value={fssai.fssaiLicenceStartDate}
           onChange={(e) =>
             setFssai({
               ...fssai,
-              FSSAILicenceStartDate: e.target.value,
+              fssaiLicenceStartDate: e.target.value,
             })
           }
         />
@@ -1600,11 +2774,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={fssai.FSSAILicenceEndDate}
+          value={fssai.fssaiLicenceEndDate}
           onChange={(e) =>
             setFssai({
               ...fssai,
-              FSSAILicenceEndDate: e.target.value,
+              fssaiLicenceEndDate: e.target.value,
             })
           }
         />
@@ -1632,11 +2806,11 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={vat.VATGSTCertNo}
+          value={vat.vatGstCertNo}
           onChange={(e) =>
             setVat({
               ...vat,
-              VATGSTCertNo: e.target.value,
+              vatGstCertNo: e.target.value,
             })
           }
         />
@@ -1655,11 +2829,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={vat.VATGSTCertEnddate}
+          value={vat.vatGstCertEnddate}
           onChange={(e) =>
             setVat({
               ...vat,
-              VATGSTCertEnddate: e.target.value,
+              vatGstCertEnddate: e.target.value,
             })
           }
         />
@@ -1687,11 +2861,11 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={distillery.DistilleryLicNo}
+          value={distillery.distilleryLicNo || ""}
           onChange={(e) =>
             setDistillery({
               ...distillery,
-              DistilleryLicNo: e.target.value,
+              distilleryLicNo: e.target.value,
             })
           }
         />
@@ -1710,11 +2884,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={distillery.DistilleryLicEnddate}
+          value={distillery.distilleryLicEnddate}
           onChange={(e) =>
             setDistillery({
               ...distillery,
-              DistilleryLicEnddate: e.target.value,
+              distilleryLicEnddate: e.target.value,
             })
           }
         />
@@ -1742,11 +2916,11 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={bwh.BWHInsuranceNo}
+          value={bwh.bwhInsuranceNo}
           onChange={(e) =>
             setBwh({
               ...bwh,
-              BWHInsuranceNo: e.target.value,
+              bwhInsuranceNo: e.target.value,
             })
           }
         />
@@ -1765,11 +2939,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={bwh.BWHInsuranceEndDate}
+          value={bwh.bwhInsuranceEndDate}
           onChange={(e) =>
             setBwh({
               ...bwh,
-              BWHInsuranceEndDate: e.target.value,
+              bwhInsuranceEndDate: e.target.value,
             })
           }
         />
@@ -1788,11 +2962,11 @@ if (currentStep === 5) {
         <input
           type="text"
           className="reg-input"
-          value={bwh.BWHLeaseRentAgreementNo}
+          value={bwh.bwhLeaseRentAgreementNo}
           onChange={(e) =>
             setBwh({
               ...bwh,
-              BWHLeaseRentAgreementNo: e.target.value,
+              bwhLeaseRentAgreementNo: e.target.value,
             })
           }
         />
@@ -1811,11 +2985,11 @@ if (currentStep === 5) {
         <input
           type="date"
           className="reg-input"
-          value={bwh.BWHRentAgreementEndDate}
+          value={bwh.bwhRentAgreementEndDate}
           onChange={(e) =>
             setBwh({
               ...bwh,
-              BWHRentAgreementEndDate: e.target.value,
+              bwhRentAgreementEndDate: e.target.value,
             })
           }
         />

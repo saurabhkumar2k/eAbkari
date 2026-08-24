@@ -37,7 +37,7 @@ OwnerType: "",
 
   SuperAreaofLicensePremise: "",
   CarpetAreaofLicensePremise: "",
-  DistanceofDistillery: "",
+  DistanceofDistilleryCP: "",
   hoursOfSale: "",
 CatCode: "",
   ConstitutionType: "",
