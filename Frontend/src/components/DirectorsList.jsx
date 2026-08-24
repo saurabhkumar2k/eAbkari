@@ -1,43 +1,78 @@
 import React from "react";
 import DirectorRow from "./DirectorRow";
 
-import "../Style/ApplyLicense.css"; // Import the CSS file for styling
+import "../Style/ApplyLicense.css";
+import "../Style/DirectorsList.css";
 
 const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType }) => {
   return (
-    <div style={{ marginTop: 30 }}>
-      <h3 style={{ textAlign: "center", marginBottom: 20 }}>
-        List of all Directors/Partners/Proprietors (as in MCA Portal as per provision
-        of Companies Act of 2013)
-      </h3>
+    <div className="directors-section">
+      {/* Section Title */}
+      {/* <div className="directors-header-box">
+        <h3 className="directors-heading">
+          Directors / Partners / Proprietors
+        </h3>
+        <p className="directors-subheading">
+          As per MCA Portal (Companies Act 2013)
+        </p>
+      </div> */}
+      <div className="directors-header">
+        <div>
+          <h2>Directors / Partners / Proprietors</h2>
+          <p>As per MCA Portal (Companies Act 2013)</p>
+        </div>
+      </div>
 
-      {directors.map((director, index) => (
-        <DirectorRow
-          key={index}
-          director={director}
-          index={index}
-          onChange={onChange}
-          onDelete={onDelete}
-          ConstitutionType={ConstitutionType} // 👈 ADD HERE
-          disableDelete={directors.length === 1}
-        />
-      ))}
+      {/* Directors List */}
+      <div className="directors-wrapper">
+        {directors.length === 0 ? (
+          <div className="directors-empty-state">
+            <p className="empty-message">No directors added yet. Click "Add Director" to start.</p>
+          </div>
+        ) : (
+          directors.map((director, index) => (
+            <DirectorRow
+              key={index}
+              director={director}
+              index={index}
+              onChange={onChange}
+              onDelete={onDelete}
+              ConstitutionType={ConstitutionType}
+              disableDelete={false}
+            />
+          ))
+        )}
+      </div>
 
-      <div style={{ textAlign: "right", marginTop: 15 }}>
+      {/* Add Button */}
+      {/* <div className="directors-action-bar">
         <button
           type="button"
           onClick={onAdd}
-          style={{
-            padding: "8px 16px",
-            background: "#1976d2",
-            color: "#fff",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-          }}
+          className="btn-add-director"
         >
-          Add Director
+          + Add Director
         </button>
+        {directors.length > 0 && (
+          <span className="directors-count">
+            {directors.length} director{directors.length !== 1 ? 's' : ''} added
+          </span>
+        )}
+      </div> */}
+      <div className="directors-action-bar">
+        <button
+          type="button"
+          onClick={onAdd}
+          className="btn-add-director"
+        >
+          + Add Director
+        </button>
+
+        {directors.length > 0 && (
+          <span className="directors-count">
+            {directors.length} director{directors.length !== 1 ? "s" : ""} added
+          </span>
+        )}
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
 import HcrLicenseWizard from "./HCR/HcrLicense";
+import HcrLicenseWizard_M from "./HCR/HcrLicenseWizard_M";
 import L30SelectLicense from "./L30/L30SelectLicense";
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 
@@ -250,7 +251,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
             }}
           />
         ) : isHCRFlowActive ? (
-          <HcrLicenseWizard 
+          <HcrLicenseWizard_M 
             onBackToDashboard={() => {
               setIsHCRFlowActive(false);
               setNewLicStep(2);
