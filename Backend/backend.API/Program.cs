@@ -87,6 +87,7 @@ builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
 builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

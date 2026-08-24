@@ -16,11 +16,11 @@ namespace backend.Core.Entities.Department
         public int RoleId { get; set; }
 
         [Required]
-        [StringLength(100)]
+        [StringLength(50)]
         public string RoleName { get; set; }
 
         [Required]
-        [StringLength(500)]
+        [StringLength(200)]
         public string RoleDescription { get; set; }
 
         [StringLength(1)]
