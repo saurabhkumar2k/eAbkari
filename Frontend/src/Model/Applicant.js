@@ -2,6 +2,7 @@ export const createApplicant = () => ({
   applicantName: "",
   CompanyName: "",
   dob: "",
+  applicationId: null,
   FatherHusbandName: "",
   Occupation: "",
 

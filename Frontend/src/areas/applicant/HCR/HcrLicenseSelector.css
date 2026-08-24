@@ -1,0 +1,871 @@
+.hcr-applicant-container{
+  margin-top: 0.5rem;
+}
+.step-div-p{
+  padding-top: 0.5rem;
+}
+
+.hcr-selector-wrapper {
+  width: 100%;
+  min-height: 100%;
+  padding: 35px 20px;
+
+  display: flex;
+  justify-content: center;
+
+  background: #f8fafc;
+}
+
+/* =====================================================
+   MAIN CARD
+===================================================== */
+
+.hcr-selector-card {
+  width: 100%;
+  max-width: 950px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.hcr-selector-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 28px 32px;
+
+  background: linear-gradient(
+    135deg,
+    #eff6ff 0%,
+    #ffffff 100%
+  );
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.hcr-selector-icon {
+  width: 55px;
+  height: 55px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+
+  font-size: 25px;
+
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.hcr-selector-header h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.hcr-selector-header p {
+  margin: 6px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.hcr-selector-form {
+  padding: 32px;
+}
+
+/* =====================================================
+   OWNER TYPE
+===================================================== */
+
+.hcr-field {
+  margin-bottom: 32px;
+}
+
+.hcr-field label,
+.hcr-license-title-row label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.required {
+  margin-left: 4px;
+
+  color: #dc2626;
+}
+
+.hcr-field select {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  color: #0f172a;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.hcr-field select:hover {
+  border-color: #94a3b8;
+}
+
+.hcr-field select:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =====================================================
+   LICENSE SECTION
+===================================================== */
+
+.hcr-license-section {
+  margin-top: 10px;
+}
+
+.hcr-license-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 15px;
+}
+
+.hcr-license-title-row label {
+  margin-bottom: 4px;
+}
+
+.hcr-license-title-row p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+/* =====================================================
+   SELECTED BADGE
+===================================================== */
+
+.hcr-selected-badge {
+  padding: 6px 11px;
+
+  border-radius: 999px;
+
+  background: #dcfce7;
+  color: #15803d;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* =====================================================
+   LICENSE GRID
+===================================================== */
+
+.hcr-license-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+/* =====================================================
+   LICENSE CARD
+===================================================== */
+
+.hcr-license-item {
+  position: relative;
+
+  width: 100%;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hcr-license-item:hover {
+  border-color: #93c5fd;
+
+  background: #f8fbff;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.08);
+}
+
+/* Selected */
+
+.hcr-license-item-selected {
+  border: 2px solid #2563eb;
+
+  background: #eff6ff;
+
+  box-shadow:
+    0 8px 24px rgba(37, 99, 235, 0.12);
+
+  padding: 17px;
+}
+
+.hcr-license-item-selected:hover {
+  border-color: #1d4ed8;
+
+  background: #eff6ff;
+}
+
+/* =====================================================
+   RADIO
+===================================================== */
+
+.hcr-license-radio {
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  transition: all 0.2s ease;
+}
+
+.hcr-license-radio-selected {
+  border-color: #2563eb;
+
+  background: #2563eb;
+
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.10);
+}
+
+/* =====================================================
+   LICENSE CONTENT
+===================================================== */
+
+.hcr-license-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.hcr-license-code {
+  display: inline-flex;
+
+  margin-bottom: 7px;
+
+  padding: 4px 8px;
+
+  border-radius: 6px;
+
+  background: #e2e8f0;
+
+  color: #334155;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 0.04em;
+}
+
+.hcr-license-item-selected .hcr-license-code {
+  background: #dbeafe;
+
+  color: #1d4ed8;
+}
+
+.hcr-license-description {
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  line-height: 1.55;
+}
+
+.hcr-license-item-selected
+.hcr-license-description {
+  color: #1e3a8a;
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.hcr-no-license {
+  grid-column: 1 / -1;
+
+  padding: 30px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+
+  color: #64748b;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.hcr-selector-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  margin-top: 30px;
+  padding-top: 24px;
+
+  border-top: 1px solid #e2e8f0;
+}
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.hcr-selection-summary {
+  display: flex;
+
+  gap: 30px;
+}
+
+.hcr-selection-summary div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.hcr-selection-summary span {
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hcr-selection-summary strong {
+  color: #334155;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+/* =====================================================
+   CONTINUE BUTTON
+===================================================== */
+
+.hcr-continue-button {
+  min-width: 215px;
+  height: 48px;
+
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.22);
+
+  transition: all 0.2s ease;
+}
+
+.hcr-continue-button:hover {
+  transform: translateY(-1px);
+
+  background: linear-gradient(
+    135deg,
+    #1d4ed8,
+    #1e40af
+  );
+
+  box-shadow:
+    0 12px 25px rgba(37, 99, 235, 0.28);
+}
+
+.hcr-continue-button:active {
+  transform: translateY(0);
+}
+
+.hcr-arrow {
+  font-size: 19px;
+
+  transition: transform 0.2s ease;
+}
+
+.hcr-continue-button:hover .hcr-arrow {
+  transform: translateX(4px);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+  .hcr-selector-wrapper {
+    padding: 20px 12px;
+  }
+
+  .hcr-selector-header {
+    padding: 22px;
+  }
+
+  .hcr-selector-form {
+    padding: 22px;
+  }
+
+  .hcr-license-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hcr-selector-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hcr-selection-summary {
+    justify-content: space-between;
+  }
+
+  .hcr-continue-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hcr-selector-header {
+    align-items: flex-start;
+  }
+
+  .hcr-selector-icon {
+    width: 45px;
+    height: 45px;
+
+    font-size: 20px;
+  }
+
+  .hcr-selector-header h2 {
+    font-size: 18px;
+  }
+
+  .hcr-license-title-row {
+    display: block;
+  }
+
+  .hcr-selected-badge {
+    display: inline-block;
+
+    margin-top: 8px;
+  }
+
+  .hcr-selection-summary {
+    flex-direction: column;
+
+    gap: 12px;
+  }
+}
+
+
+
+
+
+/* =========================================================
+   APPLICANT STEP HEADER
+========================================================= */
+
+.hcr-applicant-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  padding: 10px 12px;
+
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f8fbff 100%
+  );
+
+  border: 1px solid #dbe5f0;
+  border-radius: 18px;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, 0.04),
+    0 1px 3px rgba(15, 23, 42, 0.03);
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LEFT CONTENT
+========================================================= */
+
+.hcr-applicant-header-content {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 16px;
+
+  flex: 1;
+}
+
+
+/* =========================================================
+   STEP NUMBER
+========================================================= */
+
+.hcr-step-number {
+  flex-shrink: 0;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  box-shadow:
+    0 6px 14px rgba(37, 99, 235, 0.22);
+}
+
+
+/* =========================================================
+   TITLE AREA
+========================================================= */
+
+.hcr-applicant-title-area {
+  min-width: 0;
+}
+
+
+.hcr-step-eyebrow {
+  margin-bottom: 5px;
+
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+
+.hcr-applicant-title {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 25px;
+  line-height: 1.25;
+
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+}
+
+
+.hcr-applicant-description {
+  max-width: 650px;
+
+  margin: 7px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   OWNER / LICENSE SELECTION CARD
+========================================================= */
+
+.hcr-selection-badge {
+  flex-shrink: 0;
+
+  width: min(470px, 42%);
+
+  padding: 14px 18px;
+
+  background: #f8fbff;
+
+  border: 1px solid #2563eb;
+
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SELECTION ROW
+========================================================= */
+
+.hcr-selection-row {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+}
+
+
+.hcr-selection-label {
+  flex-shrink: 0;
+
+  width: 82px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+
+  padding-top: 2px;
+}
+
+
+.hcr-selection-value {
+  min-width: 0;
+
+  color: #1d4ed8;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.hcr-selection-divider {
+  height: 1px;
+
+  margin: 10px 0;
+
+  background: #dbeafe;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .hcr-applicant-header {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding: 20px;
+  }
+
+  .hcr-selection-badge {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .hcr-applicant-header {
+    padding: 16px;
+
+    border-radius: 14px;
+  }
+
+
+  .hcr-applicant-header-content {
+    gap: 12px;
+  }
+
+
+  .hcr-step-number {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+  }
+
+
+  .hcr-applicant-title {
+    font-size: 20px;
+  }
+
+
+  .hcr-applicant-description {
+    font-size: 12px;
+  }
+
+
+  .hcr-selection-badge {
+    padding: 13px;
+  }
+
+
+  .hcr-selection-row {
+    flex-direction: column;
+
+    gap: 3px;
+  }
+
+
+  .hcr-selection-label {
+    width: auto;
+  }
+
+}

@@ -345,11 +345,6 @@ export default function HcrLicenseWizard({
 
   const fetchQuestions = async (catCode) => {
     try {
-      debugger;
-      console.log("selectedLicenseId:", selectedLicenseId);
-      console.log("catCode:", catCode);
-      console.log("catCode type:", typeof catCode);
-
       const res = await fetch(
         `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`,
       );
@@ -359,18 +354,14 @@ export default function HcrLicenseWizard({
       }
 
       const data = await res.json();
+      const normalizedQuestions = (data || []).map((question) => ({
+        ...question,
+        questionId: question.questionId ?? question.QuestionId,
+        questionDesc: question.questionDesc ?? question.QuestionDesc,
+      }));
 
-      console.log("Category:", catCode);
-      console.log("Questions:", data);
-      console.log("API response:", data);
-      console.log("Is array:", Array.isArray(data));
-      console.log("Length:", data?.length);
-
-      // Step 6 fetches again whenever the user returns with Go Back. Merge the
-      // API questions with the answers already chosen in this wizard so the
-      // radio buttons stay selected after navigating away and back.
       setQuestions(
-        data.map((question) => {
+        normalizedQuestions.map((question) => {
           const savedAnswer = questionsAnswers.find(
             (answer) => answer.questionId === question.questionId,
           );
@@ -380,8 +371,6 @@ export default function HcrLicenseWizard({
             : question;
         }),
       );
-
-      console.log("Questions state updated:", questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
       setQuestions([]);

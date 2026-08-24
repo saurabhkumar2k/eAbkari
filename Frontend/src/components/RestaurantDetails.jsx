@@ -1,5 +1,5 @@
 import React from "react";
-import "../Style/ApplyLicense.css";
+// import "../Style/ApplyLicense.css";
 
 import {
   Warehouse,
@@ -31,7 +31,7 @@ const RestaurantDetails = ({
 
   console.log("RestaurantDetails",siteForm)
   return (
-    <div className="premium-form">
+    <div className="hcr-applicant-container animate-fade text-left">
       {/* HEADER */}
       <div className="premium-header">
         <div className="icon-box">🏬</div>

@@ -32,7 +32,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
       </div>
 
       {/* Section 1: Personal Details */}
-      <div className="form-section">
+      <div class="card-section">
         <div className="section-header">
           <h3 className="section-title">
             <span className="section-number">1</span>
@@ -164,7 +164,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
       </div>
 
       {/* Section 2: Address Details */}
-      <div className="form-section">
+      <div class="card-section">
         <div className="section-header">
           <h3 className="section-title">
             <span className="section-number">2</span>
@@ -318,7 +318,7 @@ export default function HcrApplicantDetails({ formData, onChange, errors = {} })
       </div>
 
       {/* Section 3: Contact & Access */}
-      <div className="form-section">
+      <div class="card-section">
         <div className="section-header">
           <h3 className="section-title">
             <span className="section-number">3</span>
