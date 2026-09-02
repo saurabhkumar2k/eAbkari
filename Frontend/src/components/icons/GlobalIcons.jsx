@@ -57,7 +57,8 @@ import {
   ArrowUpRight, 
   Users,
   Monitor,
-  LogOut
+  LogOut,
+  EyeOff
 } from 'lucide-react';
 
 export const ChevronDownSvg = ({ className, style }) => <ChevronDown className={className} style={style} />;
@@ -99,6 +100,7 @@ export const Building2Svg = ({ className }) => <Building2 className={className} 
 export const BeerSvg = ({ className }) => <Beer className={className} />;
 export const StarSvg = ({ className }) => <Star className={className} />;
 export const EyeSvg = ({ className }) => <Eye className={className} />;
+export const EyeOffSvg = ({ className }) => <EyeOff className={className} />;
 export const HomeSvg = ({ className }) => <Home className={className} />;
 export const FolderSvg = ({ className }) => <Folder className={className} />;
 export const DatabaseSvg = ({ className }) => <Database className={className} />;
