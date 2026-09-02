@@ -79,6 +79,7 @@ namespace backend.Infrastructure.Data
         public DbSet<AdditionalHCRDetails> AdditionalHCRDetails { get; set; }
         public DbSet<MstFlowApplicable> MstFlowApplicable { get; set; }
         public DbSet<MstFlowUpto> MstFlowUpto { get; set; }
+        public DbSet<MstUserType> MstUserType { get; set; }
 
         public DbSet<FlowHierarchyMapping> FlowHierarchyMapping { get; set; }
         public DbSet<PlaAccessPermissionHistory> PlaAccessPermissionHistory { get; set; }
@@ -111,7 +112,10 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstDistrict>()
                     .HasKey(x => x.DID);
 
+            modelBuilder.Entity<MstUserType>().ToTable("MstUserType");
 
+            modelBuilder.Entity<MstUserType>()
+                    .HasKey(x => x.UserTypeCode);
 
             modelBuilder.Entity<MstLiquorKind>().ToTable("MstLiquorKind");
 

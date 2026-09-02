@@ -5,12 +5,15 @@ import {
   UserSvg,
   LockSvg,
   ArrowRightSvg,
+  EyeSvg,
+  EyeOffSvg,
 } from "../icons/GlobalIcons.jsx";
 import DepartmentHeader from "../DepartmentHeader.jsx";
 
+
+const DEPT_LOGIN_API_URL = 'http://localhost:5214/api/Login/DeptLogin';
 export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
-  
-  const DEPT_LOGIN_API_URL = 'http://localhost:5214/api/Login/DeptLogin';
+    
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -104,13 +107,14 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
             <br />
             <form onSubmit={handleSubmit} className="dept-login-form">
               <div className="form-group">
-                <label className="dept-input-label">Officer ID / Email</label>
+                {/* <label className="dept-input-label">Officer ID / Email</label> */}
                 <div className="dept-input-wrapper">
                   <UserSvg className="dept-field-icon" />
-                  <input 
+                  <input
+                    id='userId' 
                     type="text" 
                     className="dept-input-field" 
-                    placeholder="Enter DA or Admin"
+                    placeholder=""
                     value={userId}
                     onChange={(e) => {
                       setUserId(e.target.value);
@@ -118,17 +122,19 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
                     }}
                     required
                   />
+                  <label htmlFor="userId">Officer ID / Email</label>
                 </div>
               </div>
 
               <div className="form-group">
-                <label className="dept-input-label">Password</label>
+                {/* <label className="dept-input-label">Password</label> */}
                 <div className="dept-input-wrapper">
                   <LockSvg className="dept-field-icon" />
-                  <input 
-                    type="password" 
+                  <input
+                    id='Password' 
+                    type={showPassword ? 'text' : 'password'}
                     className="dept-input-field" 
-                    placeholder="••••••••"
+                    placeholder=""
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
@@ -136,6 +142,20 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
                     }}
                     required
                   />
+                  <label htmlFor="Password">Password</label>
+                  
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <EyeSvg className="icon-sm" />
+                    ) : (
+                      <EyeOffSvg className="icon-sm" />
+                    )}
+                  </button>
+
                 </div>
               </div>
 

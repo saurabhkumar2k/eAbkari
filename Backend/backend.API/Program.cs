@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Core.Interfaces;
 using backend.Core.Interfaces.Department;
+using backend.Core.Interfaces.Admin;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Department;
@@ -20,6 +21,7 @@ using backend.Application.Interfaces.ApplicationFlow;
 using backend.Application.Services.ApplicationFlow;
 using backend.Core.Interfaces.ApplicationFlow;
 using backend.Infrastructure.Repositories.ApplicationFlow;
+using backend.Infrastructure.Repositories.Admin;
 
 
 
@@ -84,6 +86,7 @@ builder.Services.AddScoped<IApplicationProgressRepository, ApplicationProgressRe
 builder.Services.AddScoped<IDepartmentUsersService , DepartmentUsersService>();
 builder.Services.AddScoped<IDepartmentUserRepository , DepartmentUserRepository>();
 builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
+builder.Services.AddScoped<IUserTypeRepository, UserTypeRepository>();
 builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 

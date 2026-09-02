@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   ChevronLeft,
   UserPlus,
@@ -41,6 +41,8 @@ const DEFAULT_USERS = [
   }
 ];
 
+const Role_API_URL = 'http://localhost:5214/api/Role/getRole'; 
+
 export default function UserCreation({ onBack }) {
   const [formData, setFormData] = useState({
     userType: "",
@@ -58,6 +60,7 @@ export default function UserCreation({ onBack }) {
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("create"); // 'create' | 'list'
   const [searchTerm, setSearchTerm] = useState("");
+  const [userRoles, setUserRoles] = useState([]);
 
   const [usersList, setUsersList] = useState(() => {
     const saved = localStorage.getItem("dept_created_users");
@@ -185,6 +188,32 @@ export default function UserCreation({ onBack }) {
       u.userType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.district.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const fetchUserTypes = async () => {
+    try {
+    const response = await fetch(Role_API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user types");
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+    console.log("Is array:", Array.isArray(data));
+    setUserRoles(data);
+
+    } catch (error) {
+      
+    }
+  };
+
+  useEffect(() => {
+    fetchUserTypes();
+  }, []);
 
   return (
     <div className="user-creation-container">
@@ -296,12 +325,13 @@ export default function UserCreation({ onBack }) {
                       onChange={(e) => handleInputChange("userType", e.target.value)}
                       className="user-creation-input"
                     >
-                      <option value="">--Select--</option>
-                      <option value="Department User">Department User</option>
-                      <option value="District User">District User</option>
-                      <option value="Inspection Officer">Inspection Officer</option>
-                      <option value="Superintendent">Superintendent</option>
-                      <option value="System Administrator">System Administrator</option>
+                       <option value="">--Select--</option>
+
+                        {userRoles.map((userRoles) => (
+                          <option key={userRoles.roleId} value={userRoles.roleId}>
+                            {userRoles.roleDescription}
+                          </option>
+                        ))}
                     </select>
                     {errors.userType && (
                       <span className="user-creation-subtext">{errors.userType}</span>
