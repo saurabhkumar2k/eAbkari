@@ -162,10 +162,10 @@
    FORM FIELD
 ========================================== */
 
-.reg-field {
+/* .reg-field {
   display: flex;
   flex-direction: column;
-}
+} */
 
 .reg-label {
   font-size: 13px;

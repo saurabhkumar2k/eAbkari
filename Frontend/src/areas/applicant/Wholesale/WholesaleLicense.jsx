@@ -915,7 +915,7 @@ if (selectedLicenseId === "37" && currentStep > 3) {
             <div className="wizard-step">
               
               {/* Connector line */}
-              <div className="absolute top-5 left-0 right-0 -translate-y-1/2 h-[2px] bg-slate-100 z-0 px-12">
+              <div className="whwizard-progress-line">
                 <div 
                   className="h-full bg-purple-600 transition-all duration-300" 
                   style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}

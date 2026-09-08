@@ -4,6 +4,7 @@
 @import "./main_head.css";
 @import "./header.css";
 @import "./font.css";
+@import "./Licensee/licensee.css";
 
 @import "./Department/department.css";
 @import "./Department/departmenthead.css";
