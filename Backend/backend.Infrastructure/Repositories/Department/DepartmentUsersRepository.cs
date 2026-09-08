@@ -8,8 +8,10 @@ using backend.Core.Entities.Department;
 using backend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using backend.Core.Entities;
 using backend.Core.DTOs;
 using System.Security.Cryptography;
+
 
 
 namespace backend.Infrastructure.Repositories.Department
@@ -28,12 +30,12 @@ namespace backend.Infrastructure.Repositories.Department
 
         public async Task<IEnumerable<DepartmentUsers>> GetAllAsync()
         {
-      return await _context.DepartmentUsers
-    .Include(x => x.DeptUserRoles)
-        .ThenInclude(x => x.MstLicenseeCategoryBranch)
-    .Include(x => x.DeptUserRoles)
-        .ThenInclude(x => x.MstRoles)
-    .ToListAsync();
+            return await _context.DepartmentUsers
+          .Include(x => x.DeptUserRoles)
+              .ThenInclude(x => x.MstLicenseeCategoryBranch)
+          .Include(x => x.DeptUserRoles)
+              .ThenInclude(x => x.MstRoles)
+          .ToListAsync();
         }
 
         public async Task<DepartmentUsers?> GetByIdAsync(string userId)
@@ -54,10 +56,10 @@ namespace backend.Infrastructure.Repositories.Department
         }
         public async Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles)
         {
-          
+
 
             await _context.DepartmentUsers.AddAsync(DepartmentUser);
-            
+
             await _context.DeptUserRoles.AddAsync(DeptUserRoles);
 
             return await _context.SaveChangesAsync() > 0;
@@ -69,37 +71,43 @@ namespace backend.Infrastructure.Repositories.Department
 
             return maxId + 1;
         }
-       public async Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId, long BranchCode)
-{
-    var existingUser = await _context.DepartmentUsers
-        .FirstAsync(x => x.UserId == user.UserId);
-
-    existingUser.UserName = user.UserName;
-    existingUser.UserDesignation = user.UserDesignation;
-    existingUser.Email = user.Email;
-    existingUser.IsActive = user.IsActive;
-    existingUser.UpdatedDate = DateTime.Now;
-
-    var activeRole = await _context.DeptUserRoles
-        .FirstOrDefaultAsync(x => x.UserId == user.UserId && x.IsActive == "Y");
-
-    if (activeRole != null && activeRole.RoleId != newRoleId)
-    {
-        // Deactivate old role
-        activeRole.IsActive = "N";
-
-        // Insert new role
-        _context.DeptUserRoles.Add(new DeptUserRoles
+        public async Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId, long BranchCode)
         {
-            UserId = user.UserId,
-            RoleId = newRoleId,
-            BranchCode = BranchCode,
-            IsActive = "Y"
-        });
-    }
+            var existingUser = await _context.DepartmentUsers
+                .FirstAsync(x => x.UserId == user.UserId);
 
-    return await _context.SaveChangesAsync() > 0;
-}
+            existingUser.UserName = user.UserName;
+            existingUser.UserDesignation = user.UserDesignation;
+            existingUser.Email = user.Email;
+            existingUser.IsActive = user.IsActive;
+            existingUser.UpdatedDate = DateTime.Now;
+
+            var activeRole = await _context.DeptUserRoles
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId && x.IsActive == "Y");
+
+            if (activeRole != null && activeRole.RoleId != newRoleId)
+            {
+                // Deactivate old role
+                activeRole.IsActive = "N";
+
+                // Insert new role
+                _context.DeptUserRoles.Add(new DeptUserRoles
+                {
+                    UserId = user.UserId,
+                    RoleId = newRoleId,
+                    BranchCode = BranchCode,
+                    IsActive = "Y"
+                });
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+        public async Task<List<MstDistrict>> GetDistrict()
+        {
+            return await _context.MstDistrict
+                .ToListAsync();
+        }
+
 
         //public async Task<bool> DeleteAsync(string userId)
         //{

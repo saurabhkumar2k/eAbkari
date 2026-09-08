@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using backend.Core.DTOs;
+using backend.Core.Entities;
 using backend.Core.Entities.Department;
 
 namespace backend.Core.Interfaces.Department
@@ -15,6 +16,7 @@ namespace backend.Core.Interfaces.Department
         Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles);
          Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId,long newBranchId);
         Task<int> GetNextDeptUserRoleIdAsync();
+        Task<List<MstDistrict>> GetDistrict();
 
         //Task<bool> DeleteAsync(string userId);
         //Task<DepartmentUsers?> LoginAsync(string email);
