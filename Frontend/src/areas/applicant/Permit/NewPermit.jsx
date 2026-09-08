@@ -960,7 +960,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 {/* Legal Warning Notice Box */}
                 <div className="bg-red-50 text-red-950 p-4 border border-red-100 rounded-xl flex items-start gap-3">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
-                  <div className="text-xs font-semibold leading-relaxed">
+                  <div className="applicant-alert-text">
                     <p className="font-extrabold uppercase text-red-900 mb-0.5">Excise Penalty Warning Notice Under Code-24</p>
                     Filing misleading parameters regarding gatherings, serving hours past midnight without extra permits, or sourcing cargo from non-bonded retail outlets results in flat penalties of ₹ 2,00,000, prosecution, and automatic blacklisting under NCT Excise regulations.
                   </div>

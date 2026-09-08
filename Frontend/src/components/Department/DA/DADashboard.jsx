@@ -99,7 +99,7 @@ export default function DADashbord({ onLogout, onNavigateHome }) {
                 </div>
                 <div>
                   <h1 className="welcome-heading">
-                    Welcome back, Dealing Assistant 👋
+                    Welcome, Dealing Assistant 👋
                   </h1>
                   <p className="welcome-subtext">
                     Excise Department, Govt. of NCT of Delhi — Official

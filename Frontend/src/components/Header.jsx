@@ -12,7 +12,8 @@ import {
   InfoSvg, 
   FileTextSvg, 
   MenuSvg, 
-  XCircleSvg as XSvg 
+  XCircleSvg as XSvg,
+  ChevronRightSvg
 } from '../Style/images/Icons';
 
 const Header = ({ onSelectView, currentView }) => {
@@ -22,17 +23,57 @@ const Header = ({ onSelectView, currentView }) => {
 
   const isAuthPage = currentView === 'APPLICANT_REGISTRATION';
 
-
-  const navLinks = [
-    { label: 'About Us', icon: <UsersSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'Facts & Figures', icon: <BarChart2Svg className="nav-icon-main" />, view: 'HOME' },
+const navLinks = [
+    { 
+      label: 'About Us', 
+      icon: <UsersSvg className="nav-icon-main" />, 
+      view: 'HOME',
+      hasDropdown: true,
+      subItems: [
+        { label: 'About e-Abkari', view: 'ABOUT_E-ABKARI' },
+        { label: 'Organizational Structure', view: 'ORGANIZATIONAL_STRUCTURE' },
+        { label: 'Staff', view: 'STAFF' },
+        { label: 'Heads of Organizations' },
+        { label: 'Excise Commissioners', view: 'EXCISE_COMMISSIONER' }
+      ]
+    },
+    { 
+      label: 'Facts & Figures', 
+      icon: <BarChart2Svg className="nav-icon-main" />, 
+      view: 'HOME',
+      hasDropdown: true,
+      subItems: [
+        { label: 'Licenses Administered' },
+        { label: 'Registered Brands of Liquor' }
+      ]
+    },
     { label: 'Acts, Rules & Orders', icon: <GavelSvg className="nav-icon-main" />, view: 'HOME' },
     { label: 'Right to Information', icon: <InfoSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'Feedback', icon: <MessageSquareSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'Track & Trace', icon: <MapPinSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'User Manuals', icon: <BookOpenSvg className="nav-icon-main" />, view: 'HOME' }
+    { label: 'Feedback', 
+      icon: <MessageSquareSvg className="nav-icon-main" />, 
+      view: 'HOME',
+      hasDropdown: true,
+      subItems: [
+        { label: 'Feedback Form', view: 'FEEDBACK_FORM' },
+      ] 
+    },
+    { label: 'Track & Trace', 
+      icon: <MapPinSvg className="nav-icon-main" />, 
+      view: 'HOME',
+      hasDropdown: true,
+      subItems: [
+        { label: 'Track & Trace', view: 'TRACK_AND_TRACE' },
+      ] 
+    },
+    { label: 'User Manuals', 
+      icon: <BookOpenSvg className="nav-icon-main" />, 
+      view: 'HOME',
+      hasDropdown: true,
+      subItems: [
+        { label: 'User Manuals', view: 'USER_MANUALS' },
+      ]
+    }
   ];
-
   // const handleLoginOptionClick = (item) => {
   //   if (item === 'Applicant') {
   //     onSelectView('APPLICANT_LOGIN');
@@ -43,21 +84,15 @@ const Header = ({ onSelectView, currentView }) => {
   //   setIsMobileMenuOpen(false);
   // };
 const handleLoginOptionClick = (item) => {
-
   if (item === "Applicant") {
-
     navigate("/login");
-
   } else if (item === "Department") {
-
     navigate("/departmentlogin");
-
+  } else if (item === "Licensee") {
+    navigate("/licenseelogin");
   } else {
-
     navigate("/");
-
   }
-
   setIsLoginOpen(false);
   setIsMobileMenuOpen(false);
 };
@@ -123,29 +158,48 @@ const handleLoginOptionClick = (item) => {
       {!isAuthPage && (
         <nav className="navbar-main desktop-only">
           <div className="container nav-container-flex">
-            {navLinks.map((link, index) => (
+             {navLinks.map((link, index) => (
               <React.Fragment key={link.label}>
-                <a 
-                  href="#" 
-                  className="nav-link-refined"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate("/");
-                  }}
-                >
-                  <div className="nav-item-content">
-                    {link.icon}
-                    <span className="nav-label-text">{link.label}</span>
-                    <ChevronDownSvg className="icon-tiny ml-1 opacity-70" />
-                  </div>
-                </a>
+                <div className="nav-item-wrapper">
+                  <a 
+                    href="#" 
+                    className="nav-link-refined"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (!link.hasDropdown) onSelectView(link.view);
+                    }}
+                  >
+                    <div className="nav-item-content">
+                      {link.icon}
+                      <span className="nav-label-text">{link.label}</span>
+                      <ChevronDownSvg className="icon-tiny ml-1 opacity-70" />
+                    </div>
+                  </a>
+                  
+                  {link.hasDropdown && (
+                    <div className="nav-dropdown-content animate-dropdown">
+                      <div className="nav-dropdown-inner">
+                        {link.subItems.map((sub, si) => (
+                          <button 
+                            key={si}
+                            className="nav-dropdown-link"
+                            onClick={() => handleSubLinkClick(sub)}
+                          >
+                            <ChevronRightSvg className="icon-tiny opacity-50" />
+                            {sub.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {index < navLinks.length - 1 && <div className="nav-divider"></div>}
               </React.Fragment>
             ))}
           </div>
         </nav>
       )}
-
+              
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="mobile-menu animate-fade">

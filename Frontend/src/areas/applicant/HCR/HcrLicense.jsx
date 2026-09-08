@@ -1652,7 +1652,7 @@ export default function HcrLicenseWizard({
               <div className="animate-fade text-left space-y-6">
                 <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
-                  <div className="text-xs font-semibold leading-relaxed">
+                  <div className="applicant-alert-text">
                     <p className="font-extrabold text-red-950 uppercase mb-1">
                       Legal Notice & Liability under GNCTD Act
                     </p>

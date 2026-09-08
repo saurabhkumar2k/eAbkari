@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from './src/components/Header';
@@ -24,7 +24,8 @@ import DADashbord from './src/components/Department/DA/DADashboard.jsx';
 import ExploreServicesModal from './src/Homepage/ExploreServicesModal.jsx';
 import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
 import UserCreation from './src/components/Department/UserCreation.jsx';
-
+import AboutUsModal from './src/EabkariHomepage/AboutUsModal.jsx';
+import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
 
 import {
   ChevronDownSvg,
@@ -145,7 +146,9 @@ export default function App() {
       case 'DEPARTMENT_LOGIN':
         window.location.href = '/departmentlogin';
         break;
-      
+       case 'LICENSEE_LOGIN':
+        window.location.href = '/licensee-login';
+        break;
         default:
         window.location.href = '/';
     }
@@ -213,6 +216,61 @@ return (
       
       />
 
+      {/* About Us Direct Routes */}
+      <Route
+        path="/about"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/about-us"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+      
+      {/* Licensee Login */}
+      <Route
+        path="/licensee-login"
+        element={
+          <LicenseeLogin
+            onNavigateToRegister={() =>
+              (window.location.href = "/registration")
+            }
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/applicantdashboard")
+            }
+          />
+        }
+      />
+      <Route
+        path="/licenseelogin"
+        element={
+          <LicenseeLogin
+            onNavigateToRegister={() =>
+              (window.location.href = "/registration")
+            }
+            onNavigateHome={() =>
+              (window.location.href = "/")
+            }
+            onLoginSuccess={() =>
+              (window.location.href = "/applicantdashboard")
+            }
+          />
+        }
+      />
       {/* Department Login */}
       <Route
         path="/departmentlogin"
@@ -534,9 +592,16 @@ const navItems = [
   { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
 
-function HomeContent() {
+function HomeContent({ initialAboutUsOpen = false }) {
   const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
-
+   const [isAboutUsModalOpen, setIsAboutUsModalOpen] = useState(() => {
+    if (initialAboutUsOpen) return true;
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("about") === "true" || params.get("modal") === "about";
+    }
+    return false;
+  });
   return (
     <>
       {/* Hero Section */}
@@ -646,9 +711,8 @@ function HomeContent() {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <div className="card-footer-action">
+          </div> 
+            <div className="card-footer-action">
             <button className="btn-orange">
               <LayoutGridSvg className="icon-xs" />
               ALL NOTICE
@@ -669,7 +733,11 @@ function HomeContent() {
             <p className="about-text">
               The Department of Excise, NCT of Delhi is committed to efficient administration, transparent processes and maximizing revenue for the welfare of the society. Through digital transformation, we aim to deliver seamless services and building a trusted ecosystem for stakeholders.
             </p>
-            <button className="btn-outline-blue btn-w-auto">
+            <button 
+              onClick={() => setIsAboutUsModalOpen(true)}
+              className="btn-outline-blue btn-w-auto"
+              title="Open Department Overview, Vision, Mission & Roles"
+            >
               Read More
               <ArrowRightSvg className="icon-xs" />
             </button>
@@ -817,7 +885,21 @@ function HomeContent() {
           }
         }}
       />
-    </>
+    
+      <AboutUsModal
+        isOpen={isAboutUsModalOpen}
+        onClose={() => setIsAboutUsModalOpen(false)}
+        onOpenExploreServices={() => {
+          setIsAboutUsModalOpen(false);
+          setIsExploreModalOpen(true);
+        }}
+        onNavigate={(path) => {
+          if (path.startsWith('/')) {
+            window.location.href = path;
+          }
+        }}
+      />
+    </> 
   );
 }
 

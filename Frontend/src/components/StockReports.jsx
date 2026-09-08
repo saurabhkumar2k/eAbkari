@@ -106,7 +106,7 @@ export default function StockReports() {
   };
 
   return (
-    <section className="container dashboard-section">
+    <section className=" dashboard-section">
       <div className="dashboard-container">
         {/* Header */}
         <div className="dashboard-header-area">

@@ -340,7 +340,7 @@ const DepartmentDashboard = ({
                   </div>
                   <div>
                     <h1 className="welcome-heading">
-                      Welcome back, Administrator 👋
+                      Welcome, Administrator 👋
                     </h1>
                     <p className="welcome-subtext">
                       Manage Import Permit-cum-Pass and excise operations efficiently, securely, and transparently.

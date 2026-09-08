@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { 
   X, 
+  User,
   Search, 
   FileText, 
   Shield, 
@@ -22,138 +23,155 @@ import {
 
 const SERVICES_DATA = [
   {
-    category: "Licensing & Registration",
-    icon: Wine,
+    category: "Applicant Services",
+    icon: User,
     badge: "360+ Licenses",
     services: [
       {
-        title: "Wholesale Licenses (L-1 / L-1F)",
-        desc: "End-to-end online grant, renewal, and management for Indian Made Foreign Liquor (IMFL) and Foreign Imported Liquor wholesale vends.",
-        tags: ["L-1 IMFL", "L-1F BIO", "Wholesale", "Renewal"],
+        title: "Applicant Registration & Profile",
+        desc: "Create an account to access online Excise services.",
+        tags: ["Applicanet Details"],
         action: "/login"
       },
       {
-        title: "Distillery & Bottling Vats (L-3 / L-5)",
-        desc: "Licensing for spirit distillation plants, bottling plants, and bulk wholesale spirit storage vats across Delhi NCT.",
-        tags: ["Bottling Plant", "Vats", "Distillery"],
+        title: "Licence Application",
+        desc: "Apply for new liquor-related licences online.",
+        tags: ["Applicant Details", "Premise Wizard", "Site Verification"],
         action: "/login"
       },
       {
-        title: "Hotel, Club & Restaurant Bars (L-15 / L-16)",
-        desc: "Commercial bar licenses for 5-star hotels, heritage resorts, registered clubs, and fine-dining restaurants.",
-        tags: ["HCR", "Hotel Bar", "Club License"],
+        title: "Application Tracking",
+        desc: "Track application progress and approval status.",
+        tags: ["HCR", "Hotel", "Club", "Restaurant"],
         action: "/login"
       },
       {
-        title: "Premise Registration & Wizard",
-        desc: "Step-by-step premise mapping, hall details verification, owner type declaration, and site compliance check.",
+        title: "Document Submission",
+        desc: "Upload and manage required application documents.",
+        tags: ["Premise Wizard", "Site Verification"],
+        action: "/login"
+      },
+      {
+        title: "Document Revalidation",
+        desc: "Revalidate documents associated with an application.",
+        tags: ["Premise Wizard", "Site Verification"],
+        action: "/login"
+      },
+      {
+        title: "Fee Payment",
+        desc: "View and pay applicable licence and service fees.",
+        tags: ["Premise Wizard", "Site Verification"],
+        action: "/login"
+      },
+      {
+        title: "Profile Management",
+        desc: "Manage applicant information and account details.",
         tags: ["Premise Wizard", "Site Verification"],
         action: "/login"
       }
     ]
   },
   {
-    category: "Permits, Passes & SCM",
+    category: "M&TP & Transport Services",
     icon: Truck,
     badge: "Real-time Tracking",
     services: [
       {
-        title: "Import Permit Cum Pass (IP-PL)",
-        desc: "Digital application, duty payment, and automated issuance of transit import permits for packaged liquor consignments.",
-        tags: ["IP-PL", "Transit Pass", "Import Permit"],
+        title: "M&TP Licence",
+        desc: " Apply for and manage applicable M&TP licences.",
+        tags: ["M&TP"],
         action: "/importpermitpass"
       },
       {
-        title: "Transport Bulk Spirit Permit",
-        desc: "Authorization for intra-state and inter-state movement of un-denatured ethanol and bulk neutral spirit.",
-        tags: ["Bulk Spirit", "Tanker Pass", "Transport"],
+        title: "Transport Permission",
+        desc: "Manage permissions related to liquor transportation.",
+        tags: ["Manage", "Transport"],
         action: "/transportbulkspirit"
       },
       {
-        title: "P-10 & Temporary Bar Permits",
-        desc: "Instant single-day permit issuance for private events, weddings, banquets, and commercial exhibitions (L-28 / P-10).",
-        tags: ["P-10 Permit", "Event Bar", "Temporary"],
+        title: "Movement Details",
+        desc: "Submit and track authorized liquor movement information.",
+        tags: ["Tracking", "Movement"],
         action: "/login"
       },
       {
-        title: "Import Packaged FL Validity",
-        desc: "Verification and clearance portal for imported packaged foreign liquor shipments arriving at Delhi ports.",
-        tags: ["Packaged FL", "Customs Clearance"],
+        title: "Permit Status",
+        desc: "Check the status of transport and related permits.",
+        tags: ["Permit", "Status"],
         action: "/importpackaged"
       }
     ]
   },
   {
-    category: "Brand & Label Management",
+    category: " HCR & Establishment Services",
     icon: Award,
     badge: "Automated Approval",
     services: [
       {
-        title: "Liquor Brand Registration",
-        desc: "Online submission, duty assessment, and approval for new liquor brands, variants, and bottle capacities.",
+        title: "HCR Licence",
+        desc: "Apply for and manage licences for Hotels, Clubs and Restaurants.",
         tags: ["Brand Master", "Label Approval"],
         action: "/liquorbrand"
       },
       {
-        title: "Bottler Master & Brand Owners",
-        desc: "Centralized repository for bottling plant credentials, brand ownership assignments, and tie-up manufacturing contracts.",
+        title: "Licence Renewal",
+        desc: " Renew existing establishment licences.",
         tags: ["Bottler Master", "Brand Owner"],
         action: "/bottlermaster"
       },
       {
-        title: "Official Brand Price List Search",
-        desc: "Publicly accessible search tool for verified Maximum Retail Price (MRP), measure size, and liquor categories.",
+        title: "Licence Transfer",
+        desc: "Apply for transfer of an existing licence.",
+        tags: ["MRP Search", "Public Price List"],
+        action: "PRICE_LIST"
+      },
+      {
+        title: "Licence Status",
+        desc: "Check license validity and current status.",
+        tags: ["MRP Search", "Public Price List"],
+        action: "PRICE_LIST"
+      },
+      {
+        title: "Inspection & Verification",
+        desc: "Manage establishment inspections and verification reports.",
         tags: ["MRP Search", "Public Price List"],
         action: "PRICE_LIST"
       }
     ]
   },
   {
-    category: "Departmental Workflow & DA Desk",
+    category: "Brand & Product Services",
     icon: Shield,
     badge: "Official Portal",
     services: [
       {
-        title: "DA Officer Dashboard & Pool",
-        desc: "Role-based officer desk for reviewing submitted applications, pulling pending applications from central pool, and issuing clearances.",
-        tags: ["DA Desk", "Application Pool", "Verification"],
+        title: "Brand Registartion",
+        desc: "Register new liquor brands with the authority (Excise Department).",
+        tags: ["Brand Master", "Label Approval"],
         action: "/departmentdashboard"
       },
       {
-        title: "Penalty & Other Payments",
-        desc: "Integrated online challan generation and penalty verification for compounding fees and compliance dues.",
-        tags: ["E-Challan", "Penalty Payment"],
+        title: "Brand Approval",
+        desc: "Track brand approval and departmental verification.",
+        tags: ["Brand Master", "Label Approval"],
         action: "/departmentdashboard"
       },
       {
-        title: "Director Change & License Transfer",
-        desc: "Workflow for approving corporate director changes, firm restructuring, site relocation, and license transfers.",
-        tags: ["Director Change", "License Transfer"],
-        action: "/departmentdashboard"
-      }
-    ]
-  },
-  {
-    category: "Public Transparency & Reports",
-    icon: BarChart3,
-    badge: "Open Data",
-    services: [
-      {
-        title: "Stock & Inventory Reports",
-        desc: "Real-time tracking of wholesale depot stocks, retail shop inventories, and daily dispatch ledgers.",
-        tags: ["Stock Ledger", "Supply Chain"],
+        title: "Product Details",
+        desc: "Manage liquor category, measure size, packaging, and related details.",
+        tags: ["Product Information", "Label Details"],
         action: "/departmentdashboard"
       },
       {
-        title: "Notice Board & Circulars",
-        desc: "Official government notifications, excise policy guidelines, tenders, and downloadable circular PDFs.",
-        tags: ["Notices", "Circulars", "Policies"],
-        action: "NOTICE_BOARD"
+        title: "Registered Brand List",
+        desc: "View and manage information about registered liquor brands.",
+        tags: ["Brand Information", "Label Details"],
+        action: "/departmentdashboard"
       },
       {
-        title: "Department Overview & Directory",
-        desc: "Organizational hierarchy, staff contact directories, Excise Commissioner profile, and departmental mandates.",
-        tags: ["About Us", "Staff Directory"],
+        title: "Brand Status",
+        desc: "Check the current approval or registration status of a brand.",
+        tags: ["Brand Information", "Label Details"],
         action: "/departmentdashboard"
       }
     ]

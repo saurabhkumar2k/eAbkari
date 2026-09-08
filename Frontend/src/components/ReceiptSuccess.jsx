@@ -1,4 +1,3 @@
-
 import {
   Check,
   FileCheck2,
@@ -10,11 +9,6 @@ import {
   Printer,
   Home
 } from "lucide-react";
-
-
-
-
-
 const ReceiptSuccess = ({
   applicant,
   selectedLicense,
@@ -22,429 +16,218 @@ const ReceiptSuccess = ({
   onBackToSelect
 }) => {
   return (
-    <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-
+    <div className="rmain-card">
       {/* Success Header */}
-
-<div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-
-  {/* Success */}
-
-  <div className="py-10 px-8 text-center">
-
-    <div className="flex justify-center">
-
-      <div className="relative">
-
-        <div className="absolute inset-0 rounded-full bg-green-300 animate-ping opacity-20"></div>
-
-        <div className="w-24 h-24 rounded-full bg-green-100 border-4 border-green-500 flex items-center justify-center relative">
-
-          <Check className="w-12 h-12 text-green-600 stroke-[3]" />
-
+      <div className="rmain-card">
+        {/* Success */}
+        <div className="rcontent-section">
+          <div className="rcenter-content">
+            <div className="relative">
+              <div className="rstatus-pulse"></div>
+              <div className="rsuccess-icon">
+                <Check className="rsuccess-icon-svg" />
+              </div>
+            </div>
+          </div>
+          <h2 className="rpage-title">Application Submitted Successfully</h2>
+          <p className="rpage-subtitle"> Thank you. Your application has been submitted successfully. </p>
         </div>
-
       </div>
-
-    </div>
-
-    <h2 className="mt-4 text-4xl font-bold text-slate-800">
-
-      Application Submitted Successfully
-
-    </h2>
-
-    <p className="mt-3 text-slate-500 text-lg">
-
-      Thank you. Your application has been submitted successfully.
-
-    </p>
-
-  </div>
-
-</div>
-
-
 
       {/* Application No */}
-
-
-<div className="px-10">
-
-<div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-white to-blue-50 shadow-sm">
-
-<div className="grid grid-cols-[70px_1fr_auto] items-center">
-
-<div className="flex justify-center">
-
-<div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center">
-
-<FileCheck2 className="text-blue-600 w-7 h-7"/>
-
-</div>
-
-</div>
-
-<div className="py-5">
-
-<p className="uppercase text-xs tracking-[3px] text-slate-500">
-
-Application No.
-
-</p>
-
-<h3 className="text-3xl font-black text-slate-800 mt-1">
-
-{localStorage.getItem("applicationId")}
-
-</h3>
-
-</div>
-
-<div className="pr-8">
-
-<span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
-
-Submitted
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+      <div className="px-10">
+        <div className="receipt-card">
+          <div className="rgrid-row">
+            <div className="rcenter-content">
+              <div className="rsuccess-icon-box">
+                <FileCheck2 className="text-blue-600 w-7 h-7" />
+              </div>
+            </div>
+            <div className="py-5">
+              <p className="rsection-label">
+                Application No.
+              </p>
+              <h3 className="rpage-heading">
+                {localStorage.getItem("applicationId")}
+              </h3>
+            </div>
+            <div className="pr-8">
+              <span className="rstatus-badge">
+                Submitted
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Applicant Details */}
-
-<div className="mt-10 px-10">
-
-<div className="flex items-center justify-center gap-4">
-
-<div className="h-[2px] w-20 bg-slate-300"></div>
-
-<h3 className="text-2xl font-bold text-slate-800">
-
-Applicant Details
-
-</h3>
-
-<div className="h-[2px] w-20 bg-slate-300"></div>
-
-</div>
-
-</div>
-
+      <div className="mt-10 px-10">
+        <div className="rsuccess-icon-box">
+          <div className="divider"></div>
+          <h3 className="rheading-title">
+            Applicant Details
+          </h3>
+          <div className="divider"></div>
+        </div>
+      </div>
 
       {/* Applied Licence */}
-
-
-<div className="app-form-grid-md">
-
-{/* Applicant */}
-
-<div className="app-card">
-
-<div className="reciept-container">
-
-<div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-
-<User className="text-blue-600"/>
-
-</div>
-
-<div>
-
-<p className="receipt-label">
-
-Applicant Name
-
-</p>
-
-<h4 className="receipt-title">
-
-{applicant?.applicantName}
-
-</h4>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-{/* Company */}
-
-<div className="app-card">
-
-<div className="reciept-container">
-
-<div className="iconbox">
-
-<Building2 className="text-indigo-600"/>
-
-</div>
-
-<div>
-
-<p className="receipt-label">
-
-Company Name
-
-</p>
-
-<h4 className="receipt-title">
-
-{applicant?.companyName}
-
-</h4>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-{/* Email */}
-
-<div className="app-card">
-
-<div className="reciept-container">
-
-<div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
-
-<Mail className="text-orange-600"/>
-
-</div>
-
-<div>
-
-<p className="receipt-label">
-
-Email Address
-
-</p>
-
-<h4 className="font-semibold mt-1 break-all">
-
-{applicant?.email}
-
-</h4>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-{/* Mobile */}
-
-<div className="app-card">
-
-<div className="reciept-container">
-
-<div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-
-<Phone className="text-green-600"/>
-
-</div>
-
-<div>
-
-<p className="receipt-label">
-
-Mobile Number
-
-</p>
-
-<h4 className="font-semibold mt-1">
-
-{applicant?.mobile}
-
-</h4>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div className="mt-6 app-card">
-
-<div className="reciept-container">
-
-<div className="reciept-box">
-
-<MapPin className="text-red-600"/>
-
-</div>
-
-<div>
-
-<p className="receipt-label">
-
-Address
-
-</p>
-
-<p className="font-medium mt-2 text-slate-700">
-
-{applicant?.addressLine1},
-
-{applicant?.addressLine2},
-
-{applicant?.city}
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-{/* Applied Licence */}
-
-<div className="mt-10">
-
-  <div className="flex items-center justify-center gap-4 mb-7">
-
-    <div className="h-[2px] w-20 bg-slate-300"></div>
-
-    <h3 className="text-2xl font-bold text-slate-800">
-      Applied Licence
-    </h3>
-
-    <div className="h-[2px] w-20 bg-slate-300"></div>
-
-  </div>
-
-  <div className="flex justify-center">
-
-    <div className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl px-8 py-5 shadow-md hover:shadow-lg transition-all">
-
-      <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center">
-
-        <FileCheck2 className="w-7 h-7 text-white" />
-
+      <div className="app-form-grid-md">
+        {/* Applicant */}
+        <div className="app-card">
+          <div className="reciept-container">
+            <div className="ricon-box">
+              <User className="text-blue-600" />
+            </div>
+
+            <div>
+              <p className="receipt-label">
+                Applicant Name
+              </p>
+              <h4 className="receipt-title">
+                {applicant?.applicantName}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+
+        {/* Company */}
+        <div className="app-card">
+          <div className="reciept-container">
+            <div className="rsicon-box">
+              <Building2 className="text-indigo-600" />
+            </div>
+            <div>
+              <p className="receipt-label">
+                Company Name
+              </p>
+              <h4 className="receipt-title">
+                {applicant?.companyName}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        {/* Email */}
+        <div className="app-card">
+          <div className="reciept-container">
+            <div className="rsuccess-icon-box">
+             <Mail className="text-orange-600" />
+            </div>
+            <div>
+              <p className="receipt-label">
+                Email Address
+              </p>
+              <h4 className="font-semibold mt-1 break-all">
+                {applicant?.email}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile */}
+        <div className="app-card">
+          <div className="reciept-container">
+            <div className="rsuccess-icon-box">
+              <Phone className="text-green-600" />
+            </div>
+            <div>
+              <p className="receipt-label"> Mobile Number </p>
+              <h4 className="font-semibold mt-1"> {applicant?.mobile} </h4>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div>
-
-        <p className="text-xs uppercase tracking-widest text-slate-500">
-          Selected Licence
-        </p>
-
-        <h4 className="text-lg font-bold text-slate-800 mt-1">
-
-          {/* {selectedLicense?.licenseeCatCode} -{" "} */}
-          {selectedLicense?.licenseeCatDesc}
-
-        </h4>
-
+      <div className="mt-6 app-card">
+        <div className="reciept-container">
+          <div className="reciept-box">
+            <MapPin className="text-red-600" />
+          </div>
+          <div>
+            <p className="receipt-label">
+              Address
+            </p>
+            <p className="rdescription-text">
+              {applicant?.addressLine1},
+              {applicant?.addressLine2},
+              {applicant?.city}
+            </p>
+          </div>
+        </div>
       </div>
 
-    </div>
+      {/* Applied Licence */}
+      <div className="mt-10">
+        <div className="rcenter-header">
+          <div className="divider"></div>
+          <h3 className="rheading-title">
+            Applied Licence
+          </h3>
+          <div className="divider"></div>
+        </div>
 
-  </div>
-
-</div>
-
-
-      {/* Status */}
-
-{/* Current Status */}
-
-<div className="mt-10">
-
-  <div className="rounded-2xl bg-green-50 border border-green-200 p-6">
-
-    <div className="flex items-start gap-5">
-
-      <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
-
-        <Check className="w-8 h-8 text-green-600" />
-
+        <div className="rcenter-content">
+          <div className="receipt-badge">
+            <div className="rsicon-box">
+             <FileCheck2 className="ricon-title" />
+            </div>
+            <div>
+              <p className="rlabel-text">
+                Selected Licence
+              </p>
+              <h4 className="rsection-title">
+                {/* {selectedLicense?.licenseeCatCode} -{" "} */}
+                {selectedLicense?.licenseeCatDesc}
+              </h4>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div>
-
-        <h4 className="text-xl font-bold text-green-700">
-
-          Application Submitted
-
-        </h4>
-
-        <p className="text-slate-600 mt-2 leading-7">
-
-          Your application has been submitted successfully.
-
-          It has been forwarded for verification.
-
-          You can track the application status anytime from your dashboard.
-
-        </p>
-
+ 
+      {/* Current Status */}
+      <div className="mt-10">
+        <div className="rsuccess-box">
+          <div className="rcontent-row">
+            <div className="rsuccess-circle">
+              <Check className="rsuccess-icon" />
+            </div>
+            <div>
+              <h4 className="rsuccess-title">
+                Application Submitted
+              </h4>
+              <p className="rdescription-text">
+                Your application has been submitted successfully.
+                It has been forwarded for verification.
+                You can track the application status anytime from your dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-
-      {/* Footer Buttons */}
-
-{/* Footer */}
-
-<div className="mt-12 border-t bg-slate-50 px-8 py-8">
-
- <div className="flex justify-center gap-5">
-
-    <button
-      type="button"
-      onClick={triggerMockPrint}
-      className="flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-900 transition text-white px-8 py-4 rounded-xl shadow-lg font-semibold"
-    >
-      <Printer className="w-5 h-5" />
-
-      Print Receipt
-
-    </button>
-
-    <button
-      type="button"
-      onClick={onBackToSelect}
-      className="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 transition text-white px-8 py-4 rounded-xl shadow-lg font-semibold"
-    >
-      <Home className="w-5 h-5" />
-
-      Back to Dashboard
-
-    </button>
-
-  </div>
-
-</div>
-
-
-
-
-
+      {/* Footer */}
+      <div className="rfooter-section">
+        <div className="rbutton-container">
+          <button
+            type="button"
+            onClick={triggerMockPrint}
+            className="rprimary-btn "
+          >
+            <Printer className="ricon" />
+            Print Receipt
+          </button>
+          <button
+            type="button"
+            onClick={onBackToSelect}
+            className="rprimary-btn"
+          >
+            <Home className="ricon" />
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
-
 export default ReceiptSuccess;

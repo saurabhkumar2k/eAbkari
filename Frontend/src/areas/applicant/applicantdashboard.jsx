@@ -29,7 +29,7 @@ import {
   Building,
   ShieldCheck,
   Search,
-  
+
   ChevronRight,
   ChevronDown,
   ArrowLeft,
@@ -77,25 +77,25 @@ const menuItems = [
 const statsData = [
   {
     title: "Applications",
-    value: "12",
+    value: "0",
     icon: FileCheck,
     color: "bg-blue-100 text-blue-600",
   },
   {
     title: "Licenses",
-    value: "02",
+    value: "0",
     icon: ShieldCheck,
     color: "bg-emerald-100 text-emerald-600",
   },
   {
     title: "Premises",
-    value: "03",
+    value: "0",
     icon: Building,
     color: "bg-amber-100 text-amber-600",
   },
   {
     title: "Alerts",
-    value: "05",
+    value: "0",
     icon: Bell,
     color: "bg-purple-100 text-purple-600",
   },
@@ -137,24 +137,17 @@ const StatCard = ({ item }) => {
   return (
     <div className="dashboard-card stat-card">
       <div className="stat-top">
-        <div
-          className={`stat-icon ${item.color}`}
-        >
+        <div className={`stat-icon ${item.color}`}>
           <Icon className="w-6 h-6" />
         </div>
-
         <span className="view-btn">
           View →
         </span>
       </div>
-      <div>
-        <p className="stat-title">
-          {item.title}
-        </p>
 
-        <h3 className="stat-value">
-          {item.value}
-        </h3>
+      <div>
+        <p className="stat-title">{item.title}</p>
+        <h3 className="stat-value">{item.value}</h3>
       </div>
     </div>
   );
@@ -164,25 +157,13 @@ const LicenseCard = ({ license }) => {
   return (
     <div className="license-card">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
         <div className="space-y-2">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="license-badge badge-blue">
-              {license.id}
-            </span>
-
-            <span
-              className={`license-badge ${
-                license.status === "Approved"
-                  ? "badge-green"
-                  : "badge-amber"
-              }`}
-            >
-              {license.status}
-            </span>
+            <span className="license-badge badge-blue">{license.id}</span>
+            <span className={`license-badge ${license.status === "Approved" ? "badge-green" : "badge-amber"}`}> {license.status} </span>
           </div>
 
-          <h3 className="text-lg font-semibold text-slate-800" style={{ marginTop: "12px" }}>
+          <h3 className="applhero-title">
             {license.type}
           </h3>
 
@@ -237,17 +218,17 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
     "License Transfer",
     "Document Revalidate"
   ];
- const navItems = [
-    { 
-      label: "Home", 
-      id: "Home", 
-      icon: <Home className="dept-nav-icon" />, 
-      active: activeTab === "Home" 
+  const navItems = [
+    {
+      label: "Home",
+      id: "Home",
+      icon: <Home className="dept-nav-icon" />,
+      active: activeTab === "Home"
     },
-    { 
-      label: "License", 
-      id: "License", 
-      icon: <Award className="dept-nav-icon" />, 
+    {
+      label: "License",
+      id: "License",
+      icon: <Award className="dept-nav-icon" />,
       active: isLicenseActive,
       hasDropdown: true,
       items: [
@@ -258,10 +239,10 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Document Revalidate", label: "Document Revalidate" }
       ]
     },
-    { 
-      label: "M&TP", 
-      id: "MTP", 
-      icon: <FlaskConical className="dept-nav-icon" />, 
+    {
+      label: "M&TP",
+      id: "MTP",
+      icon: <FlaskConical className="dept-nav-icon" />,
       active: isMtpActive,
       hasDropdown: true,
       items: [
@@ -269,10 +250,10 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Applied M&TP", label: "Applied M&TP" }
       ]
     },
-    { 
-      label: "Dealer", 
-      id: "Dealer", 
-      icon: <Store className="dept-nav-icon" />, 
+    {
+      label: "Dealer",
+      id: "Dealer",
+      icon: <Store className="dept-nav-icon" />,
       active: isDealerActive,
       hasDropdown: true,
       items: [
@@ -280,10 +261,10 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Applied Dealers", label: "Applied Dealers" }
       ]
     },
-    { 
-      label: "Premise", 
-      id: "Premise", 
-      icon: <Building className="dept-nav-icon" />, 
+    {
+      label: "Premise",
+      id: "Premise",
+      icon: <Building className="dept-nav-icon" />,
       active: isPremiseActive,
       hasDropdown: true,
       items: [
@@ -293,10 +274,10 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Applied Permit", label: "Applied Permit" }
       ]
     },
-    { 
-      label: "Profile", 
-      id: "Profile", 
-      icon: <Settings className="dept-nav-icon" />, 
+    {
+      label: "Profile",
+      id: "Profile",
+      icon: <Settings className="dept-nav-icon" />,
       active: isProfileActive,
       hasDropdown: true,
       items: [
@@ -304,26 +285,26 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "ChangePassword", label: "Change Password" }
       ]
     },
-    { 
-      label: "Logout", 
-      id: "Logout", 
-      icon: <LogOut className="dept-nav-icon text-rose-300" />, 
-      isLogout: true 
+    {
+      label: "Logout",
+      id: "Logout",
+      icon: <LogOut className="dept-nav-icon text-rose-300" />,
+      isLogout: true
     }
   ];
-return (
+  return (
     <div className="admin-header-wrapper">
       <header className="dept-dash-header">
         <div className="dept-dash-container">
           <div className="dept-dash-brand-row">
-            <div 
+            <div
               onClick={onNavigateToHome}
               className="dept-dash-logo-block"
               style={{ cursor: "pointer" }}
             >
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" 
-                alt="Emblem" 
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
+                alt="Emblem"
                 className="dept-emblem"
                 referrerPolicy="no-referrer"
               />
@@ -341,13 +322,13 @@ return (
         <div className="dept-dash-container">
           <ul className="dept-nav-list" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
             {navItems.map((item, idx) => (
-              <li 
-                key={idx} 
+              <li
+                key={idx}
                 className={`dept-nav-item ${item.active ? 'is-active' : ''} ${item.hasDropdown ? 'has-dropdown' : ''}`}
                 style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative" }}
               >
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className={`dept-nav-link ${item.isLogout ? 'hover:bg-red-700/40 hover:text-red-200 text-rose-300 transition-colors duration-200' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -367,8 +348,8 @@ return (
                   <div className="dept-dropdown-menu">
                     {item.items.map((subItem, sIdx) => (
                       <div key={sIdx} className="dept-dropdown-item">
-                        <a 
-                          href="#" 
+                        <a
+                          href="#"
                           className={`dept-dropdown-link ${activeTab === subItem.id ? 'bg-slate-100 text-brand-blue font-bold border-l-3 border-[#012a52]' : ''}`}
                           onClick={(e) => {
                             e.preventDefault();
@@ -394,10 +375,10 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const [activeTab, setActiveTab] = useState("Home");
   const [search, setSearch] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
- const [profile, setProfile] = useState({});   // <-- Yahan
- const [showPreview, setShowPreview] = useState(false);
- const [applicant, setApplicant] = useState({});
- const [applications, setApplications] = useState([]);
+  const [profile, setProfile] = useState({});   // <-- Yahan
+  const [showPreview, setShowPreview] = useState(false);
+  const [applicant, setApplicant] = useState({});
+  const [applications, setApplications] = useState([]);
   // States for sub-level views
   const [renewedList, setRenewedList] = useState({});
   const [docs, setDocs] = useState({
@@ -413,11 +394,11 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     remarks: ""
   });
 
-console.log("Applicant:", profile);
+  console.log("Applicant:", profile);
 
-const handlePreview = () => {
-  setShowPreview(true);
-};
+  const handlePreview = () => {
+    setShowPreview(true);
+  };
   // M&TP states
   const [mtpApplications, setMtpApplications] = useState([
     {
@@ -449,7 +430,7 @@ const handlePreview = () => {
     drugLicenseNum: "DL-MED-9921-2026",
     declarationsChecked: false
   });
-  
+
   const [mtpSubmissionCompleted, setMtpSubmissionCompleted] = useState(false);
 
   // Dealer states
@@ -580,7 +561,7 @@ const handlePreview = () => {
       ...prev,
       [key]: { ...prev[key], status: "Uploading & Authenticating with System...", type: "uploading" }
     }));
-    
+
     setTimeout(() => {
       setDocs(prev => ({
         ...prev,
@@ -601,217 +582,217 @@ const handlePreview = () => {
   };
 
 
-// const handleDownloadPdf = async (applicationIdNo) => {
-// debugger;
-//   try {
+  // const handleDownloadPdf = async (applicationIdNo) => {
+  // debugger;
+  //   try {
 
 
-// const element = document.getElementById("report-content");
-// console.log(element);
+  // const element = document.getElementById("report-content");
+  // console.log(element);
 
 
-//     const response = await fetch(
-//       `http://localhost:5214/api/Report/L1/${applicationIdNo}`
-//     );
+  //     const response = await fetch(
+  //       `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+  //     );
 
-//     if (!response.ok) {
-//       throw new Error("Failed to load report");
-//     }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to load report");
+  //     }
 
-//     const data = await response.json();
+  //     const data = await response.json();
 
-//     // Report data state me set karo
-//     setApplicant(data);
+  //     // Report data state me set karo
+  //     setApplicant(data);
 
-//     // React ko render karne ka time do
-//     setTimeout(() => {
+  //     // React ko render karne ka time do
+  //     setTimeout(() => {
 
-//       const element = document.getElementById("report-content");
+  //       const element = document.getElementById("report-content");
 
-//       html2pdf()
-//         .from(element)
-//         .save(`L1_Application_${applicationIdNo}.pdf`);
+  //       html2pdf()
+  //         .from(element)
+  //         .save(`L1_Application_${applicationIdNo}.pdf`);
 
-//     }, 300);
+  //     }, 300);
 
-//   } catch (error) {
-//     console.error(error);
-//     alert("Unable to generate report.");
-//   }
-// };
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Unable to generate report.");
+  //   }
+  // };
 
-const handleDownloadPdf = async (applicationIdNo) => {
-  debugger;
-  try {
+  const handleDownloadPdf = async (applicationIdNo) => {
+    debugger;
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch report data.");
+      }
+
+      const data = await response.json();
+      console.log(applicant);
+
+      const blob = await pdf(
+        <ReportPrintL1 applicant={data} />
+      ).toBlob();
+      console.log(data);
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Application_${data.applicationIdNo}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error(err);
+      alert("Unable to generate PDF.");
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleForwardApplication = async (applicationIdNo) => {
+    debugger;
+    try {
+
+
+
+
+    } catch (err) {
+      console.error(err);
+      alert("Unable to forward application`.");
+    }
+  };
+
+
+
+  // useEffect(() => {
+  //   const regId = localStorage.getItem("regId");
+
+  //   if (!regId) return;
+
+  //   axios
+  //     .get(`http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`)
+  //     .then((res) => {
+  //       setProfile(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching profile:", err);
+  //     });
+  // }, []);
+
+  console.log("Parent Applicant:", applicant);
+  const regId = localStorage.getItem("regId");
+
+  useEffect(() => {
+    if (regId) {
+      loadApplicantData(regId);
+    }
+  }, []);
+
+  const loadApplicantData = async (regId) => {
+    debugger;
     const response = await fetch(
-      `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch report data.");
-    }
+    if (!response.ok) return;
 
     const data = await response.json();
-console.log(applicant);
-
-    const blob = await pdf(
-      <ReportPrintL1 applicant={data} />
-    ).toBlob();
-console.log(data);
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Application_${data.applicationIdNo}.pdf`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-
-  } catch (err) {
-    console.error(err);
-    alert("Unable to generate PDF.");
-  }
-};
-
-const handlePrint = () => {
-  window.print();
-};
-
-const handleForwardApplication = async (applicationIdNo) => {
-  debugger;
-  try {
+    setProfile(data);
+  };
 
 
+  // useEffect(() => {
+
+  //    fetch(`http://localhost:5214/api/Report/L1/${applicationId}`)
+
+  //       .then(res=>res.json())
+
+  //       .then(data=>{
+
+  //           setReport(data);
+
+  //       });
+
+  // },[]);
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "F":
+        return "Forwarded";
+      case "P":
+        return "Scrutiny in Progress";
+      case "A":
+        return "Approved";
+      case "R":
+        return "Rejected";
+      case "C":
+        return "Clarification Needed";
+      case "I":
+        return "Inspection";
+      case "G":
+        return "Granted";
+      default:
+        return "Pending";
+    }
+  };
+
+  const getCurrentStage = (status) => {
+    switch (status) {
+
+      case "F":
+        return 2; // Forwarded
+
+      case "P":
+        return 3; // Scrutiny
+
+      case "I":
+        return 4; // Inspection
+
+      case "G":
+      case "A":
+        return 5; // Grant / Approved
+
+      case "R":
+        return 2; // Rejected
 
 
-  } catch (err) {
-    console.error(err);
-    alert("Unable to forward application`.");
-  }
-};
 
+      default:
+        return 1; // Submission
+    }
+  };
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "A":
+        return "application-status application-status-success";
 
-// useEffect(() => {
-//   const regId = localStorage.getItem("regId");
+      case "C":
+        return "application-status application-status-clarification";
 
-//   if (!regId) return;
+      case "R":
+        return "application-status application-status-rejected";
 
-//   axios
-//     .get(`http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`)
-//     .then((res) => {
-//       setProfile(res.data);
-//     })
-//     .catch((err) => {
-//       console.error("Error fetching profile:", err);
-//     });
-// }, []);
+      case "F":
+        return "application-status application-status-forwarded";
 
-console.log("Parent Applicant:", applicant);
-const regId = localStorage.getItem("regId");
-
-useEffect(() => {
-  if (regId) {
-    loadApplicantData(regId);
-  }
-}, []);
-
-const loadApplicantData = async (regId) => {
-  debugger;
-  const response = await fetch(
-    `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
-  );
-
-  if (!response.ok) return;
-
-  const data = await response.json();
-  setProfile(data);
-};
-
-
-// useEffect(() => {
-
-//    fetch(`http://localhost:5214/api/Report/L1/${applicationId}`)
-
-//       .then(res=>res.json())
-
-//       .then(data=>{
-
-//           setReport(data);
-
-//       });
-
-// },[]);
-
-const getStatusText = (status) => {
-  switch (status) {
-    case "F":  
-      return "Forwarded";
-    case "P":
-      return "Scrutiny in Progress";  
-    case "A":
-      return "Approved";
-    case "R":
-      return "Rejected";
-    case "C":
-      return "Clarification Needed";
-    case "I":
-      return "Inspection";
-    case "G":
-      return "Granted";
-    default:
-      return "Pending";
-  }
-};
-
-const getCurrentStage = (status) => {
-  switch (status) {
-
-    case "F":
-      return 2; // Forwarded
-
-    case "P":
-      return 3; // Scrutiny
-
-    case "I":
-      return 4; // Inspection
-
-    case "G":
-    case "A":
-      return 5; // Grant / Approved
-
-    case "R":
-      return 2; // Rejected
-
-    
-
-    default:
-      return 1; // Submission
-  }
-};
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case "A":
-      return "application-status application-status-success";
-
-    case "C":
-      return "application-status application-status-clarification";
-
-    case "R":
-      return "application-status application-status-rejected";
-
-    case "F":
-      return "application-status application-status-forwarded";
-
-    case "P":
-    default:
-      return "application-status";
-  }
-};
+      case "P":
+      default:
+        return "application-status";
+    }
+  };
 
 
 
@@ -820,27 +801,27 @@ const getStatusClass = (status) => {
 
 
 
-useEffect(() => {
-  fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
-    .then(res => res.json())
-    .then(data => {
-      if (Array.isArray(data)) {
-        setApplications(data);
-      } else {
-        setApplications([]);
-      }
-    })
-    .catch(() => setApplications([]));
-}, []);
+  useEffect(() => {
+    fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setApplications(data);
+        } else {
+          setApplications([]);
+        }
+      })
+      .catch(() => setApplications([]));
+  }, []);
 
 
 
 
-const filteredLicenses = licenses.filter(
+  const filteredLicenses = licenses.filter(
     (item) =>
       item.type.toLowerCase().includes(search.toLowerCase()) ||
       item.id.toLowerCase().includes(search.toLowerCase())
-);
+  );
 
   return (
     <div className="app-layout">
@@ -855,22 +836,21 @@ const filteredLicenses = licenses.filter(
 
       {/* TOAST SYSTEM */}
       {toastMessage && (
-  <div
-    className={`toast-message ${
-      toastMessage.type === "success"
-        ? "toast-success"
-        : "toast-error"
-    }`}
-  >
-    {toastMessage.type === "success" ? (
-      <CheckCircle2 className="toast-icon success-icon" />
-    ) : (
-      <ShieldAlert className="toast-icon error-icon" />
-    )}
+        <div
+          className={`toast-message ${toastMessage.type === "success"
+              ? "toast-success"
+              : "toast-error"
+            }`}
+        >
+          {toastMessage.type === "success" ? (
+            <CheckCircle2 className="toast-icon success-icon" />
+          ) : (
+            <ShieldAlert className="toast-icon error-icon" />
+          )}
 
-    <span className="toast-text">{toastMessage.msg}</span>
-  </div>
-)}
+          <span className="toast-text">{toastMessage.msg}</span>
+        </div>
+      )}
       {/* PAGE CONTENT */}
       {activeTab === "New License" ? (
         <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
@@ -892,12 +872,12 @@ const filteredLicenses = licenses.filter(
           {activeTab === "Home" && (
             <>
               {/* HERO */}
-              <div className="dashboard-card hero-card">
+              <div className="hero-card">
                 <div className="hero-gradient">
-                  <div className="hero-content mx-auto max-w-7xl">
+                  <div className="hero-content">
                     <div>
                       <h1 className="hero-title">
-                        Welcome back,{profile.firstName} {profile.lastName} 👋
+                        Welcome,{profile.firstName} {profile.lastName} 👋
                       </h1>
 
                       <p className="hero-description">
@@ -935,30 +915,16 @@ const filteredLicenses = licenses.filter(
 
                 {/* LICENSES */}
                 <div className="dashboard-card section-padding">
-                  <SectionTitle
-                    title="Recent Licenses"
-                    subtitle="Monitor and manage active permits"
-                  />
+                  <SectionTitle title="Recent Licenses & Permits"/>
 
                   <div className="search-wrapper">
-                   <Search className="search-icon" />
-
-                    <input
-                      type="text"
-                      placeholder="Search licenses..."
-                      value={search}
-                      onChange={(e) =>
-                        setSearch(e.target.value)
-                      }
-                      className="search-input"
-                    />
+                    <Search className="search-icon" />
+                    <input type="text" placeholder="Search licenses..." value={search} onChange={(e) => setSearch(e.target.value)} className="search-input"/>
                   </div>
 
                   <div className="license-list">
                     {filteredLicenses.map((license) => (
-                      <LicenseCard
-                        key={license.id}
-                        license={license}
+                      <LicenseCard key={license.id}  license={license}
                       />
                     ))}
                   </div>
@@ -1015,29 +981,29 @@ const filteredLicenses = licenses.filter(
                     </div>
                   </div> */}
 
-<div className="profile-details">
-   <div className="profile-avatar-large">
-                     <User className="user-icon" />
+                  <div className="profile-details">
+                    <div className="profile-avatar-large">
+                      <User className="user-icon" />
                     </div>
-    <div className="profile-row">
-    <span className="profile-label">Name</span>
-    <span className="profile-value">{profile.firstName} {profile.lastName}</span>
-  </div>
-  <div className="profile-row">
-    <span className="profile-label">Email</span>
-    <span className="profile-value">{profile.email}</span>
-  </div>
+                    <div className="profile-row">
+                      <span className="profile-label">Name</span>
+                      <span className="profile-value">{profile.firstName} {profile.lastName}</span>
+                    </div>
+                    <div className="profile-row">
+                      <span className="profile-label">Email</span>
+                      <span className="profile-value">{profile.email}</span>
+                    </div>
 
-  <div className="profile-row">
-    <span className="profile-label">Mobile</span>
-    <span className="profile-value">{profile.mobile}</span>
-  </div>
+                    <div className="profile-row">
+                      <span className="profile-label">Mobile</span>
+                      <span className="profile-value">{profile.mobile}</span>
+                    </div>
 
-  {/* <div className="profile-row">
+                    {/* <div className="profile-row">
     <span className="profile-label">State</span>
     <span className="profile-value">{profile.stateUT}</span>
   </div> */}
-                </div>
+                  </div>
                 </div>
               </div>
             </>
@@ -1046,67 +1012,67 @@ const filteredLicenses = licenses.filter(
           {/* APPLIED LICENSE VIEW */}
           {activeTab === "Applied License" && (
             <div className="space-y-6">
-              <SectionTitle 
-                title="Applied Licenses" 
-                subtitle="Track the real-time processing status of your submitted applications" 
+              <SectionTitle
+                title="Applied Licenses"
+                subtitle="Track the real-time processing status of your submitted applications"
               />
-             <div className="dashboard-card active-applications-card">
-              <div className="applications-header">
-              <h3 className="applications-title">Active Applications</h3>
-              <span className="applications-badge"> 3 Applications Total </span>
+              <div className="dashboard-card active-applications-card">
+                <div className="applications-header">
+                  <h3 className="applications-title">Active Applications</h3>
+                  <span className="applications-badge"> 3 Applications Total </span>
+                </div>
               </div>
-             </div>
-                
-                {/* App 1 */}
-               {applications.map((app) => (
-  <div className="application-card" key={app.applicationIdNo}>
 
-    <div className="application-header">
+              {/* App 1 */}
+              {applications.map((app) => (
+                <div className="application-card" key={app.applicationIdNo}>
 
-  <div>
+                  <div className="application-header">
 
-    <div className="application-id-row">
-      <span className="application-id-label">
-        Application ID:
-      </span>
+                    <div>
 
-      <span className="application-id-value">
-        {app.applicationIdNo}
-      </span>
-    </div>
+                      <div className="application-id-row">
+                        <span className="application-id-label">
+                          Application ID:
+                        </span>
 
-    <h4 className="application-title">
-      {app.licenseName}
-    </h4>
+                        <span className="application-id-value">
+                          {app.applicationIdNo}
+                        </span>
+                      </div>
 
-    <p className="application-date">
-      Submitted Date:{" "}
-      {new Date(app.applicationDate).toLocaleDateString("en-GB")}
-    </p>
+                      <h4 className="application-title">
+                        {app.licenseName}
+                      </h4>
 
-  </div>
+                      <p className="application-date">
+                        Submitted Date:{" "}
+                        {new Date(app.applicationDate).toLocaleDateString("en-GB")}
+                      </p>
 
-  <div className="flex items-center gap-3">
+                    </div>
 
-    <span className={getStatusClass(app.status)}>
-      {getStatusText(app.status)}
-    </span>
+                    <div className="flex items-center gap-3">
 
-<button
-  onClick={() => handleDownloadPdf(app.applicationIdNo)}
-  className="application-btn"
->
-  Download PDF
-</button>
+                      <span className={getStatusClass(app.status)}>
+                        {getStatusText(app.status)}
+                      </span>
 
-<button
-  onClick={() => handleForwardApplication(app.applicationIdNo)}
-  className="application-btn"
->
-  Forward Application
-</button>
+                      <button
+                        onClick={() => handleDownloadPdf(app.applicationIdNo)}
+                        className="application-btn"
+                      >
+                        Download PDF
+                      </button>
 
-{/* <PDFDownloadLink
+                      <button
+                        onClick={() => handleForwardApplication(app.applicationIdNo)}
+                        className="application-btn"
+                      >
+                        Forward Application
+                      </button>
+
+                      {/* <PDFDownloadLink
   document={<ReportPrintL1 applicant={applicant} />}
   fileName={`Application_${applicant?.applicationIdNo || "Report"}.pdf`}
   style={{ textDecoration: "none" }}
@@ -1121,51 +1087,50 @@ const filteredLicenses = licenses.filter(
   )}
 </PDFDownloadLink> */}
 
-  </div>
+                    </div>
 
 
-<div
-  style={{
-    position: "absolute",
-    left: "-9999px",
-    top: 0
-  }}
->
-    <View fixed>
-   <ReportHeader applicant={applicant}/>
-</View>
-</div>
-</div>
-   <div className="application-progress-grid">
-  {["Submission", "Forward", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
-    <div key={index} className="progress-step">
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "-9999px",
+                        top: 0
+                      }}
+                    >
+                      <View fixed>
+                        <ReportHeader applicant={applicant} />
+                      </View>
+                    </div>
+                  </div>
+                  <div className="application-progress-grid">
+                    {["Submission", "Forward", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
+                      <div key={index} className="progress-step">
 
-      <div
-        className={`progress-bar ${
-          index + 1 < getCurrentStage(app.status)
-            ? "progress-done"
-            : index + 1 === getCurrentStage(app.status)
-            ? "progress-active"
-            : "progress-pending"
-        }`}
-      >
-      </div>
-      <p className="progress-label">
-        {label}
-      </p>
-    </div>
-  ))}
-</div>
-  </div>
-))}
-      </div>
+                        <div
+                          className={`progress-bar ${index + 1 < getCurrentStage(app.status)
+                              ? "progress-done"
+                              : index + 1 === getCurrentStage(app.status)
+                                ? "progress-active"
+                                : "progress-pending"
+                            }`}
+                        >
+                        </div>
+                        <p className="progress-label">
+                          {label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
           {/* RENEWAL LICENSE VIEW */}
           {activeTab === "Renewal License" && (
             <div className="space-y-6">
-              <SectionTitle 
-                title="License Renewal" 
-                subtitle="Manage end-of-term extensions and annual duty clearances for active licenses" 
+              <SectionTitle
+                title="License Renewal"
+                subtitle="Manage end-of-term extensions and annual duty clearances for active licenses"
               />
               <div className="grid md:grid-cols-2 gap-6">
                 {licenses.map((lic) => {
@@ -1173,29 +1138,29 @@ const filteredLicenses = licenses.filter(
                   return (
                     <div key={lic.id} className="license-card">
                       <div className="license-card-content">
-                      <div className="license-card-header">
-                        <span className="license-id"> {lic.id} </span>
-                        <span className={`license-status ${ isRenewed ? "license-status-renewed" : "license-status-active" }`} >
-                        {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
-                        </span>
+                        <div className="license-card-header">
+                          <span className="license-id"> {lic.id} </span>
+                          <span className={`license-status ${isRenewed ? "license-status-renewed" : "license-status-active"}`} >
+                            {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
+                          </span>
+                        </div>
+                        <h4 className="license-title">{lic.type}</h4>
+                        <div className="license-validity">
+                          <Calendar className="license-calendar-icon" />
+                          <span> Valid till:{" "} <span className="license-validity-date">
+                            {isRenewed ? "31st March 2028" : "31st March 2027"}
+                          </span>
+                          </span>
+                        </div>
                       </div>
-                       <h4 className="license-title">{lic.type}</h4>
-                       <div className="license-validity">
-                      <Calendar className="license-calendar-icon" />
-                      <span> Valid till:{" "} <span className="license-validity-date">
-                      {isRenewed ? "31st March 2028" : "31st March 2027"}
-                      </span>
-                      </span>
-                    </div>
-                    </div>
-                      
-                    <div className="renewal-footer">
-                      <span className="renewal-fee">Renewal Fee: ₹ 45,000 </span>
-                      <button onClick={() => handleRenew(lic.id)} disabled={isRenewed}
-                      className={`renewal-btn ${ isRenewed ? "renewal-btn-disabled" : "renewal-btn-active" }`} >
-                      {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
-                      </button>
-                    </div>
+
+                      <div className="renewal-footer">
+                        <span className="renewal-fee">Renewal Fee: ₹ 45,000 </span>
+                        <button onClick={() => handleRenew(lic.id)} disabled={isRenewed}
+                          className={`renewal-btn ${isRenewed ? "renewal-btn-disabled" : "renewal-btn-active"}`} >
+                          {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -1206,187 +1171,183 @@ const filteredLicenses = licenses.filter(
           {/* LICENSE TRANSFER VIEW */}
           {activeTab === "License Transfer" && (
             <div className="license-transfer-container">
-            <SectionTitle title="License Transfer Portal" 
-            subtitle="Apply for change of licensee ownership, management structure, or premises relocation"/>
+              <SectionTitle title="License Transfer Portal"
+                subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
               {transferSuccess ? (
-               <div className="license-transfer-container">
-                   <SectionTitle title="License Transfer Portal" 
-                   subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
+                <div className="license-transfer-container">
+                  <SectionTitle title="License Transfer Portal"
+                    subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
 
-                <h3 className="transfer-success-title"> Transfer Filed Successfully </h3>
-                <p className="transfer-success-message"> Your application for{" "}
-                <span className="transfer-type"> {transferForm.type} Transfer </span>{" "} has been registered under Transaction ID{" "}
-                <span className="transaction-id"> TR-2026-90812 </span>. The scrutinizing officer will verify transferee credentials within 7 business days.
-                </p>
+                  <h3 className="transfer-success-title"> Transfer Filed Successfully </h3>
+                  <p className="transfer-success-message"> Your application for{" "}
+                    <span className="transfer-type"> {transferForm.type} Transfer </span>{" "} has been registered under Transaction ID{" "}
+                    <span className="transaction-id"> TR-2026-90812 </span>. The scrutinizing officer will verify transferee credentials within 7 business days.
+                  </p>
                   <button onClick={() => {
-                  setTransferSuccess(false); setTransferForm({ lic: "ND-25-L10023", type: "Ownership",transferee: "", remarks: "", });
+                    setTransferSuccess(false); setTransferForm({ lic: "ND-25-L10023", type: "Ownership", transferee: "", remarks: "", });
                   }} className="transfer-new-request-btn">Create Another Request
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmitTransfer} className="dashboard-card transfer-form">
                   <div className="transfer-form-group">
-                  <label className="transfer-form-label"> Select License </label>
+                    <label className="transfer-form-label"> Select License </label>
 
-    <select
-      value={transferForm.lic}
-      onChange={(e) =>
-        setTransferForm({ ...transferForm, lic: e.target.value })
-      }
-      className="transfer-form-select"
-    >
-      {licenses.map((l) => (
-        <option key={l.id} value={l.id}>
-          {l.id} - {l.type}
-        </option>
-      ))}
-    </select>
-  </div>
-
-                 <div className="transfer-form-group">
-  <label className="transfer-form-label">
-    Transfer Type
-  </label>
-
-  <div className="transfer-type-grid">
-    {["Ownership", "Premises Relocation"].map(type => (
-      <button
-        type="button"
-        key={type}
-        onClick={() => setTransferForm({ ...transferForm, type })}
-        className={`transfer-type-btn ${
-          transferForm.type === type
-            ? "transfer-type-btn-active"
-            : "transfer-type-btn-inactive"
-        }`}
-      >
-        <RefreshCw className="transfer-type-icon" />
-        <span>{type}</span>
-      </button>
-    ))}
+                    <select
+                      value={transferForm.lic}
+                      onChange={(e) =>
+                        setTransferForm({ ...transferForm, lic: e.target.value })
+                      }
+                      className="transfer-form-select"
+                    >
+                      {licenses.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.id} - {l.type}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-</div>
-                  <div className="transfer-form-group">
-  <label className="transfer-form-label">
-    {transferForm.type === "Ownership"
-      ? "New Transferee Entity Registered Name"
-      : "Proposed New Premises Complete Address"}
-  </label>
-
-  <input
-    type="text"
-    placeholder={
-      transferForm.type === "Ownership"
-        ? "Legal Name of the Transferee entity"
-        : "Enter complete new premise layout address"
-    }
-    value={transferForm.transferee}
-    onChange={(e) =>
-      setTransferForm({
-        ...transferForm,
-        transferee: e.target.value,
-      })
-    }
-    className="transfer-form-input"
-  />
-</div>
 
                   <div className="transfer-form-group">
-  <label className="transfer-form-label">
-    Justification for Transfer
-  </label>
+                    <label className="transfer-form-label">
+                      Transfer Type
+                    </label>
 
-  <textarea
-    rows="3"
-    placeholder="Provide a legal brief of reasons for the transfer..."
-    value={transferForm.remarks}
-    onChange={(e) =>
-      setTransferForm({
-        ...transferForm,
-        remarks: e.target.value,
-      })
-    }
-    className="transfer-form-textarea"
-  />
-</div>
+                    <div className="transfer-type-grid">
+                      {["Ownership", "Premises Relocation"].map(type => (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => setTransferForm({ ...transferForm, type })}
+                          className={`transfer-type-btn ${transferForm.type === type
+                              ? "transfer-type-btn-active"
+                              : "transfer-type-btn-inactive"
+                            }`}
+                        >
+                          <RefreshCw className="transfer-type-icon" />
+                          <span>{type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="transfer-form-group">
+                    <label className="transfer-form-label">
+                      {transferForm.type === "Ownership"
+                        ? "New Transferee Entity Registered Name"
+                        : "Proposed New Premises Complete Address"}
+                    </label>
 
-               <div className="transfer-note-box">
-  <Info className="transfer-note-icon" />
-  <p>
-    Note: A non-refundable transfer processing fee of{" "}
-    <span className="transfer-note-fee">₹ 15,000</span> will be applicable
-    upon submission of this application.
-  </p>
-</div>
+                    <input
+                      type="text"
+                      placeholder={
+                        transferForm.type === "Ownership"
+                          ? "Legal Name of the Transferee entity"
+                          : "Enter complete new premise layout address"
+                      }
+                      value={transferForm.transferee}
+                      onChange={(e) =>
+                        setTransferForm({
+                          ...transferForm,
+                          transferee: e.target.value,
+                        })
+                      }
+                      className="transfer-form-input"
+                    />
+                  </div>
 
-<button
-  type="submit"
-  className="transfer-submit-btn"
->
-  File Transfer Application
-</button>
-</form>
-)}
-</div>
+                  <div className="transfer-form-group">
+                    <label className="transfer-form-label">
+                      Justification for Transfer
+                    </label>
+
+                    <textarea
+                      rows="3"
+                      placeholder="Provide a legal brief of reasons for the transfer..."
+                      value={transferForm.remarks}
+                      onChange={(e) =>
+                        setTransferForm({
+                          ...transferForm,
+                          remarks: e.target.value,
+                        })
+                      }
+                      className="transfer-form-textarea"
+                    />
+                  </div>
+
+                  <div className="transfer-note-box">
+                    <Info className="transfer-note-icon" />
+                    <p>
+                      Note: A non-refundable transfer processing fee of{" "}
+                      <span className="transfer-note-fee">₹ 15,000</span> will be applicable
+                      upon submission of this application.
+                    </p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="transfer-submit-btn"
+                  >
+                    File Transfer Application
+                  </button>
+                </form>
+              )}
+            </div>
           )}
 
           {/* DOCUMENT REVALIDATE VIEW */}
           {activeTab === "Document Revalidate" && (
-           <div className="document-revalidation-container">
-           <SectionTitle title="Document Revalidation"
-           subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses"/>
-              
-              <div className="dashboard-card checklist-card">
-  <h3 className="checklist-title">
-    Clearance Document Checklist
-  </h3>
-                
-<div className="checklist-items">
-  {Object.entries(docs).map(([key, item]) => {
-    return (
-      <div key={key} className="document-card">
-        <div className="document-info">
-          <div
-            className={`document-icon-wrapper ${
-              item.type === "verified"
-                ? "document-icon-verified"
-                : item.type === "expired"
-                ? "document-icon-expired"
-                : item.type === "uploading"
-                ? "document-icon-uploading"
-                : "document-icon-pending"
-            }`}
-          >
-            <FileText
-              className={`document-icon ${
-                item.type === "uploading" ? "document-icon-spin" : ""
-              }`}
-            />
-          </div>
-                          <div>
-  <h4 className="document-name">
-    {item.name}
-  </h4>
+            <div className="document-revalidation-container">
+              <SectionTitle title="Document Revalidation"
+                subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses" />
 
-  <span
-    className={`document-status-badge ${
-      item.type === "verified"
-        ? "document-status-verified"
-        : item.type === "expired"
-        ? "document-status-expired"
-        : item.type === "uploading"
-        ? "document-status-uploading"
-        : "document-status-pending"
-    }`}
-  >
-    {item.status}
-  </span>
-</div>
+              <div className="dashboard-card checklist-card">
+                <h3 className="checklist-title">
+                  Clearance Document Checklist
+                </h3>
+
+                <div className="checklist-items">
+                  {Object.entries(docs).map(([key, item]) => {
+                    return (
+                      <div key={key} className="document-card">
+                        <div className="document-info">
+                          <div
+                            className={`document-icon-wrapper ${item.type === "verified"
+                                ? "document-icon-verified"
+                                : item.type === "expired"
+                                  ? "document-icon-expired"
+                                  : item.type === "uploading"
+                                    ? "document-icon-uploading"
+                                    : "document-icon-pending"
+                              }`}
+                          >
+                            <FileText
+                              className={`document-icon ${item.type === "uploading" ? "document-icon-spin" : ""
+                                }`}
+                            />
+                          </div>
+                          <div>
+                            <h4 className="document-name">
+                              {item.name}
+                            </h4>
+
+                            <span
+                              className={`document-status-badge ${item.type === "verified"
+                                  ? "document-status-verified"
+                                  : item.type === "expired"
+                                    ? "document-status-expired"
+                                    : item.type === "uploading"
+                                      ? "document-status-uploading"
+                                      : "document-status-pending"
+                                }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
                         </div>
 
                         <div>
                           {item.type !== "verified" && (
-                            <button 
+                            <button
                               onClick={() => handleUpload(key)}
                               disabled={item.type === "uploading"}
                               className="document-action-btn"
@@ -1402,7 +1363,7 @@ const filteredLicenses = licenses.filter(
                             </button>
                           )}
                           {item.type === "verified" && (
-                           <span className="verified-status-badge">
+                            <span className="verified-status-badge">
                               ✓ Compliance Validated
                             </span>
                           )}
@@ -1418,119 +1379,119 @@ const filteredLicenses = licenses.filter(
           {/* USER PROFILE TAB */}
           {activeTab === "UserProfile" && (
             <div className="profile-container">
-  <SectionTitle
-    title="Account Profile"
-    subtitle="Manage user information, contact details, and registered authorization credentials"
-  />
+              <SectionTitle
+                title="Account Profile"
+                subtitle="Manage user information, contact details, and registered authorization credentials"
+              />
               <div className="dashboard-card profile-card">
-  <div className="profile-header">
-<div className="profile-avatar">
+                <div className="profile-header">
+                  <div className="profile-avatar">
 
-  {profile?.photo ? (
-<img
-  src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
-  alt="Profile"
-/>
-  ) : (
-    profile?.applicantName
-      ?.split(" ")
-      .map((x) => x[0])
-      .join("")
-      .toUpperCase()
-  )}
+                    {profile?.photo ? (
+                      <img
+                        src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
+                        alt="Profile"
+                      />
+                    ) : (
+                      profile?.applicantName
+                        ?.split(" ")
+                        .map((x) => x[0])
+                        .join("")
+                        .toUpperCase()
+                    )}
 
-</div>
+                  </div>
                   <div className="profile-user-info">
-  <h3 className="profile-user-name">
-    {profile.firstName} {profile.lastName}
-  </h3>
+                    <h3 className="profile-user-name">
+                      {profile.firstName} {profile.lastName}
+                    </h3>
 
-  <p className="profile-user-role">
-    System Administrator • Active since Feb 2026
-  </p>
-</div>
-</div>
+                    <p className="profile-user-role">
+                      System Administrator • Active since Feb 2026
+                    </p>
+                  </div>
+                </div>
 
-              <div className="profile-form-grid">
+                <div className="profile-form-grid">
 
-  <div className="profile-form-group">
-    <label className="profile-form-label">
-      Occuption
-    </label>
+                  <div className="profile-form-group">
+                    <label className="profile-form-label">
+                      Occuption
+                    </label>
 
-    <input
-      type="text"
-      value={profile?.occupation || ""}
-      readOnly
-      className="profile-form-input"
-    />
-  </div>
+                    <input
+                      type="text"
+                      value={profile?.occupation || ""}
+                      readOnly
+                      className="profile-form-input"
+                    />
+                  </div>
 
-  <div className="profile-form-group">
-    <label className="profile-form-label">
-      Official Email ID
-    </label>
+                  <div className="profile-form-group">
+                    <label className="profile-form-label">
+                      Official Email ID
+                    </label>
 
-    <input
-      type="email"
-      value={profile?.email || ""}
-      readOnly
-      className="profile-form-input"
-    />
-  </div>
+                    <input
+                      type="email"
+                      value={profile?.email || ""}
+                      readOnly
+                      className="profile-form-input"
+                    />
+                  </div>
 
-  <div className="profile-form-group">
-    <label className="profile-form-label">
-      Mobile Number
-    </label>
+                  <div className="profile-form-group">
+                    <label className="profile-form-label">
+                      Mobile Number
+                    </label>
 
-    <input
-      type="text"
-      value={profile?.mobile || ""}
-      readOnly
-      className="profile-form-input"
-    />
-  </div>
+                    <input
+                      type="text"
+                      value={profile?.mobile || ""}
+                      readOnly
+                      className="profile-form-input"
+                    />
+                  </div>
 
-  <div className="profile-form-group">
-    <label className="profile-form-label">
-      Registration ID
-    </label>
+                  <div className="profile-form-group">
+                    <label className="profile-form-label">
+                      Registration ID
+                    </label>
 
-    <input
-      type="text"
-      value={profile?.userId || ""}
-      readOnly
-      className="profile-form-input-disabled"
-    />
-  </div>
+                    <input
+                      type="text"
+                      value={profile?.userId || ""}
+                      readOnly
+                      className="profile-form-input-disabled"
+                    />
+                  </div>
 
-  <div className="profile-form-group profile-form-full-width">
-    <label className="profile-form-label">
-      Registered Organization Address
-    </label>
+                  <div className="profile-form-group profile-form-full-width">
+                    <label className="profile-form-label">
+                      Registered Organization Address
+                    </label>
 
-    <textarea
-      rows="2"
-      value={`${profile?.addressLine1 || ""} ${profile?.addressLine2 || ""}, ${profile?.city || ""}`}
-      readOnly
-      className="profile-form-textarea"
-    />
-  </div>
+                    <textarea
+                      rows="2"
+                      value={`${profile?.addressLine1 || ""} ${profile?.addressLine2 || ""}, ${profile?.city || ""}`}
+                      readOnly
+                      className="profile-form-textarea"
+                    />
+                  </div>
 
-</div>
+                </div>
 
-<div className="profile-actions">
-  <button
-    onClick={() =>
-      showToast(
-        "Profile details updated successfully under security reference log!"
-      )
-    }
-    className="profile-save-btn"
-  >
-    Save Changes
-  </button>
+                <div className="profile-actions">
+                  <button
+                    onClick={() =>
+                      showToast(
+                        "Profile details updated successfully under security reference log!"
+                      )
+                    }
+                    className="profile-save-btn"
+                  >
+                    Save Changes
+                  </button>
                 </div>
               </div>
             </div>
@@ -1539,60 +1500,60 @@ const filteredLicenses = licenses.filter(
           {/* CHANGE PASSWORD TAB */}
           {activeTab === "ChangePassword" && (
             <div className="password-container">
-            <SectionTitle title="Change Password" 
-            subtitle="Update your system password regularly to maintain compliant login security standards" />
-            <div className="dashboard-card password-card">
-            <div className="password-form-group">
-            <label className="password-form-label"> current password </label>
-            <input type="password" placeholder="••••••••••••" className="password-form-input" />
-            </div>
-            <div className="password-form-group">
-            <label className="password-form-label"> new password </label>
-            <input type="password" placeholder="Enter strong characters (min 8)" className="password-form-input" />
-            </div>
-            <div className="password-form-group">
-              <label className="password-form-label"> confirm new password </label>
-              <input type="password" placeholder="Re-type new password" className="password-form-input" />
+              <SectionTitle title="Change Password"
+                subtitle="Update your system password regularly to maintain compliant login security standards" />
+              <div className="dashboard-card password-card">
+                <div className="password-form-group">
+                  <label className="password-form-label"> current password </label>
+                  <input type="password" placeholder="••••••••••••" className="password-form-input" />
+                </div>
+                <div className="password-form-group">
+                  <label className="password-form-label"> new password </label>
+                  <input type="password" placeholder="Enter strong characters (min 8)" className="password-form-input" />
+                </div>
+                <div className="password-form-group">
+                  <label className="password-form-label"> confirm new password </label>
+                  <input type="password" placeholder="Re-type new password" className="password-form-input" />
                 </div>
 
                 {/* Password strength list */}
                 <div className="security-recommendations">
-  <span className="security-recommendations-title">
-    Security Recommendations
-  </span>
+                  <span className="security-recommendations-title">
+                    Security Recommendations
+                  </span>
 
-  <div className="security-recommendations-grid">
-    <div className="security-recommendation-item security-recommendation-success">
-      <span>✓</span>
-      <span>Min 8 characters long</span>
-    </div>
+                  <div className="security-recommendations-grid">
                     <div className="security-recommendation-item security-recommendation-success">
-  <span>✓</span>
-  <span>1+ Alpha character</span>
-</div>
+                      <span>✓</span>
+                      <span>Min 8 characters long</span>
+                    </div>
+                    <div className="security-recommendation-item security-recommendation-success">
+                      <span>✓</span>
+                      <span>1+ Alpha character</span>
+                    </div>
 
-<div className="security-recommendation-item security-recommendation-pending">
-  <span>○</span>
-  <span>1+ Special char (!,@,#)</span>
-</div>
+                    <div className="security-recommendation-item security-recommendation-pending">
+                      <span>○</span>
+                      <span>1+ Special char (!,@,#)</span>
+                    </div>
 
-<div className="security-recommendation-item security-recommendation-pending">
-  <span>○</span>
-  <span>1+ Numeric value</span>
-</div>
+                    <div className="security-recommendation-item security-recommendation-pending">
+                      <span>○</span>
+                      <span>1+ Numeric value</span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="password-action-section">
-  <button
-    onClick={() => {
-      showToast("Password changed successfully! Please use new credentials on next login.");
-      setActiveTab("Home");
-    }}
-    className="password-update-btn"
-  >
-    Confirm & Update Password
-  </button>
+                  <button
+                    onClick={() => {
+                      showToast("Password changed successfully! Please use new credentials on next login.");
+                      setActiveTab("Home");
+                    }}
+                    className="password-update-btn"
+                  >
+                    Confirm & Update Password
+                  </button>
 
                 </div>
               </div>
@@ -1602,33 +1563,34 @@ const filteredLicenses = licenses.filter(
           {/* NEW M&TP TAB */}
           {activeTab === "New M&TP" && (
             <div className="mtp-license-container">
-  <SectionTitle
-    title="Medicinal & Toilet Preparations (M&TP) License"
-    subtitle="Apply for a new license to manufacture or store products under the Medicinal and Toilet Preparations (Excise Duties) Act"
-  />
+              <SectionTitle
+                title="Medicinal & Toilet Preparations (M&TP) License"
+                subtitle="Apply for a new license to manufacture or store products under the Medicinal and Toilet Preparations (Excise Duties) Act"
+              />
 
               {mtpSubmissionCompleted ? (
                 <div className="dashboard-card mtp-success-card">
-  <div className="mtp-success-icon-wrapper">
-    <CheckCircle2 className="mtp-success-icon" />
-  </div>
+                  <div className="mtp-success-icon-wrapper">
+                    <CheckCircle2 className="mtp-success-icon" />
+                  </div>
 
-  <h3 className="mtp-success-title">
-    M&TP Application Filed
-  </h3>
+                  
+                  <h3 className="mtp-success-title">
+                    M&TP Application Filed
+                  </h3>
 
-  <p className="mtp-success-message">
-    Your formulation licensing request for{" "}
-    <span className="mtp-formulation-name">
-      {newMtpData.formulationName}
-    </span>{" "}
-    has been registered under Application Reference{" "}
-    <span className="mtp-reference-id">
-      MTP-2026-{Math.floor(1000 + Math.random() * 9000)}
-    </span>.
-    Technical scrutiny and chemical sample verification has been scheduled.
-  </p>
-                  <button 
+                  <p className="mtp-success-message">
+                    Your formulation licensing request for{" "}
+                    <span className="mtp-formulation-name">
+                      {newMtpData.formulationName}
+                    </span>{" "}
+                    has been registered under Application Reference{" "}
+                    <span className="mtp-reference-id">
+                      MTP-2026-{Math.floor(1000 + Math.random() * 9000)}
+                    </span>.
+                    Technical scrutiny and chemical sample verification has been scheduled.
+                  </p>
+                  <button
                     onClick={() => {
                       setMtpSubmissionCompleted(false);
                       setNewMtpData({
@@ -1647,7 +1609,7 @@ const filteredLicenses = licenses.filter(
                   </button>
                 </div>
               ) : (
-                <form 
+                <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!newMtpData.formulationName || !newMtpData.drugLicenseNum) {
@@ -1677,32 +1639,32 @@ const filteredLicenses = licenses.filter(
                     setMtpSubmissionCompleted(true);
                     showToast(`M&TP application ${newAppId} successfully processed!`);
                   }}
-                 className="mtp-form-card"
+                  className="mtp-form-card"
                 >
                   <div className="mtp-form-grid">
-  <div className="mtp-form-group">
-    <label className="mtp-form-label">
-      Registered Unit / Manufactory Name *
-    </label>
+                    <div className="mtp-form-group">
+                      <label className="mtp-form-label">
+                        Registered Unit / Manufactory Name *
+                      </label>
 
-    <input
-      type="text"
-      value={newMtpData.unitName}
-      onChange={(e) =>
-        setNewMtpData((p) => ({
-          ...p,
-          unitName: e.target.value,
-        }))
-      }
-      className="mtp-form-input"
-      placeholder="e.g. Delhi Laboratories Pvt Ltd"
-      required
-    />
-  </div>
+                      <input
+                        type="text"
+                        value={newMtpData.unitName}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            unitName: e.target.value,
+                          }))
+                        }
+                        className="mtp-form-input"
+                        placeholder="e.g. Delhi Laboratories Pvt Ltd"
+                        required
+                      />
+                    </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Drug License State Reference No. *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newMtpData.drugLicenseNum}
                         onChange={(e) => setNewMtpData(p => ({ ...p, drugLicenseNum: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
@@ -1713,8 +1675,8 @@ const filteredLicenses = licenses.filter(
 
                     <div className="sm:col-span-2 space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Proposed Formulation Brand/Generic Name *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newMtpData.formulationName}
                         onChange={(e) => setNewMtpData(p => ({ ...p, formulationName: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1725,7 +1687,7 @@ const filteredLicenses = licenses.filter(
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Class of Medicinal Preparation *</label>
-                      <select 
+                      <select
                         value={newMtpData.formulationType}
                         onChange={(e) => setNewMtpData(p => ({ ...p, formulationType: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1739,7 +1701,7 @@ const filteredLicenses = licenses.filter(
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Type of Alcohol/Spirit Base Required</label>
-                      <select 
+                      <select
                         value={newMtpData.spiritType}
                         onChange={(e) => setNewMtpData(p => ({ ...p, spiritType: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1753,8 +1715,8 @@ const filteredLicenses = licenses.filter(
 
                     <div className="sm:col-span-2 space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Estimated Annual Quota Requirement (LPL)</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newMtpData.annualRequirement}
                         onChange={(e) => setNewMtpData(p => ({ ...p, annualRequirement: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1764,8 +1726,8 @@ const filteredLicenses = licenses.filter(
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       id="mtp-check"
                       checked={newMtpData.declarationsChecked}
                       onChange={(e) => setNewMtpData(p => ({ ...p, declarationsChecked: e.target.checked }))}
@@ -1777,15 +1739,15 @@ const filteredLicenses = licenses.filter(
                   </div>profile
 
                   <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setActiveTab("Home")} 
+                      onClick={() => setActiveTab("Home")}
                       className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
                     >
                       Cancel
                     </button>
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
                     >
                       Submit M&TP Application
@@ -1799,9 +1761,9 @@ const filteredLicenses = licenses.filter(
           {/* APPLIED M&TP TAB */}
           {activeTab === "Applied M&TP" && (
             <div className="space-y-6">
-              <SectionTitle 
-                title="Active M&TP Scrutiny Ledger" 
-                subtitle="Track current technical appraisals, formulation approvals, and spirit allotments for Medicinal & Toilet Preparations" 
+              <SectionTitle
+                title="Active M&TP Scrutiny Ledger"
+                subtitle="Track current technical appraisals, formulation approvals, and spirit allotments for Medicinal & Toilet Preparations"
               />
 
               <div className="space-y-4">
@@ -1821,11 +1783,10 @@ const filteredLicenses = licenses.filter(
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          app.status === "Approved" 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                             : "bg-amber-50 text-amber-700 border-amber-100"
-                        }`}>
+                          }`}>
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
@@ -1856,9 +1817,9 @@ const filteredLicenses = licenses.filter(
           {/* DEALER REGISTRATION TAB */}
           {activeTab === "Dealer Registration" && (
             <div className="space-y-6 max-w-3xl mx-auto">
-              <SectionTitle 
-                title="Excise Dealer & Sub-Dealer Registration" 
-                subtitle="File security credentials, warehouse details, and trade classifications to active a registered spirit trade account" 
+              <SectionTitle
+                title="Excise Dealer & Sub-Dealer Registration"
+                subtitle="File security credentials, warehouse details, and trade classifications to active a registered spirit trade account"
               />
 
               {dealerSubmissionCompleted ? (
@@ -1870,7 +1831,7 @@ const filteredLicenses = licenses.filter(
                   <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
                     The registration request for <span className="font-semibold text-slate-700">{newDealerData.firmName}</span> has been securely logged with security reference log under Application ID <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">DLR-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. PAN & GSTIN integration clearance is currently on-going.
                   </p>
-                  <button 
+                  <button
                     onClick={() => {
                       setDealerSubmissionCompleted(false);
                       setNewDealerData({
@@ -1889,7 +1850,7 @@ const filteredLicenses = licenses.filter(
                   </button>
                 </div>
               ) : (
-                <form 
+                <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!newDealerData.firmName || !newDealerData.panNum || !newDealerData.gstinNum) {
@@ -1924,8 +1885,8 @@ const filteredLicenses = licenses.filter(
                   <div className="grid sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Registered Firm / Business Name *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newDealerData.firmName}
                         onChange={(e) => setNewDealerData(p => ({ ...p, firmName: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1936,8 +1897,8 @@ const filteredLicenses = licenses.filter(
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Proprietor / Representative Full Name *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newDealerData.ownerName}
                         onChange={(e) => setNewDealerData(p => ({ ...p, ownerName: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
@@ -1948,8 +1909,8 @@ const filteredLicenses = licenses.filter(
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Firm Income Tax PAN *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newDealerData.panNum}
                         onChange={(e) => setNewDealerData(p => ({ ...p, panNum: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
@@ -1960,8 +1921,8 @@ const filteredLicenses = licenses.filter(
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">State GSTIN ID / Code *</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={newDealerData.gstinNum}
                         onChange={(e) => setNewDealerData(p => ({ ...p, gstinNum: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
@@ -1972,7 +1933,7 @@ const filteredLicenses = licenses.filter(
 
                     <div className="sm:col-span-2 space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Excise Dealer Category Class *</label>
-                      <select 
+                      <select
                         value={newDealerData.licenseType}
                         onChange={(e) => setNewDealerData(p => ({ ...p, licenseType: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-750"
@@ -1986,7 +1947,7 @@ const filteredLicenses = licenses.filter(
 
                     <div className="sm:col-span-2 space-y-1.5">
                       <label className="text-xs font-bold text-slate-500 uppercase">Bonded Warehouse / Stockroom Location address *</label>
-                      <textarea 
+                      <textarea
                         rows="2"
                         value={newDealerData.warehouseAddress}
                         onChange={(e) => setNewDealerData(p => ({ ...p, warehouseAddress: e.target.value }))}
@@ -1998,8 +1959,8 @@ const filteredLicenses = licenses.filter(
                   </div>
 
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       id="dealer-check"
                       checked={newDealerData.declarationsChecked}
                       onChange={(e) => setNewDealerData(p => ({ ...p, declarationsChecked: e.target.checked }))}
@@ -2011,15 +1972,15 @@ const filteredLicenses = licenses.filter(
                   </div>
 
                   <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 font-sans">
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setActiveTab("Home")} 
+                      onClick={() => setActiveTab("Home")}
                       className="px-5 py-2.5 bg-slate-150 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold border-none cursor-pointer transition"
                     >
                       Cancel
                     </button>
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="px-6 py-2.5 bg-[#4f46e5] hover:bg-indigo-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition shadow-md"
                     >
                       Register Trade Dealer Account
@@ -2029,13 +1990,13 @@ const filteredLicenses = licenses.filter(
               )}
             </div>
           )}
-           
+
           {/* APPLIED DEALERS TAB */}
           {activeTab === "Applied Dealers" && (
             <div className="space-y-6">
-              <SectionTitle 
-                title="Active Dealer Appraisals Log" 
-                subtitle="Track trade registrations, warehouse clearances, and active custom security receipts" 
+              <SectionTitle
+                title="Active Dealer Appraisals Log"
+                subtitle="Track trade registrations, warehouse clearances, and active custom security receipts"
               />
 
               <div className="space-y-4">
@@ -2055,11 +2016,10 @@ const filteredLicenses = licenses.filter(
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          app.status === "Approved" 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                             : "bg-amber-50 text-amber-700 border-amber-100"
-                        }`}>
+                          }`}>
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
@@ -2087,7 +2047,7 @@ const filteredLicenses = licenses.filter(
             </div>
           )}
 
-           {/* PREMISE MODULE */}
+          {/* PREMISE MODULE */}
           {(activeTab === "Register Premise" || activeTab === "Applied Premise") && (
             <PremiseDashboard
               activeTab={activeTab}
@@ -2101,9 +2061,9 @@ const filteredLicenses = licenses.filter(
           {/* APPLIED PERMIT TAB */}
           {activeTab === "Applied Permit" && (
             <div className="space-y-6">
-              <SectionTitle 
-                title="Active Transit Gate Pass & Permit Ledger" 
-                subtitle="Track active carrier transit licenses, dispatcher routes, and temporary event permits" 
+              <SectionTitle
+                title="Active Transit Gate Pass & Permit Ledger"
+                subtitle="Track active carrier transit licenses, dispatcher routes, and temporary event permits"
               />
 
               <div className="space-y-4">
@@ -2129,11 +2089,10 @@ const filteredLicenses = licenses.filter(
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          app.status === "Approved" 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                             : "bg-amber-50 text-amber-700 border-amber-100"
-                        }`}>
+                          }`}>
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
