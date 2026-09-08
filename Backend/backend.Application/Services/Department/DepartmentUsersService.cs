@@ -6,6 +6,7 @@ using backend.Core.Interfaces.Department;
 using backend.Application.Interfaces.Department;
 using System.Text;
 using System.Security.Cryptography;
+using backend.Core.Entities;
 
 namespace backend.Application.Services.Department
 {
@@ -15,12 +16,22 @@ namespace backend.Application.Services.Department
         private readonly IRoleService _roleService;
 
 
-        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository,IRoleService roleService)
+        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository, IRoleService roleService)
         {
             _departmentUsersRepository = departmentUsersRepository;
             _roleService = roleService;
         }
 
+        public async Task<IEnumerable<MstDistrict>> GetDistrict()
+        {
+            var districts = await _departmentUsersRepository.GetDistrict();
+
+            if (districts == null || !districts.Any())
+            {
+                return Enumerable.Empty<MstDistrict>();
+            }
+            return districts;
+        }
 
         public async Task<IEnumerable<DepartmentUserDto>> GetAllAsync()
         {
@@ -139,7 +150,7 @@ namespace backend.Application.Services.Department
                 UserId = user.UserId.Trim(),
                 RoleId = user.RoleId,
                 BranchCode = user.BranchCode,
-                IsActive = "Y"    
+                IsActive = "Y"
             };
 
             return await _departmentUsersRepository.CreateAsync(DepartmentUser, DeptUserRoles);
@@ -149,42 +160,42 @@ namespace backend.Application.Services.Department
 
 
         public async Task<bool> UpdateAsync(DepartmentUserDto user)
- {
-     if (user == null)
-         throw new ArgumentNullException(nameof(user));
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
 
-     if (string.IsNullOrWhiteSpace(user.UserId))
-         throw new ArgumentException("UserId is required.");
+            if (string.IsNullOrWhiteSpace(user.UserId))
+                throw new ArgumentException("UserId is required.");
 
-     if (string.IsNullOrWhiteSpace(user.UserName))
-         throw new ArgumentException("UserName is required.");
+            if (string.IsNullOrWhiteSpace(user.UserName))
+                throw new ArgumentException("UserName is required.");
 
-     if (string.IsNullOrWhiteSpace(user.Email))
-         throw new ArgumentException("Email is required.");
+            if (string.IsNullOrWhiteSpace(user.Email))
+                throw new ArgumentException("Email is required.");
 
-     var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
+            var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
 
-     if (existingUser == null)
-         throw new InvalidOperationException("User not exists.");
+            if (existingUser == null)
+                throw new InvalidOperationException("User not exists.");
 
-    // Validate role through RoleService
-     var role = await _roleService.GetByIdAsync(user.RoleId);
+            // Validate role through RoleService
+            var role = await _roleService.GetByIdAsync(user.RoleId);
 
-     if (role == null)
-         throw new InvalidOperationException("Role not found or inactive.");
+            if (role == null)
+                throw new InvalidOperationException("Role not found or inactive.");
 
-     var DepartmentUser = new DepartmentUsers
-     {
-         UserId = user.UserId,
-         UserName = user.UserName.Trim(),
-         UserDesignation = user.UserDesignation.Trim(),
-         Email = user.Email,
-         MobileNo = user.MobileNo,
-         IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
-     };
+            var DepartmentUser = new DepartmentUsers
+            {
+                UserId = user.UserId,
+                UserName = user.UserName.Trim(),
+                UserDesignation = user.UserDesignation.Trim(),
+                Email = user.Email,
+                MobileNo = user.MobileNo,
+                IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
+            };
 
-     return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId, user.BranchCode);
- }
+            return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId, user.BranchCode);
+        }
 
     }
 }
