@@ -205,7 +205,7 @@ namespace backend.Infrastructure.Data
             //.HasKey(x => x.ApplicationIdNo);
             //     .HasKey(ap => ap.ApplicationIdNo);
 
-            //     modelBuilder.Entities<ApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails")
+            //     modelBuilder.EntitiesApplicantLicensePartnersDetails>().ToTable("ApplicantLicensePartnersDetails")
             //             .Property(ap => ap.PName)
             //             .IsRequired()
             //             .HasMaxLength(150);
@@ -237,6 +237,10 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<LicenseApplicationUserDetails>().ToTable("LicenseApplicationUserDetails");
             modelBuilder.Entity<LicenseApplicationUserDetails>()
                     .HasKey(x => x.Id);
+            modelBuilder.Entity<LicenseApplicationUserDetails>()
+        .Property(x => x.CreatedDate)
+        .ValueGeneratedOnAdd()
+        .HasDefaultValueSql("GETDATE()");
 
             modelBuilder.Entity<MstHotelType>().ToTable("MstHotelType");
             modelBuilder.Entity<MstHotelType>()
