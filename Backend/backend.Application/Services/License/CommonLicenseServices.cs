@@ -186,7 +186,7 @@ namespace backend.Application.Services.License
             return await _Licenserepository.GetApplicantDetails(AppId);
         }
 
-        public async Task<string> SubmitApplication(string applicationIdNo, string applicationStatus)
+        public async Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace backend.Application.Services.License
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return null;
             }
         }
     }

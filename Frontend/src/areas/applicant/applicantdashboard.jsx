@@ -1,22 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import html2pdf from "html2pdf.js";
 import { pdf } from "@react-pdf/renderer";
 
 //import ReportHeader from "../reports/ReportHeader";
 
-
-import ReportHeader from "../../components/Reports/ReportHeader";
-
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  Text,
-  View,
-  Image,
-  StyleSheet
-} from "@react-pdf/renderer";
 import {
   Home,
   Award,
@@ -29,41 +16,24 @@ import {
   Building,
   ShieldCheck,
   Search,
-
-  ChevronRight,
   ChevronDown,
-  ArrowLeft,
   LogOut,
   Calendar,
   FileText,
   Upload,
   RefreshCw,
-  Plus,
-  Compass,
   CheckCircle2,
   Info,
-  ShieldAlert,
-  Check,
-  ArrowRight,
-  UserCheck,
-  Briefcase,
-  FileSpreadsheet,
-  Coins,
-  LayoutGrid,
-  Factory,
-  ShoppingCart,
-  Package,
-  Hotel
+  ShieldAlert
 } from "lucide-react";
 import NewLicense from "./NewLicense";
-import NewPermit from "./Permit/NewPermit.jsx";
+// import NewPermit from "./Permit/NewPermit.jsx";
 import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
 
 import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
 import NewPermitWizard from "./Permit/NewPermit.jsx";
 
 //import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
-
 
 const menuItems = [
   { id: "Home", label: "Home", icon: Home },
@@ -119,15 +89,9 @@ const licenses = [
 const SectionTitle = ({ title, subtitle }) => {
   return (
     <div>
-      <h2 className="section-title">
-        {title}
-      </h2>
+      <h2 className="section-title">{title}</h2>
 
-      {subtitle && (
-        <p className="section-subtitle">
-          {subtitle}
-        </p>
-      )}
+      {subtitle && <p className="section-subtitle">{subtitle}</p>}
     </div>
   );
 };
@@ -140,9 +104,7 @@ const StatCard = ({ item }) => {
         <div className={`stat-icon ${item.color}`}>
           <Icon className="w-6 h-6" />
         </div>
-        <span className="view-btn">
-          View →
-        </span>
+        <span className="view-btn">View →</span>
       </div>
 
       <div>
@@ -160,16 +122,17 @@ const LicenseCard = ({ license }) => {
         <div className="space-y-2">
           <div className="flex items-center gap-3 flex-wrap">
             <span className="license-badge badge-blue">{license.id}</span>
-            <span className={`license-badge ${license.status === "Approved" ? "badge-green" : "badge-amber"}`}> {license.status} </span>
+            <span
+              className={`license-badge ${license.status === "Approved" ? "badge-green" : "badge-amber"}`}
+            >
+              {" "}
+              {license.status}{" "}
+            </span>
           </div>
 
-          <h3 className="applhero-title">
-            {license.type}
-          </h3>
+          <h3 className="applhero-title">{license.type}</h3>
 
-          <p className="text-sm text-slate-500">
-            {license.location}
-          </p>
+          <p className="text-sm text-slate-500">{license.location}</p>
         </div>
 
         <button className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition border-none cursor-pointer">
@@ -181,49 +144,49 @@ const LicenseCard = ({ license }) => {
 };
 
 const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
-  const isLicenseActive = activeTab === "License" || [
-    "New License",
-    "Applied License",
-    "Renewal License",
-    "License Transfer",
-    "Document Revalidate"
-  ].includes(activeTab);
+  const isLicenseActive =
+    activeTab === "License" ||
+    [
+      "New License",
+      "Applied License",
+      "Renewal License",
+      "License Transfer",
+      "Document Revalidate",
+    ].includes(activeTab);
 
-  const isProfileActive = activeTab === "Profile" || [
-    "UserProfile",
-    "ChangePassword"
-  ].includes(activeTab);
+  const isProfileActive =
+    activeTab === "Profile" ||
+    ["UserProfile", "ChangePassword"].includes(activeTab);
 
-  const isMtpActive = activeTab === "MTP" || [
-    "New M&TP",
-    "Applied M&TP"
-  ].includes(activeTab);
+  const isMtpActive =
+    activeTab === "MTP" || ["New M&TP", "Applied M&TP"].includes(activeTab);
 
-  const isDealerActive = activeTab === "Dealer" || [
-    "Dealer Registration",
-    "Applied Dealers"
-  ].includes(activeTab);
+  const isDealerActive =
+    activeTab === "Dealer" ||
+    ["Dealer Registration", "Applied Dealers"].includes(activeTab);
 
-  const isPremiseActive = activeTab === "Premise" || [
-    "Register Premise",
-    "Applied Premise",
-    "New Permit",
-    "Applied Permit"
-  ].includes(activeTab);
+  const isPremiseActive =
+    activeTab === "Premise" ||
+    [
+      "Register Premise",
+      "Applied Premise",
+      "New Permit",
+      "Applied Permit",
+    ].includes(activeTab);
 
   const licenseSubItems = [
     "New License",
     "Applied License",
     "Renewal License",
     "License Transfer",
-    "Document Revalidate"
+    "Document Revalidate",
   ];
   const navItems = [
     {
       label: "Home",
       id: "Home",
       icon: <Home className="dept-nav-icon" />,
-      active: activeTab === "Home"
+      active: activeTab === "Home",
     },
     {
       label: "License",
@@ -236,8 +199,8 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Applied License", label: "Applied License" },
         { id: "Renewal License", label: "Renewal License" },
         { id: "License Transfer", label: "License Transfer" },
-        { id: "Document Revalidate", label: "Document Revalidate" }
-      ]
+        { id: "Document Revalidate", label: "Document Revalidate" },
+      ],
     },
     {
       label: "M&TP",
@@ -247,8 +210,8 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
       hasDropdown: true,
       items: [
         { id: "New M&TP", label: "New M&TP" },
-        { id: "Applied M&TP", label: "Applied M&TP" }
-      ]
+        { id: "Applied M&TP", label: "Applied M&TP" },
+      ],
     },
     {
       label: "Dealer",
@@ -258,8 +221,8 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
       hasDropdown: true,
       items: [
         { id: "Dealer Registration", label: "Dealer Registration" },
-        { id: "Applied Dealers", label: "Applied Dealers" }
-      ]
+        { id: "Applied Dealers", label: "Applied Dealers" },
+      ],
     },
     {
       label: "Premise",
@@ -271,8 +234,8 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
         { id: "Register Premise", label: "Register Premise" },
         { id: "Applied Premise", label: "Applied Premise" },
         { id: "New Permit", label: "New Permit" },
-        { id: "Applied Permit", label: "Applied Permit" }
-      ]
+        { id: "Applied Permit", label: "Applied Permit" },
+      ],
     },
     {
       label: "Profile",
@@ -282,15 +245,15 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
       hasDropdown: true,
       items: [
         { id: "UserProfile", label: "Profile" },
-        { id: "ChangePassword", label: "Change Password" }
-      ]
+        { id: "ChangePassword", label: "Change Password" },
+      ],
     },
     {
       label: "Logout",
       id: "Logout",
       icon: <LogOut className="dept-nav-icon text-rose-300" />,
-      isLogout: true
-    }
+      isLogout: true,
+    },
   ];
   return (
     <div className="admin-header-wrapper">
@@ -310,8 +273,12 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
               />
               <div className="dept-dash-titles">
                 <h1 className="dept-main-title caps">DEPARTMENT OF EXCISE</h1>
-                <p className="dept-sub-title semibold">OFFICE OF THE EXCISE COMMISSIONER</p>
-                <p className="dept-sub-title semibold">GOVERNMENT OF NCT OF DELHI</p>
+                <p className="dept-sub-title semibold">
+                  OFFICE OF THE EXCISE COMMISSIONER
+                </p>
+                <p className="dept-sub-title semibold">
+                  GOVERNMENT OF NCT OF DELHI
+                </p>
               </div>
             </div>
           </div>
@@ -320,16 +287,28 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
 
       <nav className="dept-dash-nav">
         <div className="dept-dash-container">
-          <ul className="dept-nav-list" style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
+          <ul
+            className="dept-nav-list"
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
             {navItems.map((item, idx) => (
               <li
                 key={idx}
-                className={`dept-nav-item ${item.active ? 'is-active' : ''} ${item.hasDropdown ? 'has-dropdown' : ''}`}
-                style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative" }}
+                className={`dept-nav-item ${item.active ? "is-active" : ""} ${item.hasDropdown ? "has-dropdown" : ""}`}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  position: "relative",
+                }}
               >
                 <a
                   href="#"
-                  className={`dept-nav-link ${item.isLogout ? 'hover:bg-red-700/40 hover:text-red-200 text-rose-300 transition-colors duration-200' : ''}`}
+                  className={`dept-nav-link ${item.isLogout ? "hover:bg-red-700/40 hover:text-red-200 text-rose-300 transition-colors duration-200" : ""}`}
                   onClick={(e) => {
                     e.preventDefault();
                     if (item.isLogout) {
@@ -338,7 +317,14 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
                       setActiveTab(item.id);
                     }
                   }}
-                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem", width: "100%", textTransform: "uppercase" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.4rem",
+                    width: "100%",
+                    textTransform: "uppercase",
+                  }}
                 >
                   {item.icon}
                   <span>{item.label}</span>
@@ -350,7 +336,7 @@ const Header = ({ activeTab, setActiveTab, onLogout, onNavigateToHome }) => {
                       <div key={sIdx} className="dept-dropdown-item">
                         <a
                           href="#"
-                          className={`dept-dropdown-link ${activeTab === subItem.id ? 'bg-slate-100 text-brand-blue font-bold border-l-3 border-[#012a52]' : ''}`}
+                          className={`dept-dropdown-link ${activeTab === subItem.id ? "bg-slate-100 text-brand-blue font-bold border-l-3 border-[#012a52]" : ""}`}
                           onClick={(e) => {
                             e.preventDefault();
                             setActiveTab(subItem.id);
@@ -375,23 +361,35 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const [activeTab, setActiveTab] = useState("Home");
   const [search, setSearch] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
-  const [profile, setProfile] = useState({});   // <-- Yahan
+  const [profile, setProfile] = useState({}); // <-- Yahan
   const [showPreview, setShowPreview] = useState(false);
   const [applicant, setApplicant] = useState({});
   const [applications, setApplications] = useState([]);
   // States for sub-level views
   const [renewedList, setRenewedList] = useState({});
   const [docs, setDocs] = useState({
-    fireNoc: { name: "Fire Safety Certificate (NOC)", status: "Expired on 15 May 2026", type: "expired" },
-    mcdLicense: { name: "MCD Trade License Renewed Copy", status: "Clarification Requested", type: "flagged" },
-    leaseDeed: { name: "Registered Property Lease Deed", status: "Verified", type: "verified" },
+    fireNoc: {
+      name: "Fire Safety Certificate (NOC)",
+      status: "Expired on 15 May 2026",
+      type: "expired",
+    },
+    mcdLicense: {
+      name: "MCD Trade License Renewed Copy",
+      status: "Clarification Requested",
+      type: "flagged",
+    },
+    leaseDeed: {
+      name: "Registered Property Lease Deed",
+      status: "Verified",
+      type: "verified",
+    },
   });
   const [transferSuccess, setTransferSuccess] = useState(false);
   const [transferForm, setTransferForm] = useState({
     lic: "ND-25-L10023",
     type: "Ownership",
     transferee: "",
-    remarks: ""
+    remarks: "",
   });
 
   console.log("Applicant:", profile);
@@ -408,7 +406,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       alcoholStrength: "11% v/v (Self-generated Alcohol)",
       status: "Approved",
       submittedDate: "10/05/2026",
-      remarks: "Ready for spirit allotment quota release"
+      remarks: "Ready for spirit allotment quota release",
     },
     {
       id: "MTP-2026-4409",
@@ -417,8 +415,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       alcoholStrength: "90% v/v (Industrial Rectified Spirit)",
       status: "Under Technical Review",
       submittedDate: "21/05/2026",
-      remarks: "Awaiting chemical analysis report clearance"
-    }
+      remarks: "Awaiting chemical analysis report clearance",
+    },
   ]);
 
   const [newMtpData, setNewMtpData] = useState({
@@ -428,7 +426,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     spiritType: "Rectified Spirit (95% v/v)",
     annualRequirement: "5000 Litres",
     drugLicenseNum: "DL-MED-9921-2026",
-    declarationsChecked: false
+    declarationsChecked: false,
   });
 
   const [mtpSubmissionCompleted, setMtpSubmissionCompleted] = useState(false);
@@ -442,7 +440,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       panNum: "AAACS0811K",
       status: "Approved",
       submittedDate: "12/04/2026",
-      remarks: "Trade account active, security earnest money deposited"
+      remarks: "Trade account active, security earnest money deposited",
     },
     {
       id: "DLR-2026-6130",
@@ -451,12 +449,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       panNum: "AABCP1130M",
       status: "Under Assessment",
       submittedDate: "18/05/2026",
-      remarks: "Physical stockroom verification in progress"
-    }
+      remarks: "Physical stockroom verification in progress",
+    },
   ]);
-
-
-
 
   const [newDealerData, setNewDealerData] = useState({
     firmName: "Vedic Craft Beverages LLP",
@@ -464,11 +459,13 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     licenseType: "L-13 Wholesale import bond storage",
     panNum: "AAPCS9912C",
     gstinNum: "07AAPCS9912C1ZP",
-    warehouseAddress: "Plot 24, Kirti Nagar Industrial Area, New Delhi - 110015",
-    declarationsChecked: false
+    warehouseAddress:
+      "Plot 24, Kirti Nagar Industrial Area, New Delhi - 110015",
+    declarationsChecked: false,
   });
 
-  const [dealerSubmissionCompleted, setDealerSubmissionCompleted] = useState(false);
+  const [dealerSubmissionCompleted, setDealerSubmissionCompleted] =
+    useState(false);
 
   // Premise states
   const [premiseApplications, setPremiseApplications] = useState([
@@ -480,18 +477,20 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       dimensions: "4,500 Sq. Ft.",
       status: "Approved",
       submittedDate: "15/04/2026",
-      remarks: "CCTV feed integrated & fire clearance obtained"
+      remarks: "CCTV feed integrated & fire clearance obtained",
     },
     {
       id: "PM-2026-4401",
       premiseName: "South Delhi Retail Suite A",
-      address: "Shop No. 12, Ground Floor, Saket District Centre, New Delhi - 110017",
+      address:
+        "Shop No. 12, Ground Floor, Saket District Centre, New Delhi - 110017",
       premiseType: "Retail Vend Shop",
       dimensions: "450 Sq. Ft.",
       status: "Under Physical Inspection",
       submittedDate: "20/05/2026",
-      remarks: "Physical safety layout and locker vault verification in progress"
-    }
+      remarks:
+        "Physical safety layout and locker vault verification in progress",
+    },
   ]);
 
   const [newPremiseData, setNewPremiseData] = useState({
@@ -502,10 +501,11 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     dimensions: "3,000 Sq. Ft.",
     fireNocNumber: "DFS/NOC/2026/8839",
     securityDepositReceipt: "SD-EXE-99381-2026",
-    declarationsChecked: false
+    declarationsChecked: false,
   });
 
-  const [premiseSubmissionCompleted, setPremiseSubmissionCompleted] = useState(false);
+  const [premiseSubmissionCompleted, setPremiseSubmissionCompleted] =
+    useState(false);
 
   // Permit states
   const [permitApplications, setPermitApplications] = useState([
@@ -518,7 +518,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       carrierLicense: "DL-1LM-8842",
       status: "Approved",
       submittedDate: "10/05/2026",
-      remarks: "Valid transport gate pass generated"
+      remarks: "Valid transport gate pass generated",
     },
     {
       id: "PRM-2026-5381",
@@ -529,8 +529,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       carrierLicense: "DL-1N-9931",
       status: "Approved",
       submittedDate: "25/05/2026",
-      remarks: "Event gate pass valid till 28/05/2026"
-    }
+      remarks: "Event gate pass valid till 28/05/2026",
+    },
   ]);
 
   const [newPermitData, setNewPermitData] = useState({
@@ -539,10 +539,11 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     destPremise: "West Delhi Distributing Depot (Mayapuri)",
     consignmentDetails: "120 Cases of Beer & Light Wines",
     carrierLicense: "DL-1LM-9902",
-    declarationsChecked: false
+    declarationsChecked: false,
   });
 
-  const [permitSubmissionCompleted, setPermitSubmissionCompleted] = useState(false);
+  const [permitSubmissionCompleted, setPermitSubmissionCompleted] =
+    useState(false);
 
   const showToast = (msg, type = "success") => {
     setToastMessage({ msg, type });
@@ -552,22 +553,34 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   };
 
   const handleRenew = (id) => {
-    setRenewedList(prev => ({ ...prev, [id]: true }));
-    showToast(`Renewal initiated for ${id}! License duty receipt generated and extended successfully.`);
+    setRenewedList((prev) => ({ ...prev, [id]: true }));
+    showToast(
+      `Renewal initiated for ${id}! License duty receipt generated and extended successfully.`,
+    );
   };
 
   const handleUpload = (key) => {
-    setDocs(prev => ({
+    setDocs((prev) => ({
       ...prev,
-      [key]: { ...prev[key], status: "Uploading & Authenticating with System...", type: "uploading" }
+      [key]: {
+        ...prev[key],
+        status: "Uploading & Authenticating with System...",
+        type: "uploading",
+      },
     }));
 
     setTimeout(() => {
-      setDocs(prev => ({
+      setDocs((prev) => ({
         ...prev,
-        [key]: { ...prev[key], status: "Verified & System Approved", type: "verified" }
+        [key]: {
+          ...prev[key],
+          status: "Verified & System Approved",
+          type: "verified",
+        },
       }));
-      showToast(`${key === "fireNoc" ? "Fire NOC" : "MCD License"} has been processed and successfully validated!`);
+      showToast(
+        `${key === "fireNoc" ? "Fire NOC" : "MCD License"} has been processed and successfully validated!`,
+      );
     }, 1500);
   };
 
@@ -581,15 +594,12 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     showToast("License Transfer request submitted for departmental review!");
   };
 
-
   // const handleDownloadPdf = async (applicationIdNo) => {
   // debugger;
   //   try {
 
-
   // const element = document.getElementById("report-content");
   // console.log(element);
-
 
   //     const response = await fetch(
   //       `http://localhost:5214/api/Report/L1/${applicationIdNo}`
@@ -625,7 +635,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     debugger;
     try {
       const response = await fetch(
-        `http://localhost:5214/api/Report/L1/${applicationIdNo}`
+        `http://localhost:5214/api/Report/L1/${applicationIdNo}`,
       );
 
       if (!response.ok) {
@@ -635,9 +645,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       const data = await response.json();
       console.log(applicant);
 
-      const blob = await pdf(
-        <ReportPrintL1 applicant={data} />
-      ).toBlob();
+      const blob = await pdf(<ReportPrintL1 applicant={data} />).toBlob();
       console.log(data);
       const url = URL.createObjectURL(blob);
 
@@ -650,7 +658,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       document.body.removeChild(link);
 
       URL.revokeObjectURL(url);
-
     } catch (err) {
       console.error(err);
       alert("Unable to generate PDF.");
@@ -661,89 +668,105 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     window.print();
   };
 
-  // const handleForwardApplication = async (applicationIdNo) => {
-  //   debugger;
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory`
-  //     );
-  //     if(!response.ok) {
-  //       throw new Error("Failed to fetch access permission history.");
-  //     }
-
-  //     const data = await response.json();
-  //     console.log(data);
-
-
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Unable to forward application.");
-  //   }
-  // };
-
   const handleForwardApplication = async (applicationIdNo) => {
-  try {
-    debugger;
+    try {
+      debugger;
 
-    const obj = {
-      applicationIdNo,
-          flowUpto: "36",
-          transactionSiNo: 1,
-          transactionDate: new Date().toISOString(),
-          senderUserTypeCode: '00',
-          senderUserID: localStorage.getItem("regId"),
-          senderForwardingLevel: 0,
-          receiverUserTypeCode: "",
-          receiverUserID: null,
-          receiverForwardingLevel: null,
-          preScrutinyStatus: null,
-          fixDateEnquiry: null,
-          transactionRemarks: "Application forwarded by applicant",
-          transactionStatusCode: "F",
-          oprDate: new Date().toISOString(),
-    }
-    console.log("Forwarding Object:", obj);
-    const response = await fetch(
-      "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const finalSubmission = {
+        applicationIdNo,
+
+        ApplicationStatus: "03",
+      };
+
+      console.log("ApplicationStatus:", finalSubmission.ApplicationStatus);
+
+      const responseForward = await fetch(
+        "http://localhost:5214/api/CommonLicense/SubmitApplication",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(finalSubmission),
         },
-        body: JSON.stringify({
-          applicationIdNo,
-          flowUpto: "36",
-          transactionSiNo: 1,
-          transactionDate: new Date().toISOString(),
-          senderUserTypeCode: '00',
-          senderUserID: localStorage.getItem("regId"),
-          senderForwardingLevel: 0,
-          receiverUserTypeCode: "",
-          receiverUserID: null,
-          receiverForwardingLevel: null,
-          preScrutinyStatus: null,
-          fixDateEnquiry: null,
-          transactionRemarks: "Application forwarded by applicant",
-          transactionStatusCode: "F",
-          oprDate: new Date().toISOString(),
-        }),
+      );
+
+      if (!responseForward.ok) {
+        throw new Error(await responseForward.text());
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Failed to forward application.");
+      const updatedApplication = await responseForward.json();
+      if (String(updatedApplication.applicationStatus).trim() !== "03") {
+        throw new Error("Application status was not persisted as 03.");
+      }
+
+      const obj = {
+        applicationIdNo,
+        flowUpto: "36",
+        transactionSiNo: 1,
+        transactionDate: new Date().toISOString(),
+        senderUserTypeCode: "00",
+        senderUserID: localStorage.getItem("regId"),
+        senderForwardingLevel: 0,
+        receiverUserTypeCode: "",
+        receiverUserID: null,
+        receiverForwardingLevel: null,
+        preScrutinyStatus: null,
+        fixDateEnquiry: null,
+        transactionRemarks: "Application forwarded by applicant",
+        transactionStatusCode: "F",
+        oprDate: new Date().toISOString(),
+      };
+      console.log("Forwarding Object:", obj);
+
+      const response = await fetch(
+        "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            applicationIdNo,
+            flowUpto: "36",
+            transactionSiNo: 1,
+            transactionDate: new Date().toISOString(),
+            senderUserTypeCode: "00",
+            senderUserID: localStorage.getItem("regId"),
+            senderForwardingLevel: 0,
+            receiverUserTypeCode: "",
+            receiverUserID: null,
+            receiverForwardingLevel: null,
+            preScrutinyStatus: null,
+            fixDateEnquiry: null,
+            transactionRemarks: "Application forwarded by applicant",
+            transactionStatusCode: "F",
+            oprDate: new Date().toISOString(),
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      const applicationsResponse = await fetch(
+        `http://localhost:5214/api/Report/GetMyApplications/${regId}`,
+      );
+      if (!applicationsResponse.ok) {
+        throw new Error("Application was updated, but the list could not be refreshed.");
+      }
+
+      const refreshedApplications = await applicationsResponse.json();
+      setApplications(Array.isArray(refreshedApplications) ? refreshedApplications : []);
+      console.log(data);
+      alert(data.message);
+    } catch (error) {
+      console.error(error);
+      alert("Unable to forward application.");
     }
-
-    const data = await response.json();
-    console.log(data);
-    alert(data.message);
-  } catch (error) {
-    console.error(error);
-    alert("Unable to forward application.");
-  }
-};
-
-
+  };
 
   // useEffect(() => {
   //   const regId = localStorage.getItem("regId");
@@ -772,7 +795,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const loadApplicantData = async (regId) => {
     debugger;
     const response = await fetch(
-      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`,
     );
 
     if (!response.ok) return;
@@ -780,7 +803,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     const data = await response.json();
     setProfile(data);
   };
-
 
   // useEffect(() => {
 
@@ -819,7 +841,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
   const getCurrentStage = (status) => {
     switch (status) {
-
       case "F":
         return 2; // Forwarded
 
@@ -827,7 +848,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
         return 3; // Scrutiny
 
       case "I":
-        return 4; // Inspection
+        return 4; // InspectionsetApplications
 
       case "G":
       case "A":
@@ -835,8 +856,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
       case "R":
         return 2; // Rejected
-
-
 
       default:
         return 1; // Submission
@@ -863,17 +882,15 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     }
   };
 
-
-
-
-
-
-
+  
 
   useEffect(() => {
-    fetch(`http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`)
-      .then(res => res.json())
-      .then(data => {
+    debugger;
+    fetch(
+      `http://localhost:5214/api/Report/GetMyApplications/${localStorage.getItem("regId")}`,
+    )
+      .then((res) => res.json())
+      .then((data) => {
         if (Array.isArray(data)) {
           setApplications(data);
         } else {
@@ -883,18 +900,14 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       .catch(() => setApplications([]));
   }, []);
 
-
-
-
   const filteredLicenses = licenses.filter(
     (item) =>
       item.type.toLowerCase().includes(search.toLowerCase()) ||
-      item.id.toLowerCase().includes(search.toLowerCase())
+      item.id.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="app-layout">
-
       {/* HEADER WITH CENTERED HORIZONTAL MENU */}
       <Header
         activeTab={activeTab}
@@ -906,10 +919,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       {/* TOAST SYSTEM */}
       {toastMessage && (
         <div
-          className={`toast-message ${toastMessage.type === "success"
-              ? "toast-success"
-              : "toast-error"
-            }`}
+          className={`toast-message ${
+            toastMessage.type === "success" ? "toast-success" : "toast-error"
+          }`}
         >
           {toastMessage.type === "success" ? (
             <CheckCircle2 className="toast-icon success-icon" />
@@ -929,14 +941,13 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           showToast={showToast}
           onSubmitPermit={(permitRecord) => {
             if (permitRecord) {
-              setPermitApplications(prev => [permitRecord, ...prev]);
+              setPermitApplications((prev) => [permitRecord, ...prev]);
             }
             setActiveTab("Applied Permit");
           }}
         />
       ) : (
         <main className="page-container">
-
           {/* HOME TAB MAIN CONTENT */}
           {activeTab === "Home" && (
             <>
@@ -950,21 +961,20 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       </h1>
 
                       <p className="hero-description">
-                        Manage applications, licenses, premises,
-                        and approvals from a single unified portal.
+                        Manage applications, licenses, premises, and approvals
+                        from a single unified portal.
                       </p>
                     </div>
 
                     <div className="hero-status">
-                      <p className="hero-status-label">
-                        Account Status
-                      </p>
+                      <p className="hero-status-label">Account Status</p>
 
-                      <h3 className="hero-status-value">
-                        Active
-                      </h3>
+                      <h3 className="hero-status-value">Active</h3>
 
-                      <p className="hero-status-label" style={{ marginTop: "16px" }}>
+                      <p
+                        className="hero-status-label"
+                        style={{ marginTop: "16px" }}
+                      >
                         Last Login: Today, 12:18 PM
                       </p>
                     </div>
@@ -981,20 +991,24 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
               {/* RECENT LICENSES & USER PROFILE */}
               <div className="content-grid mt-6">
-
                 {/* LICENSES */}
                 <div className="dashboard-card section-padding">
-                  <SectionTitle title="Recent Licenses & Permits"/>
+                  <SectionTitle title="Recent Licenses & Permits" />
 
                   <div className="search-wrapper">
                     <Search className="search-icon" />
-                    <input type="text" placeholder="Search licenses..." value={search} onChange={(e) => setSearch(e.target.value)} className="search-input"/>
+                    <input
+                      type="text"
+                      placeholder="Search licenses..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="search-input"
+                    />
                   </div>
 
                   <div className="license-list">
                     {filteredLicenses.map((license) => (
-                      <LicenseCard key={license.id}  license={license}
-                      />
+                      <LicenseCard key={license.id} license={license} />
                     ))}
                   </div>
                 </div>
@@ -1051,20 +1065,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   </div> */}
 
                   <div className="profile-details">
-               <div className="profile-avatar-large">
-  {profile?.photo ? (
-    <img
-      src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
-      alt="Profile"
-      className="profile-avatar-img"
-    />
-  ) :  (
-    <User className="user-icon" />
-  )}
-</div>
+                    <div className="profile-avatar-large">
+                      {profile?.photo ? (
+                        <img
+                          src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
+                          alt="Profile"
+                          className="profile-avatar-img"
+                        />
+                      ) : (
+                        <User className="user-icon" />
+                      )}
+                    </div>
                     <div className="profile-row">
                       <span className="profile-label">Name</span>
-                      <span className="profile-value">{profile.firstName} {profile.lastName}</span>
+                      <span className="profile-value">
+                        {profile.firstName} {profile.lastName}
+                      </span>
                     </div>
                     <div className="profile-row">
                       <span className="profile-label">Email</span>
@@ -1096,58 +1112,71 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               <div className="dashboard-card active-applications-card">
                 <div className="applications-header">
                   <h3 className="applications-title">Active Applications</h3>
-                  <span className="applications-badge"> 3 Applications Total </span>
+                  <span className="applications-badge">
+                    {" "}
+                    3 Applications Total{" "}
+                  </span>
                 </div>
               </div>
 
               {/* App 1 */}
               {applications.map((app) => (
                 <div className="application-card" key={app.applicationIdNo}>
-
                   <div className="application-header">
-
                     <div>
-
                       <div className="application-id-row">
                         <span className="application-id-label">
                           Application ID:
                         </span>
 
                         <span className="application-id-value">
-                          {app.applicationIdNo}
+                          {app.applicationIdNo} 
                         </span>
                       </div>
 
-                      <h4 className="application-title">
-                        {app.licenseName}
-                      </h4>
+                      <h4 className="application-title">{app.licenseName}</h4>
 
                       <p className="application-date">
                         Submitted Date:{" "}
-                        {new Date(app.applicationDate).toLocaleDateString("en-GB")}
+                        {new Date(app.applicationDate).toLocaleDateString(
+                          "en-GB",
+                        )}
                       </p>
-
                     </div>
 
                     <div className="flex items-center gap-3">
-
                       <span className={getStatusClass(app.status)}>
                         {getStatusText(app.status)}
                       </span>
 
-                      <button
+                      {app.applicationStatus !=="01" && (
+                          <button
                         onClick={() => handleDownloadPdf(app.applicationIdNo)}
                         className="application-btn"
                       >
                         Download PDF
                       </button>
+                        )}
 
-                      <button
+                      
+
+                      {app.applicationStatus ==="02" && (
+                          <button
+                            onClick={() =>
+                              handleForwardApplication(app.applicationIdNo)
+                            }
+                            className="application-btn"
+                          >
+                            Forward Application
+                          </button>
+                        )}
+
+                      {/* <button
                         onClick={() => handleForwardApplication(app.applicationIdNo)}
                         className="application-btn"
                       >
                         Forward Application
-                      </button>
+                      </button> */}
 
                       {/* <PDFDownloadLink
   document={<ReportPrintL1 applicant={applicant} />}
@@ -1163,38 +1192,28 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     </button>
   )}
 </PDFDownloadLink> */}
-
                     </div>
 
-
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: "-9999px",
-                        top: 0
-                      }}
-                    >
-                      <View fixed>
-                        <ReportHeader applicant={applicant} />
-                      </View>
-                    </div>
                   </div>
                   <div className="application-progress-grid">
-                    {["Submission", "Forward", "Scrutiny", "Inspection", "Grant"].map((label, index) => (
+                    {[
+                      "Submission",
+                      "Forward",
+                      "Scrutiny",
+                      "Inspection",
+                      "Grant",
+                    ].map((label, index) => (
                       <div key={index} className="progress-step">
-
                         <div
-                          className={`progress-bar ${index + 1 < getCurrentStage(app.status)
+                          className={`progress-bar ${
+                            index + 1 < getCurrentStage(app.status)
                               ? "progress-done"
                               : index + 1 === getCurrentStage(app.status)
                                 ? "progress-active"
                                 : "progress-pending"
-                            }`}
-                        >
-                        </div>
-                        <p className="progress-label">
-                          {label}
-                        </p>
+                          }`}
+                        ></div>
+                        <p className="progress-label">{label}</p>
                       </div>
                     ))}
                   </div>
@@ -1217,24 +1236,38 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       <div className="license-card-content">
                         <div className="license-card-header">
                           <span className="license-id"> {lic.id} </span>
-                          <span className={`license-status ${isRenewed ? "license-status-renewed" : "license-status-active"}`} >
-                            {isRenewed ? "Renewal Completed" : "Active & Renewal Eligible"}
+                          <span
+                            className={`license-status ${isRenewed ? "license-status-renewed" : "license-status-active"}`}
+                          >
+                            {isRenewed
+                              ? "Renewal Completed"
+                              : "Active & Renewal Eligible"}
                           </span>
                         </div>
                         <h4 className="license-title">{lic.type}</h4>
                         <div className="license-validity">
                           <Calendar className="license-calendar-icon" />
-                          <span> Valid till:{" "} <span className="license-validity-date">
-                            {isRenewed ? "31st March 2028" : "31st March 2027"}
-                          </span>
+                          <span>
+                            {" "}
+                            Valid till:{" "}
+                            <span className="license-validity-date">
+                              {isRenewed
+                                ? "31st March 2028"
+                                : "31st March 2027"}
+                            </span>
                           </span>
                         </div>
                       </div>
 
                       <div className="renewal-footer">
-                        <span className="renewal-fee">Renewal Fee: ₹ 45,000 </span>
-                        <button onClick={() => handleRenew(lic.id)} disabled={isRenewed}
-                          className={`renewal-btn ${isRenewed ? "renewal-btn-disabled" : "renewal-btn-active"}`} >
+                        <span className="renewal-fee">
+                          Renewal Fee: ₹ 45,000{" "}
+                        </span>
+                        <button
+                          onClick={() => handleRenew(lic.id)}
+                          disabled={isRenewed}
+                          className={`renewal-btn ${isRenewed ? "renewal-btn-disabled" : "renewal-btn-active"}`}
+                        >
                           {isRenewed ? "Payment Cleared" : "Pay & Renew Now"}
                         </button>
                       </div>
@@ -1248,32 +1281,66 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           {/* LICENSE TRANSFER VIEW */}
           {activeTab === "License Transfer" && (
             <div className="license-transfer-container">
-              <SectionTitle title="License Transfer Portal"
-                subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
+              <SectionTitle
+                title="License Transfer Portal"
+                subtitle="Apply for change of licensee ownership, management structure, or premises relocation"
+              />
               {transferSuccess ? (
                 <div className="license-transfer-container">
-                  <SectionTitle title="License Transfer Portal"
-                    subtitle="Apply for change of licensee ownership, management structure, or premises relocation" />
+                  <SectionTitle
+                    title="License Transfer Portal"
+                    subtitle="Apply for change of licensee ownership, management structure, or premises relocation"
+                  />
 
-                  <h3 className="transfer-success-title"> Transfer Filed Successfully </h3>
-                  <p className="transfer-success-message"> Your application for{" "}
-                    <span className="transfer-type"> {transferForm.type} Transfer </span>{" "} has been registered under Transaction ID{" "}
-                    <span className="transaction-id"> TR-2026-90812 </span>. The scrutinizing officer will verify transferee credentials within 7 business days.
+                  <h3 className="transfer-success-title">
+                    {" "}
+                    Transfer Filed Successfully{" "}
+                  </h3>
+                  <p className="transfer-success-message">
+                    {" "}
+                    Your application for{" "}
+                    <span className="transfer-type">
+                      {" "}
+                      {transferForm.type} Transfer{" "}
+                    </span>{" "}
+                    has been registered under Transaction ID{" "}
+                    <span className="transaction-id"> TR-2026-90812 </span>. The
+                    scrutinizing officer will verify transferee credentials
+                    within 7 business days.
                   </p>
-                  <button onClick={() => {
-                    setTransferSuccess(false); setTransferForm({ lic: "ND-25-L10023", type: "Ownership", transferee: "", remarks: "", });
-                  }} className="transfer-new-request-btn">Create Another Request
+                  <button
+                    onClick={() => {
+                      setTransferSuccess(false);
+                      setTransferForm({
+                        lic: "ND-25-L10023",
+                        type: "Ownership",
+                        transferee: "",
+                        remarks: "",
+                      });
+                    }}
+                    className="transfer-new-request-btn"
+                  >
+                    Create Another Request
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmitTransfer} className="dashboard-card transfer-form">
+                <form
+                  onSubmit={handleSubmitTransfer}
+                  className="dashboard-card transfer-form"
+                >
                   <div className="transfer-form-group">
-                    <label className="transfer-form-label"> Select License </label>
+                    <label className="transfer-form-label">
+                      {" "}
+                      Select License{" "}
+                    </label>
 
                     <select
                       value={transferForm.lic}
                       onChange={(e) =>
-                        setTransferForm({ ...transferForm, lic: e.target.value })
+                        setTransferForm({
+                          ...transferForm,
+                          lic: e.target.value,
+                        })
                       }
                       className="transfer-form-select"
                     >
@@ -1286,20 +1353,21 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   </div>
 
                   <div className="transfer-form-group">
-                    <label className="transfer-form-label">
-                      Transfer Type
-                    </label>
+                    <label className="transfer-form-label">Transfer Type</label>
 
                     <div className="transfer-type-grid">
-                      {["Ownership", "Premises Relocation"].map(type => (
+                      {["Ownership", "Premises Relocation"].map((type) => (
                         <button
                           type="button"
                           key={type}
-                          onClick={() => setTransferForm({ ...transferForm, type })}
-                          className={`transfer-type-btn ${transferForm.type === type
+                          onClick={() =>
+                            setTransferForm({ ...transferForm, type })
+                          }
+                          className={`transfer-type-btn ${
+                            transferForm.type === type
                               ? "transfer-type-btn-active"
                               : "transfer-type-btn-inactive"
-                            }`}
+                          }`}
                         >
                           <RefreshCw className="transfer-type-icon" />
                           <span>{type}</span>
@@ -1355,15 +1423,12 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     <Info className="transfer-note-icon" />
                     <p>
                       Note: A non-refundable transfer processing fee of{" "}
-                      <span className="transfer-note-fee">₹ 15,000</span> will be applicable
-                      upon submission of this application.
+                      <span className="transfer-note-fee">₹ 15,000</span> will
+                      be applicable upon submission of this application.
                     </p>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="transfer-submit-btn"
-                  >
+                  <button type="submit" className="transfer-submit-btn">
                     File Transfer Application
                   </button>
                 </form>
@@ -1374,8 +1439,10 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           {/* DOCUMENT REVALIDATE VIEW */}
           {activeTab === "Document Revalidate" && (
             <div className="document-revalidation-container">
-              <SectionTitle title="Document Revalidation"
-                subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses" />
+              <SectionTitle
+                title="Document Revalidation"
+                subtitle="Renew, re-upload, or verify secondary clearance and compliance certificates for active licenses"
+              />
 
               <div className="dashboard-card checklist-card">
                 <h3 className="checklist-title">
@@ -1388,34 +1455,37 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       <div key={key} className="document-card">
                         <div className="document-info">
                           <div
-                            className={`document-icon-wrapper ${item.type === "verified"
+                            className={`document-icon-wrapper ${
+                              item.type === "verified"
                                 ? "document-icon-verified"
                                 : item.type === "expired"
                                   ? "document-icon-expired"
                                   : item.type === "uploading"
                                     ? "document-icon-uploading"
                                     : "document-icon-pending"
-                              }`}
+                            }`}
                           >
                             <FileText
-                              className={`document-icon ${item.type === "uploading" ? "document-icon-spin" : ""
-                                }`}
+                              className={`document-icon ${
+                                item.type === "uploading"
+                                  ? "document-icon-spin"
+                                  : ""
+                              }`}
                             />
                           </div>
                           <div>
-                            <h4 className="document-name">
-                              {item.name}
-                            </h4>
+                            <h4 className="document-name">{item.name}</h4>
 
                             <span
-                              className={`document-status-badge ${item.type === "verified"
+                              className={`document-status-badge ${
+                                item.type === "verified"
                                   ? "document-status-verified"
                                   : item.type === "expired"
                                     ? "document-status-expired"
                                     : item.type === "uploading"
                                       ? "document-status-uploading"
                                       : "document-status-pending"
-                                }`}
+                              }`}
                             >
                               {item.status}
                             </span>
@@ -1463,7 +1533,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               <div className="dashboard-card profile-card">
                 <div className="profile-header">
                   <div className="profile-avatar">
-
                     {profile?.photo ? (
                       <img
                         src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
@@ -1476,7 +1545,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         .join("")
                         .toUpperCase()
                     )}
-
                   </div>
                   <div className="profile-user-info">
                     <h3 className="profile-user-name">
@@ -1490,11 +1558,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 </div>
 
                 <div className="profile-form-grid">
-
                   <div className="profile-form-group">
-                    <label className="profile-form-label">
-                      Occuption
-                    </label>
+                    <label className="profile-form-label">Occuption</label>
 
                     <input
                       type="text"
@@ -1518,9 +1583,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   </div>
 
                   <div className="profile-form-group">
-                    <label className="profile-form-label">
-                      Mobile Number
-                    </label>
+                    <label className="profile-form-label">Mobile Number</label>
 
                     <input
                       type="text"
@@ -1555,14 +1618,13 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       className="profile-form-textarea"
                     />
                   </div>
-
                 </div>
 
                 <div className="profile-actions">
                   <button
                     onClick={() =>
                       showToast(
-                        "Profile details updated successfully under security reference log!"
+                        "Profile details updated successfully under security reference log!",
                       )
                     }
                     className="profile-save-btn"
@@ -1577,20 +1639,40 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           {/* CHANGE PASSWORD TAB */}
           {activeTab === "ChangePassword" && (
             <div className="password-container">
-              <SectionTitle title="Change Password"
-                subtitle="Update your system password regularly to maintain compliant login security standards" />
+              <SectionTitle
+                title="Change Password"
+                subtitle="Update your system password regularly to maintain compliant login security standards"
+              />
               <div className="dashboard-card password-card">
                 <div className="password-form-group">
-                  <label className="password-form-label"> current password </label>
-                  <input type="password" placeholder="••••••••••••" className="password-form-input" />
+                  <label className="password-form-label">
+                    {" "}
+                    current password{" "}
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="••••••••••••"
+                    className="password-form-input"
+                  />
                 </div>
                 <div className="password-form-group">
                   <label className="password-form-label"> new password </label>
-                  <input type="password" placeholder="Enter strong characters (min 8)" className="password-form-input" />
+                  <input
+                    type="password"
+                    placeholder="Enter strong characters (min 8)"
+                    className="password-form-input"
+                  />
                 </div>
                 <div className="password-form-group">
-                  <label className="password-form-label"> confirm new password </label>
-                  <input type="password" placeholder="Re-type new password" className="password-form-input" />
+                  <label className="password-form-label">
+                    {" "}
+                    confirm new password{" "}
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Re-type new password"
+                    className="password-form-input"
+                  />
                 </div>
 
                 {/* Password strength list */}
@@ -1624,14 +1706,15 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 <div className="password-action-section">
                   <button
                     onClick={() => {
-                      showToast("Password changed successfully! Please use new credentials on next login.");
+                      showToast(
+                        "Password changed successfully! Please use new credentials on next login.",
+                      );
                       setActiveTab("Home");
                     }}
                     className="password-update-btn"
                   >
                     Confirm & Update Password
                   </button>
-
                 </div>
               </div>
             </div>
@@ -1651,10 +1734,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     <CheckCircle2 className="mtp-success-icon" />
                   </div>
 
-                  
-                  <h3 className="mtp-success-title">
-                    M&TP Application Filed
-                  </h3>
+                  <h3 className="mtp-success-title">M&TP Application Filed</h3>
 
                   <p className="mtp-success-message">
                     Your formulation licensing request for{" "}
@@ -1664,8 +1744,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     has been registered under Application Reference{" "}
                     <span className="mtp-reference-id">
                       MTP-2026-{Math.floor(1000 + Math.random() * 9000)}
-                    </span>.
-                    Technical scrutiny and chemical sample verification has been scheduled.
+                    </span>
+                    . Technical scrutiny and chemical sample verification has
+                    been scheduled.
                   </p>
                   <button
                     onClick={() => {
@@ -1673,11 +1754,12 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       setNewMtpData({
                         unitName: "Delhi Pharmaceutical Formulation Works",
                         formulationName: "",
-                        formulationType: "Ayurvedic medicine (with self-generated alcohol)",
+                        formulationType:
+                          "Ayurvedic medicine (with self-generated alcohol)",
                         spiritType: "Rectified Spirit (95% v/v)",
                         annualRequirement: "5000 Litres",
                         drugLicenseNum: "",
-                        declarationsChecked: false
+                        declarationsChecked: false,
                       });
                     }}
                     className="mtp-reset-btn"
@@ -1689,32 +1771,48 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (!newMtpData.formulationName || !newMtpData.drugLicenseNum) {
-                      showToast("Please fill all required formulation and drug license fields", "error");
+                    if (
+                      !newMtpData.formulationName ||
+                      !newMtpData.drugLicenseNum
+                    ) {
+                      showToast(
+                        "Please fill all required formulation and drug license fields",
+                        "error",
+                      );
                       return;
                     }
                     if (!newMtpData.declarationsChecked) {
-                      showToast("Please accept the compliance declaration", "error");
+                      showToast(
+                        "Please accept the compliance declaration",
+                        "error",
+                      );
                       return;
                     }
 
                     // Add to local state list
                     const newAppId = `MTP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-                    setMtpApplications(prev => [
+                    setMtpApplications((prev) => [
                       {
                         id: newAppId,
                         unitName: newMtpData.unitName,
                         formulation: newMtpData.formulationName,
-                        alcoholStrength: newMtpData.formulationType.includes("self-generated") ? "12% v/v (Self-generated)" : "90% v/v (Rectified Spirit)",
+                        alcoholStrength: newMtpData.formulationType.includes(
+                          "self-generated",
+                        )
+                          ? "12% v/v (Self-generated)"
+                          : "90% v/v (Rectified Spirit)",
                         status: "Under Technical Review",
                         submittedDate: new Date().toLocaleDateString("en-GB"),
-                        remarks: "New application filed under self-declaration standards"
+                        remarks:
+                          "New application filed under self-declaration standards",
                       },
-                      ...prev
+                      ...prev,
                     ]);
 
                     setMtpSubmissionCompleted(true);
-                    showToast(`M&TP application ${newAppId} successfully processed!`);
+                    showToast(
+                      `M&TP application ${newAppId} successfully processed!`,
+                    );
                   }}
                   className="mtp-form-card"
                 >
@@ -1739,11 +1837,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Drug License State Reference No. *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Drug License State Reference No. *
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.drugLicenseNum}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, drugLicenseNum: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            drugLicenseNum: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
                         placeholder="e.g. DL-DRUG-88229"
                         required
@@ -1751,11 +1856,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Proposed Formulation Brand/Generic Name *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Proposed Formulation Brand/Generic Name *
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.formulationName}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationName: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            formulationName: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. Medicated Herbal Syrup base"
                         required
@@ -1763,58 +1875,106 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Class of Medicinal Preparation *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Class of Medicinal Preparation *
+                      </label>
                       <select
                         value={newMtpData.formulationType}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            formulationType: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                       >
-                        <option value="Ayurvedic medicine (with self-generated alcohol)">Ayurvedic medicine (with self-generated alcohol)</option>
-                        <option value="Allopathic medicinal formulation (with spirit base)">Allopathic medicinal formulation (with spirit base)</option>
-                        <option value="Homeopathic medicine tincture">Homeopathic medicine tincture</option>
-                        <option value="Toilet preparation (perfume/cologne base)">Toilet preparation (perfume/cologne base)</option>
+                        <option value="Ayurvedic medicine (with self-generated alcohol)">
+                          Ayurvedic medicine (with self-generated alcohol)
+                        </option>
+                        <option value="Allopathic medicinal formulation (with spirit base)">
+                          Allopathic medicinal formulation (with spirit base)
+                        </option>
+                        <option value="Homeopathic medicine tincture">
+                          Homeopathic medicine tincture
+                        </option>
+                        <option value="Toilet preparation (perfume/cologne base)">
+                          Toilet preparation (perfume/cologne base)
+                        </option>
                       </select>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Type of Alcohol/Spirit Base Required</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Type of Alcohol/Spirit Base Required
+                      </label>
                       <select
                         value={newMtpData.spiritType}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, spiritType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            spiritType: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                       >
-                        <option value="Rectified Spirit (95% v/v)">Rectified Spirit (95% v/v)</option>
-                        <option value="Absolute Alcohol (99% + v/v)">Absolute Alcohol (99% + v/v)</option>
-                        <option value="Denatured Spirit Base">Denatured Spirit Base</option>
-                        <option value="Self-generating Herbal Yeast Ferment">Self-generating Herbal Yeast Ferment</option>
+                        <option value="Rectified Spirit (95% v/v)">
+                          Rectified Spirit (95% v/v)
+                        </option>
+                        <option value="Absolute Alcohol (99% + v/v)">
+                          Absolute Alcohol (99% + v/v)
+                        </option>
+                        <option value="Denatured Spirit Base">
+                          Denatured Spirit Base
+                        </option>
+                        <option value="Self-generating Herbal Yeast Ferment">
+                          Self-generating Herbal Yeast Ferment
+                        </option>
                       </select>
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Estimated Annual Quota Requirement (LPL)</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Estimated Annual Quota Requirement (LPL)
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.annualRequirement}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, annualRequirement: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            annualRequirement: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. 5000 Litres"
                       />
                     </div>
                   </div>
-
                   <div className="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-start gap-3">
                     <input
                       type="checkbox"
                       id="mtp-check"
                       checked={newMtpData.declarationsChecked}
-                      onChange={(e) => setNewMtpData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      onChange={(e) =>
+                        setNewMtpData((p) => ({
+                          ...p,
+                          declarationsChecked: e.target.checked,
+                        }))
+                      }
                       className="mt-1 accent-blue-600 scale-110 cursor-pointer"
                     />
-                    <label htmlFor="mtp-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
-                      I solemnly declare that the formulation ingredients, alcohol strength limits, and manufacturing procedures fulfill Delhi Excise and Drugs & Cosmetics Act rules. All samples will be placed to State Chemical Laboratories for compliance verification prior to dispatch.
+                    <label
+                      htmlFor="mtp-check"
+                      className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer"
+                    >
+                      I solemnly declare that the formulation ingredients,
+                      alcohol strength limits, and manufacturing procedures
+                      fulfill Delhi Excise and Drugs & Cosmetics Act rules. All
+                      samples will be placed to State Chemical Laboratories for
+                      compliance verification prior to dispatch.
                     </label>
-                  </div>profile
-
+                  </div>
+                  profile
                   <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                     <button
                       type="button"
@@ -1845,25 +2005,42 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
               <div className="space-y-4">
                 {mtpApplications.map((app) => (
-                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                  <div
+                    key={app.id}
+                    className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4"
+                  >
                     <div className="flex justify-between items-start gap-4 flex-wrap">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-extrabold text-[#0D9488] bg-teal-50 border border-teal-100 px-2 py-0.5 rounded">M&TP UNIT FILING</span>
-                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                          <span className="text-[10px] font-extrabold text-[#0D9488] bg-teal-50 border border-teal-100 px-2 py-0.5 rounded">
+                            M&TP UNIT FILING
+                          </span>
+                          <span className="text-xs font-mono font-bold text-slate-400">
+                            {app.id}
+                          </span>
                         </div>
-                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.unitName}</h4>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">
+                          {app.unitName}
+                        </h4>
                         <p className="text-xs text-slate-500 font-semibold mt-1">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Formulation:</span> {app.formulation} ({app.alcoholStrength})
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">
+                            Formulation:
+                          </span>{" "}
+                          {app.formulation} ({app.alcoholStrength})
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium">Filing Registered on: {app.submittedDate}</p>
+                        <p className="text-[11px] text-slate-400 font-medium">
+                          Filing Registered on: {app.submittedDate}
+                        </p>
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                            : "bg-amber-50 text-amber-700 border-amber-100"
-                          }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                            app.status === "Approved"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                              : "bg-amber-50 text-amber-700 border-amber-100"
+                          }`}
+                        >
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
@@ -1875,13 +2052,23 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100">
                       {[
                         { label: "Technical Appraisal", done: true },
-                        { label: "Chemical Clearance", done: app.status === "Approved" },
-                        { label: "Excise Inspection", done: app.status === "Approved" },
-                        { label: "Quota Release", done: false }
+                        {
+                          label: "Chemical Clearance",
+                          done: app.status === "Approved",
+                        },
+                        {
+                          label: "Excise Inspection",
+                          done: app.status === "Approved",
+                        },
+                        { label: "Quota Release", done: false },
                       ].map((step, sIdx) => (
                         <div key={sIdx} className="space-y-1">
-                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
-                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                          <div
+                            className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}
+                          ></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">
+                            {step.label}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -1904,9 +2091,20 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800">Trade Dealer Account Submitted</h3>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    Trade Dealer Account Submitted
+                  </h3>
                   <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                    The registration request for <span className="font-semibold text-slate-700">{newDealerData.firmName}</span> has been securely logged with security reference log under Application ID <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">DLR-2026-{Math.floor(1000 + Math.random() * 9000)}</span>. PAN & GSTIN integration clearance is currently on-going.
+                    The registration request for{" "}
+                    <span className="font-semibold text-slate-700">
+                      {newDealerData.firmName}
+                    </span>{" "}
+                    has been securely logged with security reference log under
+                    Application ID{" "}
+                    <span className="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+                      DLR-2026-{Math.floor(1000 + Math.random() * 9000)}
+                    </span>
+                    . PAN & GSTIN integration clearance is currently on-going.
                   </p>
                   <button
                     onClick={() => {
@@ -1918,7 +2116,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         panNum: "",
                         gstinNum: "",
                         warehouseAddress: "",
-                        declarationsChecked: false
+                        declarationsChecked: false,
                       });
                     }}
                     className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold border-none cursor-pointer transition-all"
@@ -1930,18 +2128,28 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (!newDealerData.firmName || !newDealerData.panNum || !newDealerData.gstinNum) {
-                      showToast("Please fill all required business and tax identifier fields", "error");
+                    if (
+                      !newDealerData.firmName ||
+                      !newDealerData.panNum ||
+                      !newDealerData.gstinNum
+                    ) {
+                      showToast(
+                        "Please fill all required business and tax identifier fields",
+                        "error",
+                      );
                       return;
                     }
                     if (!newDealerData.declarationsChecked) {
-                      showToast("Please accept the compliance & trade declaration", "error");
+                      showToast(
+                        "Please accept the compliance & trade declaration",
+                        "error",
+                      );
                       return;
                     }
 
                     // Add to dealer applications state list
                     const referenceNum = `DLR-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-                    setDealerApplications(prev => [
+                    setDealerApplications((prev) => [
                       {
                         id: referenceNum,
                         firmName: newDealerData.firmName,
@@ -1949,23 +2157,33 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         panNum: newDealerData.panNum.toUpperCase(),
                         status: "Under Assessment",
                         submittedDate: new Date().toLocaleDateString("en-GB"),
-                        remarks: "Verification of bonded store space under technical review"
+                        remarks:
+                          "Verification of bonded store space under technical review",
                       },
-                      ...prev
+                      ...prev,
                     ]);
 
                     setDealerSubmissionCompleted(true);
-                    showToast(`Dealer registration ${referenceNum} filed under administrative scrutiny ledger!`);
+                    showToast(
+                      `Dealer registration ${referenceNum} filed under administrative scrutiny ledger!`,
+                    );
                   }}
                   className="dashboard-card p-6 sm:p-8 bg-white space-y-6"
                 >
                   <div className="grid sm:grid-cols-2 gap-5">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Registered Firm / Business Name *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Registered Firm / Business Name *
+                      </label>
                       <input
                         type="text"
                         value={newDealerData.firmName}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, firmName: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            firmName: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. Imperial Spirits Trade Corp"
                         required
@@ -1973,11 +2191,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Proprietor / Representative Full Name *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Proprietor / Representative Full Name *
+                      </label>
                       <input
                         type="text"
                         value={newDealerData.ownerName}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, ownerName: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            ownerName: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. Ramesh Chandra"
                         required
@@ -1985,11 +2210,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Firm Income Tax PAN *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Firm Income Tax PAN *
+                      </label>
                       <input
                         type="text"
                         value={newDealerData.panNum}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, panNum: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            panNum: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
                         placeholder="e.g. AAACS0409A"
                         required
@@ -1997,11 +2229,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">State GSTIN ID / Code *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        State GSTIN ID / Code *
+                      </label>
                       <input
                         type="text"
                         value={newDealerData.gstinNum}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, gstinNum: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            gstinNum: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
                         placeholder="e.g. 07AAACS0409A1ZP"
                         required
@@ -2009,25 +2248,47 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Excise Dealer Category Class *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Excise Dealer Category Class *
+                      </label>
                       <select
                         value={newDealerData.licenseType}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, licenseType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            licenseType: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-bold text-slate-750"
                       >
-                        <option value="L-13 Wholesale import bond storage">L-13 Wholesale import bond storage</option>
-                        <option value="L-15 Wholesale custom bond ware-house">L-15 Wholesale custom bond ware-house</option>
-                        <option value="L-2 Retail Vend of Beer & Wine">L-2 Retail Vend of Beer & Wine</option>
-                        <option value="L-3 Retail Vend of Indian Liquor">L-3 Retail Vend of Indian Liquor</option>
+                        <option value="L-13 Wholesale import bond storage">
+                          L-13 Wholesale import bond storage
+                        </option>
+                        <option value="L-15 Wholesale custom bond ware-house">
+                          L-15 Wholesale custom bond ware-house
+                        </option>
+                        <option value="L-2 Retail Vend of Beer & Wine">
+                          L-2 Retail Vend of Beer & Wine
+                        </option>
+                        <option value="L-3 Retail Vend of Indian Liquor">
+                          L-3 Retail Vend of Indian Liquor
+                        </option>
                       </select>
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Bonded Warehouse / Stockroom Location address *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Bonded Warehouse / Stockroom Location address *
+                      </label>
                       <textarea
                         rows="2"
                         value={newDealerData.warehouseAddress}
-                        onChange={(e) => setNewDealerData(p => ({ ...p, warehouseAddress: e.target.value }))}
+                        onChange={(e) =>
+                          setNewDealerData((p) => ({
+                            ...p,
+                            warehouseAddress: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700 resize-none"
                         placeholder="Plot number, industrial cluster, sector, PIN..."
                         required
@@ -2040,11 +2301,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       type="checkbox"
                       id="dealer-check"
                       checked={newDealerData.declarationsChecked}
-                      onChange={(e) => setNewDealerData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      onChange={(e) =>
+                        setNewDealerData((p) => ({
+                          ...p,
+                          declarationsChecked: e.target.checked,
+                        }))
+                      }
                       className="mt-1 accent-indigo-600 scale-110 cursor-pointer"
                     />
-                    <label htmlFor="dealer-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
-                      I solemnly affirm that the trade corporation complies fully with tax guidelines, active trade laws, safety regulations, and holds no active excise or customs duty defaults under state or federal laws.
+                    <label
+                      htmlFor="dealer-check"
+                      className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer"
+                    >
+                      I solemnly affirm that the trade corporation complies
+                      fully with tax guidelines, active trade laws, safety
+                      regulations, and holds no active excise or customs duty
+                      defaults under state or federal laws.
                     </label>
                   </div>
 
@@ -2078,25 +2350,42 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
               <div className="space-y-4">
                 {dealerApplications.map((app) => (
-                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                  <div
+                    key={app.id}
+                    className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4"
+                  >
                     <div className="flex justify-between items-start gap-4 flex-wrap">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-extrabold text-[#4f46e5] bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">EXCISE TRADE DEALER</span>
-                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                          <span className="text-[10px] font-extrabold text-[#4f46e5] bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
+                            EXCISE TRADE DEALER
+                          </span>
+                          <span className="text-xs font-mono font-bold text-slate-400">
+                            {app.id}
+                          </span>
                         </div>
-                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.firmName}</h4>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">
+                          {app.firmName}
+                        </h4>
                         <p className="text-xs text-slate-500 font-semibold mt-1">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Category Class:</span> {app.licenseType} (PAN: {app.panNum})
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">
+                            Category Class:
+                          </span>{" "}
+                          {app.licenseType} (PAN: {app.panNum})
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium font-sans">Filing Registered on: {app.submittedDate}</p>
+                        <p className="text-[11px] text-slate-400 font-medium font-sans">
+                          Filing Registered on: {app.submittedDate}
+                        </p>
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                            : "bg-amber-50 text-amber-700 border-amber-100"
-                          }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                            app.status === "Approved"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                              : "bg-amber-50 text-amber-700 border-amber-100"
+                          }`}
+                        >
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
@@ -2109,12 +2398,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       {[
                         { label: "Credentials Audit", done: true },
                         { label: "Tax Clearance Verification", done: true },
-                        { label: "Stockroom Security Inspection", done: app.status === "Approved" },
-                        { label: "Trade Authorization Active", done: app.status === "Approved" }
+                        {
+                          label: "Stockroom Security Inspection",
+                          done: app.status === "Approved",
+                        },
+                        {
+                          label: "Trade Authorization Active",
+                          done: app.status === "Approved",
+                        },
                       ].map((step, sIdx) => (
                         <div key={sIdx} className="space-y-1">
-                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
-                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                          <div
+                            className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}
+                          ></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">
+                            {step.label}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -2125,7 +2424,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           )}
 
           {/* PREMISE MODULE */}
-          {(activeTab === "Register Premise" || activeTab === "Applied Premise") && (
+          {(activeTab === "Register Premise" ||
+            activeTab === "Applied Premise") && (
             <PremiseDashboard
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -2145,31 +2445,54 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
               <div className="space-y-4">
                 {permitApplications.map((app) => (
-                  <div key={app.id} className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4">
+                  <div
+                    key={app.id}
+                    className="border border-slate-150 rounded-2xl p-5 hover:border-slate-300 transition bg-white shadow-sm space-y-4"
+                  >
                     <div className="flex justify-between items-start gap-4 flex-wrap">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-extrabold text-[#b45309] bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">EXCISE TRANSIT PERMIT</span>
-                          <span className="text-xs font-mono font-bold text-slate-400">{app.id}</span>
+                          <span className="text-[10px] font-extrabold text-[#b45309] bg-amber-50 border border-amber-100 px-2 py-0.5 rounded">
+                            EXCISE TRANSIT PERMIT
+                          </span>
+                          <span className="text-xs font-mono font-bold text-slate-400">
+                            {app.id}
+                          </span>
                         </div>
-                        <h4 className="font-bold text-slate-800 text-base mt-2">{app.permitType}</h4>
+                        <h4 className="font-bold text-slate-800 text-base mt-2">
+                          {app.permitType}
+                        </h4>
                         <p className="text-xs text-slate-500 font-semibold mt-1">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Consignment:</span> {app.consignmentDetails}
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">
+                            Consignment:
+                          </span>{" "}
+                          {app.consignmentDetails}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Carrier Vehicle:</span> {app.carrierLicense}
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">
+                            Carrier Vehicle:
+                          </span>{" "}
+                          {app.carrierLicense}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
-                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">Route:</span> From {app.sourcePremise} To {app.destPremise}
+                          <span className="text-slate-400 font-medium font-sans uppercase text-[10px]">
+                            Route:
+                          </span>{" "}
+                          From {app.sourcePremise} To {app.destPremise}
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium font-sans mt-0.5">Permit Generated on: {app.submittedDate}</p>
+                        <p className="text-[11px] text-slate-400 font-medium font-sans mt-0.5">
+                          Permit Generated on: {app.submittedDate}
+                        </p>
                       </div>
 
                       <div className="flex flex-col items-end gap-2 text-right">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${app.status === "Approved"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                            : "bg-amber-50 text-amber-700 border-amber-100"
-                          }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                            app.status === "Approved"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                              : "bg-amber-50 text-amber-700 border-amber-100"
+                          }`}
+                        >
                           {app.status}
                         </span>
                         <span className="text-xs text-slate-500 font-semibold italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
@@ -2183,11 +2506,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                         { label: "Cargo Declaration", done: true },
                         { label: "Tax Stamp Verification", done: true },
                         { label: "Carrier Audit", done: true },
-                        { label: "Transit Pass Ready", done: app.status === "Approved" }
+                        {
+                          label: "Transit Pass Ready",
+                          done: app.status === "Approved",
+                        },
                       ].map((step, sIdx) => (
                         <div key={sIdx} className="space-y-1">
-                          <div className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}></div>
-                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">{step.label}</p>
+                          <div
+                            className={`h-2 rounded-full ${step.done ? "bg-emerald-500" : "bg-slate-100"}`}
+                          ></div>
+                          <p className="text-[10px] font-bold text-slate-400 text-center uppercase tracking-wide">
+                            {step.label}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -2198,15 +2528,32 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           )}
 
           {/* OTHER TABS (MTP, Dealer, Profile, etc. if anyone selects them) */}
-          {!["Home", "New License", "Applied License", "Renewal License", "License Transfer", "Document Revalidate", "UserProfile", "ChangePassword", "New M&TP", "Applied M&TP", "Dealer Registration", "Applied Dealers", "Register Premise", "Applied Premise", "New Permit", "Applied Permit"].includes(activeTab) && (
+          {![
+            "Home",
+            "New License",
+            "Applied License",
+            "Renewal License",
+            "License Transfer",
+            "Document Revalidate",
+            "UserProfile",
+            "ChangePassword",
+            "New M&TP",
+            "Applied M&TP",
+            "Dealer Registration",
+            "Applied Dealers",
+            "Register Premise",
+            "Applied Premise",
+            "New Permit",
+            "Applied Permit",
+          ].includes(activeTab) && (
             <div className="dashboard-card section-padding text-center bg-white">
               <h2 className="section-title text-3xl font-bold">
                 {activeTab} Module
               </h2>
 
               <p className="section-subtitle mt-3">
-                This module is now fully modular and ready
-                for scalable feature integration.
+                This module is now fully modular and ready for scalable feature
+                integration.
               </p>
             </div>
           )}
