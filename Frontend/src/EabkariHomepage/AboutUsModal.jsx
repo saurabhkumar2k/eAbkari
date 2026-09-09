@@ -652,10 +652,8 @@ export default function AboutUsModal({
           )}
 
         </div>
-
-        {/* =========================================================================
-            MODAL WINDOW FOOTER
-            ========================================================================= */}
+          
+        {/* MODAL WINDOW FOOTER */}
         <div className="aum-window-footer">
           <div className="aum-footer-left">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />

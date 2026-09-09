@@ -7,7 +7,7 @@ import {
   HeadphonesSvg,
   GlobeSvg,
   ChevronDownSvg,
-  EyeSvg, 
+  EyeSvg
 } from '../../Style/images/Icons';
 
 const LOGIN_API_URL = 'http://localhost:5214/api/Login/Login';
@@ -169,37 +169,55 @@ const Login = ({ onNavigateToRegister, onLoginSuccess, onNavigateHome }) => {
               <p className="login-form-subtitle">Enter your credentials to continue</p>
 
               <form className="login-form-fields" onSubmit={handleSubmit}>
-                <div className="form-field">
-                  <label className="reg-label-block">User ID</label>
-                  <div className="login-input-group">
-                    <div className="login-input-icon"><UserSvg className="icon-sm" /></div>
-                    {/* <input type="text"  placeholder="Enter User ID or Email" className="login-input-field" /> */}
-                    <input type="text" placeholder="Enter User ID or Email" className="login-input-field" value={userId}
-                      onChange={(event) => setUserId(event.target.value)} required />
-                  </div>
-                </div>
+                 <div className="dept-input-wrapper">
+                                  <UserSvg className="dept-field-icon" />
+                                  <input
+                                    id='userId' 
+                                    type="text" 
+                                    className="dept-input-field" 
+                                    placeholder=""
+                                    value={userId}
+                                    onChange={(e) => {
+                                      setUserId(e.target.value);
+                                      if (error) setError('');
+                                    }}
+                                    required
+                                  />
+                                  <label htmlFor="userId">User ID</label>
+                                </div>
 
-                <div className="form-field">
-                  <label className="reg-label-block">Password</label>
-                  <div className="login-input-group">
-                    <div className="login-input-icon"><LockSvg className="icon-sm" /></div>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter Password"
-                      className="login-input-field padding-right-large"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle-btn"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      <EyeSvg className="icon-sm" />
-                    </button>
-                  </div>
-                </div>
+                <div className="form-group">
+                                {/* <label className="dept-input-label">Password</label> */}
+                                <div className="dept-input-wrapper">
+                                  <LockSvg className="dept-field-icon" />
+                                  <input
+                                    id='Password' 
+                                    type={showPassword ? 'text' : 'password'}
+                                    className="dept-input-field" 
+                                    placeholder=""
+                                    value={password}
+                                    onChange={(e) => {
+                                      setPassword(e.target.value);
+                                      if (error) setError('');
+                                    }}
+                                    required
+                                  />
+                                  <label htmlFor="Password">Password</label>
+                                  
+                                  <button
+                                    type="button"
+                                    className="password-toggle-btn"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                  >
+                                    {showPassword ? (
+                                      <EyeSvg className="icon-sm" />
+                                    ) : (
+                                      <EyeSvg className="icon-sm" />
+                                    )}
+                                  </button>
+                
+                                </div>
+                              </div>
 
                 <div className="login-options-row">
                   <label className="checkbox-flex-label">

@@ -385,350 +385,696 @@ export default function Registration({ onNavigateToLogin }) {
       {/* Registration Form Card */}
       <section className="container reg-form-section">
         <div className="reg-card">
-          <form className="reg-grid" onSubmit={handleSubmit}>
+          <form className="registration-grid" onSubmit={handleSubmit}>
             {/* Personal Info */}
-            <div className="reg-field ">
-              <label className="reg-label">First Name <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
+            <div className= "registration-wrapper">
+            <div className="registration-section">
+  <div className="registration-section-header">
+    <h3 className="registration-section-title">
+      Personal Information
+    </h3>
+  </div>
+
+  <div className="registration-fields">
+
+    {/* First Name */}
+    <div className="registration-field">
+      <label className="registration-label">
+        First Name <span className="registration-required">*</span>
+      </label>
+
+      <div className="registration-input-group">
+        <div className="registration-input-icon">
+          <UserSvg className="icon-xs" />
+        </div>
+
+        <input
+          type="text"
+          name="FirstName"
+          value={formData.FirstName}
+          onChange={handleChange}
+          placeholder="Enter first name"
+          className="registration-input"
+        />
+      </div>
+
+      {errors.FirstName && (
+        <span className="registration-error">
+          {errors.FirstName}
+        </span>
+      )}
+    </div>
 
 
-                <input
-                  type="text"
-                  name="FirstName"
-                  value={formData.FirstName}
-                  onChange={handleChange}
-                  placeholder="Enter first name"
-                  className="reg-input"
-                />
+    {/* Middle Name */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Middle Name
+      </label>
+
+      <div className="registration-input-group">
+        <div className="registration-input-icon">
+          <UserSvg className="icon-xs" />
+        </div>
+
+        <input
+          type="text"
+          name="MiddleName"
+          value={formData.MiddleName}
+          onChange={handleChange}
+          placeholder="Enter middle name"
+          className="registration-input"
+        />
+      </div>
+    </div>
 
 
+    {/* Last Name */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Last Name
+      </label>
 
-              </div>
-              {errors.FirstName && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.FirstName} </span>)}
-            </div>
+      <div className="registration-input-group">
+        <div className="registration-input-icon">
+          <UserSvg className="icon-xs" />
+        </div>
 
-
-            <div className="reg-field">
-              <label className="reg-label">Last Name </label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" name="LastName" value={formData.LastName} onChange={handleChange} placeholder="Enter last name" className="reg-input" />
-              </div>
-              {/* {errors.LastName && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.LastName[0]} </span>)} */}
-            </div>
-
-            <div className="reg-field reg-field-full">
-              <label className="reg-label">Father / Husband Name <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><UserSvg className="icon-xs" /></div>
-                <input type="text" name="FatherHusbandName" value={formData.FatherHusbandName} onChange={handleChange} placeholder="Enter father / husband name" className="reg-input" />
-              </div>
-              {errors.FatherHusbandName && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.FatherHusbandName[0]} </span>)}
-            </div>
-
-            <div className="reg-field">
-              <label className="reg-label">Date of Birth <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                {/* <input type="text" placeholder="DD/MM/YYYY" className="reg-input" /> */}
-
-                <input
-                  type="date"
-                  name="DateOfBirth"
-                  value={formData.DateOfBirth}
-                  onChange={handleChange}
-                  className="reg-input"
-                />
-                {/* <div className="reg-input-icon-right"><CalendarSvg className="icon-xs" /></div> */}
-              </div>
-              {errors.DateOfBirth && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.DateOfBirth[0]} </span>)}
-            </div>
-
-             <div className="reg-field">
-              <label className="reg-label">Gender <span className="reg-required">*</span></label>
-              <div className="reg-radio-group">
-                <label className="reg-radio-label">
-                  <input type="radio" name="Gender" value="M" checked={formData.Gender === 'M'} onChange={handleChange} />Male
-                </label>
-                <label className="reg-radio-label">
-                  <input type="radio" name="Gender" value="F" checked={formData.Gender === 'F'} onChange={handleChange} /> Female
-                </label>
-                <label className="reg-radio-label">
-                  <input type="radio" name="Gender" value="O" checked={formData.Gender === 'O'} onChange={handleChange} /> Other
-                </label>
-              </div>
-              {errors.Gender && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.Gender[0]} </span>)}
-            </div>
-
-            <div className="reg-field">
-              <label className="reg-label">Occupation <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><BriefcaseSvg className="icon-xs" /></div>
-                {/* <select className="reg-select">
-                  <option>Select occupation</option>
-                </select> */}
-                <input type="text" name="Occupation" value={formData.Occupation} onChange={handleChange} placeholder="Enter occupation" className="reg-input" />
-                {/* <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div> */}
-              </div>
-              {errors.Occupation && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.Occupation[0]} </span>)}
-
-            </div>
-
-            <div className="reg-field reg-field-full">
-              <label className="reg-label">Address Line 1 <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" name="AddressLine1" value={formData.AddressLine1} onChange={handleChange} placeholder="Enter address line 1" className="reg-input" />
-              </div>
-              {errors.AddressLine1 && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.AddressLine1[0]} </span>)}
-            </div>
-
-            <div className="reg-field reg-field-full">
-              <label className="reg-label">Address Line 2 (Optional)</label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" name="AddressLine2" value={formData.AddressLine2} onChange={handleChange} placeholder="Enter address line 2" className="reg-input" />
-              </div>
-            </div>
+        <input
+          type="text"
+          name="LastName"
+          value={formData.LastName}
+          onChange={handleChange}
+          placeholder="Enter last name"
+          className="registration-input"
+        />
+      </div>
+    </div>
 
 
+    {/* Father / Husband Name */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Father / Husband Name{" "}
+        <span className="registration-required">*</span>
+      </label>
 
-            <div className="reg-field">
-              <label className="reg-label">State <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                {/* <select className="reg-select">
-                  <option>Select state</option>
-                </select> */}
+      <div className="registration-input-group">
+        <div className="registration-input-icon">
+          <UserSvg className="icon-xs" />
+        </div>
 
+        <input
+          type="text"
+          name="FatherHusbandName"
+          value={formData.FatherHusbandName}
+          onChange={handleChange}
+          placeholder="Enter father / husband name"
+          className="registration-input"
+        />
+      </div>
 
-                <select
-                  name="StateUT"
-                  className="reg-select"
-                  value={formData.StateUT}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      StateUT: e.target.value
-                    })
-                  }
-                >
-                  <option value="">Select State</option>
-
-                  {states.map((item) => (
-                    <option key={item.stateCode} value={item.stateCode}>
-                      {item.stateName}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-              </div>
-              {/* {errors.StateUT && (
-  <span className="text-danger" style={{ marginTop: "1px", display: "block" , color: "red"}}> {errors.StateUT[0]} </span>)} */}
-
-            </div>
-            <div className="reg-field">
-              <label className="reg-label">City <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                <input type="text" name="City" value={formData.City} onChange={handleChange} placeholder="Enter city" className="reg-input" />
-              </div>
-              {errors.City && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.City[0]} </span>)}
-            </div>
-
-            <div className="reg-field">
-              <label className="reg-label">District <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                {/* <select className="reg-select">
-                  <option>Select district</option>
-                </select> */}
+      {errors.FatherHusbandName && (
+        <span className="registration-error">
+          {errors.FatherHusbandName[0]}
+        </span>
+      )}
+    </div>
 
 
-                <select
-                  className="reg-select"
-                  name="District"
-                  value={formData.District}
-                  onChange={(e) => {
-                    handleChange(e);
-                    fetchSubDivisions(e.target.value);
-                  }}
-                >
-                  <option value="">Select District</option>
+    {/* Date of Birth */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Date of Birth{" "}
+        <span className="registration-required">*</span>
+      </label>
 
-                  {districts.map((item) => (
-                    <option
-                      key={item.districtCode}
-                      value={item.districtCode}
-                    >
-                      {item.districtName}
-                    </option>
-                  ))}
-                </select>
+      <div className="registration-input-group">
+        <input
+          type="date"
+          name="DateOfBirth"
+          value={formData.DateOfBirth}
+          onChange={handleChange}
+          className="registration-input"
+        />
+      </div>
 
-
-                <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-              </div>
-              {errors.District && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.District[0]} </span>)}
-
-            </div>
-
-            <div className="reg-field">
-              <label className="reg-label">
-                Sub Division <span className="reg-required">*</span>
-              </label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon">
-                  <MapPinSvg className="icon-xs" />
-                </div>
-
-                <select
-                  className="reg-select"
-                  name="SubDivision"
-                  value={formData.SubDivision}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Sub Division</option>
-
-                  {subDivisions.map((item) => (
-                    <option
-                      key={item.subDivisionCode}
-                      value={item.subDivisionCode}
-                    >
-                      {item.subDivisionName}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="reg-input-icon-right">
-                  <ChevronDownSvg className="icon-xs" />
-                </div>
-              </div>
-            </div>
+      {errors.DateOfBirth && (
+        <span className="registration-error">
+          {errors.DateOfBirth[0]}
+        </span>
+      )}
+    </div>
 
 
+    {/* Gender */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Gender <span className="registration-required">*</span>
+      </label>
+
+      <div className="registration-radio-group">
+        <label className="registration-radio-label">
+          <input
+            type="radio"
+            name="Gender"
+            value="M"
+            checked={formData.Gender === "M"}
+            onChange={handleChange}
+          />
+          <span>Male</span>
+        </label>
+
+        <label className="registration-radio-label">
+          <input
+            type="radio"
+            name="Gender"
+            value="F"
+            checked={formData.Gender === "F"}
+            onChange={handleChange}
+          />
+          <span>Female</span>
+        </label>
+
+        <label className="registration-radio-label">
+          <input
+            type="radio"
+            name="Gender"
+            value="O"
+            checked={formData.Gender === "O"}
+            onChange={handleChange}
+          />
+          <span>Other</span>
+        </label>
+      </div>
+
+      {errors.Gender && (
+        <span className="registration-error">
+          {errors.Gender[0]}
+        </span>
+      )}
+    </div>
+
+    {/* Occupation */}
+    <div className="registration-field">
+      <label className="registration-label">
+        Occupation <span className="registration-required">*</span>
+      </label>
+
+      <div className="registration-input-group">
+        <div className="registration-input-icon">
+          <BriefcaseSvg className="icon-xs" />
+        </div>
+
+        <input type="text" name="Occupation" value={formData.Occupation}
+          onChange={handleChange} placeholder="Enter occupation" className="registration-input" />
+      </div>
+
+      {errors.Occupation && (
+        <span className="registration-error">{errors.Occupation[0]}</span>
+      )}
+    </div>
+    </div>
+</div>
+</div>
+           {/* =========================================================
+    ADDRESS DETAILS
+    ========================================================= */}
+
+<div className="registration-wrapper address-wrapper">
+
+  <div className="registration-section address-section">
+
+    {/* Section Header */}
+    <div className="registration-section-header">
+      <h3 className="registration-section-title">
+        Address Details
+      </h3>
+    </div>
 
 
+    <div className="registration-fields">
 
 
+      {/* =====================================================
+          ADDRESS LINE 1 - FULL WIDTH
+          ===================================================== */}
+
+      <div className="reg-field reg-field-full">
+        <label className="reg-label">
+          Address Line 1{" "}
+          <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="AddressLine1"
+            value={formData.AddressLine1}
+            onChange={handleChange}
+            placeholder="Enter address line 1"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.AddressLine1 && (
+          <span className="registration-error">
+            {errors.AddressLine1[0]}
+          </span>
+        )}
+      </div>
 
 
+      {/* =====================================================
+          ADDRESS LINE 2 - FULL WIDTH
+          ===================================================== */}
+
+      <div className="reg-field reg-field-full">
+        <label className="reg-label">
+          Address Line 2 (Optional)
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="AddressLine2"
+            value={formData.AddressLine2}
+            onChange={handleChange}
+            placeholder="Enter address line 2"
+            className="reg-input"
+          />
+        </div>
+      </div>
 
 
+      {/* =====================================================
+          STATE
+          ===================================================== */}
+
+      <div className="reg-field">
+        <label className="reg-label">
+          State <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <select
+            name="StateUT"
+            className="reg-select"
+            value={formData.StateUT}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                StateUT: e.target.value
+              })
+            }
+          >
+            <option value="">Select State</option>
+
+            {states.map((item) => (
+              <option
+                key={item.stateCode}
+                value={item.stateCode}
+              >
+                {item.stateName}
+              </option>
+            ))}
+          </select>
+
+          <div className="reg-input-icon-right">
+            <ChevronDownSvg className="icon-xs" />
+          </div>
+        </div>
+      </div>
 
 
-            <div className="reg-field">
-              <label className="reg-label">PIN Code <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MapPinSvg className="icon-xs" /></div>
-                {/* <input type="text" name="PIN" value={formData.PIN} onChange={handleChange} placeholder="Enter PIN code" className="reg-input" /> */}
-                <input
-                  type="text"
-                  name="PIN"
-                  value={formData.PIN}
-                  onChange={handleChange}
-                  maxLength={6}
-                  placeholder="11XXXX"
-                  className="reg-input"
-                />
+      {/* =====================================================
+          CITY
+          ===================================================== */}
+
+      <div className="reg-field">
+        <label className="reg-label">
+          City <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="City"
+            value={formData.City}
+            onChange={handleChange}
+            placeholder="Enter city"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.City && (
+          <span className="registration-error">
+            {errors.City[0]}
+          </span>
+        )}
+      </div>
 
 
+      {/* =====================================================
+          DISTRICT
+          ===================================================== */}
 
-              </div>
-              {errors.PIN && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red" }}> {errors.PIN[0]} </span>)}
-            </div>
+      <div className="reg-field">
+        <label className="reg-label">
+          District <span className="reg-required">*</span>
+        </label>
 
-            <div className="reg-field">
-              <label className="reg-label">Mobile Number <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><PhoneSvg className="icon-xs" /></div>
-                <input type="tel" name="Mobile" value={formData.Mobile} onChange={handleChange} placeholder="Enter mobile number" maxLength={10} className="reg-input" pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number" />
-              </div>
-              {errors.Mobile && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.Mobile[0]} </span>)}
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
 
-            </div>
+          <select
+            className="reg-select"
+            name="District"
+            value={formData.District}
+            onChange={(e) => {
+              handleChange(e);
+              fetchSubDivisions(e.target.value);
+            }}
+          >
+            <option value="">Select District</option>
 
-            <div className="reg-field">
-              <label className="reg-label">Email Address <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><MailSvg className="icon-xs" /></div>
-                <input type="email" name="Email" value={formData.Email} onChange={handleChange} placeholder="Enter email address" className="reg-input"
-                />
-              </div>
-              {errors.Email && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.Email} </span>)}
-            </div>
+            {districts.map((item) => (
+              <option
+                key={item.districtCode}
+                value={item.districtCode}
+              >
+                {item.districtName}
+              </option>
+            ))}
+          </select>
+
+          <div className="reg-input-icon-right">
+            <ChevronDownSvg className="icon-xs" />
+          </div>
+        </div>
+
+        {errors.District && (
+          <span className="registration-error">
+            {errors.District[0]}
+          </span>
+        )}
+      </div>
 
 
+      {/* =====================================================
+          SUB DIVISION
+          ===================================================== */}
 
-            <div className="reg-field">
-              <label className="reg-label">
-                PAN No <span className="reg-required">*</span>
-              </label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon">
-                  <LockSvg className="icon-xs" />
-                </div>
-                <input
-                  type="text"
-                  name="PanNo"
-                  value={formData.PanNo || ""}
-                  onChange={handleChange}
-                  placeholder="ABCDE1234F"
-                  className="reg-input"
-                />
+      <div className="reg-field">
+        <label className="reg-label">
+          Sub Division <span className="reg-required">*</span>
+        </label>
 
-              </div>
-              {errors.PanNo && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.PanNo} </span>)}
-            </div>
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
 
-            <div className="reg-field reg-field-full">
-              <label className="reg-label">Secret Question <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><ShieldCheckSvg className="icon-xs" /></div>
-                {/* <select className="reg-select">
-                  <option>Select secret question</option>
-                </select> */}
-                <select name="SecretQuestionId" className="reg-select" value={formData.SecretQuestionId} 
-                onChange={(e) => setFormData({ ...formData, SecretQuestionId: e.target.value }) }>
-                  <option value="">Select Secret Question</option>
-                  {questions.map((item) => (
-                    <option
-                      key={item.secretQuestionId}
-                      value={item.secretQuestionId}
-                    >
-                      {item.secretQuestion}
-                    </option>
-                  ))}
-                </select>
-                <div className="reg-input-icon-right"><ChevronDownSvg className="icon-xs" /></div>
-                {errors.SecretQuestionId && (
-                  <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.SecretQuestionId[0]} </span>)}
-              </div>
-            </div>
+          <select
+            className="reg-select"
+            name="SubDivision"
+            value={formData.SubDivision}
+            onChange={handleChange}
+          >
+            <option value="">Select Sub Division</option>
 
-            <div className="reg-field reg-field-full">
-              <label className="reg-label">Secret Answer <span className="reg-required">*</span></label>
-              <div className="reg-input-group">
-                <div className="reg-input-icon"><LockSvg className="icon-xs" /></div>
-                <input type="text" value={formData.SecretAnswer} onChange={handleChange} name="SecretAnswer" placeholder="Enter secret answer" className="reg-input" />
-              </div>
-              {errors.SecretAnswer && (
-                <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.SecretAnswer[0]} </span>)}
-            </div>
+            {subDivisions.map((item) => (
+              <option
+                key={item.subDivisionCode}
+                value={item.subDivisionCode}
+              >
+                {item.subDivisionName}
+              </option>
+            ))}
+          </select>
+
+          <div className="reg-input-icon-right">
+            <ChevronDownSvg className="icon-xs" />
+          </div>
+        </div>
+      </div>
+
+
+      {/* =====================================================
+          PIN CODE
+          ===================================================== */}
+
+      <div className="reg-field">
+        <label className="reg-label">
+          PIN Code <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="PIN"
+            value={formData.PIN}
+            onChange={handleChange}
+            maxLength={6}
+            placeholder="11XXXX"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.PIN && (
+          <span className="registration-error">
+            {errors.PIN[0]}
+          </span>
+        )}
+      </div>
+
+
+      {/* =====================================================
+          MOBILE NUMBER
+          ===================================================== */}
+
+      <div className="reg-field">
+        <label className="reg-label">
+          Mobile Number <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <PhoneSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="tel"
+            name="Mobile"
+            value={formData.Mobile}
+            onChange={handleChange}
+            placeholder="Enter mobile number"
+            maxLength={10}
+            className="reg-input"
+            pattern="[0-9]{10}"
+            title="Enter a valid 10-digit mobile number"
+          />
+        </div>
+
+        {errors.Mobile && (
+          <span className="registration-error">
+            {errors.Mobile[0]}
+          </span>
+        )}
+      </div>
+
+
+    </div>
+  </div>
+</div>
+            {/* =========================================================
+    CONTACT DETAILS
+    ========================================================= */}
+
+<div className="registration-wrapper contact-wrapper">
+
+  <div className="registration-section contact-section">
+
+    {/* Section Header */}
+    <div className="registration-section-header">
+      <h3 className="registration-section-title">
+        Contact Details
+      </h3>
+    </div>
+
+    <div className="registration-fields">
+
+      {/* Email Address */}
+      <div className="reg-field">
+        <label className="reg-label">
+          Email Address{" "}
+          <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MailSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="email"
+            name="Email"
+            value={formData.Email}
+            onChange={handleChange}
+            placeholder="Enter email address"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.Email && (
+          <span className="registration-error">
+            {errors.Email}
+          </span>
+        )}
+      </div>
+
+
+      {/* PAN Number */}
+      <div className="reg-field">
+        <label className="reg-label">
+          PAN No <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <LockSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="PanNo"
+            value={formData.PanNo || ""}
+            onChange={handleChange}
+            placeholder="ABCDE1234F"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.PanNo && (
+          <span className="registration-error">
+            {errors.PanNo}
+          </span>
+        )}
+      </div>
+
+    </div>
+  </div>
+</div>
+           <div className="registration-wrapper other-details-wrapper">
+  <div className="registration-section other-details-section">
+
+    <div className="registration-section-header">
+      <h3 className="registration-section-title">
+        Other Details
+      </h3>
+    </div>
+
+    <div className="registration-fields">
+
+      {/* Secret Question */}
+      <div className="reg-field">
+        <label className="reg-label">
+          Secret Question <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <ShieldCheckSvg className="icon-xs" />
+          </div>
+
+          <select
+            name="SecretQuestionId"
+            className="reg-select"
+            value={formData.SecretQuestionId}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                SecretQuestionId: e.target.value
+              })
+            }
+          >
+            <option value="">Select Secret Question</option>
+
+            {questions.map((item) => (
+              <option
+                key={item.secretQuestionId}
+                value={item.secretQuestionId}
+              >
+                {item.secretQuestion}
+              </option>
+            ))}
+          </select>
+
+          <div className="reg-input-icon-right">
+            <ChevronDownSvg className="icon-xs" />
+          </div>
+        </div>
+
+        {errors.SecretQuestionId && (
+          <span className="registration-error">
+            {errors.SecretQuestionId[0]}
+          </span>
+        )}
+      </div>
+
+      {/* Secret Answer */}
+      <div className="reg-field">
+        <label className="reg-label">
+          Secret Answer <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <LockSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="SecretAnswer"
+            value={formData.SecretAnswer}
+            onChange={handleChange}
+            placeholder="Enter secret answer"
+            className="reg-input"
+          />
+        </div>
+
+        {errors.SecretAnswer && (
+          <span className="registration-error">
+            {errors.SecretAnswer[0]}
+          </span>
+        )}
+      </div>
+
+    </div>
+  </div>
+</div>
 
             <div className="reg-field-row reg-field-full">
               <div>
