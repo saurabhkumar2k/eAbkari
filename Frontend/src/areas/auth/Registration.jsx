@@ -305,7 +305,9 @@ if (photo) {
 
 
       alert(
-        `Registration Successful!\n\n Your Registration ID: ${response.data.regId},\n\n Your User ID: ${response.data.userId}`
+        // `Registration Successful!\n\n Your Registration ID: ${response.data.regId},\n\n  User ID: ${response.data.userId}`
+
+         `Registration Successful!\n\n User ID: ${response.data.userId}`
       );
 
       // navigate("/login");
