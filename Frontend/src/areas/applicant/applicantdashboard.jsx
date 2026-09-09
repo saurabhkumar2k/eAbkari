@@ -664,13 +664,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   const handleForwardApplication = async (applicationIdNo) => {
     debugger;
     try {
+      const response = await fetch(
+        `http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch report data.");
+      }
+
+      const data = await response.json();
+      console.log(applicant);
 
 
 
 
     } catch (err) {
       console.error(err);
-      alert("Unable to forward application`.");
+      alert("Unable to forward application.");
     }
   };
 
