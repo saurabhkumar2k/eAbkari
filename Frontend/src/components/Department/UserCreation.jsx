@@ -42,6 +42,7 @@ const DEFAULT_USERS = [
 ];
 
 const Role_API_URL = 'http://localhost:5214/api/Role/getRole'; 
+const District_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDistrict'; 
 
 export default function UserCreation({ onBack }) {
   const [formData, setFormData] = useState({
@@ -61,6 +62,7 @@ export default function UserCreation({ onBack }) {
   const [activeTab, setActiveTab] = useState("create"); // 'create' | 'list'
   const [searchTerm, setSearchTerm] = useState("");
   const [userRoles, setUserRoles] = useState([]);
+  const [District, setDistrict] = useState([]);
 
   const [usersList, setUsersList] = useState(() => {
     const saved = localStorage.getItem("dept_created_users");
@@ -202,9 +204,30 @@ export default function UserCreation({ onBack }) {
     }
 
     const data = await response.json();
+    setUserRoles(data);
+
+    } catch (error) {
+      
+    }
+  };
+
+   const fetchDistrict = async () => {
+    try {
+    const response = await fetch(District_API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch District");
+    }
+
+    const data = await response.json();
     console.log("API response:", data);
     console.log("Is array:", Array.isArray(data));
-    setUserRoles(data);
+    setDistrict(data);
 
     } catch (error) {
       
@@ -213,6 +236,7 @@ export default function UserCreation({ onBack }) {
 
   useEffect(() => {
     fetchUserTypes();
+    fetchDistrict();
   }, []);
 
   return (
@@ -317,7 +341,7 @@ export default function UserCreation({ onBack }) {
                 {/* User Type */}
                 <div className="user-creation-form-group">
                   <label className="user-creation-label">
-                    User Type <span className="user-creation-req">*</span>
+                    User Role <span className="user-creation-req">*</span>
                   </label>
                   <div className="user-creation-input-wrap">
                     <select
@@ -348,16 +372,17 @@ export default function UserCreation({ onBack }) {
                       onChange={(e) => handleInputChange("district", e.target.value)}
                       className="user-creation-input"
                     >
-                      <option value="NCT of Delhi">NCT of Delhi</option>
-                      <option value="NEW DELHI">NEW DELHI</option>
-                      <option value="WEST DELHI">WEST DELHI</option>
-                      <option value="NORTH DELHI">NORTH DELHI</option>
-                      <option value="SOUTH DELHI">SOUTH DELHI</option>
-                      <option value="EAST DELHI">EAST DELHI</option>
-                      <option value="CENTRAL DELHI">CENTRAL DELHI</option>
-                      <option value="NORTH WEST DELHI">NORTH WEST DELHI</option>
-                      <option value="SOUTH WEST DELHI">SOUTH WEST DELHI</option>
+                      <option value="">--Select--</option>
+
+                        {District.map((District) => (
+                          <option key={District.districtCode} value={District.districtCode}>
+                            {District.districtName}
+                          </option>
+                        ))}
                     </select>
+                    {errors.District && (
+                      <span className="user-creation-subtext">{errors.District}</span>
+                    )}
                   </div>
                 </div>
 

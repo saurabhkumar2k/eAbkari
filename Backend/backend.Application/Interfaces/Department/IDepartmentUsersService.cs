@@ -1,4 +1,5 @@
 using backend.Core.DTOs;
+using backend.Core.Entities;
 using backend.Core.Entities.Department;
 
 namespace backend.Application.Interfaces.Department
@@ -12,6 +13,8 @@ namespace backend.Application.Interfaces.Department
         Task<bool> CreateAsync(DepartmentUserDto model);
 
         Task<bool> UpdateAsync(DepartmentUserDto model);
-        
+        Task<IEnumerable<MstDistrict>> GetDistrict();
+
+
     }
 }

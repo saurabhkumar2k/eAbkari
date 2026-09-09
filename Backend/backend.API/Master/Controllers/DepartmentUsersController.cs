@@ -29,6 +29,18 @@ namespace backend.API.Master.Controllers
             return Ok(users);
         }
 
+
+        [HttpGet("GetAllDistrict")]
+        public async Task<IActionResult> GetAllDistrict()
+        {
+            var districts = await _service.GetDistrict();
+
+            if (!districts.Any())
+                return NotFound("No department districts found.");
+
+            return Ok(districts);
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetById(string userId)
         {

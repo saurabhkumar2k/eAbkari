@@ -36,7 +36,8 @@ namespace backend.API.ApplicationFlow.Controllers
             return Ok(new
                     {
                         applicationId = user,
-                        message = "Access Permission History Saved Successfully"
+                        //message = "Access Permission History Saved Successfully"
+                        message = "Application Forwarded Successfully"
                     });
         }
 
