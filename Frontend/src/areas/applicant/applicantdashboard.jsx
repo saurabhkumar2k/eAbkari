@@ -683,6 +683,26 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
 
   const handleForwardApplication = async (applicationIdNo) => {
   try {
+    debugger;
+
+    const obj = {
+      applicationIdNo,
+          flowUpto: "36",
+          transactionSiNo: 1,
+          transactionDate: new Date().toISOString(),
+          senderUserTypeCode: '00',
+          senderUserID: localStorage.getItem("regId"),
+          senderForwardingLevel: 0,
+          receiverUserTypeCode: "",
+          receiverUserID: null,
+          receiverForwardingLevel: null,
+          preScrutinyStatus: null,
+          fixDateEnquiry: null,
+          transactionRemarks: "Application forwarded by applicant",
+          transactionStatusCode: "F",
+          oprDate: new Date().toISOString(),
+    }
+    console.log("Forwarding Object:", obj);
     const response = await fetch(
       "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
       {
@@ -698,7 +718,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           senderUserTypeCode: '00',
           senderUserID: localStorage.getItem("regId"),
           senderForwardingLevel: 0,
-          receiverUserTypeCode: null,
+          receiverUserTypeCode: "",
           receiverUserID: null,
           receiverForwardingLevel: null,
           preScrutinyStatus: null,

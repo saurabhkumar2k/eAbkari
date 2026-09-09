@@ -11,7 +11,7 @@ import {
   FileText,
   Eye,
   RefreshCcw,
-  Trash2
+  Trash2,
 } from "lucide-react";
 
 export default function DirectorRow({
@@ -20,10 +20,8 @@ export default function DirectorRow({
   onChange,
   onDelete,
   disableDelete,
-  ConstitutionType
+  ConstitutionType,
 }) {
-
-
   // console.log("DirectorsList:", applicant?.constitutionType);
   console.log("DirectorsList:", ConstitutionType);
   console.log("DirectorRow:", ConstitutionType);
@@ -32,558 +30,10 @@ export default function DirectorRow({
   console.log(director);
   return (
 
-
-
-
-    //     <div className="director-row custom-card">
-    //       {/* Header */}
-
-
-
-    //       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-    //         <strong>Sl No {index + 1}</strong>
-
-    //         <button
-    //           type="button"
-    //           className="red-button"
-    //           onClick={() => onDelete(index)}
-    //           disabled={disableDelete}
-    //         >
-    //           Delete
-    //         </button>
-    //       </div>
-
-    //       <div className="form-row">
-    //         {/* Name */}
-    //         <div className="form-item">
-    //           <label>Name *</label>
-    //           <input
-    //             value={director.PName || ""}
-    //             onChange={(e) => onChange(index, "PName", e.target.value)}
-    //           />
-    //         </div>
-
-    //         {/* Share */}
-    //         <div className="form-item">
-    //           <label>Share % *</label>
-    //           <input
-    //             value={director.PPerShare || ""}
-    //             onChange={(e) => onChange(index, "PPerShare", e.target.value)}
-    //           />
-    //         </div>
-
-
-
-
-
-    //         </div>
-
-    // <div className="form-row">
-    //    {/* PAN */}
-    //         <div className="form-item">
-    //           <label>PAN No *</label>
-    //           <input
-    //             value={director.PPanNo || ""}
-    //             onChange={(e) => onChange(index, "PPanNo", e.target.value)}
-    //           />
-    //         </div>
-
-    //         {/* Excise Nominee */}
-    //         <div className="form-item">
-    //           <label>Excise Nominee *</label>
-
-    //           <div style={{ display: "flex", gap: 5 }}>
-    //             <button
-    //               type="button"
-    //               className={director.PExciseNominee === "1" ? "red-button" : ""}
-    //               onClick={() => onChange(index, "PExciseNominee", "1")}
-    //             >
-    //               Yes
-    //             </button>
-
-    //             <button
-    //               type="button"
-    //               className={director.PExciseNominee === "0" ? "red-button" : ""}
-    //               onClick={() => onChange(index, "PExciseNominee", "0")}
-    //             >
-    //               No
-    //             </button>
-    //           </div>
-
-    //         </div>
-
-
-    //           <div className="form-item">
-
-
-
-    //             {ConstitutionType === "01" && (
-    //   <input
-    //     value={director.DINNo || ""}
-    //     label="DIN No"
-    //     placeholder="DIN No"
-    //     onChange={(e) =>
-    //       onChange(index, "DINNo", e.target.value)
-    //     }
-    //   />
-    // )}</div>
-
-
-    //   </div>
-
-
-
-
-    // {/* 🔥 FILE ROW (FULL WIDTH) */}
-    // <div className="form-row file-row">
-
-    //   <div className="form-item full">
-    //     <label>PAN Proof</label>
-    //      <div className="file-modern">
-    //     {!director.panFile ? (
-    //       <label className="upload-box">
-    //         📄 Upload
-    //         <input
-    //           type="file"
-    //           hidden
-    //           onChange={(e) =>
-    //             onChange(index, "panFile", e.target.files[0])
-    //           }
-    //         />
-    //       </label>
-    //     ) : (
-    //       <>
-    //         <span className="file-name">{director.panFile.name}</span>
-
-    //         <div className="file-actions">
-    //           <button
-    //             type="button"
-    //             className="btn-view"
-    //             onClick={() =>
-    //               window.open(URL.createObjectURL(director.panFile))
-    //             }
-    //           >
-    //             👁
-    //           </button>
-
-    //           <label className="btn-replace">
-    //             🔄
-    //             <input
-    //               type="file"
-    //               hidden
-    //               onChange={(e) =>
-    //                 onChange(index, "panFile", e.target.files[0])
-    //               }
-    //             />
-    //           </label>
-
-    //           <button
-    //             type="button"
-    //             className="btn-delete"
-    //             onClick={() => onChange(index, "panFile", null)}
-    //           >
-    //             ❌
-    //           </button>
-    //         </div>
-    //       </>
-    //     )}
-    //   </div>
-    //   </div>
-
-    //   <div className="form-item full">
-    //     <label>Address Proof</label>
-    //       <div className="file-modern">
-    //     {!director.addressFile ? (
-    //       <label className="upload-box">
-    //         📄 Upload
-    //         <input
-    //           type="file"
-    //           hidden
-    //           onChange={(e) =>
-    //             onChange(index, "addressFile", e.target.files[0])
-    //           }
-    //         />
-    //       </label>
-    //     ) : (
-    //       <>
-    //         <span className="file-name">{director.addressFile.name}</span>
-
-    //         <div className="file-actions">
-    //           <button
-    //             type="button"
-    //             className="btn-view"
-    //             onClick={() =>
-    //               window.open(URL.createObjectURL(director.addressFile))
-    //             }
-    //           >
-    //             👁
-    //           </button>
-
-    //           <label className="btn-replace">
-    //             🔄
-    //             <input
-    //               type="file"
-    //               hidden
-    //               onChange={(e) =>
-    //                 onChange(index, "addressFile", e.target.files[0])
-    //               }
-    //             />
-    //           </label>
-
-    //           <button
-    //             type="button"
-    //             className="btn-delete"
-    //             onClick={() => onChange(index, "addressFile", null)}
-    //           >
-    //             ❌
-    //           </button>
-    //         </div>
-    //       </>
-    //     )}
-    //   </div>
-    //   </div>
-
-    // </div>
-
-
-
-    //     </div>
-
-
-
-    // <div className="card-section">
-
-    //   <div className="Dir-card"
-    //     style={{
-    //       // display: "flex",
-    //       // justifyContent: "space-between",
-    //       // alignItems: "center",
-    //       // marginBottom: "20px",
-    //     }}
-    //   >
-    //     <h3>Director / Partner #{index + 1}</h3>
-
-    //     <button
-    //       type="button"
-    //       className="btn btn-danger bt-dir-del"
-    //       onClick={() => onDelete(index)}
-    //       disabled={disableDelete}
-    //     >
-    //       Delete
-    //     </button>
-    //   </div>
-
-    //   <div className="form-grid">
-
-    //     {/* Name */}
-    //     <div className="reg-field">
-    //       <label className="reg-label">
-    //         Name <span className="required">*</span>
-    //       </label>
-
-    //       <div className="reg-input-group">
-    //         <div className="reg-input-icon">
-    //           <User className="w-4 h-4 text-blue-600" />
-    //         </div>
-
-    //         <input
-    //           className="reg-input"
-    //           value={director.PName || ""}
-    //           onChange={(e) =>
-    //             onChange(index, "PName", e.target.value)
-    //           }
-    //         />
-    //       </div>
-    //     </div>
-
-    //     {/* Share */}
-    //     <div className="reg-field">
-    //       <label className="reg-label">
-    //         Share % <span className="required">*</span>
-    //       </label>
-
-    //       <div className="reg-input-group">
-    //         <div className="reg-input-icon">
-    //           <Percent className="w-4 h-4 text-blue-600" />
-    //         </div>
-
-    //         <input
-    //           className="reg-input"
-    //           value={director.PPerShare || ""}
-    //           onChange={(e) =>
-    //             onChange(index, "PPerShare", e.target.value)
-    //           }
-    //         />
-    //       </div>
-    //     </div>
-
-    //     {/* PAN */}
-    //     <div className="reg-field">
-    //       <label className="reg-label">
-    //         PAN No <span className="required">*</span>
-    //       </label>
-
-    //       <div className="reg-input-group">
-    //         <div className="reg-input-icon">
-    //           <CreditCard className="w-4 h-4 text-blue-600" />
-    //         </div>
-
-    //         <input
-    //           className="reg-input"
-    //           value={director.PPanNo || ""}
-    //           onChange={(e) =>
-    //             onChange(index, "PPanNo", e.target.value)
-    //           }
-    //         />
-    //       </div>
-    //     </div>
-
-    //     {/* DIN */}
-    //     {ConstitutionType === "01" && (
-    //       <div className="reg-field">
-    //         <label className="reg-label">DIN No</label>
-
-    //         <div className="reg-input-group">
-    //           <div className="reg-input-icon">
-    //             <BadgeCheck className="w-4 h-4 text-blue-600" />
-    //           </div>
-
-    //           <input
-    //             className="reg-input"
-    //             value={director.DINNo || ""}
-    //             onChange={(e) =>
-    //               onChange(index, "DINNo", e.target.value)
-    //             }
-    //           />
-    //         </div>
-    //       </div>
-    //     )}
-
-    //     {/* Excise Nominee */}
-    //     <div className="reg-field">
-    //       <label className="reg-label">
-    //         Excise Nominee <span className="required">*</span>
-    //       </label>
-
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           gap: "12px",
-    //           marginTop: "10px",
-    //         }}
-    //       >
-    //         <label>
-    //           <input
-    //             type="radio"
-    //             checked={director.PExciseNominee === "1"}
-    //             onChange={() =>
-    //               onChange(index, "PExciseNominee", "1")
-    //             }
-    //           />
-    //           Yes
-    //         </label>
-
-    //         <label>
-    //           <input
-    //             type="radio"
-    //             checked={director.PExciseNominee === "0"}
-    //             onChange={() =>
-    //               onChange(index, "PExciseNominee", "0")
-    //             }
-    //           />
-    //           No
-    //         </label>
-    //       </div>
-    //     </div>
-
-
-
-    //     {/* ================= Upload Documents ================= */}
-
-    //     <div className="file-grid">
-
-    //       {/* PAN Proof */}
-
-    //       <div className="reg-field">
-
-    //         <label className="reg-label">PAN Proof</label>
-
-    //         <div className="file-modern">
-
-    //           {!director.panFile ? (
-
-    //             <label className="upload-box">
-
-    //               📄 Upload PAN Proof
-
-    //               <input
-    //                 type="file"
-    //                 hidden
-    //                 accept=".pdf,.jpg,.jpeg,.png"
-    //                 onChange={(e) =>
-    //                   onChange(index, "panFile", e.target.files?.[0] || null)
-    //                 }
-    //               />
-
-    //             </label>
-
-    //           ) : (
-
-    //             <>
-
-    //               <span className="file-name">
-    //                 {director.panFile.name}
-    //               </span>
-
-    //               <div className="file-actions">
-
-    //                 <button
-    //                   type="button"
-    //                   className="btn-view"
-    //                   onClick={() =>
-    //                     window.open(
-    //                       URL.createObjectURL(director.panFile),
-    //                       "_blank"
-    //                     )
-    //                   }
-    //                 >
-    //                   👁
-    //                 </button>
-
-    //                 <label className="btn-replace">
-
-    //                   🔄
-
-    //                   <input
-    //                     type="file"
-    //                     hidden
-    //                     accept=".pdf,.jpg,.jpeg,.png"
-    //                     onChange={(e) =>
-    //                       onChange(index, "panFile", e.target.files?.[0] || null)
-    //                     }
-    //                   />
-
-    //                 </label>
-
-    //                 <button
-    //                   type="button"
-    //                   className="btn-delete"
-    //                   onClick={() =>
-    //                     onChange(index, "panFile", null)
-    //                   }
-    //                 >
-    //                   ❌
-    //                 </button>
-
-    //               </div>
-
-    //             </>
-
-    //           )}
-
-    //         </div>
-
-    //       </div>
-
-    //       {/* Address Proof */}
-
-    //       <div className="reg-field">
-
-    //         <label className="reg-label">
-    //           Address Proof
-    //         </label>
-
-    //         <div className="file-modern">
-
-    //           {!director.addressFile ? (
-
-    //             <label className="upload-box">
-
-    //               📄 Upload Address Proof
-
-    //               <input
-    //                 type="file"
-    //                 hidden
-    //                 accept=".pdf,.jpg,.jpeg,.png"
-    //                 onChange={(e) =>
-    //                   onChange(index, "addressFile", e.target.files?.[0] || null)
-    //                 }
-    //               />
-
-    //             </label>
-
-    //           ) : (
-
-    //             <>
-
-    //               <span className="file-name">
-    //                 {director.addressFile.name}
-    //               </span>
-
-    //               <div className="file-actions">
-
-    //                 <button
-    //                   type="button"
-    //                   className="btn-view"
-    //                   onClick={() =>
-    //                     window.open(
-    //                       URL.createObjectURL(director.addressFile),
-    //                       "_blank"
-    //                     )
-    //                   }
-    //                 >
-    //                   👁
-    //                 </button>
-
-    //                 <label className="btn-replace">
-
-    //                   🔄
-
-    //                   <input
-    //                     type="file"
-    //                     hidden
-    //                     accept=".pdf,.jpg,.jpeg,.png"
-    //                     onChange={(e) =>
-    //                       onChange(index, "addressFile", e.target.files?.[0] || null)
-    //                     }
-    //                   />
-
-    //                 </label>
-
-    //                 <button
-    //                   type="button"
-    //                   className="btn-delete"
-    //                   onClick={() =>
-    //                     onChange(index, "addressFile", null)
-    //                   }
-    //                 >
-    //                   ❌
-    //                 </button>
-
-    //               </div>
-
-    //             </>
-
-    //           )}
-    //         </div>
-
-
-    //       </div>
-
-
-    //     </div>
-
-
-    //   </div>
-
-    // </div>
-
     <div className="directors-container">
       {/* Director List */}
       <div className="directors-list">
-
         <div className="director-section">
-
           {/* Director Header */}
           <div className="director-header">
             <h3>Director / Partner #{index + 1}</h3>
@@ -600,7 +50,6 @@ export default function DirectorRow({
 
           {/* 3 × 2 Grid */}
           <div className="director-grid">
-
             {/* Name */}
             <div className="director-field">
               <label>
@@ -611,13 +60,10 @@ export default function DirectorRow({
                 <User size={16} />
                 <input
                   value={director.PName || ""}
-                  onChange={(e) =>
-                    onChange(index, "PName", e.target.value)
-                  }
+                  onChange={(e) => onChange(index, "PName", e.target.value)}
                 />
               </div>
             </div>
-
 
             {/* Share */}
             <div className="director-field">
@@ -629,13 +75,10 @@ export default function DirectorRow({
                 <Percent size={16} />
                 <input
                   value={director.PPerShare || ""}
-                  onChange={(e) =>
-                    onChange(index, "PPerShare", e.target.value)
-                  }
+                  onChange={(e) => onChange(index, "PPerShare", e.target.value)}
                 />
               </div>
             </div>
-
 
             {/* PAN */}
             <div className="director-field">
@@ -646,14 +89,16 @@ export default function DirectorRow({
               <div className="input-wrapper">
                 <CreditCard size={16} />
                 <input
+                  type="text"
+                  name="PanNo"
+                  className="reg-input"
+                  placeholder="ABCDE1234F"
+                  maxLength={10}
                   value={director.PPanNo || ""}
-                  onChange={(e) =>
-                    onChange(index, "PPanNo", e.target.value)
-                  }
+                  onChange={(e) => onChange(index, "PPanNo", e.target.value.toUpperCase())}
                 />
               </div>
             </div>
-
 
             {/* Excise */}
             <div className="director-field">
@@ -662,14 +107,11 @@ export default function DirectorRow({
               </label>
 
               <div className="radio-group">
-
                 <label>
                   <input
                     type="radio"
                     checked={director.PExciseNominee === "1"}
-                    onChange={() =>
-                      onChange(index, "PExciseNominee", "1")
-                    }
+                    onChange={() => onChange(index, "PExciseNominee", "1")}
                   />
                   Yes
                 </label>
@@ -678,57 +120,43 @@ export default function DirectorRow({
                   <input
                     type="radio"
                     checked={director.PExciseNominee === "0"}
-                    onChange={() =>
-                      onChange(index, "PExciseNominee", "0")
-                    }
+                    onChange={() => onChange(index, "PExciseNominee", "0")}
                   />
                   No
                 </label>
-
               </div>
             </div>
-
 
             {/* PAN Proof */}
             <div className="director-field">
               <label>PAN Proof</label>
 
               {!director.panFile ? (
-
                 <label className="upload-button">
                   📄 Upload PAN Proof
-
                   <input
                     type="file"
                     hidden
                     accept=".pdf,.jpg,.jpeg,.png"
                     onChange={(e) =>
-                      onChange(
-                        index,
-                        "panFile",
-                        e.target.files?.[0] || null
-                      )
+                      onChange(index, "panFile", e.target.files?.[0] || null)
                     }
                   />
                 </label>
-
               ) : (
-
                 <div className="uploaded-file">
-
                   <span title={director.panFile.name}>
                     {director.panFile.name}
                   </span>
 
                   <div className="file-actions">
-
                     <button
                       type="button"
                       className="file-view"
                       onClick={() =>
                         window.open(
                           URL.createObjectURL(director.panFile),
-                          "_blank"
+                          "_blank",
                         )
                       }
                     >
@@ -737,7 +165,6 @@ export default function DirectorRow({
 
                     <label className="file-replace">
                       🔄
-
                       <input
                         type="file"
                         hidden
@@ -746,7 +173,7 @@ export default function DirectorRow({
                           onChange(
                             index,
                             "panFile",
-                            e.target.files?.[0] || null
+                            e.target.files?.[0] || null,
                           )
                         }
                       />
@@ -755,29 +182,22 @@ export default function DirectorRow({
                     <button
                       type="button"
                       className="file-remove"
-                      onClick={() =>
-                        onChange(index, "panFile", null)
-                      }
+                      onClick={() => onChange(index, "panFile", null)}
                     >
                       ×
                     </button>
-
                   </div>
                 </div>
-
               )}
             </div>
-
 
             {/* Address Proof */}
             <div className="director-field">
               <label>Address Proof</label>
 
               {!director.addressFile ? (
-
                 <label className="upload-button">
                   📄 Upload Address Proof
-
                   <input
                     type="file"
                     hidden
@@ -786,29 +206,25 @@ export default function DirectorRow({
                       onChange(
                         index,
                         "addressFile",
-                        e.target.files?.[0] || null
+                        e.target.files?.[0] || null,
                       )
                     }
                   />
                 </label>
-
               ) : (
-
                 <div className="uploaded-file">
-
                   <span title={director.addressFile.name}>
                     {director.addressFile.name}
                   </span>
 
                   <div className="file-actions">
-
                     <button
                       type="button"
                       className="file-view"
                       onClick={() =>
                         window.open(
                           URL.createObjectURL(director.addressFile),
-                          "_blank"
+                          "_blank",
                         )
                       }
                     >
@@ -817,7 +233,6 @@ export default function DirectorRow({
 
                     <label className="file-replace">
                       🔄
-
                       <input
                         type="file"
                         hidden
@@ -826,7 +241,7 @@ export default function DirectorRow({
                           onChange(
                             index,
                             "addressFile",
-                            e.target.files?.[0] || null
+                            e.target.files?.[0] || null,
                           )
                         }
                       />
@@ -835,28 +250,20 @@ export default function DirectorRow({
                     <button
                       type="button"
                       className="file-remove"
-                      onClick={() =>
-                        onChange(index, "addressFile", null)
-                      }
+                      onClick={() => onChange(index, "addressFile", null)}
                     >
                       ×
                     </button>
-
                   </div>
                 </div>
-
               )}
             </div>
-
           </div>
-
 
           {/* DIN - only when required */}
           {ConstitutionType === "01" && (
             <div className="din-row">
-
               <div className="din-field">
-
                 <label>DIN No</label>
 
                 <div className="input-wrapper">
@@ -864,29 +271,17 @@ export default function DirectorRow({
 
                   <input
                     value={director.DINNo || ""}
-                    onChange={(e) =>
-                      onChange(index, "DINNo", e.target.value)
-                    }
+                    onChange={(e) => onChange(index, "DINNo", e.target.value)}
                   />
                 </div>
-
               </div>
-
             </div>
           )}
-
         </div>
-
       </div>
-
     </div>
-
-
   );
 }
-
-
-
 
 // import React from "react";
 
@@ -931,4 +326,3 @@ export default function DirectorRow({
 //     </div>
 //   );
 // }
-
