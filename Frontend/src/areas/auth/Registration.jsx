@@ -162,7 +162,7 @@ export default function Registration({ onNavigateToLogin }) {
   //   }));
   // };
 
-  const handleChange = (e) => {
+ const handleChange = (e) => {
     debugger;
     const { name, value, type, checked } = e.target;
 
@@ -171,7 +171,6 @@ export default function Registration({ onNavigateToLogin }) {
     if (name === "PIN") {
       fieldValue = value.replace(/\D/g, "").slice(0, 6);
 
-<<<<<<< Updated upstream
       if (fieldValue.length >= 2 && !fieldValue.startsWith("11")) {
         setErrors((prev) => ({
           ...prev,
@@ -216,16 +215,22 @@ export default function Registration({ onNavigateToLogin }) {
             ? ["Invalid PAN format"]
             : ""
       }));
+    } else if (name === "PIN") {
+      if (fieldValue.length >= 3 && !fieldValue.startsWith("110")) {
+        setErrors((prev) => ({
+          ...prev,
+          PIN: ["PIN Code must start with 110."]
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: ""
+        }));
+      }
     } else {
       setErrors((prev) => ({
         ...prev,
         [name]: ""
-=======
-    if (fieldValue.length >= 3 && !fieldValue.startsWith("110")) {
-      setErrors((prev) => ({
-        ...prev,
-        PIN: ["PIN Code must start with 110."]
->>>>>>> Stashed changes
       }));
     }
   };
