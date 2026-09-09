@@ -33,6 +33,9 @@ export default function Registration({ onNavigateToLogin }) {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const fileRef = useRef(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [fileName, setFileName] = useState("");
+
   const [formData, setFormData] = useState({
     FirstName: '',
     LastName: '',
@@ -134,17 +137,31 @@ export default function Registration({ onNavigateToLogin }) {
 
 
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
+const handlePhotoChange = (e) => {
+  const file = e.target.files?.[0];
 
-    if (file) {
-      setPhoto(file);
+  if (!file) return;
 
+  if (!["image/jpeg", "image/png"].includes(file.type)) {
+    alert("Only JPG and PNG files are allowed.");
+    return;
+  }
 
-      const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
-    }
-  };
+  if (file.size > 2 * 1024 * 1024) {
+    alert("Photo size should not exceed 2MB.");
+    return;
+  }
+
+  // Actual File object save karo
+  setPhoto(file);
+
+  // Filename
+  setFileName(file.name);
+
+  // Preview
+  const previewUrl = URL.createObjectURL(file);
+  setPhotoPreview(previewUrl);
+};
 
 
   // const handleChange = (e) => {
@@ -171,11 +188,10 @@ export default function Registration({ onNavigateToLogin }) {
     if (name === "PIN") {
       fieldValue = value.replace(/\D/g, "").slice(0, 6);
 
-<<<<<<< Updated upstream
-      if (fieldValue.length >= 2 && !fieldValue.startsWith("11")) {
+      if (fieldValue.length >= 3 && !fieldValue.startsWith("110")) {
         setErrors((prev) => ({
           ...prev,
-          PIN: ["PIN Code must start with 11."]
+          PIN: ["PIN Code must start with 110."]
         }));
         return;
       }
@@ -220,12 +236,6 @@ export default function Registration({ onNavigateToLogin }) {
       setErrors((prev) => ({
         ...prev,
         [name]: ""
-=======
-    if (fieldValue.length >= 3 && !fieldValue.startsWith("110")) {
-      setErrors((prev) => ({
-        ...prev,
-        PIN: ["PIN Code must start with 110."]
->>>>>>> Stashed changes
       }));
     }
   };
@@ -269,10 +279,19 @@ export default function Registration({ onNavigateToLogin }) {
 
     );
 
+if (photo) {
+  formDataToSend.set("Photo", photo);
+}
+
+
     // Check all values being sent
     for (const [key, value] of formDataToSend.entries()) {
       console.log(key, value);
     }
+
+
+
+
 
     try {
       const response = await axios.post(
@@ -322,6 +341,7 @@ export default function Registration({ onNavigateToLogin }) {
       // Optional: clear dependent dropdown data if you use them
       setDistricts([]);
       setPreview(null);
+      setFileName("");
       if (fileRef.current) {
         fileRef.current.value = "";
       }
@@ -737,37 +757,85 @@ export default function Registration({ onNavigateToLogin }) {
                 <span className="text-danger" style={{ marginTop: "1px", display: "block", color: "red", fontSize: "13px" }}> {errors.SecretAnswer[0]} </span>)}
             </div>
 
-            <div className="reg-field-row reg-field-full">
-              <div>
-                {/* Preview above the upload control */}
-                {preview && (
-                  <div style={{ marginBottom: "10px" }}>
-                    <img src={preview} alt="Preview" style={{ width: "150px",height: "120px",objectFit: "contain",border: "1px solid #d1d5db",
-                    borderRadius: "4px",backgroundColor: "#fff"}}/>
-                  </div>
-                )}
+           <div className="reg-field">
+  <label className="reg-label">
+    Upload Photo <span className="reg-required">*</span>
+  </label>
 
-                {/* Upload control */}
-                <div className="reg-field">
-                  <label className="reg-label">Upload Photo <span className="reg-required">*</span></label>
-                <div className="upload-placeholder">
-                  <CloudUploadSvg className="icon-md reg-color-primary" />
-                  <div>
-                    <input
-                      type="file"
-                      name="photo"
-                      accept="image/*"
-                      onChange={handlePhotoChange}
-                      ref={fileRef}
-                      className="photo-input"
-                    />
-                    <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
-                  </div>
-                </div>
-                </div>
-              </div>
-             
-            </div>
+  <div className="photo-upload-row">
+
+    {/* Upload Box */}
+    <div
+      className="upload-placeholder"
+      onClick={() => fileRef.current?.click()}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const file = e.dataTransfer.files?.[0];
+
+        if (file) {
+          handlePhotoChange({
+            target: {
+              files: [file],
+            },
+          });
+        }
+      }}
+    >
+      <CloudUploadSvg className="icon-md reg-color-primary" />
+
+<div className="upload-content">
+  {fileName ? (
+    <>
+      <div className="upload-text">
+        {fileName}
+      </div>
+
+      <div className="upload-hint">
+        Click to change photo
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="upload-text">
+        Click to upload or drag & drop
+      </div>
+
+      <div className="upload-hint">
+        JPG, PNG (Max. 2MB)
+      </div>
+    </>
+  )}
+</div>
+
+   <input
+  id="photo-upload"
+  type="file"
+  name="photo"
+  accept="image/jpeg,image/png"
+  onChange={handlePhotoChange}
+  ref={fileRef}
+  className="photo-input"
+/>
+    </div>
+
+    {/* Photo Preview */}
+    {photoPreview && (
+      <div className="photo-preview">
+        <img
+          src={photoPreview}
+          alt="Photo Preview"
+        />
+      </div>
+    )}
+
+  </div>
+</div>
               <div className=" reg-field-full">
                 <input type="checkbox" name="IsPunishableOffence" className="reg-checkbox" checked={formData.IsPunishableOffence === "Y"}
                   onChange={(e) => setFormData({ ...formData, IsPunishableOffence: e.target.checked ? "Y" : "N" }) } />

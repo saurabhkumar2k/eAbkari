@@ -982,9 +982,17 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   </div> */}
 
                   <div className="profile-details">
-                    <div className="profile-avatar-large">
-                      <User className="user-icon" />
-                    </div>
+               <div className="profile-avatar-large">
+  {profile?.photo ? (
+    <img
+      src={`http://localhost:5214/Documents/Registration/${profile.photo}`}
+      alt="Profile"
+      className="profile-avatar-img"
+    />
+  ) :  (
+    <User className="user-icon" />
+  )}
+</div>
                     <div className="profile-row">
                       <span className="profile-label">Name</span>
                       <span className="profile-value">{profile.firstName} {profile.lastName}</span>
