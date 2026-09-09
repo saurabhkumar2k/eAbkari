@@ -26,7 +26,7 @@ import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
 import UserCreation from './src/components/Department/UserCreation.jsx';
 import AboutUsModal from './src/EabkariHomepage/AboutUsModal.jsx';
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
-import OrganizationalStructure from './src/EabkariHomepage/OrganizationalStructure.jsx';
+
 
 import {
   ChevronDownSvg,
@@ -215,36 +215,6 @@ return (
         }
       />
 
-      {/* Department Overview */}
-      {/* <Route
-        path="/department-overview"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="DEPARTMENT_OVERVIEW" />
-            <main>
-              <DepartmentOverview 
-                onNavigateToView={(view) => window.location.href = '/' + view.toLowerCase().replace(/_/g, '-')} 
-                onNavigateHome={() => window.location.href = "/"} 
-              />
-            </main>
-            <Footer />
-          </>
-        }
-      /> */}
-
-      {/* Organizational Structure */}
-      <Route
-        path="/organizational-structure"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="ORGANIZATIONAL_STRUCTURE" />
-            <main>
-              <OrganizationalStructure onNavigateHome={() => window.location.href = "/"} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
 
       {/* Applicant Login */}
       <Route
