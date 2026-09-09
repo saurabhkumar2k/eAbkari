@@ -26,6 +26,7 @@ import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
 import UserCreation from './src/components/Department/UserCreation.jsx';
 import AboutUsModal from './src/EabkariHomepage/AboutUsModal.jsx';
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
+import OrganizationalStructure from './src/EabkariHomepage/OrganizationalStructure.jsx';
 
 import {
   ChevronDownSvg,
@@ -149,6 +150,10 @@ export default function App() {
        case 'LICENSEE_LOGIN':
         window.location.href = '/licensee-login';
         break;
+      case 'ORGANIZATIONAL_STRUCTURE':
+      window.location.href = '/organizational-structure'; // <--- Routes to the page
+      break;
+
         default:
         window.location.href = '/';
     }
@@ -168,6 +173,79 @@ return (
           </>
         }
       />
+       {/* About Us Direct Routes */}
+      <Route
+        path="/about"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/about-us"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/about-eabkari"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/about-e-abkari"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+            <main><HomeContent initialAboutUsOpen={true} /></main>
+            <Footer />
+          </>
+        }
+      />
+
+      {/* Department Overview */}
+      {/* <Route
+        path="/department-overview"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="DEPARTMENT_OVERVIEW" />
+            <main>
+              <DepartmentOverview 
+                onNavigateToView={(view) => window.location.href = '/' + view.toLowerCase().replace(/_/g, '-')} 
+                onNavigateHome={() => window.location.href = "/"} 
+              />
+            </main>
+            <Footer />
+          </>
+        }
+      /> */}
+
+      {/* Organizational Structure */}
+      <Route
+        path="/organizational-structure"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="ORGANIZATIONAL_STRUCTURE" />
+            <main>
+              <OrganizationalStructure onNavigateHome={() => window.location.href = "/"} />
+            </main>
+            <Footer />
+          </>
+        }
+      />
+
       {/* Applicant Login */}
       <Route
         path="/login"
@@ -237,7 +315,20 @@ return (
           </>
         }
       />
-      
+      {/* Organizational Structure */}
+     {/* <Route
+        path="/organizational-structure"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="ORGANIZATIONAL_STRUCTURE" />
+            <main>
+              <OrganizationalStructure onNavigateHome={() => window.location.href = "/"} />
+            </main>
+            <Footer />
+          </>
+        }
+      /> */}
+
       {/* Licensee Login */}
       <Route
         path="/licensee-login"
