@@ -1119,7 +1119,6 @@ if (photo) {
     Upload Photo <span className="reg-required">*</span>
   </label>
 
-<<<<<<< Updated upstream
   <div className="photo-upload-row">
 
     {/* Upload Box */}
@@ -1194,29 +1193,6 @@ if (photo) {
 
   </div>
 </div>
-=======
-                {/* Upload control */}
-                <div className="reg-field reg-field-full">
-                  <label className="reg-label">Upload Photo <span className="reg-required">*</span></label>
-                <div className="upload-placeholder">
-                  <CloudUploadSvg className="icon-md reg-color-primary" />
-                  <div>
-                    <input
-                      type="file"
-                      name="photo"
-                      accept="image/*"
-                      onChange={handlePhotoChange}
-                      ref={fileRef}
-                      className="photo-input"
-                    />
-                    <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
-                  </div>
-                </div>
-                </div>
-              </div>
-             
-            </div>
->>>>>>> Stashed changes
               <div className=" reg-field-full">
                 <input type="checkbox" name="IsPunishableOffence" className="reg-checkbox" checked={formData.IsPunishableOffence === "Y"}
                   onChange={(e) => setFormData({ ...formData, IsPunishableOffence: e.target.checked ? "Y" : "N" }) } />
