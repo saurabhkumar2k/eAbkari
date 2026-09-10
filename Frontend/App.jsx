@@ -667,7 +667,17 @@ const navItems = [
   {
     label: "Stationary Management",
     icon: <PenToolSvg className="dept-nav-icon" />,
-    hasDropdown: true,
+      hasDropdown: true,
+      items: [
+          {
+              label: "Issue Stationary",
+              hasSideMenu: true,
+              sideItems: [
+                  "IP-TP",
+                  "CSD"
+              ]
+          }
+      ]
   },
 
   { label: "Label Regn.", icon: <TagSvg className="dept-nav-icon" /> },
