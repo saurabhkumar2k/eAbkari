@@ -144,7 +144,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess, onNavigateHome }) => {
         </div>
 
         {/* Right Side: Form */}
-       <div className="login-form-panel">
+        <div className="login-form-panel">
           <div className="licensee-top-bar">
             <button type="button" className="licensee-home-btn" onClick={onNavigateHome}>
               <UserSvg className="licensee-home-icon" />
@@ -169,55 +169,55 @@ const Login = ({ onNavigateToRegister, onLoginSuccess, onNavigateHome }) => {
               <p className="login-form-subtitle">Enter your credentials to continue</p>
 
               <form className="login-form-fields" onSubmit={handleSubmit}>
-                 <div className="dept-input-wrapper">
-                                  <UserSvg className="dept-field-icon" />
-                                  <input
-                                    id='userId' 
-                                    type="text" 
-                                    className="dept-input-field" 
-                                    placeholder=""
-                                    value={userId}
-                                    onChange={(e) => {
-                                      setUserId(e.target.value);
-                                      if (error) setError('');
-                                    }}
-                                    required
-                                  />
-                                  <label htmlFor="userId">User ID</label>
-                                </div>
+                <div className="dept-input-wrapper">
+                  <UserSvg className="dept-field-icon" />
+                  <input
+                    id='userId'
+                    type="text"
+                    className="dept-input-field"
+                    placeholder=""
+                    value={userId}
+                    onChange={(e) => {
+                      setUserId(e.target.value);
+                      if (error) setError('');
+                    }}
+                    required
+                  />
+                  <label htmlFor="userId">User ID</label>
+                </div>
 
                 <div className="form-group">
-                                {/* <label className="dept-input-label">Password</label> */}
-                                <div className="dept-input-wrapper">
-                                  <LockSvg className="dept-field-icon" />
-                                  <input
-                                    id='Password' 
-                                    type={showPassword ? 'text' : 'password'}
-                                    className="dept-input-field" 
-                                    placeholder=""
-                                    value={password}
-                                    onChange={(e) => {
-                                      setPassword(e.target.value);
-                                      if (error) setError('');
-                                    }}
-                                    required
-                                  />
-                                  <label htmlFor="Password">Password</label>
-                                  
-                                  <button
-                                    type="button"
-                                    className="password-toggle-btn"
-                                    onClick={() => setShowPassword((prev) => !prev)}
-                                  >
-                                    {showPassword ? (
-                                      <EyeSvg className="icon-sm" />
-                                    ) : (
-                                      <EyeSvg className="icon-sm" />
-                                    )}
-                                  </button>
-                
-                                </div>
-                              </div>
+                  {/* <label className="dept-input-label">Password</label> */}
+                  <div className="dept-input-wrapper">
+                    <LockSvg className="dept-field-icon" />
+                    <input
+                      id='Password'
+                      type={showPassword ? 'text' : 'password'}
+                      className="dept-input-field"
+                      placeholder=""
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (error) setError('');
+                      }}
+                      required
+                    />
+                    <label htmlFor="Password">Password</label>
+
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <EyeSvg className="icon-sm" />
+                      ) : (
+                        <EyeSvg className="icon-sm" />
+                      )}
+                    </button>
+
+                  </div>
+                </div>
 
                 <div className="login-options-row">
                   <label className="checkbox-flex-label">

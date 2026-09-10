@@ -23,18 +23,19 @@ const Header = ({ onSelectView, currentView }) => {
 
   const isAuthPage = currentView === 'APPLICANT_REGISTRATION';
 
-const navLinks = [
+  const navLinks = [
     { 
-      label: 'About Us', 
+       label: 'About Us', 
       icon: <UsersSvg className="nav-icon-main" />, 
       view: 'HOME',
+      path: '/about',
       hasDropdown: true,
       subItems: [
-        { label: 'About e-Abkari', view: 'ABOUT_E-ABKARI' },
-        { label: 'Organizational Structure', view: 'ORGANIZATIONAL_STRUCTURE' },
-        { label: 'Staff', view: 'STAFF' },
-        { label: 'Heads of Organizations' },
-        { label: 'Excise Commissioners', view: 'EXCISE_COMMISSIONER' }
+        { label: 'About e-Abkari', view: 'ABOUT_E-ABKARI', path: '/about' },
+        { label: 'Organizational Structure', view: 'ORGANIZATIONAL_STRUCTURE', path: '/organizational-structure' },
+        { label: 'Staff', view: 'STAFF', path: '/staff' },
+        { label: 'Heads of Organizations', path: '#' },
+        { label: 'Excise Commissioners', view: 'EXCISE_COMMISSIONER', path: '/excise-commissioner' }
       ]
     },
     { 
@@ -43,36 +44,25 @@ const navLinks = [
       view: 'HOME',
       hasDropdown: true,
       subItems: [
-        { label: 'Licenses Administered' },
-        { label: 'Registered Brands of Liquor' }
+        { label: 'Licenses Administered', path: '#' },
+        { label: 'Registered Brands of Liquor', path: '#' }
       ]
     },
-    { label: 'Acts, Rules & Orders', icon: <GavelSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'Right to Information', icon: <InfoSvg className="nav-icon-main" />, view: 'HOME' },
-    { label: 'Feedback', 
+    { label: 'Acts, Rules & Orders', icon: <GavelSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
+    { label: 'Right to Information', icon: <InfoSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
+    { 
+      label: 'Feedback', 
       icon: <MessageSquareSvg className="nav-icon-main" />, 
-      view: 'HOME',
+      view: 'FEEDBACK_FORM', 
+      path: '/feedback',
       hasDropdown: true,
       subItems: [
-        { label: 'Feedback Form', view: 'FEEDBACK_FORM' },
-      ] 
-    },
-    { label: 'Track & Trace', 
-      icon: <MapPinSvg className="nav-icon-main" />, 
-      view: 'HOME',
-      hasDropdown: true,
-      subItems: [
-        { label: 'Track & Trace', view: 'TRACK_AND_TRACE' },
-      ] 
-    },
-    { label: 'User Manuals', 
-      icon: <BookOpenSvg className="nav-icon-main" />, 
-      view: 'HOME',
-      hasDropdown: true,
-      subItems: [
-        { label: 'User Manuals', view: 'USER_MANUALS' },
+        { label: 'Feedback Form', view: 'FEEDBACK_FORM', path: '/feedback' },
+        // { label: 'Track Feedback Status', view: 'FEEDBACK_STATUS', path: '/feedback?tab=track' }
       ]
-    }
+    },
+    { label: 'Track & Trace', icon: <MapPinSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
+    { label: 'User Manuals', icon: <BookOpenSvg className="nav-icon-main" />, view: 'HOME', path: '/' }
   ];
   // const handleLoginOptionClick = (item) => {
   //   if (item === 'Applicant') {
@@ -93,6 +83,15 @@ const handleLoginOptionClick = (item) => {
   } else {
     navigate("/");
   }
+  setIsLoginOpen(false);
+  setIsMobileMenuOpen(false);
+};
+
+const handleSubLinkClick = (sub) => {
+  if (sub.path && sub.path !== "#") {
+    navigate(sub.path);
+  }
+
   setIsLoginOpen(false);
   setIsMobileMenuOpen(false);
 };

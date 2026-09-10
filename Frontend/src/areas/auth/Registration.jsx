@@ -45,9 +45,9 @@ export default function Registration({ onNavigateToLogin }) {
     Occupation: '',
     AddressLine1: '',
     AddressLine2: '',
-    City: '',
     StateUT: '',
     District: '',
+    PoliceStation: '',
     PIN: '',
     Mobile: '',
     Email: '',
@@ -338,9 +338,9 @@ if (photo) {
         Occupation: "",
         AddressLine1: "",
         AddressLine2: "",
-        City: "",
         StateUT: "",
         District: "",
+        PoliceStation: "",
         PIN: "",
         Mobile: "",
         Email: "",
@@ -759,39 +759,6 @@ if (photo) {
         </div>
       </div>
 
-
-      {/* =====================================================
-          CITY
-          ===================================================== */}
-
-      <div className="reg-field">
-        <label className="reg-label">
-          City <span className="reg-required">*</span>
-        </label>
-
-        <div className="reg-input-group">
-          <div className="reg-input-icon">
-            <MapPinSvg className="icon-xs" />
-          </div>
-
-          <input
-            type="text"
-            name="City"
-            value={formData.City}
-            onChange={handleChange}
-            placeholder="Enter city"
-            className="reg-input"
-          />
-        </div>
-
-        {errors.City && (
-          <span className="registration-error">
-            {errors.City[0]}
-          </span>
-        )}
-      </div>
-
-
       {/* =====================================================
           DISTRICT
           ===================================================== */}
@@ -877,7 +844,35 @@ if (photo) {
           </div>
         </div>
       </div>
+      
+       {/* POLICE STATION */}
 
+      <div className="reg-field">
+        <label className="reg-label">
+          Police Station <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <MapPinSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="text"
+            name="Police Station"
+            value={formData['Police Station']}
+            onChange={handleChange}
+            placeholder="Enter police station"
+            className="reg-input"
+          />
+        </div>
+
+        {errors['Police Station'] && (
+          <span className="registration-error">
+            {errors['Police Station'][0]}
+          </span>
+        )}
+      </div>
 
       {/* =====================================================
           PIN CODE
@@ -916,35 +911,7 @@ if (photo) {
           MOBILE NUMBER
           ===================================================== */}
 
-      <div className="reg-field">
-        <label className="reg-label">
-          Mobile Number <span className="reg-required">*</span>
-        </label>
-
-        <div className="reg-input-group">
-          <div className="reg-input-icon">
-            <PhoneSvg className="icon-xs" />
-          </div>
-
-          <input
-            type="tel"
-            name="Mobile"
-            value={formData.Mobile}
-            onChange={handleChange}
-            placeholder="Enter mobile number"
-            maxLength={10}
-            className="reg-input"
-            pattern="[0-9]{10}"
-            title="Enter a valid 10-digit mobile number"
-          />
-        </div>
-
-        {errors.Mobile && (
-          <span className="registration-error">
-            {errors.Mobile[0]}
-          </span>
-        )}
-      </div>
+     
 
 
     </div>
@@ -1021,6 +988,36 @@ if (photo) {
         {errors.PanNo && (
           <span className="registration-error">
             {errors.PanNo}
+          </span>
+        )}
+      </div>
+       
+        <div className="reg-field">
+        <label className="reg-label">
+          Mobile Number <span className="reg-required">*</span>
+        </label>
+
+        <div className="reg-input-group">
+          <div className="reg-input-icon">
+            <PhoneSvg className="icon-xs" />
+          </div>
+
+          <input
+            type="tel"
+            name="Mobile"
+            value={formData.Mobile}
+            onChange={handleChange}
+            placeholder="Enter mobile number"
+            maxLength={10}
+            className="reg-input"
+            pattern="[0-9]{10}"
+            title="Enter a valid 10-digit mobile number"
+          />
+        </div>
+
+        {errors.Mobile && (
+          <span className="registration-error">
+            {errors.Mobile[0]}
           </span>
         )}
       </div>
@@ -1122,6 +1119,7 @@ if (photo) {
     Upload Photo <span className="reg-required">*</span>
   </label>
 
+<<<<<<< Updated upstream
   <div className="photo-upload-row">
 
     {/* Upload Box */}
@@ -1196,10 +1194,33 @@ if (photo) {
 
   </div>
 </div>
+=======
+                {/* Upload control */}
+                <div className="reg-field reg-field-full">
+                  <label className="reg-label">Upload Photo <span className="reg-required">*</span></label>
+                <div className="upload-placeholder">
+                  <CloudUploadSvg className="icon-md reg-color-primary" />
+                  <div>
+                    <input
+                      type="file"
+                      name="photo"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      ref={fileRef}
+                      className="photo-input"
+                    />
+                    <div className="upload-hint">JPG, PNG (Max. 2MB)</div>
+                  </div>
+                </div>
+                </div>
+              </div>
+             
+            </div>
+>>>>>>> Stashed changes
               <div className=" reg-field-full">
                 <input type="checkbox" name="IsPunishableOffence" className="reg-checkbox" checked={formData.IsPunishableOffence === "Y"}
                   onChange={(e) => setFormData({ ...formData, IsPunishableOffence: e.target.checked ? "Y" : "N" }) } />
-                <span className="punishable-offence">Punishable Offence</span>
+                <span className="punishable-offence">Has the Applicant ever been Blacklisted/Convicted of any Offence Punishable under Delhi Excise Act 2009, as was Previously Applicable to Delhi</span>
               </div>
 
             {/* Form Actions */}

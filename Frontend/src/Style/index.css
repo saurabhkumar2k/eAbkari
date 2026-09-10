@@ -30,6 +30,9 @@
 @import "./HcrApp.css";
 @import "./ActOnNewLicenseApplication.css";
 
+@import "./LandingPage/feedback.css";
+@import "./LandingPage/organizationalstructure.css";
+
 :root {
   --brand-blue: #012a52;
   --brand-blue-dark: #00172e;

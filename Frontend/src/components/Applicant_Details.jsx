@@ -80,24 +80,18 @@ subDivisions?.forEach((s) =>
 
       {/* ================= BASIC ================= */}
 <div className="form-section">
-
-       <div className="section-header">
-
+   <div className="section-header">
   <h3 className="section-title">
     <span className="section-number">1</span>
     Personal Details
   </h3>
-
   <p className="section-description">
     Basic information of the applicant
   </p>
-
 </div>
 
   <div className="form-grid">
-
            <div className="reg-field">
-
       <label className="reg-label label-title">
     Applicant Name <span className="required">*</span>
   </label>
