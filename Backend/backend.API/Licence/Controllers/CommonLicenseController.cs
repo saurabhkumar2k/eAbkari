@@ -53,12 +53,17 @@ namespace backend.API.Licence.Controllers
             }
 
             var result = await _LicenseService.SubmitApplication(dto.ApplicationIdNo, dto.ApplicationStatus);
-            if (result == null)
+            if (string.IsNullOrWhiteSpace(result))
             {
                 return NotFound("Application not found.");
             }
 
-            return Ok("Application submitted successfully.");
+            return Ok(new
+            {
+                applicationIdNo = dto.ApplicationIdNo,
+                applicationStatus = result,
+                message = "Application status updated successfully."
+            });
         }
     }
 }
