@@ -94,7 +94,7 @@ const statsData = [
     color: "bg-amber-100 text-amber-600",
   },
   {
-    title: "Alerts",
+    title: "Permits",
     value: "0",
     icon: Bell,
     color: "bg-purple-100 text-purple-600",
