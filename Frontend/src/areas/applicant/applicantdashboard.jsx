@@ -661,27 +661,87 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     window.print();
   };
 
+  // const handleForwardApplication = async (applicationIdNo) => {
+  //   debugger;
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory`
+  //     );
+  //     if(!response.ok) {
+  //       throw new Error("Failed to fetch access permission history.");
+  //     }
+
+  //     const data = await response.json();
+  //     console.log(data);
+
+
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Unable to forward application.");
+  //   }
+  // };
+
   const handleForwardApplication = async (applicationIdNo) => {
+  try {
     debugger;
-    try {
-      const response = await fetch(
-        `http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch report data.");
-      }
 
-      const data = await response.json();
-      console.log(applicant);
-
-
-
-
-    } catch (err) {
-      console.error(err);
-      alert("Unable to forward application.");
+    const obj = {
+      applicationIdNo,
+          flowUpto: "36",
+          transactionSiNo: 1,
+          transactionDate: new Date().toISOString(),
+          senderUserTypeCode: '00',
+          senderUserID: localStorage.getItem("regId"),
+          senderForwardingLevel: 0,
+          receiverUserTypeCode: "",
+          receiverUserID: null,
+          receiverForwardingLevel: null,
+          preScrutinyStatus: null,
+          fixDateEnquiry: null,
+          transactionRemarks: "Application forwarded by applicant",
+          transactionStatusCode: "F",
+          oprDate: new Date().toISOString(),
     }
-  };
+    console.log("Forwarding Object:", obj);
+    const response = await fetch(
+      "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          applicationIdNo,
+          flowUpto: "36",
+          transactionSiNo: 1,
+          transactionDate: new Date().toISOString(),
+          senderUserTypeCode: '00',
+          senderUserID: localStorage.getItem("regId"),
+          senderForwardingLevel: 0,
+          receiverUserTypeCode: "",
+          receiverUserID: null,
+          receiverForwardingLevel: null,
+          preScrutinyStatus: null,
+          fixDateEnquiry: null,
+          transactionRemarks: "Application forwarded by applicant",
+          transactionStatusCode: "F",
+          oprDate: new Date().toISOString(),
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to forward application.");
+    }
+
+    const data = await response.json();
+    console.log(data);
+    alert(data.message);
+  } catch (error) {
+    console.error(error);
+    alert("Unable to forward application.");
+  }
+};
 
 
 
