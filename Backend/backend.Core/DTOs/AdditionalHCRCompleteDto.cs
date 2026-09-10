@@ -1,3 +1,6 @@
+using backend.Core.DTOs.Licence;
+using backend.Core.Entities.Licence;
+
 namespace backend.Core.DTOs
 {
     public class AdditionalHCRCompleteDto
@@ -8,5 +11,7 @@ namespace backend.Core.DTOs
         public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
 
         public List <CategoryWiseAnswersDto> ApplicantAnswers {get; set;} = new();
+
+        public List<HCRAdditionalRestaurantMasterDto> AdditionalRestaurentDetails {get; set;} = new();
     }
 }

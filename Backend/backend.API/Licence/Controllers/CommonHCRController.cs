@@ -70,6 +70,7 @@ namespace backend.API.Licence.Controllers
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
         [Consumes("multipart/form-data")]
+        //For testing this api please Run the Frontend and fill the records from the From
         public async Task<IActionResult> SaveAdditionalHCRCompleteDetails([FromForm] AdditionalHCRCompleteDto dto)
         {
             if (dto == null || dto.AdditionalDetails == null)
