@@ -32,6 +32,7 @@
 
 @import "./LandingPage/feedback.css";
 @import "./LandingPage/organizationalstructure.css";
+@import "./LandingPage/about.css";
 
 :root {
   --brand-blue: #012a52;
