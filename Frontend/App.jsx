@@ -27,6 +27,7 @@ import UserCreation from './src/components/Department/UserCreation.jsx';
 import AboutUsModal from './src/EabkariHomepage/AboutUsModal.jsx';
 import AboutUsPage from './src/EabkariHomepage/AboutUsPage.jsx';
 import FeedbackForm from './src/EabkariHomepage/FeedbackForm.jsx';
+import Staff from './src/EabkariHomepage/Staff.jsx';
 import OrganizationalStructure from './src/EabkariHomepage/OrganizationalStructure.jsx';
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
 
@@ -169,6 +170,11 @@ export default function App() {
       case 'FEEDBACK_FORM':
       case 'FEEDBACK':
         window.location.href = '/feedback';
+        break;
+      case 'STAFF':
+        if (typeof window !== "undefined" && window.location.pathname !== '/staff') {
+          window.location.href = '/staff';
+        }
         break;
       case 'FEEDBACK_STATUS':
         window.location.href = '/feedback?tab=track';
@@ -426,7 +432,19 @@ export default function App() {
             />
           }
         />
-
+ {/* Staff */}
+      <Route
+        path="/staff"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="STAFF" />
+            <main>
+              <Staff onNavigateHome={() => window.location.href = "/"} />
+            </main>
+            <Footer />
+          </>
+        }
+      />
         {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
         <Route
           path="/dadashboard"
