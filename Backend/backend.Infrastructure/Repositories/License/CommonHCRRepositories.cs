@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using backend.Core.DTOs;
+using backend.Core.DTOs.Licence;
 using backend.Core.Entities.Licence;
 using backend.Core.Interfaces.License;
 using backend.Infrastructure.Data;
@@ -211,8 +212,37 @@ namespace backend.Infrastructure.Repositories.License
 
                     _context.ApplicantLicensePartnersDetails.Add(partner);
                 }
+                 //==========================
+                // STEP 3 : L16AdditionalResturentDetails
                 //==========================
-                // STEP 3 : ApplicantAnswers
+                
+                var oldResturentDetails = _context.HCRAdditionalRestaurantMaster
+                    .Where(x => x.ApplicationIdNo == appId);
+
+                _context.HCRAdditionalRestaurantMaster.RemoveRange(oldResturentDetails);
+                int slNoL16 = 1;
+
+                foreach (var item in dto.AdditionalRestaurentDetails)
+                {
+                    HCRAdditionalRestaurantMaster ObjAdditionalRestaurentDetails =
+                        new HCRAdditionalRestaurantMaster
+                        {
+                            ApplicationIdNo = appId,
+                            NameOfAdditionalRestaurant = item.NameOfAdditionalRestaurant,
+                            NumberOfSeatCovers = item.NumberOfSeatCovers,
+                            NumberOfCounter = item.NumberOfCounter,
+                            AddtionalArea = item.AddtionalArea,
+                            HoursofSale = item.HoursofSale,
+                            HoursofSaleAddtionalArea = item.HoursofSaleAddtionalArea, 
+                            ForeignLiquor = item.ForeignLiquor,
+                            AreaSqMtr = item.AreaSqMtr,
+                            slNo = slNoL16++
+                        };
+
+                    _context.HCRAdditionalRestaurantMaster.Add(ObjAdditionalRestaurentDetails);
+                }
+                //==========================
+                // STEP 4 : ApplicantAnswers
                 //==========================
 
                 if (dto.ApplicantAnswers != null && dto.ApplicantAnswers.Count > 0)
@@ -319,6 +349,27 @@ namespace backend.Infrastructure.Repositories.License
                         SlNo = x.SlNo
                     })
                     .ToListAsync();
+                // ==========
+                //Step 3 : Additional Resturant Details l16
+
+                var AdditionalDetailsL16 = await _context.HCRAdditionalRestaurantMaster 
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .OrderBy(x => x.slNo)
+                .Select( x => new HCRAdditionalRestaurantMasterDto
+                {
+                     
+                    ApplicationIdNo = x.ApplicationIdNo,                     
+                    NameOfAdditionalRestaurant = x.NameOfAdditionalRestaurant,
+                    NumberOfSeatCovers = x.NumberOfSeatCovers,
+                    NumberOfCounter = x.NumberOfCounter,
+                    AddtionalArea = x.AddtionalArea,
+                    HoursofSale = x.HoursofSale,
+                    HoursofSaleAddtionalArea = x.HoursofSaleAddtionalArea, 
+                    ForeignLiquor = x.ForeignLiquor,
+                    AreaSqMtr = x.AreaSqMtr,
+                    slNo = x.slNo
+                })
+                .ToListAsync();
 
                 //==========================
                 // STEP 3 : Applicant Answers
@@ -340,7 +391,8 @@ namespace backend.Infrastructure.Repositories.License
                 {
                     AdditionalDetails = additionalDetails,
                     Partners = partners,
-                    ApplicantAnswers = applicantAnswers
+                    ApplicantAnswers = applicantAnswers,
+                    AdditionalRestaurentDetails = AdditionalDetailsL16
                 };
             }
             catch (Exception ex)
