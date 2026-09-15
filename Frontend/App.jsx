@@ -29,6 +29,7 @@ import AboutUsPage from './src/EabkariHomepage/AboutUsPage.jsx';
 import FeedbackForm from './src/EabkariHomepage/FeedbackForm.jsx';
 import Staff from './src/EabkariHomepage/Staff.jsx';
 import OrganizationalStructure from './src/EabkariHomepage/OrganizationalStructure.jsx';
+import LicensesAdministered from './src/EabkariHomepage/LicensesAdministered.jsx';
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
 
 
@@ -179,6 +180,12 @@ export default function App() {
       case 'FEEDBACK_STATUS':
         window.location.href = '/feedback?tab=track';
         break;
+      case 'LICENSES_ADMINISTERED':
+      case 'FACTS_FIGURES':
+        if (typeof window !== "undefined" && window.location.pathname !== '/licenses-administered') {
+          window.location.href = '/licenses-administered';
+        }
+        break;
       default:
         window.location.href = '/';
     }
@@ -260,7 +267,43 @@ export default function App() {
           }
         />
 
-
+          {/* Licenses Administered / Facts & Figures */}
+      <Route
+        path="/licenses-administered"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+            <main>
+              <LicensesAdministered onNavigateHome={() => (window.location.href = "/")} />
+            </main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/licensesadministered"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+            <main>
+              <LicensesAdministered onNavigateHome={() => (window.location.href = "/")} />
+            </main>
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path="/facts-figures/licenses-administered"
+        element={
+          <>
+            <Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+            <main>
+              <LicensesAdministered onNavigateHome={() => (window.location.href = "/")} />
+            </main>
+            <Footer />
+          </>
+        }
+      />
         {/* Applicant Login */}
         <Route
           path="/login"

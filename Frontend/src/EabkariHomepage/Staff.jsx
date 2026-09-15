@@ -40,7 +40,6 @@ const CADRE_REGISTRY = [
     id: 'ec_ias',
     sr: 1,
     name: 'Excise Commissioner',
-    cadreType: 'IAS',
     // group: 'Group A',
     groupCode: 'ga',
     payLevel: 'Level 14 (Apex Executive)',
@@ -63,7 +62,6 @@ const CADRE_REGISTRY = [
     id: 'addl_ec_charge',
     sr: 2,
     name: 'Addl. Excise Commissioner (Addl. Charge)',
-    cadreType: 'IAS',
     // group: 'Group A',
     groupCode: 'ga',
     payLevel: 'Level 13 (Senior Administrative)',
@@ -386,16 +384,7 @@ const Staff = ({ onNavigateHome }) => {
     }
   }, [onNavigateHome, navigate]);
 
-  // Handle Sorting
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
+ 
   // Filter and sort cadres
   const filteredCadres = useMemo(() => {
     return CADRE_REGISTRY.filter(item => {
@@ -404,7 +393,6 @@ const Staff = ({ onNavigateHome }) => {
         const q = searchQuery.toLowerCase();
         const matchName = item.name.toLowerCase().includes(q);
         const matchSub = item.subName ? item.subName.toLowerCase().includes(q) : false;
-        const matchType = item.cadreType.toLowerCase().includes(q);
         const matchRole = item.statutoryRole.toLowerCase().includes(q);
         const matchGroup = item.group.toLowerCase().includes(q);
         if (!matchName && !matchSub && !matchType && !matchRole && !matchGroup) {
@@ -412,11 +400,7 @@ const Staff = ({ onNavigateHome }) => {
         }
       }
 
-      // Service Filter
-      if (serviceFilter !== 'ALL') {
-        if (item.cadreType !== serviceFilter) return false;
-      }
-
+      
       // Status Filter
       if (statusFilter === 'FULL') {
         if (item.vacant > 0) return false;
@@ -459,7 +443,6 @@ const Staff = ({ onNavigateHome }) => {
         c.sr,
         `"${c.name}"`,
         `"${c.subName || '-'}"`,
-        c.cadreType,
         c.group,
         c.sanctioned,
         c.filled,
@@ -640,8 +623,8 @@ const Staff = ({ onNavigateHome }) => {
                 </div>
                 <div className="staff-hero-img-caption">
                   <div>
-                    <h3 className="staff-caption-title">Excise Directorate &amp; Appellate Courts</h3>
-                    <p className="staff-caption-address">Vikas Bhawan, I.P. Estate, New Delhi - 110002</p>
+                    <h3 className="staff-caption-title">Department of Excise, Government of NCT of Delhi</h3>
+                    <p className="staff-caption-address">L & N Block, Vikas Bhawan, I.P.Estate, New Delhi – 110002</p>
                   </div>
                   <span style={{ fontSize: '0.6875rem', fontWeight: '700', color: '#059669', backgroundColor: '#ecfdf5', padding: '0.2rem 0.5rem', borderRadius: '4px', border: '1px solid #a7f3d0' }}>
                     Active Office
@@ -826,22 +809,9 @@ const Staff = ({ onNavigateHome }) => {
                       <th className="staff-th text-center" style={{ width: '3.5rem' }}>
                         Sr.
                       </th>
-                      <th 
-                        className="staff-th sortable" 
-                        onClick={() => handleSort('name')}
-                        style={{ minWidth: '15rem' }}
-                      >
-                        <div className="staff-th-content">
-                          <span>Name of Cadre &amp; Stream</span>
-                          <ArrowUpDown style={{ width: '0.75rem', height: '0.75rem' }} />
-                        </div>
-                      </th>
-                      <th className="staff-th text-center" style={{ width: '7rem' }}>
-                        Service
-                      </th>
-                      <th className="staff-th text-center" style={{ width: '6rem' }}>
+                      {/* <th className="staff-th text-center" style={{ width: '6rem' }}>
                         Group
-                      </th>
+                      </th> */}
                       <th 
                         className="staff-th text-center sortable"
                         onClick={() => handleSort('sanctioned')}
@@ -862,16 +832,6 @@ const Staff = ({ onNavigateHome }) => {
                           <ArrowUpDown style={{ width: '0.75rem', height: '0.75rem' }} />
                         </div>
                       </th>
-                      {/* <th 
-                        className="staff-th text-center sortable"
-                        onClick={() => handleSort('vacant')}
-                        style={{ width: '8rem' }}
-                      >
-                        <div className="staff-th-content" style={{ justifyContent: 'center' }}>
-                          <span>Vacant / Excess</span>
-                          <ArrowUpDown style={{ width: '0.75rem', height: '0.75rem' }} />
-                        </div>
-                      </th> */}
                       <th className="staff-th" style={{ width: '10rem' }}>
                         Fill Rate Status
                       </th>
@@ -894,19 +854,13 @@ const Staff = ({ onNavigateHome }) => {
 
                       return (
                         <tr key={row.id} className={isZeroFilled ? 'highlight-zero' : ''}>
-                          {/* <td className="staff-td text-center staff-td-sr">
-                            {row.sr}
-                          </td> */}
-                          <td className="staff-td">
+                         <td className="staff-td">
                             <button 
                               type="button" 
                               onClick={() => setSelectedCadre(row)}
                               className="staff-cadre-title-link"
                             >
                               <span>{row.name}</span>
-                              {/* <span className={`staff-cadre-group-tag ${row.groupCode}`}>
-                                {row.group}
-                              </span> */}
                             </button>
                             {row.subName && (
                               <div style={{ fontSize: '0.6875rem', color: '#64748b', fontWeight: '500', marginTop: '0.15rem' }}>
@@ -914,20 +868,15 @@ const Staff = ({ onNavigateHome }) => {
                               </div>
                             )}
                           </td>
-                          <td className="staff-td text-center">
-                            <span className={`staff-service-badge ${row.cadreType.toLowerCase()}`}>
-                              {row.cadreType}
-                            </span>
-                          </td>
-                          <td className="staff-td text-center" style={{ fontSize: '0.75rem', fontWeight: '600' }}>
+                         {/* <td className="staff-td text-center" style={{ fontSize: '0.75rem', fontWeight: '600' }}>
                             {row.group}
-                          </td>
+                          </td> */}
                           <td className="staff-td text-center staff-num-bold">
                             {row.sanctioned}
                           </td>
-                          <td className="staff-td text-center staff-num-filled">
+                          {/* <td className="staff-td text-center staff-num-filled">
                             {row.filled}
-                          </td>
+                          </td> */}
                           <td className="staff-td text-center">
                             {row.isExcess ? (
                               <span className="staff-num-vacant excess">1 (Addl Charge)</span>
@@ -970,26 +919,7 @@ const Staff = ({ onNavigateHome }) => {
                       );
                     })}
                   </tbody>
-                  <tfoot className="staff-tfoot">
-                    <tr>
-                      <td colSpan="4" style={{ textAlign: 'left' }}>
-                        TOTAL STATUTORY STRENGTH (DELHI EXCISE DEPARTMENT)
-                      </td>
-                      <td style={{ textAlign: 'center', color: '#facc15' }}>
-                        {totals.sanctioned}
-                      </td>
-                      <td style={{ textAlign: 'center', color: '#6ee7b7' }}>
-                        {totals.filled}
-                      </td>
-                      <td style={{ textAlign: 'center', color: '#fca5a5' }}>
-                        {totals.vacant}
-                      </td>
-                      <td colSpan="2" style={{ textAlign: 'left', color: '#cbd5e1', fontSize: '0.75rem' }}>
-                        Overall Fill Rate: <strong style={{ color: '#ffffff' }}>{totals.fillRate}</strong>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+                  </table>
               </div>
 
               {filteredCadres.length === 0 && (
@@ -1042,9 +972,9 @@ const Staff = ({ onNavigateHome }) => {
                               <p className="staff-cadre-card-subtitle">{cadre.subName}</p>
                             )}
                           </div>
-                          <span className={`staff-service-badge ${cadre.cadreType.toLowerCase()}`}>
+                          {/* <span className={`staff-service-badge ${cadre.cadreType.toLowerCase()}`}>
                             {cadre.cadreType}
-                          </span>
+                          </span> */}
                         </div>
 
                         <p style={{ fontSize: '0.75rem', color: '#475569', lineHeight: '1.5', margin: '0.5rem 0' }}>
@@ -1110,7 +1040,7 @@ const Staff = ({ onNavigateHome }) => {
           {/* TAB 3: GROUP CLASSIFICATIONS */}
           {activeTab === 'GROUPS' && (
             <div className="staff-section-card">
-              <div className="staff-section-header">
+              {/* <div className="staff-section-header">
                 <div>
                   <span className="staff-badge-tag">
                     <Award style={{ width: '0.6875rem', height: '0.6875rem' }} />
@@ -1123,7 +1053,7 @@ const Staff = ({ onNavigateHome }) => {
                     Statutory tier distribution categorizing executive policy leadership, gazetted supervisory superintendents, and frontline vigilance inspectors.
                   </p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="staff-groups-container">
                 {Object.values(groupedData).map((grp, idx) => {
@@ -1162,10 +1092,7 @@ const Staff = ({ onNavigateHome }) => {
                           <div key={c.id} className="staff-group-cadre-row">
                             <div>
                               <div className="staff-group-cadre-name">{c.name}</div>
-                              <div className="staff-group-cadre-service">
-                                {c.cadreType} • {c.payLevel}
-                              </div>
-                            </div>
+                             </div>
                             <div className="staff-group-cadre-numbers">
                               <div className="staff-group-cadre-count">
                                 {c.filled} / {c.sanctioned}
@@ -1248,8 +1175,7 @@ const Staff = ({ onNavigateHome }) => {
                     <thead>
                       <tr>
                         <th className="staff-th">Cadre Designation</th>
-                        <th className="staff-th text-center">Group</th>
-                        <th className="staff-th text-center">Sanctioned</th>
+                         <th className="staff-th text-center">Sanctioned</th>
                         <th className="staff-th text-center">Vacancies</th>
                         <th className="staff-th">Controlling / Requisition Authority</th>
                         <th className="staff-th">Recruitment Mechanism</th>
