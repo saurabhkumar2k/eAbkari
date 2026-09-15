@@ -751,6 +751,49 @@ export default function HcrLicensee({
     }));
   };
 
+  const handleRestaurantDetailChange = (index, field, value) => {
+    setAdditionalFrom((prev) => {
+      const restaurantDetails = [
+        ...(prev.restaurantDetails || []),
+      ];
+
+      restaurantDetails[index] = {
+        ...restaurantDetails[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        restaurantDetails,
+      };
+    });
+  };
+
+  const addRestaurantDetail = () => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      restaurantDetails: [
+        ...(prev.restaurantDetails || []),
+        {
+          NameOfAdditionalRestaurant: "",
+          NumberOfSeatCovers: "",
+          NumberOfCounter: "",
+          AddtionalArea: "",
+    
+        },
+      ],
+    }));
+  };
+
+  const deleteRestaurantDetail = (index) => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      restaurantDetails: (prev.restaurantDetails || []).filter(
+        (_, i) => i !== index
+      ),
+    }));
+  };
+
   // =========================================================
   // Documents
   // =========================================================
@@ -1592,6 +1635,9 @@ export default function HcrLicensee({
             CatCode={selectedLicenseCode}
             starCategory={starCategory}
             starCategoryRating={starCategoryRating}
+            onRestaurantDetailChange={handleRestaurantDetailChange}
+            onAddRestaurantDetail={addRestaurantDetail}
+            ondeleteRestaurantDetail={deleteRestaurantDetail}
           />
 
         )}

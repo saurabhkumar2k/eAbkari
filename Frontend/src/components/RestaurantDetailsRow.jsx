@@ -15,28 +15,28 @@ import {
 } from "lucide-react";
 
 export default function RestaurantDetailsRow({
-  director,
+  RestaurantDetail,
   index,
   onChange,
   onDelete,
   disableDelete,
   ConstitutionType,
+  hoursOfSaleList,
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
   console.log("DirectorsList:", ConstitutionType);
   console.log("DirectorRow:", ConstitutionType);
   console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
   console.log("DirectorRow ConstitutionType:", ConstitutionType);
-  console.log(director);
+  console.log(RestaurantDetail);
   return (
-
     <div className="directors-container">
       {/* Director List */}
       <div className="directors-list">
         <div className="director-section">
           {/* Director Header */}
           <div className="director-header">
-            <h3>Director / Partner #{index + 1}</h3>
+            <h3>Restaurant Details #{index + 1}</h3>
 
             <button
               type="button"
@@ -50,68 +50,102 @@ export default function RestaurantDetailsRow({
 
           {/* 3 × 2 Grid */}
           <div className="director-grid">
-            {/* Name */}
+            {/* Restaurant Name */}
             <div className="director-field">
               <label>
-                Name <span>*</span>
+                Restaurant/Bar Name <span>*</span>
               </label>
 
               <div className="input-wrapper">
                 <User size={16} />
                 <input
-                  value={director.PName || ""}
-                  onChange={(e) => onChange(index, "PName", e.target.value)}
+                  type="text"
+                  value={RestaurantDetail.NameOfAdditionalRestaurant || ""}
+                  onChange={(e) =>
+                    onChange(
+                      index,
+                      "NameOfAdditionalRestaurant",
+                      e.target.value,
+                    )
+                  }
                 />
               </div>
             </div>
 
-            {/* Share */}
+            {/* No. of Seat Covers */}
             <div className="director-field">
               <label>
-                Share % <span>*</span>
+                No of Seat Covers <span>*</span>
               </label>
 
               <div className="input-wrapper">
-                <Percent size={16} />
-                <input
-                  value={director.PPerShare || ""}
-                  onChange={(e) => onChange(index, "PPerShare", e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* PAN */}
-            <div className="director-field">
-              <label>
-                PAN No <span>*</span>
-              </label>
-
-              <div className="input-wrapper">
-                <CreditCard size={16} />
                 <input
                   type="text"
-                  name="PanNo"
-                  className="reg-input"
-                  placeholder="ABCDE1234F"
-                  maxLength={10}
-                  value={director.PPanNo || ""}
-                  onChange={(e) => onChange(index, "PPanNo", e.target.value.toUpperCase())}
+                  value={RestaurantDetail.NumberOfSeatCovers || ""}
+                  onChange={(e) =>
+                    onChange(index, "NumberOfSeatCovers", e.target.value)
+                  }
+                  maxLength={3}
                 />
               </div>
             </div>
 
-            {/* Excise */}
+            {/* No. of Dispensing Counter */}
             <div className="director-field">
               <label>
-                Excise Nominee <span>*</span>
+                Number Of DisPensing Counter <span>*</span>
+              </label>
+
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  value={RestaurantDetail.NumberOfCounter || ""}
+                  onChange={(e) =>
+                    onChange(index, "NumberOfCounter", e.target.value)
+                  }
+                  maxLength={3}
+                />
+              </div>
+            </div>
+
+            {/* Hour of Sale */}
+            <div className="director-field">
+              <label>
+                Hours of Sale <span>*</span>
+              </label>
+
+              <select
+                value={RestaurantDetail.HoursofSale || "0"}
+                onChange={(e) => onChange(index, "HoursofSale", e.target.value)}
+                className="input-box"
+              >
+                <option value="0">--Select-- </option>
+
+                <option value="1">11 AM - 1 AM</option>
+                <option value="2">11 AM - 11 AM</option>
+
+                {hoursOfSaleList.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Additional Area */}
+            <div className="director-field">
+              <label>
+                Additional Area <span>*</span>
               </label>
 
               <div className="radio-group">
                 <label>
                   <input
                     type="radio"
-                    checked={director.PExciseNominee === "1"}
-                    onChange={() => onChange(index, "PExciseNominee", "1")}
+                    name="AddtionalArea"
+                    value="1"
+                    checked={RestaurantDetail.AddtionalArea === "1"}
+                    onChange={(e) => onChange(index, "AddtionalArea", "1")}
                   />
                   Yes
                 </label>
@@ -119,210 +153,91 @@ export default function RestaurantDetailsRow({
                 <label>
                   <input
                     type="radio"
-                    checked={director.PExciseNominee === "0"}
-                    onChange={() => onChange(index, "PExciseNominee", "0")}
+                    name="AddtionalArea"
+                    value="0"
+                    checked={RestaurantDetail.AddtionalArea === "0"}
+                    onChange={(e) => onChange(index, "AddtionalArea", "0")}
                   />
                   No
                 </label>
               </div>
             </div>
 
-            {/* PAN Proof */}
+            {/* Hour of Sale Additional Area */}
             <div className="director-field">
-              <label>PAN Proof</label>
+              <label>
+                Hours of Sale Additional Area <span>*</span>
+              </label>
 
-              {!director.panFile ? (
-                <label className="upload-button">
-                  📄 Upload PAN Proof
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) =>
-                      onChange(index, "panFile", e.target.files?.[0] || null)
-                    }
-                  />
-                </label>
-              ) : (
-                <div className="uploaded-file">
-                  <span title={director.panFile.name}>
-                    {director.panFile.name}
-                  </span>
+              <select
+                value={RestaurantDetail.HoursofSaleAddtionalArea || "0"}
+                onChange={(e) =>
+                  onChange(index, "HoursofSaleAddtionalArea", e.target.value)
+                }
+                className="input-box"
+              >
+                <option value="0">--Select-- </option>
 
-                  <div className="file-actions">
-                    <button
-                      type="button"
-                      className="file-view"
-                      onClick={() =>
-                        window.open(
-                          URL.createObjectURL(director.panFile),
-                          "_blank",
-                        )
-                      }
-                    >
-                      👁
-                    </button>
+                <option value="1">11 AM - 1 AM</option>
+                <option value="2">11 AM - 8 PM</option>
 
-                    <label className="file-replace">
-                      🔄
-                      <input
-                        type="file"
-                        hidden
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) =>
-                          onChange(
-                            index,
-                            "panFile",
-                            e.target.files?.[0] || null,
-                          )
-                        }
-                      />
-                    </label>
-
-                    <button
-                      type="button"
-                      className="file-remove"
-                      onClick={() => onChange(index, "panFile", null)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
+                {hoursOfSaleList.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Address Proof */}
+            {/* Foreign Liquor */}
             <div className="director-field">
-              <label>Address Proof</label>
+              <label>
+                Foreign Liquor <span>*</span>
+              </label>
 
-              {!director.addressFile ? (
-                <label className="upload-button">
-                  📄 Upload Address Proof
+              <div className="radio-group">
+                <label>
                   <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) =>
-                      onChange(
-                        index,
-                        "addressFile",
-                        e.target.files?.[0] || null,
-                      )
-                    }
+                    type="radio"
+                    name="ForeignLiquor"
+                    value="1"
+                    checked={RestaurantDetail.ForeignLiquor === "1"}
+                    onChange={(e) => onChange(index, "ForeignLiquor", "1")}
                   />
+                  Yes
                 </label>
-              ) : (
-                <div className="uploaded-file">
-                  <span title={director.addressFile.name}>
-                    {director.addressFile.name}
-                  </span>
 
-                  <div className="file-actions">
-                    <button
-                      type="button"
-                      className="file-view"
-                      onClick={() =>
-                        window.open(
-                          URL.createObjectURL(director.addressFile),
-                          "_blank",
-                        )
-                      }
-                    >
-                      👁
-                    </button>
-
-                    <label className="file-replace">
-                      🔄
-                      <input
-                        type="file"
-                        hidden
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) =>
-                          onChange(
-                            index,
-                            "addressFile",
-                            e.target.files?.[0] || null,
-                          )
-                        }
-                      />
-                    </label>
-
-                    <button
-                      type="button"
-                      className="file-remove"
-                      onClick={() => onChange(index, "addressFile", null)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* DIN - only when required */}
-          {ConstitutionType === "01" && (
-            <div className="din-row">
-              <div className="din-field">
-                <label>DIN No</label>
-
-                <div className="input-wrapper">
-                  <BadgeCheck size={16} />
-
+                <label>
                   <input
-                    value={director.DINNo || ""}
-                    onChange={(e) => onChange(index, "DINNo", e.target.value)}
+                    type="radio"
+                    name="ForeignLiquor"
+                    value="0"
+                    checked={RestaurantDetail.ForeignLiquor === "0"}
+                    onChange={(e) => onChange(index, "ForeignLiquor", "0")}
                   />
-                </div>
+                  No
+                </label>
               </div>
             </div>
-          )}
+
+            {/* Area in Sq.Mtr */}
+            <div className="director-field">
+              <label>
+                Area in Sq.Mtr <span>*</span>
+              </label>
+
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  value={RestaurantDetail.AreaSqMtr || ""}
+                  onChange={(e) => onChange(index, "AreaSqMtr", e.target.value)}
+                  maxLength={3}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-// import React from "react";
-
-// import "../Styles/ApplyLicense.css";
-
-// export default function DirectorRow({
-//   director,
-//   index,
-//   onChange,
-//   onDelete,
-//   disableDelete,
-// }) {
-//   return (
-//     <div className="director-row custom-card">
-//       <strong>Director {index + 1}</strong>
-
-//       <div className="form-row">
-//         <div className="form-item">
-//           <label>Name</label>
-//           <input
-//             value={director.name || ""}
-//             onChange={(e) => onChange(index, "name", e.target.value)}
-//           />
-//         </div>
-
-//         <div className="form-item">
-//           <label>PAN</label>
-//           <input
-//             value={director.panNo || ""}
-//             onChange={(e) => onChange(index, "panNo", e.target.value)}
-//           />
-//         </div>
-//       </div>
-
-//       <button
-//         className="red-button"
-//         onClick={() => onDelete(index)}
-//         disabled={disableDelete}
-//       >
-//         Delete
-//       </button>
-//     </div>
-//   );
-// }

@@ -21,7 +21,10 @@ export default function RestaurantAdditionalDetails({
   onSubmit,
   CatCode,
   starCategoryRating,
-  starCategory
+  starCategory,
+  ondeleteRestaurantDetail,
+  onAddRestaurantDetail,
+  onRestaurantDetailChange
 }) {
   return (
     <div className="hcr-form-section animate-fade">
@@ -84,11 +87,12 @@ export default function RestaurantAdditionalDetails({
             <div className="form-group full-width">
             {(CatCode === "04" || CatCode === "30") && (
               <RestaurantDetailsL16
-                directors={additionalFrom.directors || []}
+                RestaurantDetails={additionalFrom.restaurantDetails || []}
                 ConstitutionType={constitutionType}
-                onChange={onDirectorChange}
-                onAdd={onAddDirector}
-                onDelete={onDeleteDirector}
+                onChange={onRestaurantDetailChange}
+                onAdd={onAddRestaurantDetail}
+                onDelete={ondeleteRestaurantDetail}
+                hoursOfSaleList={hoursOfSaleList}
               />
             )}
             </div>

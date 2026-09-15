@@ -16,7 +16,10 @@ export default function HcrAdditionalStep({
   onContinue,
   CatCode,
   starCategoryRating,
-  starCategory
+  starCategory,
+  ondeleteRestaurantDetail,
+  onAddRestaurantDetail,
+  onRestaurantDetailChange
 }) {
   return (
     <div className="form-group full-width ">
@@ -45,6 +48,9 @@ export default function HcrAdditionalStep({
           CatCode={CatCode}
           starCategory={starCategory}
           starCategoryRating={starCategoryRating}
+          ondeleteRestaurantDetail={ondeleteRestaurantDetail}
+          onAddRestaurantDetail={onAddRestaurantDetail}
+          onRestaurantDetailChange={onRestaurantDetailChange}
         />
       </div>
     </div >
