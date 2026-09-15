@@ -38,7 +38,7 @@ namespace backend.Core.Entities.Licence
         [StringLength(50)]
         public string? StaffStrength { get; set; }
 
-        [StringLength(50)]
+        [StringLength(1)]
         public string? StarCategory { get; set; }
 
         [StringLength(50)]
