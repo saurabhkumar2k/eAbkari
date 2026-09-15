@@ -5,7 +5,7 @@ import RestaurantDetailsRow from "./RestaurantDetailsRow";
 import "../Style/ApplyLicense.css";
 import "../Style/DirectorsList.css";
 
-const RestaurantDetailsL16 = ({ directors, onChange, onAdd, onDelete, ConstitutionType }) => {
+const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, ConstitutionType, hoursOfSaleList }) => {
   return (
     <div className="directors-section">
       {/* Section Title */}
@@ -26,20 +26,21 @@ const RestaurantDetailsL16 = ({ directors, onChange, onAdd, onDelete, Constituti
 
       {/* Directors List */}
       <div className="directors-wrapper">
-        {directors.length === 0 ? (
+        {RestaurantDetails.length === 0 ? (
           <div className="directors-empty-state">
             <p className="empty-message">No Restaurant Details added yet. Click "Add Restaurant Details" to start.</p>
           </div>
         ) : (
-          directors.map((director, index) => (
+          RestaurantDetails.map((detail, index) => (
             <RestaurantDetailsRow
               key={index}
-              director={director}
+              RestaurantDetail={detail}
               index={index}
               onChange={onChange}
               onDelete={onDelete}
               ConstitutionType={ConstitutionType}
               disableDelete={false}
+              hoursOfSaleList={hoursOfSaleList}
             />
           ))
         )}
@@ -69,9 +70,9 @@ const RestaurantDetailsL16 = ({ directors, onChange, onAdd, onDelete, Constituti
           + Add Restaurant Details
         </button>
 
-        {directors.length > 0 && (
+        {RestaurantDetails.length > 0 && (
           <span className="directors-count">
-            {directors.length} restaurant detail{directors.length !== 1 ? "s" : ""} added
+            {RestaurantDetails.length} restaurant detail{RestaurantDetails.length !== 1 ? "s" : ""} added
           </span>
         )}
       </div>
