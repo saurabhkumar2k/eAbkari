@@ -44,7 +44,7 @@ const Header = ({ onSelectView, currentView }) => {
       view: 'HOME',
       hasDropdown: true,
       subItems: [
-        { label: 'Licenses Administered', path: '#' },
+           { label: 'Licenses Administered', view: 'LICENSES_ADMINISTERED', path: '/licenses-administered' },
         { label: 'Registered Brands of Liquor', path: '#' }
       ]
     },
