@@ -24,7 +24,7 @@ import RestaurantAdditionalDetails from "../../../components/RestaurantAdditiona
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
-export default function HcrLicensee({
+export default function RetailLicensee({
   ownerType,
   selectedLicensee,
   regId,
@@ -95,8 +95,6 @@ export default function HcrLicensee({
   // =========================================================
 
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
-  const [starCategory, setStarCategory] = useState([]);
-  const [starCategoryRating, setStarCategoryRating] = useState([]);
 
   // =========================================================
   // Errors
@@ -1589,9 +1587,6 @@ export default function HcrLicensee({
             onDeleteDirector={deleteDirector}
             onBack={() => setCurrentStep(2)}
             onContinue={handleNext}
-            CatCode={selectedLicenseCode}
-            starCategory={starCategory}
-            starCategoryRating={starCategoryRating}
           />
 
         )}

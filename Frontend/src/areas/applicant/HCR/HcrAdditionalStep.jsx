@@ -14,6 +14,9 @@ export default function HcrAdditionalStep({
   onDeleteDirector,
   onBack,
   onContinue,
+  CatCode,
+  starCategoryRating,
+  starCategory
 }) {
   return (
     <div className="form-group full-width ">
@@ -39,6 +42,9 @@ export default function HcrAdditionalStep({
           onBack={onBack}
           onContinue={onContinue}
           errors={errors}
+          CatCode={CatCode}
+          starCategory={starCategory}
+          starCategoryRating={starCategoryRating}
         />
       </div>
     </div >
