@@ -25,6 +25,8 @@ using backend.Infrastructure.Repositories.Admin;
 
 
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to container
@@ -91,6 +93,9 @@ builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
+
+builder.Services.AddScoped<ICommonRetailRepository, CommonRetailRepository>();
+builder.Services.AddScoped<ICommonRetailServices, CommonRetailServices>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
