@@ -29,6 +29,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+     setIsSubmitting(true);
 
     const trimmedId = userId.trim();
     const cleanIdUpper = trimmedId.toUpperCase();
@@ -79,7 +80,10 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
         setError("Invalid Officer ID. Enter 'DA' for DADashboard or 'Admin' for DepartmentDashboard.");
       }
     } catch (error) {
-
+      console.error(error);
+      setError(error.message || "Unable to connect");
+    } finally {
+      setIsSubmitting(false);
     }
     //API Call
 
@@ -155,7 +159,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
           </div>
 
           <div className="login-info-footer">
-            <p className="login-footer-text">© 2024 Department of Excise, Government of NCT of Delhi. All rights reserved.</p>
+            <p className="login-footer-text">� 2024 Department of Excise, Government of NCT of Delhi. All rights reserved.</p>
           </div>
 
           {/* Decorative Background Image */}
