@@ -146,7 +146,10 @@ namespace backend.Infrastructure.Repositories.License
                         NumberOfBarAttendent = dto.AdditionalDetails.NumberOfBarAttendent,
                         StarCategoryRating = dto.AdditionalDetails.StarCategoryRating,
                         RestaurantArea = dto.AdditionalDetails.RestaurantArea,
-                        HourOfSale = dto.AdditionalDetails.HourOfSale
+                        HourOfSale = dto.AdditionalDetails.HourOfSale,
+                        HasStoreProvisionYN = dto.AdditionalDetails.HasStoreProvisionYN,
+                        StoreLocationInHotel = dto.AdditionalDetails.StoreLocationInHotel,
+                        TINNumber = dto.AdditionalDetails.TINNumber
                     };
 
                     _context.AdditionalHCRDetails.Add(details);
@@ -174,6 +177,9 @@ namespace backend.Infrastructure.Repositories.License
                     details.StarCategoryRating = dto.AdditionalDetails.StarCategoryRating;
                     details.RestaurantArea = dto.AdditionalDetails.RestaurantArea;
                     details.HourOfSale = dto.AdditionalDetails.HourOfSale;
+                    details.HasStoreProvisionYN = dto.AdditionalDetails.HasStoreProvisionYN;
+                    details.StoreLocationInHotel = dto.AdditionalDetails.StoreLocationInHotel;
+                    details.TINNumber = dto.AdditionalDetails.TINNumber;
                 }
 
                 //==========================
@@ -318,7 +324,10 @@ namespace backend.Infrastructure.Repositories.License
                         NumberOfBarAttendent = x.NumberOfBarAttendent,
                         StarCategoryRating = x.StarCategoryRating,
                         RestaurantArea = x.RestaurantArea,
-                        HourOfSale = x.HourOfSale
+                        HourOfSale = x.HourOfSale,
+                        HasStoreProvisionYN = x.HasStoreProvisionYN,
+                        StoreLocationInHotel = x.StoreLocationInHotel,
+                        TINNumber = x.TINNumber
                     })
                     .FirstOrDefaultAsync();
 

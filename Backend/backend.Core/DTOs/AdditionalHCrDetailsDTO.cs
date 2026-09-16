@@ -49,6 +49,13 @@ namespace backend.Core.DTOs
         public string? RestaurantArea { get; set; }
 
         public string? HourOfSale { get; set; }
+
+        public string? HasStoreProvisionYN { get; set; }
+
+        public string? StoreLocationInHotel { get; set; }
+
+        public string? TINNumber { get; set; }
+
     }
 
 

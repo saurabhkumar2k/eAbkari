@@ -73,5 +73,14 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(1)]
         public string? HourOfSale {get; set;}
+
+        [StringLength(1)]
+        public string? HasStoreProvisionYN {get; set;}
+
+        [StringLength(150)]
+        public string? StoreLocationInHotel {get; set;}
+
+        [StringLength(20)]
+        public string? TINNumber {get; set;}
     }
 }
