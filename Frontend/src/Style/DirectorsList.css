@@ -137,7 +137,7 @@
 
 /* Label */
 
-.director-field > label:first-child {
+.director-field>label:first-child {
   display: block;
   margin-bottom: 6px;
   color: #495057;
@@ -145,7 +145,7 @@
   font-weight: 500;
 }
 
-.director-field > label:first-child span {
+.director-field>label:first-child span {
   color: #dc3545;
 }
 
@@ -247,7 +247,7 @@
   background: #f8f9fa;
 }
 
-.uploaded-file > span {
+.uploaded-file>span {
   flex: 1;
   min-width: 0;
 
@@ -261,10 +261,62 @@
 
 .file-actions {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px; /* Spaces out the buttons nicely */
+}
+
+/* Target all three action items identically */
+.file-actions .file-view,
+.file-actions .file-replace,
+.file-actions .file-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0; /* Clear padding so icons center perfectly */
+  border: none;
+  background: #1976d2; /* Primary blue button color */
+  color: white; /* White icon color for high contrast */
+  border-radius: 6px; /* Smooth rounded corners */
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Smooth hover transition */
+}
+
+.file-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 3px;
 }
 
-.file-actions button,
+.file-actions button,.file-replace label {
+  padding: 3px 8px;
+  border: none;
+  background: #1976d2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Treat buttons and the label exactly the same */
+.file-view, 
+.file-replace, 
+.file-remove {
+  width: 32px;         
+  height: 32px;
+  display: inline-flex;
+  align-items: center; 
+  justify-content: center; 
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;             /* Removes default button padding differences */
+  margin: 0;
+}
+
+/* .file-actions button,
 .file-replace {
   width: 28px;
   height: 28px;
@@ -280,20 +332,64 @@
   cursor: pointer;
 
   font-size: 12px;
+} */
+
+/* .file-view {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+} */
+
+/* Prevent the SVG from shrinking inside the container */
+.file-view svg,.file-replace svg,.file-remove svg {
+  flex-shrink: 0;
+  color: #ffffff;
 }
+
 
 .file-view:hover,
-.file-replace:hover {
-  background: #e9ecef;
+.file-replace:hover,
+.file-remove:hover {
+  /* background: #5e98d3; */
+  background: #115293;
+  border-radius: 4px;
 }
 
-.file-remove {
+/* .file-remove {
   color: #dc3545;
 }
 
 .file-remove:hover {
   background: #fee2e2 !important;
+} */
+
+.file-remove {
+  display: inline-flex;
+  /* Centers the SVG icon perfectly */
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  /* Explicit bounding square */
+  height: 32px;
+  padding: 0;
+  /* Removes default browser padding overrides */
+  background-color: #f8d7da;
+  color: #dc3545;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  /* Prevents parent CSS layout boxes from squishing it */
 }
+
+
+
+
 
 
 /* DIN */

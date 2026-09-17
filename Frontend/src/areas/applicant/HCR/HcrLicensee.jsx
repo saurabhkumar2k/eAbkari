@@ -10,7 +10,7 @@ import { createApplicant } from "../../../Model/Applicant";
 import { createHCRApplicant } from "../../../Model/HCRApplicant";
 import { createHCRAdditional } from "../../../Model/HCRAdditional";
 
-import HcrApplicantDetails from "./HcrApplicantDetail";
+// import HcrApplicantDetails from "./HcrApplicantDetail";
 
 import HcrApplicantStep from "./HcrApplicantStep";
 import HcrRestaurantStep from "./HcrRestaurantStep";
@@ -18,7 +18,21 @@ import HcrAdditionalStep from "./HcrAdditionalStep";
 import HcrPersonalDocumentsStep from "./HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "./HcrSiteDocumentsStep";
 import HcrDeclarationStep from "./HcrDeclarationStep";
-import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
+// import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
+
+import {
+  nameCheck,
+  panCheck,
+  mobileCheck,
+  emailCheck,
+  pinCheck,
+  delhiPinCheck,
+  requiredCheck,
+  selectCheck,
+  validateRestaurantNum,
+  checkAnswersRequired,
+  validateDirectors,
+} from "./validation";
 
 
 
@@ -60,6 +74,8 @@ export default function HcrLicensee({
   const [states, setStates] = useState([]);
 
   const [applicantDistricts, setApplicantDistricts] = useState([]);
+
+  const [applicantSubDivisions, setApplicantSubDivisions] = useState([]);
 
   const [restaurantDistricts, setRestaurantDistricts] = useState([]);
 
@@ -108,6 +124,8 @@ export default function HcrLicensee({
 
   const [additionalFormErrors, setAdditionalFormErrors] = useState({});
 
+  const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
+
   const [formErrors, setFormErrors] = useState({});
 
   // =========================================================
@@ -133,7 +151,7 @@ export default function HcrLicensee({
   // Toast
   // =========================================================
 
-  console.log("HcrLicensee additionalFrom:", additionalFrom);
+  // console.log("HcrLicensee additionalFrom:", additionalFrom);
 
   const [toast, setToast] = useState(null);
 
@@ -233,53 +251,48 @@ export default function HcrLicensee({
     }));
   };
 
+
   const validateApplicant = () => {
+    debugger;
     const errors = {};
 
-    if (!applicantForm.applicantName?.trim()) {
-      errors.applicantName = "Applicant Name is required";
-    }
+    // Run validators and capture error messages if they return a string
+    const nameError = nameCheck(applicantForm.applicantName);
+    if (nameError) errors.applicantName = nameError;
 
+    // For fields without complex regex, check if they exist or use requiredCheck
     if (!applicantForm.dateOfBirth) {
       errors.dateOfBirth = "Date of birth is required";
     }
 
-    if (!applicantForm.occupation?.trim()) {
-      errors.occupation = "Occupation is required";
-    }
+    const occupationError = requiredCheck(applicantForm.occupation, "Occupation");
+    if (occupationError) errors.occupation = occupationError;
 
-    if (
-      !applicantForm.panNo?.trim() ||
-      applicantForm.panNo.length !== 10
-    ) {
-      errors.panNo = "Valid 10-digit PAN number is required";
-    }
+    const panError = panCheck(applicantForm.panNo);
+    if (panError) errors.panNo = panError;
 
-    if (!applicantForm.addressLine1?.trim()) {
-      errors.addressLine1 = "Address Line 1 is required";
-    }
+    const addressError = requiredCheck(applicantForm.addressLine1, "Address Line 1");
+    if (addressError) errors.addressLine1 = addressError;
 
-    if (
-      !applicantForm.pin?.trim() ||
-      applicantForm.pin.length !== 6
-    ) {
-      errors.pin = "Valid 6-digit pin code is required";
-    }
+    const stateErr = selectCheck(applicantForm.StateUT, "State");
+    if (stateErr) errors.StateUT = stateErr;
 
-    if (
-      !applicantForm.mobile?.trim() ||
-      applicantForm.mobile.length !== 10
-    ) {
-      errors.mobile = "Valid 10-digit mobile number is required";
-    }
+    const districtErr = selectCheck(applicantForm.district, "District");
+    if (districtErr) errors.district = districtErr;
 
-    if (
-      !applicantForm.email?.trim() ||
-      !applicantForm.email.includes("@")
-    ) {
-      errors.email = "Valid email address is required";
-    }
+    const subDivErr = selectCheck(applicantForm.subDivision, "Sub Division");
+    if (subDivErr) errors.subDivision = subDivErr;
 
+    const pinError = pinCheck(applicantForm.pin);
+    if (pinError) errors.pin = pinError;
+
+    const mobileError = mobileCheck(applicantForm.mobile);
+    if (mobileError) errors.mobile = mobileError;
+
+    const emailError = emailCheck(applicantForm.email);
+    if (emailError) errors.email = emailError;
+
+    // Update state and trigger toast notifications
     setApplicantErrors(errors);
 
     if (Object.keys(errors).length > 0) {
@@ -287,7 +300,6 @@ export default function HcrLicensee({
         "Please verify required fields in applicant profile.",
         "error"
       );
-
       return false;
     }
 
@@ -297,7 +309,6 @@ export default function HcrLicensee({
   // =========================================================
   // Restaurant
   // =========================================================
-
   const handleRestaurantChange = (field, value) => {
     setSiteForm((prev) => ({
       ...prev,
@@ -314,59 +325,53 @@ export default function HcrLicensee({
     }
 
     if (field === "DistrictCode") {
-      fetchSubDivisions(value);
-      fetchPoliceStations(value);
+      fetchSubDivisions(value, "siteForm");
+      fetchPoliceStations(value, "siteForm");
     }
   };
 
   const validateRestaurant = () => {
+    debugger;
     const errors = {};
 
-    if (!siteForm.SiteName?.trim()) {
-      errors.SiteName = "Restaurant Name is required";
-    }
+    // Check required text & code dropdown fields using your generic check
+    const siteNameErr = requiredCheck(siteForm.SiteName, "Restaurant Name");
+    if (siteNameErr) errors.SiteName = siteNameErr;
 
-    if (!siteForm.SiteAddress?.trim()) {
-      errors.SiteAddress = "Restaurant Address is required";
-    }
+    const addressErr = requiredCheck(siteForm.SiteAddress, "Restaurant Address");
+    if (addressErr) errors.SiteAddress = addressErr;
 
-    if (!siteForm.State?.trim()) {
-      errors.State = "Restaurant state is required";
-    }
+    const stateErr = selectCheck(siteForm.State, "Restaurant state");
+    if (stateErr) errors.State = stateErr;
 
-    if (!siteForm.DistrictCode?.trim()) {
-      errors.DistrictCode = "Restaurant district is required";
-    }
+    const districtErr = selectCheck(siteForm.DistrictCode, "Restaurant district");
+    if (districtErr) errors.DistrictCode = districtErr;
 
-    if (!siteForm.SubDivisionCode?.trim()) {
-      errors.SubDivisionCode = "Restaurant subdivision is required";
-    }
+    const subDivErr = selectCheck(siteForm.SubDivisionCode, "Restaurant subdivision");
+    if (subDivErr) errors.SubDivisionCode = subDivErr;
 
-    if (!siteForm.PoliceStationCode?.trim()) {
-      errors.PoliceStationCode =
-        "Restaurant police station is required";
-    }
+    const policeErr = selectCheck(siteForm.PoliceStationCode, "Restaurant police station");
+    if (policeErr) errors.PoliceStationCode = policeErr;
 
-    if (!siteForm.SitePin?.trim()) {
-      errors.SitePin = "Restaurant pin is required";
-    }
+    const pinErr = delhiPinCheck(siteForm.SitePin);
+    if (pinErr) errors.SitePin = pinErr;
 
-    if (!siteForm.SiteEmail?.trim()) {
-      errors.SiteEmail = "Restaurant email is required";
-    }
+    // Run specialized regex checks for Email and Mobile numbers
+    const emailErr = emailCheck(siteForm.SiteEmail);
+    if (emailErr) errors.SiteEmail = emailErr;
 
-    if (!siteForm.SiteMobile?.trim()) {
-      errors.SiteMobile = "Restaurant mobile is required";
-    }
+    const mobileErr = mobileCheck(siteForm.SiteMobile);
+    if (mobileErr) errors.SiteMobile = mobileErr;
 
+    // Set the error state
     setSiteFormErrors(errors);
 
+    // Trigger Toast alerts if fields fail validation
     if (Object.keys(errors).length > 0) {
       triggerToast(
         "Please verify restaurant/site details.",
         "error"
       );
-
       return false;
     }
 
@@ -378,6 +383,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const handleAdditionalChange = (field, value) => {
+    // console.log("Test 3333333333333")
     setAdditionalFrom((prev) => ({
       ...prev,
       [field]: value,
@@ -387,6 +393,85 @@ export default function HcrLicensee({
       ...prev,
       [field]: null,
     }));
+  };
+
+
+  const validateAdditionalRestaurant = () => {
+    debugger;
+    const errors = {};
+
+    // console.log("HcrLicensee - validateAdditionalRestaurant additionalFrom  ", additionalFrom)
+
+    //additionalFrom
+
+    // Check required text & code dropdown fields using your generic check
+    const numberOfBarAttendentErr = validateRestaurantNum(additionalFrom.numberOfBarAttendent, "Number of Bar Attendent");
+    if (numberOfBarAttendentErr) errors.numberOfBarAttendent = numberOfBarAttendentErr;
+
+    const numberOfDispensingCounterErr = validateRestaurantNum(additionalFrom.numberOfDispensingCounter, "Number of Dispensing Counter");
+    if (numberOfDispensingCounterErr) errors.numberOfDispensingCounter = numberOfDispensingCounterErr;
+
+    const numberOfKitchenStaffErr = validateRestaurantNum(additionalFrom.numberOfKitchenStaff, "Number of Kitchen Staff");
+    if (numberOfKitchenStaffErr) errors.numberOfKitchenStaff = numberOfKitchenStaffErr;
+
+    const numberOfManagersErr = validateRestaurantNum(additionalFrom.numberOfManagers, "Number of Managers");
+    if (numberOfManagersErr) errors.numberOfManagers = numberOfManagersErr;
+
+    const numberOfSeatCoversErr = validateRestaurantNum(additionalFrom.numberOfSeatCovers, "Number of Seat Covers");
+    if (numberOfSeatCoversErr) errors.numberOfSeatCovers = numberOfSeatCoversErr;
+
+    const numberOfUtlityEmployeesErr = validateRestaurantNum(additionalFrom.numberOfUtlityEmployees, "Number of Utility Employees");
+    if (numberOfUtlityEmployeesErr) errors.numberOfUtlityEmployees = numberOfUtlityEmployeesErr;
+
+    const restaurantAreaErr = validateRestaurantNum(additionalFrom.restaurantArea, "Restaurant Area");
+    if (restaurantAreaErr) errors.restaurantArea = restaurantAreaErr;
+
+    const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+    if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
+
+    const religiousPlaceDistErr = selectCheck(additionalFrom.religiousPlaceDist, "Religious Place Distance");
+    if (religiousPlaceDistErr) errors.religiousPlaceDist = religiousPlaceDistErr;
+
+    const hourOfSaleErr = selectCheck(additionalFrom.hourOfSale, "hour of sale");
+    if (hourOfSaleErr) errors.hourOfSale = hourOfSaleErr;
+
+    const answerErr = checkAnswersRequired(questionsAnswers);
+    if (answerErr) errors.answer = answerErr;
+
+    const directorsErr = validateDirectors(additionalFrom.directors);
+    if (directorsErr) errors.directors = directorsErr;
+
+    // console.log("Test 111111111111")
+    // Set the error state
+    setAdditionalFormErrors(errors);
+
+    // Trigger Toast alerts if fields fail validation
+    // if (
+    //   Object.keys(errors).length > 0 &&
+    //   Array.isArray(errors.directors?.errors) &&
+    //   errors.directors.errors.some(err => err !== null)
+    // ) 
+
+    debugger;
+    const hasStringErrors = Object.keys(errors).some(key => {
+      if (key === 'directors') return false; // Skip the nested object here
+      return errors[key] !== ""; // Returns true if an error string is not empty
+    });
+
+    // 2. Check if the nested directors array contains any real error objects
+    const hasDirectorErrors = Array.isArray(errors.directors?.errors) &&
+      errors.directors.errors.some(err => err !== null && Object.keys(err || {}).length > 0);
+
+    // 3. Stop submission if either condition is true
+    if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
+      triggerToast(
+        "Please verify restaurant/site additional details.",
+        "error"
+      );
+      return false;
+    }
+
+    return true;
   };
 
   // =========================================================
@@ -426,6 +511,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const fetchDistricts = async (stateCode, type) => {
+    debugger;
     if (!stateCode) return;
 
     try {
@@ -451,7 +537,7 @@ export default function HcrLicensee({
   // Subdivision
   // =========================================================
 
-  const fetchSubDivisions = async (districtCode) => {
+  const fetchSubDivisions = async (districtCode, type) => {
     if (!districtCode) return;
 
     try {
@@ -461,7 +547,13 @@ export default function HcrLicensee({
 
       const data = await response.json();
 
-      setRestaurantSubDivisions(data || []);
+      if (type === "applicantForm") {
+        setApplicantSubDivisions(data || []);
+      }
+
+      if (type === "siteForm") {
+        setRestaurantSubDivisions(data || []);
+      }
     } catch (error) {
       console.error("Subdivision API Error:", error);
     }
@@ -496,13 +588,18 @@ export default function HcrLicensee({
   // =========================================================
 
   useEffect(() => {
-    if (applicantForm.stateUT) {
+    if (applicantForm.StateUT) {
       fetchDistricts(
-        applicantForm.stateUT,
-        "applicantForm"
+        applicantForm.StateUT, "applicantForm"
       );
     }
-  }, [applicantForm.stateUT]);
+  }, [applicantForm.StateUT]);
+
+  useEffect(() => {
+    if (applicantForm.district) {
+      fetchSubDivisions(applicantForm.district, 'applicantForm');
+    }
+  }, [applicantForm.district]);
 
   // =========================================================
   // Site State / District
@@ -514,10 +611,11 @@ export default function HcrLicensee({
     }
   }, [siteForm.State]);
 
+
   useEffect(() => {
     if (siteForm.DistrictCode) {
       fetchPoliceStations(siteForm.DistrictCode);
-      fetchSubDivisions(siteForm.DistrictCode);
+      fetchSubDivisions(siteForm.DistrictCode, "siteForm");
     }
   }, [siteForm.DistrictCode]);
 
@@ -543,7 +641,8 @@ export default function HcrLicensee({
 
       const data = await response.json();
 
-      if (data.stateUT) {
+
+      if (data.tateUT) {
         await fetchDistricts(
           data.stateUT,
           "applicantForm"
@@ -578,14 +677,14 @@ export default function HcrLicensee({
         addressLine2:
           data.addressLine2 || "",
 
-        stateUT:
-          data.stateUT || "",
+        StateUT:
+          data.stateUT.trim() || "",
 
         district:
-          data.district || "",
+          data.district.trim() || "",
 
         subDivision:
-          data.subDivision
+          data.subDivision.trim()
             ? String(data.subDivision).trim()
             : "",
 
@@ -604,6 +703,7 @@ export default function HcrLicensee({
         ownerType,
         catCode: selectedLicenseCode,
       }));
+
     } catch (error) {
       console.error("Applicant Load Error:", error);
     }
@@ -693,63 +793,9 @@ export default function HcrLicensee({
             : item
         );
       }
+    })
+  }
 
-      return [
-        ...prev,
-        {
-          applicationIdNo:
-            applicationId || "",
-          questionId,
-          answerGiven: answer,
-          slNo: index + 1,
-        },
-      ];
-    });
-  };
-
-  // =========================================================
-  // Directors
-  // =========================================================
-
-  const handleDirectorChange = (index, field, value) => {
-    setAdditionalFrom((prev) => {
-      const directors = [
-        ...(prev.directors || []),
-      ];
-
-      directors[index] = {
-        ...directors[index],
-        [field]: value,
-      };
-
-      return {
-        ...prev,
-        directors,
-      };
-    });
-  };
-
-  const addDirector = () => {
-    setAdditionalFrom((prev) => ({
-      ...prev,
-      directors: [
-        ...(prev.directors || []),
-        {
-          PName: "",
-          PPanNo: "",
-        },
-      ],
-    }));
-  };
-
-  const deleteDirector = (index) => {
-    setAdditionalFrom((prev) => ({
-      ...prev,
-      directors: (prev.directors || []).filter(
-        (_, i) => i !== index
-      ),
-    }));
-  };
 
   const handleRestaurantDetailChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
@@ -779,7 +825,7 @@ export default function HcrLicensee({
           NumberOfSeatCovers: "",
           NumberOfCounter: "",
           AddtionalArea: "",
-    
+
         },
       ],
     }));
@@ -789,6 +835,136 @@ export default function HcrLicensee({
     setAdditionalFrom((prev) => ({
       ...prev,
       restaurantDetails: (prev.restaurantDetails || []).filter(
+        (_, i) => i !== index
+      ),
+    }));
+  };
+
+  // =========================================================
+  // Documents
+  // =========================================================
+
+  useEffect(() => {
+    if (currentStep !== 4 && currentStep !== 5) {
+      return;
+    }
+
+    const applicationIdNo =
+      localStorage.getItem("applicationId");
+
+    if (!applicationIdNo || !selectedLicenseCode) {
+      return;
+    }
+
+    const docStatus =
+      currentStep === 4 ? "A" : "S";
+
+    fetch(
+      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setDocuments(data || []);
+      })
+      .catch((error) => {
+        console.error("Document API Error:", error);
+        setDocuments([]);
+        return [
+          ...prev,
+          {
+            applicationIdNo:
+              applicationId || "",
+            questionId,
+            answerGiven: answer,
+            slNo: index + 1,
+          },
+        ];
+      });
+  }, [currentStep, selectedLicensee]);
+
+  // =========================================================
+  // Directors
+  // =========================================================
+
+  const handleDirectorChange = (index, field, value) => {
+    setAdditionalFrom((prev) => {
+      const directors = [
+        ...(prev.directors || []),
+      ];
+
+      directors[index] = {
+        ...directors[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        directors,
+      };
+    });
+  };
+
+  const addDirector = () => {
+    debugger;
+    const errors = {};
+    const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
+    // console.log("HcrLicensee - addDirector additionalFrom  ", additionalFrom.directors)
+
+    // const directorsErr = validateDirectors(additionalFrom.directors);
+    // if (directorsErr) errors.directors = directorsErr;
+
+    // setAdditionalFormErrors(errors);
+
+    // // Safely checks if the validation failed and if we have row errors populated
+    // if ((additionalFormErrors.directors?.isValid === false && (additionalFrom.directors && additionalFrom.directors.length > 0)) || (directorsErr?.errors && directorsErr.errors.length > 0)) {
+    //   return; // Stop form submission
+    // }
+    const directorsErr = validateDirectors(additionalFrom.directors);
+    if (directorsErr) errors.directors = directorsErr;
+
+
+
+
+    // Check if the array exists and has at least one object
+    const hasDirectors = Array.isArray(additionalFrom.directors) && additionalFrom.directors.length > 0;
+
+    if (hasDirectors) {
+      additionalUpdateErrors.directors = errors.directors; // Clear the errors array if no errors are found
+      setAdditionalFormErrors(additionalUpdateErrors);
+      console.log("HcrLicensee - addDirector additionalFormErrors  ", additionalFormErrors)
+    }
+
+    // Condition 1: Local error object says invalid AND director list is not empty
+    const isInvalidWithData = directorsErr?.isValid === false && hasDirectors;
+
+    // Condition 2: Checks if the errors array exists AND contains at least one actual error object (filters out null)
+    const hasRowErrors = Array.isArray(directorsErr?.errors) && directorsErr.errors.some(err => err !== null);
+
+    // Safely halts form submission using the fresh local evaluation
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Stop form submission
+    } else {
+      additionalUpdateErrors.directors.errors = []; // Clear the errors array if no errors are found
+      setAdditionalFormErrors(additionalUpdateErrors);
+    }
+
+
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      directors: [
+        ...(prev.directors || []),
+        {
+          PName: "",
+          PPanNo: "",
+        },
+      ],
+    }));
+  };
+
+  const deleteDirector = (index) => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      directors: (prev.directors || []).filter(
         (_, i) => i !== index
       ),
     }));
@@ -921,7 +1097,7 @@ export default function HcrLicensee({
         "F",
     };
 
-    console.log(payload)
+    // console.log(payload)
 
     try {
       const response = await fetch(
@@ -1041,6 +1217,10 @@ export default function HcrLicensee({
   const saveAdditional = async () => {
     const applicationIdNo =
       localStorage.getItem("applicationId");
+
+    if (!validateAdditionalRestaurant()) {
+      return false;
+    }
 
     try {
       const formData = new FormData();
@@ -1419,7 +1599,7 @@ export default function HcrLicensee({
       const success =
         await saveRestaurant();
 
-      if (success || true) {
+      if (success) {
         setCurrentStep(3);
       }
 
@@ -1460,13 +1640,13 @@ export default function HcrLicensee({
     window.print();
   };
 
-  const testAdditionalFrom = additionalFrom;
+  // const testAdditionalFrom = additionalFrom;
 
-  console.log("HcrLicensee:", testAdditionalFrom);
+  // console.log("HcrLicensee:", testAdditionalFrom);
 
-  console.log("HCR TEST DATA:", testAdditionalFrom);
-  console.log("COMPONENT:", RestaurantAdditionalDetails);
-  console.log("HcrApplicantStep - currentStep  ", currentStep)
+  // console.log("HCR TEST DATA:", testAdditionalFrom);
+  // console.log("COMPONENT:", RestaurantAdditionalDetails);
+  // console.log("HcrApplicantStep - currentStep  ", currentStep)
 
 
   // =========================================================
@@ -1574,6 +1754,9 @@ export default function HcrLicensee({
         {currentStep === 1 && (
           <HcrApplicantStep
             applicantForm={applicantForm}
+            states={states}
+            districts={applicantDistricts}
+            subDivisions={applicantSubDivisions}
             onChange={handleApplicantChange}
             errors={applicantErrors}
             ownerType={ownerType}
@@ -1600,10 +1783,7 @@ export default function HcrLicensee({
             onChange={handleRestaurantChange}
             onBack={() => setCurrentStep(1)}
             onContinue={handleNext}
-          />
-
-          
-        )}
+          />)}
 
         {/* STEP 6 */}
         {currentStep === 3 && (
@@ -1621,7 +1801,7 @@ export default function HcrLicensee({
           //   onContinue={handleNext}
           // /> 
           <HcrAdditionalStep
-            additionalFrom={testAdditionalFrom}
+            additionalFrom={additionalFrom}
             hoursOfSaleList={hoursOfSaleList}
             constitutionType={applicantForm?.ConstitutionType}
             questions={questions}
@@ -1639,7 +1819,6 @@ export default function HcrLicensee({
             onAddRestaurantDetail={addRestaurantDetail}
             ondeleteRestaurantDetail={deleteRestaurantDetail}
           />
-
         )}
 
         {/* STEP 7 */}

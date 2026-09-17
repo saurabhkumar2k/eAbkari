@@ -6,12 +6,12 @@ export default function HcrAdditionalStep({
   hoursOfSaleList,
   constitutionType,
   questions,
-  errors,
   onChange,
   onQuestionsChange,
   onDirectorChange,
   onAddDirector,
   onDeleteDirector,
+  errors,
   onBack,
   onContinue,
   CatCode,
@@ -42,9 +42,9 @@ export default function HcrAdditionalStep({
           onDirectorChange={onDirectorChange}
           onAddDirector={onAddDirector}
           onDeleteDirector={onDeleteDirector}
+          errors={errors}
           onBack={onBack}
           onContinue={onContinue}
-          errors={errors}
           CatCode={CatCode}
           starCategory={starCategory}
           starCategoryRating={starCategoryRating}
