@@ -426,6 +426,9 @@ export default function HcrLicensee({
     const restaurantAreaErr = validateRestaurantNum(additionalFrom.restaurantArea, "Restaurant Area");
     if (restaurantAreaErr) errors.restaurantArea = restaurantAreaErr;
 
+    const additionalAreaErr = selectCheck(additionalFrom.additionalArea, "Additional Area");
+    if (additionalAreaErr) errors.additionalArea = additionalAreaErr;
+
     const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
     if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
@@ -944,7 +947,9 @@ export default function HcrLicensee({
     if (isInvalidWithData || hasRowErrors) {
       return; // Stop form submission
     } else {
-      additionalUpdateErrors.directors.errors = []; // Clear the errors array if no errors are found
+      if (additionalUpdateErrors.directors) {
+        additionalUpdateErrors.directors.errors = [];
+      } // Clear the errors array if no errors are found
       setAdditionalFormErrors(additionalUpdateErrors);
     }
 
@@ -1810,6 +1815,7 @@ export default function HcrLicensee({
             onDirectorChange={handleDirectorChange}
             onAddDirector={addDirector}
             onDeleteDirector={deleteDirector}
+            errors={additionalFormErrors}
             onBack={() => setCurrentStep(2)}
             onContinue={handleNext}
             CatCode={selectedLicenseCode}
