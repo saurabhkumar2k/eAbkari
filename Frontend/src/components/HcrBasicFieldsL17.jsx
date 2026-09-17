@@ -2,10 +2,10 @@ const HcrBasicFields = ({
   additionalFrom,
   onChange,
   hoursOfSaleList,
+  errors
 }) => {
   return (
     <>
-    
       {/* Restaurant Area */}
       <div className="form-group">
         <label className="hcr-form-label">
@@ -16,7 +16,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="Restaurant Area"
-          value={additionalFrom.restaurantArea || ""}
+          value={additionalFrom.restaurantArea}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -27,6 +27,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.restaurantArea && (
+          <p className="error-text">{errors.restaurantArea}</p>
+        )}
       </div>
 
       {/* No. of Seat Covers */}
@@ -39,7 +42,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="No. of Seat Covers"
-          value={additionalFrom.numberOfSeatCovers || ""}
+          value={additionalFrom.numberOfSeatCovers}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -50,6 +53,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfSeatCovers && (
+          <p className="error-text">{errors.numberOfSeatCovers}</p>
+        )}
       </div>
 
       {/* No. of Dispensing Counter */}
@@ -62,7 +68,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="No. of Dispensing Counter"
-          value={additionalFrom.numberOfDispensingCounter || ""}
+          value={additionalFrom.numberOfDispensingCounter}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -73,6 +79,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfDispensingCounter && (
+          <p className="error-text">{errors.numberOfDispensingCounter}</p>
+        )}
       </div>
 
       {/* Additional Area */}
@@ -89,9 +98,7 @@ const HcrBasicFields = ({
               name="additionalArea"
               value="1"
               checked={additionalFrom.additionalArea === "1"}
-              onChange={(e) =>
-                onChange("additionalArea", e.target.value)
-              }
+              onChange={(e) => onChange("additionalArea", e.target.value)}
             />
             Yes
           </label>
@@ -102,13 +109,14 @@ const HcrBasicFields = ({
               name="additionalArea"
               value="0"
               checked={additionalFrom.additionalArea === "0"}
-              onChange={(e) =>
-                onChange("additionalArea", e.target.value)
-              }
+              onChange={(e) => onChange("additionalArea", e.target.value)}
             />
             No
           </label>
         </div>
+        {errors.additionalArea && (
+          <p className="error-text">{errors.additionalArea}</p>
+        )}
       </div>
 
       {/* No. of Managers */}
@@ -121,7 +129,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="No. of Managers"
-          value={additionalFrom.numberOfManagers || ""}
+          value={additionalFrom.numberOfManagers}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -132,6 +140,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfManagers && (
+          <p className="error-text">{errors.numberOfManagers}</p>
+        )}
       </div>
 
       {/* No. of Kitchen Staff */}
@@ -144,7 +155,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="No. of Kitchen Staff"
-          value={additionalFrom.numberOfKitchenStaff || ""}
+          value={additionalFrom.numberOfKitchenStaff}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -155,6 +166,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfKitchenStaff && (
+          <p className="error-text">{errors.numberOfKitchenStaff}</p>
+        )}
       </div>
 
       {/* Utility Employees */}
@@ -167,7 +181,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="Utility Employees"
-          value={additionalFrom.numberOfUtlityEmployees || ""}
+          value={additionalFrom.numberOfUtlityEmployees}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -178,6 +192,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfUtlityEmployees && (
+          <p className="error-text">{errors.numberOfUtlityEmployees}</p>
+        )}
       </div>
 
       {/* No. of Restaurant Attendent */}
@@ -190,7 +207,7 @@ const HcrBasicFields = ({
         <input
           type="text"
           placeholder="No. of Restaurant Attendent"
-          value={additionalFrom.numberOfBarAttendent || ""}
+          value={additionalFrom.numberOfBarAttendent}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -201,6 +218,9 @@ const HcrBasicFields = ({
           maxLength={10}
           className="input-box"
         />
+        {errors.numberOfBarAttendent && (
+          <p className="error-text">{errors.numberOfBarAttendent}</p>
+        )}
       </div>
 
       {/* Educational Institution Distance */}
@@ -216,13 +236,8 @@ const HcrBasicFields = ({
               type="radio"
               name="eduInsDistance"
               value="Less than 100 Meters"
-              checked={
-                additionalFrom.educationalInsDist ===
-                "Less than 100 Meters"
-              }
-              onChange={(e) =>
-                onChange("educationalInsDist", e.target.value)
-              }
+              checked={additionalFrom.educationalInsDist === "Less than 100 Meters"}
+              onChange={(e) => onChange("educationalInsDist", e.target.value)}
             />
             Less than 100 Meters
           </label>
@@ -232,17 +247,15 @@ const HcrBasicFields = ({
               type="radio"
               name="eduInsDistance"
               value="Above 100 Meters"
-              checked={
-                additionalFrom.educationalInsDist ===
-                "Above 100 Meters"
-              }
-              onChange={(e) =>
-                onChange("educationalInsDist", e.target.value)
-              }
+              checked={additionalFrom.educationalInsDist === "Above 100 Meters"}
+              onChange={(e) => onChange("educationalInsDist", e.target.value)}
             />
             Above 100 Meters
           </label>
         </div>
+        {errors.educationalInsDist && (
+          <p className="error-text">{errors.educationalInsDist}</p>
+        )}
       </div>
 
       {/* Religious Place Distance */}
@@ -258,13 +271,8 @@ const HcrBasicFields = ({
               type="radio"
               name="religiousPlaceDistance"
               value="Less than 100 Meters"
-              checked={
-                additionalFrom.religiousPlaceDist ===
-                "Less than 100 Meters"
-              }
-              onChange={(e) =>
-                onChange("religiousPlaceDist", e.target.value)
-              }
+              checked={additionalFrom.religiousPlaceDist === "Less than 100 Meters"}
+              onChange={(e) => onChange("religiousPlaceDist", e.target.value)}
             />
             Less than 100 Meters
           </label>
@@ -274,17 +282,15 @@ const HcrBasicFields = ({
               type="radio"
               name="religiousPlaceDistance"
               value="Above 100 Meters"
-              checked={
-                additionalFrom.religiousPlaceDist ===
-                "Above 100 Meters"
-              }
-              onChange={(e) =>
-                onChange("religiousPlaceDist", e.target.value)
-              }
+              checked={additionalFrom.religiousPlaceDist === "Above 100 Meters"}
+              onChange={(e) => onChange("religiousPlaceDist", e.target.value)}
             />
             Above 100 Meters
           </label>
         </div>
+        {errors.religiousPlaceDist && (
+          <p className="error-text">{errors.religiousPlaceDist}</p>
+        )}
       </div>
 
       {/* Hour of Sale */}
@@ -295,26 +301,24 @@ const HcrBasicFields = ({
         </label>
 
         <select
-          value={additionalFrom.hourOfSale || "0"}
-          onChange={(e) =>
-            onChange("hourOfSale", e.target.value)
-          }
+          value={additionalFrom.hourOfSale}
+          onChange={(e) => onChange("hourOfSale", e.target.value)}
           className="input-box"
         >
           <option value="0">Select Hour of Sale</option>
-
           <option value="1">11 AM - 1 AM</option>
           <option value="2">11 AM - 1 AM</option>
-
           {hoursOfSaleList.map((item) => (
             <option key={item.value} value={item.value}>
               {item.label}
             </option>
           ))}
         </select>
+        {errors.hourOfSale && (
+          <p className="error-text">{errors.hourOfSale}</p>
+        )}
       </div>
-    
-    </> 
+    </>
   );
 };
 
