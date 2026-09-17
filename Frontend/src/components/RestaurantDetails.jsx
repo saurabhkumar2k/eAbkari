@@ -26,10 +26,11 @@ const RestaurantDetails = ({
   districts = [],
   subDivisions = [],
   policeStations = [],
+  errors = {},
   onChange,
 }) => {
 
-  console.log("RestaurantDetails",siteForm)
+  // console.log("RestaurantDetails",siteForm)
   return (
     <div className="hcr-applicant-container animate-fade text-left">
       {/* HEADER */}
@@ -64,6 +65,9 @@ const RestaurantDetails = ({
                 onChange={(e) => onChange("SiteName", e.target.value)}
               />
             </div>
+            {errors.SiteName && (
+              <p className="error-text">{errors.SiteName}</p>
+            )}
           </div>
 
           <div className="reg-field">
@@ -84,6 +88,9 @@ const RestaurantDetails = ({
                 placeholder="Enter Address Line 1"
               />
             </div>
+            {errors.SiteAddress && (
+              <p className="error-text">{errors.SiteAddress}</p>
+            )}
           </div>
 
           <div className="reg-field">
@@ -104,6 +111,9 @@ const RestaurantDetails = ({
                 placeholder="Enter Address Line 2"
               />
             </div>
+            {errors.SiteAddress2 && (
+              <p className="error-text">{errors.SiteAddress2}</p>
+            )}
           </div>
         </div>
       </div>
@@ -143,6 +153,9 @@ const RestaurantDetails = ({
                 <ChevronDown className="w-4 h-4" />
               </div>
             </div>
+            {errors.State && (
+              <p className="error-text">{errors.State}</p>
+            )}
           </div>
 
           {/* District */}
@@ -175,6 +188,9 @@ const RestaurantDetails = ({
                 <ChevronDown className="w-4 h-4" />
               </div>
             </div>
+            {errors.DistrictCode && (
+              <p className="error-text">{errors.DistrictCode}</p>
+            )}
           </div>
 
           {/* Sub Division */}
@@ -206,6 +222,9 @@ const RestaurantDetails = ({
                 <ChevronDown className="w-4 h-4" />
               </div>
             </div>
+            {errors.SubDivisionCode && (
+              <p className="error-text">{errors.SubDivisionCode}</p>
+            )}
           </div>
 
           {/* Police Station */}
@@ -219,7 +238,7 @@ const RestaurantDetails = ({
 
               <select
                 className="reg-select"
-                value={siteForm.PoliceStationCode}
+                value={siteForm.PoliceStationCode || ""}
                 onChange={(e) =>
                   onChange("PoliceStationCode", e.target.value)
                 }
@@ -237,6 +256,9 @@ const RestaurantDetails = ({
                 <ChevronDown className="w-4 h-4" />
               </div>
             </div>
+            {errors.PoliceStationCode && (
+              <p className="error-text">{errors.PoliceStationCode}</p>
+            )}  
           </div>
 
           {/* PIN */}
@@ -261,6 +283,9 @@ const RestaurantDetails = ({
                 placeholder="Enter PIN Code"
               />
             </div>
+            {errors.SitePin && (
+              <p className="error-text">{errors.SitePin}</p>
+            )}
           </div>
 
           {/* Constituency Area */}
@@ -336,6 +361,9 @@ const RestaurantDetails = ({
                 onChange={(e) => onChange("SiteEmail", e.target.value)}
               />
             </div>
+            {errors.SiteEmail && (
+              <p className="error-text">{errors.SiteEmail}</p>
+            )}
           </div>
 
           {/* Mobile */}
@@ -361,6 +389,9 @@ const RestaurantDetails = ({
                 }
               />
             </div>
+            {errors.SiteMobile && (
+              <p className="error-text">{errors.SiteMobile}</p>
+            )}
           </div>
 
           {/* Landline */}
@@ -385,6 +416,9 @@ const RestaurantDetails = ({
                 }
               />
             </div>
+            {errors.SiteLandline && (
+              <p className="error-text">{errors.SiteLandline}</p>
+            )}
           </div>
 
           {/* Fax */}
@@ -406,6 +440,9 @@ const RestaurantDetails = ({
                 }
               />
             </div>
+            {errors.SiteFax && (
+              <p className="error-text">{errors.SiteFax}</p>
+            )}
           </div>
 
           {/* SitePan */}
@@ -430,6 +467,9 @@ const RestaurantDetails = ({
                 }
               />
             </div>
+            {errors.SitePan && (
+              <p className="error-text">{errors.SitePan}</p>
+            )}
           </div>
         </div>
       </div>

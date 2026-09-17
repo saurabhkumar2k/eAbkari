@@ -38,13 +38,13 @@ export const createHCRAdditional = () => ({
     },
   ],
 
-  applicantAnswers: [
-    {
-      "applicationIdNo": "",
-      "questionId": "",
-      "answerGiven": "",
-    }
-  ],
+  // applicantAnswers: [
+  //   {
+  //     "applicationIdNo": "",
+  //     "questionId": "",
+  //     "answerGiven": "",
+  //   }
+  // ],
 
   restaurantDetails: [{
     NameOfAdditionalRestaurant: "",

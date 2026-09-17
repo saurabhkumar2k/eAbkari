@@ -3,16 +3,20 @@ import React from "react";
 import "../Style/ApplyLicense.css";
 
 import {
+  Eye, 
+  X,
+  RotateCw,
   User,
   Percent,
   CreditCard,
   BadgeCheck,
   Upload,
   FileText,
-  Eye,
   RefreshCcw,
   Trash2,
 } from "lucide-react";
+
+
 
 export default function DirectorRow({
   director,
@@ -21,13 +25,15 @@ export default function DirectorRow({
   onDelete,
   disableDelete,
   ConstitutionType,
+  directorsError
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
-  console.log("DirectorsList:", ConstitutionType);
-  console.log("DirectorRow:", ConstitutionType);
-  console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
-  console.log("DirectorRow ConstitutionType:", ConstitutionType);
-  console.log(director);
+  // console.log("DirectorsList:", ConstitutionType);
+  // console.log("DirectorRow:", ConstitutionType);
+  // console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
+  // console.log("DirectorRow ConstitutionType:", ConstitutionType);
+  // console.log(director);
+  console.log("DirectorRow - directorsError  ", directorsError)
   return (
 
     <div className="directors-container">
@@ -44,7 +50,8 @@ export default function DirectorRow({
               onClick={() => onDelete(index)}
               disabled={disableDelete}
             >
-              🗑 Delete
+              {/* 🗑 Delete */}
+              <Trash2 size={16} strokeWidth={2.5} /> 
             </button>
           </div>
 
@@ -63,6 +70,9 @@ export default function DirectorRow({
                   onChange={(e) => onChange(index, "PName", e.target.value)}
                 />
               </div>
+              {directorsError?.PNameErr && (
+                <span className="error-text">{directorsError.PNameErr}</span>
+              )}
             </div>
 
             {/* Share */}
@@ -78,6 +88,9 @@ export default function DirectorRow({
                   onChange={(e) => onChange(index, "PPerShare", e.target.value)}
                 />
               </div>
+              {directorsError?.PPerShareErr && (
+                <span className="error-text">{directorsError.PPerShareErr}</span>
+              )}
             </div>
 
             {/* PAN */}
@@ -98,6 +111,9 @@ export default function DirectorRow({
                   onChange={(e) => onChange(index, "PPanNo", e.target.value.toUpperCase())}
                 />
               </div>
+              {directorsError?.PPanNoErr && (
+                <span className="error-text">{directorsError.PPanNoErr}</span>
+              )}
             </div>
 
             {/* Excise */}
@@ -125,6 +141,11 @@ export default function DirectorRow({
                   No
                 </label>
               </div>
+
+              {directorsError?.PExciseNomineeErr && (
+                <span className="error-text">{directorsError.PExciseNomineeErr}</span>
+              )}
+
             </div>
 
             {/* PAN Proof */}
@@ -160,40 +181,47 @@ export default function DirectorRow({
                         )
                       }
                     >
-                      👁
+                      <Eye size={16} strokeWidth={2.5} />
                     </button>
 
-                    <label className="file-replace">
-                      🔄
-                      <input
-                        type="file"
-                        hidden
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) =>
-                          onChange(
-                            index,
-                            "panFile",
-                            e.target.files?.[0] || null,
-                          )
-                        }
-                      />
-                    </label>
+                    <div className="file-replace">
+                      <label className="file-replace">
+                        <RotateCw size={16} strokeWidth={2.5} />
+                        <input
+                          type="file"
+                          hidden
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) =>
+                            onChange(
+                              index,
+                              "panFile",
+                              e.target.files?.[0] || null,
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
 
                     <button
                       type="button"
                       className="file-remove"
                       onClick={() => onChange(index, "panFile", null)}
                     >
-                      ×
+                      <X size={16} strokeWidth={2.5} />
                     </button>
                   </div>
+
                 </div>
+
+              )}
+              {directorsError?.panFileErr && (
+                <span className="error-text">{directorsError.panFileErr}</span>
               )}
             </div>
 
             {/* Address Proof */}
             <div className="director-field">
-              <label>Address Proof</label>
+              <label>Address Proof </label>
 
               {!director.addressFile ? (
                 <label className="upload-button">
@@ -228,34 +256,47 @@ export default function DirectorRow({
                         )
                       }
                     >
-                      👁
+                      {/* 👁 */}
+
+                      <Eye size={16} strokeWidth={2.5} />
+
                     </button>
-
-                    <label className="file-replace">
-                      🔄
-                      <input
-                        type="file"
-                        hidden
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={(e) =>
-                          onChange(
-                            index,
-                            "addressFile",
-                            e.target.files?.[0] || null,
-                          )
-                        }
-                      />
-                    </label>
-
+                    <div className="file-replace">
+                      <label className="file-replace">
+                        {/* 🔄 */}
+                        <RotateCw size={16} strokeWidth={2.5} />
+                        <input
+                          type="file"
+                          hidden
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) =>
+                            onChange(
+                              index,
+                              "addressFile",
+                              e.target.files?.[0] || null,
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
                     <button
                       type="button"
                       className="file-remove"
-                      onClick={() => onChange(index, "addressFile", null)}
+                      // onClick={() => onChange(index, "addressFile", null)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onChange(index, "addressFile", null);
+                      }}
                     >
-                      ×
+                      {/* × */}
+                      <X size={16} strokeWidth={2.5} />
                     </button>
                   </div>
                 </div>
+
+              )}
+              {directorsError?.addressFileErr && (
+                <span className="error-text">{directorsError.addressFileErr}</span>
               )}
             </div>
           </div>
