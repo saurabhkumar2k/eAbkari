@@ -266,7 +266,6 @@
   border-color: rgba(255, 255, 255, 0.55);
 
   transform: translateY(-2px);
-
   box-shadow:
     0 5px 14px rgba(0, 0, 0, 0.15);
 }
@@ -280,15 +279,11 @@
 /* =========================================
    BUTTON ICON
    ========================================= */
-
 .feedback-breadcrumb-bar button svg {
   width: 16px;
   height: 16px;
-
-  transition:
-    transform 0.35s ease;
+  transition: transform 0.35s ease;
 }
-
 
 .feedback-breadcrumb-bar button:hover svg {
   transform: translateX(-3px);
@@ -298,20 +293,14 @@
 /* =========================================
    GOLD ACCENT
    ========================================= */
-
 .feedback-breadcrumb-bar .breadcrumb-accent {
   position: absolute;
-
   left: 0;
   bottom: 0;
-
   width: 90px;
   height: 3px;
-
   background: #d9a441;
-
   border-radius: 0 4px 0 0;
-
   animation: accentPulse 3s ease-in-out infinite;
 }
 
@@ -334,22 +323,16 @@
 /* =========================================
    TABLET
    ========================================= */
-
 @media (min-width: 768px) {
-
   .feedback-breadcrumb-bar {
     min-height: 62px;
-
     padding: 0.8rem 1.5rem;
-
     border-radius: 11px;
   }
-
   .feedback-breadcrumb-bar a,
   .feedback-breadcrumb-bar .current {
     font-size: 0.88rem;
   }
-
   .feedback-breadcrumb-bar::before {
     font-size: 3.2rem;
   }
@@ -359,35 +342,25 @@
 /* =========================================
    MOBILE
    ========================================= */
-
 @media (max-width: 600px) {
-
   .feedback-breadcrumb-bar {
     align-items: flex-start;
-
     flex-direction: column;
-
     gap: 0.6rem;
-
     min-height: auto;
-
     padding: 0.85rem 1rem;
-
     border-radius: 9px;
   }
 
   .feedback-breadcrumb-bar::before {
     font-size: 2rem;
-
     right: -20px;
     bottom: -12px;
   }
 
   .feedback-breadcrumb-bar button {
     min-height: 36px;
-
     padding: 0.5rem 0.8rem;
-
     font-size: 0.78rem;
   }
 }
@@ -1221,3 +1194,1551 @@
   margin-top: 0.5rem;
   color: #334155;
 }
+
+/* ==========================================================================
+   RIGHT TO INFORMATION (RTI) 
+   ========================================================================== */
+
+/* 1. Page Wrapper & Containers */
+.rti-page-wrapper {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  padding-bottom: 4rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+}
+
+.rti-container {
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .rti-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* 2. Breadcrumb Bar */
+.rti-breadcrumb-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dce5ef;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  box-shadow: 0 1px 2px rgba(1, 42, 82, 0.04);
+}
+
+.rti-breadcrumb-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rti-breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #475569;
+}
+
+.rti-breadcrumb-btn {
+  color: #0284c7;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.rti-breadcrumb-btn:hover {
+  color: #012a52;
+  text-decoration: underline;
+}
+
+.rti-breadcrumb-active {
+  color: #012a52;
+  font-weight: 700;
+}
+
+.rti-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.rti-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #22c55e;
+  border-radius: 9999px;
+  display: inline-block;
+  animation: rtiPulse 2s infinite;
+}
+
+@keyframes rtiPulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* 3. Executive Hero Banner */
+.rti-hero-section {
+  background: linear-gradient(135deg, #012a52 0%, #083b6f 55%, #0c4a8a 100%);
+  color: #ffffff;
+  padding-top: 2.75rem;
+  padding-bottom: 3.25rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid #f59e0b;
+}
+
+.rti-hero-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  background: radial-gradient(circle at top right, rgba(2, 132, 199, 0.25), transparent 70%);
+  pointer-events: none;
+}
+
+.rti-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.rti-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.875rem;
+}
+
+.rti-badge-solid {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.rti-badge-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.rti-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 640px) {
+  .rti-hero-title {
+    font-size: 2.35rem;
+  }
+}
+
+.rti-hero-subtitle {
+  font-size: 0.95rem;
+  color: #fed7aa;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.01em;
+}
+
+.rti-hero-quote-box {
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #f59e0b;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  margin-bottom: 1.25rem;
+  max-width: 52rem;
+}
+
+.rti-hero-quote {
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.5;
+}
+
+.rti-hero-desc {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.rti-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.rti-btn-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.rti-btn-hero-primary {
+  background: linear-gradient(135deg, #ff7e01 0%, #ea580c 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+.rti-btn-hero-primary:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4);
+}
+
+.rti-btn-hero-outline {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.rti-btn-hero-outline:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* 4. KPI & Metric Strip */
+.rti-stats-section {
+  margin-top: -1.75rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.rti-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .rti-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+.rti-stat-card {
+  background-color: #ffffff;
+  border: 1px solid #dce5ef;
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  box-shadow: 0 2px 4px rgba(1, 42, 82, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rti-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(1, 42, 82, 0.08);
+}
+
+.rti-stat-icon-box {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rti-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.rti-stat-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #012a52;
+  line-height: 1.2;
+}
+
+.rti-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 0.15rem;
+}
+
+.rti-stat-sub {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* 5. Navigation Tabs Bar */
+.rti-tabs-container {
+  margin-bottom: 1.75rem;
+}
+
+.rti-tabs-bar {
+  display: flex;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem 0.75rem 0 0;
+  padding: 0.5rem 1rem 0 1rem;
+  border: 1px solid #dce5ef;
+  border-bottom: 2px solid #e2e8f0;
+  overflow-x: auto;
+}
+
+.rti-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.rti-tab-btn:hover {
+  color: #012a52;
+}
+
+.rti-tab-btn.active {
+  color: #012a52;
+  border-bottom-color: #f59e0b;
+  background-color: #ffffff;
+}
+
+.rti-tab-badge {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.rti-tab-btn.active .rti-tab-badge {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+/* 6. Main Card & Section Styling */
+.rti-card {
+  background-color: #ffffff;
+  border: 1px solid #dce5ef;
+  border-radius: 0.875rem;
+  box-shadow: 0 2px 6px rgba(1, 42, 82, 0.04);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.rti-card-header {
+  background: linear-gradient(135deg, #012a52 0%, #083b6f 100%);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #f59e0b;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rti-card-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  margin: 0;
+  color: #ffffff;
+}
+
+.rti-card-header-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.rti-card-body {
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .rti-card-body {
+    padding: 2rem;
+  }
+}
+
+/* 7. Highlight Scope Boxes (About RTI section) */
+.rti-scope-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .rti-scope-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.rti-scope-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.rti-scope-box:hover {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(1, 42, 82, 0.05);
+}
+
+.rti-scope-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.rti-scope-icon-box {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rti-scope-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #012a52;
+  margin: 0;
+}
+
+.rti-scope-desc {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #334155;
+  margin: 0 0 0.875rem 0;
+}
+
+.rti-scope-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.rti-scope-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.775rem;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.rti-scope-bullet-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #0284c7;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* 8. SUBJECT AREAS GRID (What Information Can Be Requested) */
+.rti-subject-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #dce5ef;
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .rti-subject-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.rti-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 280px;
+}
+
+.rti-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.rti-search-input {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2.25rem;
+  font-size: 0.8125rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  color: #0f172a;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rti-search-input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.rti-search-clear {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.rti-subjects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .rti-subjects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .rti-subjects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.rti-subject-card {
+  background-color: #ffffff;
+  border: 1px solid #dce5ef;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 2px 4px rgba(1, 42, 82, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.rti-subject-card:hover {
+  transform: translateY(-2px);
+  border-color: #0284c7;
+  box-shadow: 0 8px 16px -2px rgba(1, 42, 82, 0.08);
+}
+
+.rti-subject-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.rti-subject-icon-box {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rti-subject-branch-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.rti-subject-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #012a52;
+  margin: 0 0 0.4rem 0;
+  letter-spacing: 0.01em;
+}
+
+.rti-subject-summary {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0369a1;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.rti-subject-desc {
+  font-size: 0.775rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  flex-grow: 1;
+}
+
+.rti-subject-records-title {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rti-subject-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.rti-record-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+/* 9. STATUTORY EXEMPTION & CAVEAT CALLOUT */
+.rti-caveat-box {
+  background-color: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 0.875rem;
+  padding: 1.25rem 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.rti-caveat-icon-box {
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rti-caveat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.rti-caveat-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #92400e;
+  margin: 0 0 0.35rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.rti-caveat-text {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #78350f;
+  margin: 0;
+}
+
+.rti-caveat-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.rti-exemption-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  background-color: #ffffff;
+  border: 1px solid #fde68a;
+  color: #b45309;
+  border-radius: 0.375rem;
+}
+
+/* 10. STEP-BY-STEP FILING GUIDE & FEE SCHEDULE */
+.rti-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .rti-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .rti-steps-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.rti-step-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.rti-step-card:hover {
+  background-color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(1, 42, 82, 0.06);
+}
+
+.rti-step-number {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #cbd5e1;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.rti-step-card:hover .rti-step-number {
+  color: #0284c7;
+}
+
+.rti-step-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #012a52;
+  margin: 0 0 0.4rem 0;
+}
+
+.rti-step-desc {
+  font-size: 0.775rem;
+  color: #475569;
+  line-height: 1.55;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.rti-step-tag {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0369a1;
+  background-color: #e0f2fe;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* 11. Officers / Appellate Table */
+.rti-officers-table-card {
+  background-color: #ffffff;
+  border: 1px solid #dce5ef;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(1, 42, 82, 0.04);
+}
+
+.rti-officers-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8125rem;
+}
+
+.rti-officers-table th {
+  background-color: #f1f5f9;
+  color: #012a52;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 0.875rem 1rem;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.rti-officers-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+  color: #334155;
+}
+
+.rti-officers-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.rti-role-tag {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.675rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rti-tag-faa {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.rti-tag-pio {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+/* 12. Bottom Verification Bar */
+.rti-last-updated-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: #ffffff;
+  border: 1px solid #dce5ef;
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  margin-top: 2rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+  box-shadow: 0 1px 3px rgba(1, 42, 82, 0.04);
+}
+
+@media (min-width: 768px) {
+  .rti-last-updated-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.rti-update-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rti-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #0284c7;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rti-source-link:hover {
+  color: #012a52;
+  text-decoration: underline;
+}
+
+/* 13. Print adjustments */
+@media print {
+  .rti-breadcrumb-bar,
+  .rti-hero-actions,
+  .rti-tabs-bar,
+  .rti-subject-toolbar,
+  header,
+  footer {
+    display: none !important;
+  }
+  .rti-page-wrapper {
+    background-color: #ffffff !important;
+    padding: 0 !important;
+  }
+  .rti-card {
+    box-shadow: none !important;
+    border: 1px solid #94a3b8 !important;
+  }
+}
+
+/* ==========================================================================
+   14. ADDITIONAL DEDICATED PURE CSS UTILITIES & SUB-COMPONENTS
+   (Replaces all remaining Tailwind utility classes in RightToInformation.jsx)
+   ========================================================================== */
+
+/* Breadcrumb Sub-elements */
+.rti-breadcrumb-separator {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.rti-breadcrumb-crumb {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.rti-breadcrumb-status-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Common Text & Layout */
+.rti-overview-lead-container {
+  max-width: 56rem;
+}
+
+.rti-overview-lead {
+  font-size: 1rem;
+  color: #1e293b;
+  line-height: 1.6;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+}
+
+.rti-overview-body {
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+
+.rti-section-intro {
+  font-size: 0.875rem;
+  color: #475569;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.rti-card-header-sub {
+  font-size: 0.75rem;
+  color: #fed7aa;
+  margin-top: 0.15rem;
+  margin-bottom: 0;
+}
+
+.rti-search-count {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.rti-subject-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.rti-subject-records-footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.rti-subject-records-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.rti-caveat-text + .rti-caveat-text {
+  margin-top: 0.5rem;
+}
+
+/* Suo-Motu Proactive Disclosure Callout */
+.rti-disclosure-box {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .rti-disclosure-box {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.rti-disclosure-icon-box {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background-color: #fef3c7;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.rti-disclosure-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.rti-disclosure-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.rti-disclosure-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.rti-disclosure-text {
+  font-size: 0.775rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Statutory Fee Structure Table */
+.rti-fee-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem 0;
+}
+
+.rti-fee-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #dce5ef;
+  background-color: #ffffff;
+}
+
+.rti-fee-table {
+  width: 100%;
+  text-align: left;
+  font-size: 0.775rem;
+  border-collapse: collapse;
+}
+
+.rti-fee-tr-head {
+  background-color: #f1f5f9;
+  color: #334155;
+  font-weight: 800;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.rti-fee-th {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.rti-fee-tbody {
+  color: #475569;
+}
+
+.rti-fee-tr {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rti-fee-tr:last-child {
+  border-bottom: none;
+}
+
+.rti-fee-td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+
+.rti-fee-td-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.rti-fee-td-price {
+  font-weight: 800;
+  color: #047857;
+}
+
+/* Template CTA Bar */
+.rti-template-cta {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: #f8fafc;
+  border: 1px solid #dce5ef;
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .rti-template-cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.rti-template-cta-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.rti-template-cta-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 0.15rem 0;
+}
+
+.rti-template-cta-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.rti-template-cta-btn {
+  padding: 0.5rem 1rem;
+  background-color: #012a52;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.rti-template-cta-btn:hover {
+  background-color: #083b6f;
+}
+
+/* Officers Table Specifics */
+.rti-officer-role-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.rti-officer-jurisdiction {
+  font-size: 0.6875rem;
+  color: #64748b;
+  max-width: 20rem;
+  line-height: 1.4;
+}
+
+.rti-officer-name {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 0.875rem;
+}
+
+.rti-officer-branch {
+  font-size: 0.75rem;
+  color: #475569;
+  margin-top: 0.125rem;
+}
+
+.rti-officer-address-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #334155;
+  max-width: 18rem;
+  line-height: 1.4;
+}
+
+.rti-officer-cell-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #94a3b8;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.rti-officer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.rti-officer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #334155;
+}
+
+.rti-officer-contact-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* Appellate Mechanism Info Box */
+.rti-appellate-box {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background-color: #f8fafc;
+  border: 1px solid #dce5ef;
+  border-radius: 0.5rem;
+}
+
+.rti-appellate-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.625rem 0;
+}
+
+.rti-appellate-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  font-size: 0.775rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+@media (min-width: 768px) {
+  .rti-appellate-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.rti-appellate-card {
+  padding: 0.875rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+}
+
+.rti-appellate-label {
+  font-weight: 800;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.rti-appellate-label-first {
+  color: #92400e;
+}
+
+.rti-appellate-label-second {
+  color: #1e40af;
+}
+
+/* Verification Bar Elements */
+.rti-update-label {
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.rti-update-sep {
+  color: #cbd5e1;
+}
+
+.rti-update-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Modal Popup Window */
+.rti-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.rti-modal-dialog {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 42rem;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+}
+
+.rti-modal-header {
+  background: linear-gradient(135deg, #012a52 0%, #083b6f 100%);
+  color: #ffffff;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #f59e0b;
+}
+
+.rti-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rti-modal-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.rti-modal-close-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.rti-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.rti-modal-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+  flex-grow: 1;
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background-color: #f8fafc;
+  color: #1e293b;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  border-bottom: 1px solid #e2e8f0;
+  user-select: all;
+}
+
+.rti-modal-footer {
+  padding: 0.75rem 1.25rem;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rti-modal-footer-note {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.rti-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rti-modal-btn {
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.rti-modal-btn-copy {
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}
+
+.rti-modal-btn-copy:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.rti-text-copied {
+  color: #047857;
+  font-weight: 700;
+}
+
+.rti-modal-btn-primary {
+  background-color: #012a52;
+  border: 1px solid #012a52;
+  color: #ffffff;
+}
+
+.rti-modal-btn-primary:hover {
+  background-color: #083b6f;
+  border-color: #083b6f;
+}
+
+/* Generic Icon Utilities */
+.icon-tiny {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.icon-xs {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon-md {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.icon-amber {
+  color: #f59e0b;
+}
+
+.icon-muted {
+  color: #94a3b8;
+}
+

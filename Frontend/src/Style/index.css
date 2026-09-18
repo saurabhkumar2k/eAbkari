@@ -26,6 +26,8 @@
 @import "./Applicant/license.css";
 @import "./Applicant/Permit.css";
 @import "./Applicant/registration.css";
+@import "./Applicant/mtp.css";
+@import "./Applicant/renewal_dt.css";
 
 @import "./HcrApp.css";
 @import "./ActOnNewLicenseApplication.css";

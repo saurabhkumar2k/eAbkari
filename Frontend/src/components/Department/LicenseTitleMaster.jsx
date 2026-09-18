@@ -22,7 +22,6 @@ const INITIAL_LICENSE_TITLES = [
   "DD-5, Licence for possession and transport of manufactured drugs by an approved practitioner for “use in his practice”.",
   "DD-9, Licence granted for possession of manufactured drugs for manufacture of the medicinal preparations containing manufactured drugs and for sale of",
   "DL, Licence For Dealer",
-  "L-1 (M&TP), Licence to manufacture medicinal and toilet preparations containing alcohol, opium, Indian hemp and other narcotic drugs and narcotics und",
   "L-1, Licence for wholesale supply of Indian Liquor",
   "L-1A, Licence for wholesale supply of Foreign Liquor",
   "L-2, Licence for retail vend of Indian Liquor in vends",
@@ -59,11 +58,6 @@ const INITIAL_LICENSE_TITLES = [
   "L-33, Licence for bottling of Indian Liquor",
   "L-34, Licence for distillery / brewery operations",
   "L-35, Licence for supply of draught beer to licensed premises",
-  "M&TP-1, Licence to manufacture medicinal preparations containing alcohol",
-  "M&TP-2, Licence to manufacture toilet preparations containing alcohol",
-  "M&TP-3, Licence to possess and use rectified spirit in M&TP units",
-  "M&TP-4, Licence to export medicinal and toilet preparations",
-  "M&TP-5, Licence for bonded warehouse of M&TP products",
   "P-10, Permit for service of liquor at private functions / parties",
   "P-11, Permit for possession of liquor beyond prescribed limit",
   "P-13, Permit for transport of bulk spirit within state",
@@ -103,7 +97,10 @@ const LicenseTitleMaster = ({ onBack }) => {
     const saved = localStorage.getItem('dept_license_titles');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(t => !t.toUpperCase().startsWith('M&TP') && !t.toUpperCase().includes('(M&TP)'));
+        }
       } catch (e) {
         console.error(e);
       }
@@ -253,6 +250,26 @@ const LicenseTitleMaster = ({ onBack }) => {
           </button>
         </div>
       )}
+
+      {/* Top Breadcrumb and Back Navigation */}
+      <div className="tbs-top-bar">
+        <button 
+          type="button" 
+          className="tbs-back-btn"
+          onClick={onBack || (() => window.location.href = '/departmentdashboard')}
+        >
+          <ChevronLeft />
+          <span>Back to Department Dashboard</span>
+        </button>
+
+        <div className="tbs-breadcrumb">
+          <span>Master Data</span>
+          <span>/</span>
+          <span>License Master</span>
+          <span>/</span>
+          <span className="tbs-breadcrumb-active">License Title Master</span>
+        </div>
+      </div>
 
       {/* Main Dashboard Card */}
       <div className="tbs-card">

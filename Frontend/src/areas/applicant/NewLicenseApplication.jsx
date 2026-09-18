@@ -66,7 +66,6 @@ export const NewLicenseApplication = () => {
             />
           </div>
         </div>
-
         <div className="flex justify-end mt-16">
           <button className="btn-next-teal">
             Next H 

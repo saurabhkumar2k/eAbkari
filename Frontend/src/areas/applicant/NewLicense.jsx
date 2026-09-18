@@ -26,6 +26,7 @@ import HcrLicenseWizard from "./HCR/HcrLicense";
 import HcrLicenseWizard_M from "./HCR/HcrLicenseWizard_M";
 import L30SelectLicense from "./L30/L30SelectLicense";
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
+import MtpLicenseWizard from "./MNTP/MtpLicenseWizard";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
@@ -48,6 +49,8 @@ export default function NewLicense({ setActiveTab, showToast }) {
   const [isHCRFlowActive, setIsHCRFlowActive] = useState(false);
   const [isWholesaleFlowActive, setIsWholesaleFlowActive] = useState(false);
   const [isL30FlowActive, setIsL30FlowActive] = useState(false);
+  const [isMtpFlowActive, setIsMtpFlowActive] = useState(false);
+
 
   const calculateTotalFeeObj = () => {
     let base = 200000;
@@ -67,8 +70,8 @@ export default function NewLicense({ setActiveTab, showToast }) {
     else if (sub.includes("Microbrewery") || sub.includes("L-15 (C)")) offset = 150000;
     else if (sub.includes("Gymkhana") || sub.includes("L-22 (B)")) offset = 40000;
     else if (sub.includes("Cabana") || sub.includes("L-22 (C)")) offset = 80000;
-    else if (sub.includes("Transport") || sub.includes("M&TP-3")) offset = 150050;
-    else if (sub.includes("Scent") || sub.includes("M&TP-2")) offset = 30000;
+    else if (sub.includes("Transport")) offset = 150050;
+    else if (sub.includes("Scent")) offset = 30000;
 
     return base + offset;
   };
@@ -171,33 +174,6 @@ export default function NewLicense({ setActiveTab, showToast }) {
           badge: "On-Site Brew"
         }
       ];
-    } else if (mainType.includes("M&TP")) {
-      return [
-        {
-          id: "M&TP-1 Bulk Formulation Industrial License",
-          code: "M&TP-1",
-          title: "Bulk Medicine & Toilet Formulations",
-          desc: "Industrial excise franchise permit for distilling, bulk blending, and formulating commercial medicinal spirits and toiletries.",
-          feeText: "₹ 2,00,000 (Base Filing Fee)",
-          badge: "Industrial"
-        },
-        {
-          id: "M&TP-2 Medical Spirit Fine-Scent Lab Retailer",
-          code: "M&TP-2",
-          title: "Scientific Lab & Scent Bonded Retailer",
-          desc: "Special excise custody clearance for clinical laboratories, research institutes, or high-purity perfume manufacturing units.",
-          feeText: "₹ 2,30,000 (+ ₹ 30,000 Safety Levy)",
-          badge: "Clinical Standard"
-        },
-        {
-          id: "M&TP-3 Fast-Transit Bulk Carrier Permit",
-          code: "M&TP-3",
-          title: "Inter-State Transport & Bulk Warehousing",
-          desc: "Dedicated logistics privilege license for fleet transport tankers, inter-state spirit delivery lines, and secure depot depots.",
-          feeText: "₹ 3,50,050 (+ ₹ 1,50,050 Transport Premium)",
-          badge: "Logistics Hub"
-        }
-      ];
     } else {
       return [
         {
@@ -228,10 +204,19 @@ export default function NewLicense({ setActiveTab, showToast }) {
     }
   };
 
-  return (
-    <div className="content-section">
-      <div className="app-container">
-        {isL30FlowActive ? (  
+ return (
+    <div className="new-license-root">
+      <div className="new-license-container">
+        {isMtpFlowActive ? (
+          <MtpLicenseWizard
+            onBackToDashboard={() => {
+              setIsMtpFlowActive(false);
+              setNewLicStep(2);
+            }}
+            showToast={showToast}
+            rootData={newLicData}
+          />
+        ) : isL30FlowActive ? (
           <L30SelectLicense
             applicant={newLicData}
             onChange={(key, value) => setNewLicData(prev => ({ ...prev, [key]: value }))}
@@ -251,7 +236,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
             }}
           />
         ) : isHCRFlowActive ? (
-          <HcrLicenseWizard_M 
+          <HcrLicenseWizard 
             onBackToDashboard={() => {
               setIsHCRFlowActive(false);
               setNewLicStep(2);
@@ -270,68 +255,68 @@ export default function NewLicense({ setActiveTab, showToast }) {
           />
         ) : appSubmissionCompleted ? (
           /* SUCCESS SCREEN - HIGH-END DESIGN */
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-12 text-center max-w-2xl mx-auto app-form-section select-none">
-            <div className="relative w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-pulse-subtle">
-              <Check className="w-10 h-10 stroke-[3]" />
-              <span className="absolute inset-0 rounded-full border-4 border-emerald-400 animate-ping opacity-25"></span>
+          <div className="nl-success-card animate-fade">
+            <div className="nl-success-icon-wrap animate-pulse-subtle">
+              <Check className="nl-success-icon-svg" />
+              <span className="nl-success-icon-ping"></span>
             </div>
             
-            <div className="space-y-3">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <div className="nl-success-header">
+              <h2 className="nl-success-title">
                 Application Submitted Successfully
               </h2>
-              <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+              <p className="nl-success-desc">
                 Your application for a new excise privilege license has been logged. The Department of Excise, Government of NCT of Delhi will process the physical inspection shortly.
               </p>
             </div>
 
             {/* Structured Receipts Badge */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-left space-y-4 shadow-sm max-w-lg mx-auto">
-              <div className="flex justify-between items-center text-xs border-b border-slate-100 pb-3">
-                <span className="font-bold text-slate-400 uppercase tracking-widest">Transaction Receipt</span>
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full font-bold text-[10px] tracking-wide uppercase">PAID & FILED</span>
+            <div className="nl-receipt-card">
+              <div className="nl-receipt-header">
+                <span className="nl-receipt-header-lbl">Transaction Receipt</span>
+                <span className="nl-receipt-header-badge">PAID & FILED</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-y-4 gap-x-3 text-xs">
+              <div className="nl-receipt-grid">
                 <div>
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Application Ref</span>
-                  <span className="font-mono font-black text-slate-800 text-sm">AP-2026-EX-88021</span>
+                  <span className="nl-receipt-field-lbl">Application Ref</span>
+                  <span className="nl-receipt-mono-val">AP-2026-EX-88021</span>
                 </div>
                 <div>
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">License Category</span>
-                  <span className="font-bold text-blue-700 text-sm">
+                  <span className="nl-receipt-field-lbl">License Category</span>
+                  <span className="nl-receipt-brand-val">
                     {newLicData.licenseType ? newLicData.licenseType.split(" ")[0] : "L-1"}
                   </span>
                 </div>
-                <div className="col-span-2">
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Applicant Entity</span>
-                  <span className="font-bold text-slate-800 text-sm">{newLicData.applicantName || "Delhi Retail & Distribution Corp"}</span>
+                <div className="nl-receipt-full-col">
+                  <span className="nl-receipt-field-lbl">Applicant Entity</span>
+                  <span className="nl-receipt-bold-val">{newLicData.applicantName || "Delhi Retail & Distribution Corp"}</span>
                 </div>
-                <div className="col-span-2">
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Premises Address</span>
-                  <span className="font-semibold text-slate-600 block leading-relaxed">{newLicData.premiseAddress || "Plot 104, Okhla Industrial Area Phase-III, New Delhi"}</span>
+                <div className="nl-receipt-full-col">
+                  <span className="nl-receipt-field-lbl">Premises Address</span>
+                  <span className="nl-receipt-addr-val">{newLicData.premiseAddress || "Plot 104, Okhla Industrial Area Phase-III, New Delhi"}</span>
                 </div>
                 <div>
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Fee Remitted</span>
-                  <span className="font-extrabold text-blue-600 text-base">
+                  <span className="nl-receipt-field-lbl">Fee Remitted</span>
+                  <span className="nl-receipt-fee-val">
                     {getPriceFormatted()}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[11px] text-slate-400 font-extrabold uppercase tracking-wide">Filing Date</span>
-                  <span className="font-bold text-slate-700 text-sm">01/06/2026</span>
+                  <span className="nl-receipt-field-lbl">Filing Date</span>
+                  <span className="nl-receipt-date-val">01/06/2026</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <div className="nl-success-actions">
               <button
                 onClick={() => {
                   setAppSubmissionCompleted(false);
                   setNewLicStep(2);
                   setActiveTab("Home");
                 }}
-                className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer border-none"
+                className="nl-btn-return"
               >
                 Return to Dashboard
               </button>
@@ -339,7 +324,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
                 onClick={() => {
                   showToast("PDF license filing receipt generated and saved to device!");
                 }}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition cursor-pointer border-none shadow-md"
+                className="nl-btn-print"
               >
                 Print Signed Copy
               </button>
@@ -347,29 +332,29 @@ export default function NewLicense({ setActiveTab, showToast }) {
           </div>
         ) : (
           /* PROGRESSIVE 5-STEP LICENSE WIZARD */
-          <div className="app-form-section">
+          <div className="nl-wizard-wrap animate-fade">
 
             {/* 1. HERO BANNER WITH DELHI SKYLINE ILLUSTRATION AND BREADCRUMB */}
-            <div className="app-license-banner">
+            <div className="nl-hero-banner">
               {/* Left part */}
-              <div className="app-banner">
-                <div className="app-icon">
-                  <FileText className="w-8 h-8" />
+              <div className="nl-hero-left">
+                <div className="nl-hero-icon-box">
+                  <FileText className="nl-hero-icon-svg" />
                 </div>
-                <div className="app-content-text">
+                <div className="nl-hero-text-wrap">
                   {/* Breadcrumbs */}
-                  <nav className="app-label-text">
-                    <span className="clickable" onClick={() => setActiveTab("Home")}>Home</span>
-                    <ChevronRight className="w-3 h-3 text-blue-400" />
-                    <span className="text-blue-500">License</span>
-                    <ChevronRight className="w-3 h-3 text-blue-400" />
-                    <span className="text-blue-900">New License Application</span>
+                  <nav className="nl-breadcrumbs">
+                    <span className="nl-bread-link" onClick={() => setActiveTab("Home")}>Home</span>
+                    <ChevronRight className="nl-bread-chevron" />
+                    <span className="nl-bread-mid">License</span>
+                    <ChevronRight className="nl-bread-chevron" />
+                    <span className="nl-bread-current">New License Application</span>
                   </nav>
                   
-                  <h2 className="app-heading">
+                  <h2 className="nl-hero-title science-heading">
                     New License Application
                   </h2>
-                  <p className="description-text">
+                  <p className="nl-hero-subtitle">
                     {newLicStep === 2 
                       ? "Select the license category that best fits your requirement, review details, and submit."
                       : "Let's get started! Fill in the basic details to begin your new license application."
@@ -379,8 +364,8 @@ export default function NewLicense({ setActiveTab, showToast }) {
               </div>
 
               {/* Right part: Stylized SVG Delhi Skyline monument illustration */}
-              <div className="sidebar-image">
-                <svg viewBox="0 0 320 100" className="w-full h-auto text-blue-800/20 fill-current">
+              <div className="nl-skyline-wrap">
+                <svg viewBox="0 0 320 100" className="nl-skyline-svg">
                   {/* Qutub Minar */}
                   <g>
                     <path d="M 40,100 L 48,15 L 52,15 L 60,100 Z" />
@@ -416,37 +401,37 @@ export default function NewLicense({ setActiveTab, showToast }) {
             </div>
 
             {/* 3. ACTIVE STEP DETAIL CONTENT (24px padding / equal heights / custom cards) */}
-            <div className="min-h-[340px]">
+            <div className="nl-step-content-area">
               
               {newLicStep === 1 && (
                 /* STEP 1: BASIC DETAILS CARD */
-                <div className="basic-details-card p-6 sm:p-8 space-y-6 text-left animate-fade">
-                  <div className="basic-details-header">
-                    <div className="basic-details-icon">
-                      <User className="w-7 h-7 text-blue-600" />
+                <div className="nl-basic-card animate-fade">
+                  <div className="nl-basic-header">
+                    <div className="nl-basic-icon-wrap">
+                      <User className="nl-basic-icon-svg" />
                     </div>
 
                     <div className="basic-details-content">
-                      <h2 className="basic-details-title">
+                      <h2 className="nl-basic-title">
                         Basic Details
                       </h2>
                     </div>
                   </div>
 
                   {/* Field Forms Grid (Two Column Layout) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="nl-form-grid">
                     
                     {/* Owner Type field with field icons and custom arrow inside layout */}
-                    <div className="flex flex-col gap-2 relative">
-                      <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
-                        Owner Type <span className="text-red-500">*</span>
+                    <div className="nl-form-field">
+                      <label className="nl-form-label">
+                        Owner Type <span className="nl-req-star">*</span>
                       </label>
-                      <div className="field-icon-container">
-                        <User className="field-icon-left" />
+                      <div className="nl-field-input-box">
+                        <User className="nl-field-icon-left" />
                         <select
                           value={newLicData.entityType}
                           onChange={(e) => setNewLicData({ ...newLicData, entityType: e.target.value })}
-                          className="rounded-custom-field focus:ring-4 focus:ring-blue-100 cursor-pointer"
+                          className="nl-select-input"
                         >
                           <option value="Individual Proprietorship">Individual Proprietorship</option>
                           <option value="Partnership Firm">Partnership Firm</option>
@@ -454,18 +439,18 @@ export default function NewLicense({ setActiveTab, showToast }) {
                           <option value="Public Limited Company">Public Limited Company</option>
                           <option value="Society / Trust">Society / Trust</option>
                         </select>
-                        <ChevronDown className="custom-select-arrow" />
+                        <ChevronDown className="nl-select-arrow" />
                       </div>
-                      <p className="text-[11px] text-slate-400 font-semibold">Specify the legally incorporated category of applicant business enterprise.</p>
+                      <p className="nl-field-hint">Specify the legally incorporated category of applicant business enterprise.</p>
                     </div>
 
                     {/* Category of License Applied for */}
-                    <div className="flex flex-col gap-2 relative">
-                      <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wide">
-                        Category of License Applied For <span className="text-red-500">*</span>
+                    <div className="nl-form-field">
+                      <label className="nl-form-label">
+                        Category of License Applied For <span className="nl-req-star">*</span>
                       </label>
-                      <div className="field-icon-container">
-                        <Award className="field-icon-left" />
+                      <div className="nl-field-input-box">
+                        <Award className="nl-field-icon-left" />
                         <select
                           value={newLicData.licenseType}
                           onChange={(e) => {
@@ -480,19 +465,17 @@ export default function NewLicense({ setActiveTab, showToast }) {
                             }
                             setNewLicData({ ...newLicData, licenseType: val, selectedSubLicense: defaultSub });
                           }}
-                          className="rounded-custom-field focus:ring-4 focus:ring-blue-100 cursor-pointer"
+                          className="nl-select-input"
                         >
                           <option value="L-1 (Wholesale Vend of Indian Liquor)">L-1 (Wholesale Vend of Indian Liquor)</option>
                           <option value="L-10 (Retail Departmental Store)">L-10 (Retail Departmental Store)</option>
                           <option value="L-15 (Hotel Bar - Star Classified)">L-15 (Hotel Bar - Star Classified)</option>
                           <option value="L-22 (Club Bar)">L-22 (Club Bar)</option>
                         </select>
-                        <ChevronDown className="custom-select-arrow" />
+                        <ChevronDown className="nl-select-arrow" />
                       </div>
-                      <p className="text-[11px] text-slate-400 font-semibold">These categories represent excise divisions governed under GNCTD Act.</p>
+                      <p className="nl-field-hint">These categories represent excise divisions governed under GNCTD Act.</p>
                     </div>
-
-
 
                   </div>
                 </div>
@@ -504,24 +487,34 @@ export default function NewLicense({ setActiveTab, showToast }) {
                   setNewLicData={setNewLicData}
                   showToast={showToast}
                   getActiveCategory={getActiveCategory}
+                  onSelectCategory={(catId) => {
+                    if (catId === "MTP" || catId === "M&TP") {
+                      setIsMtpFlowActive(true);
+                    } else if (catId === "HCR") {
+                      setIsHCRFlowActive(true);
+                    } else if (catId === "Wholesale") {
+                      setIsWholesaleFlowActive(true);
+                    } else if (catId === "L-30") {
+                      setIsL30FlowActive(true);
+                    }
+                  }}
                 />
               )}
-
             </div>
 
             {/* 4. BLUE INFORMATION ALERT */}
-            <div className="blue-info-alert">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="space-y-1">
-                <p className="app-label-text">Filing Instructions Warning</p>
-                <p className="app-description-text">
+            <div className="nl-info-alert animate-fade">
+              <Info className="nl-info-icon" />
+              <div className="nl-info-text-col">
+                <p className="nl-info-headline">Filing Instructions Warning</p>
+                <p className="nl-info-body">
                   Please ensure all the details provided are correct. You can save as draft and continue later. Draft credentials are saved locally for 30 calendar days.
                 </p>
               </div>
             </div>
 
             {/* 5. ACTION CONTROLS / FOOTER BUTTONS (Bottom Right Aligned) */}
-            <div className="app-form-footer">
+            <div className="nl-actions-bar">
               <button
                 type="button"
                 onClick={() => {
@@ -531,18 +524,18 @@ export default function NewLicense({ setActiveTab, showToast }) {
                     setActiveTab("Home");
                   }
                 }}
-                className="outline-draft-btn"
+                className="nl-btn-cancel"
               >
                 <span>{newLicStep === 2 ? "Cancel Application" : "Go Back"}</span>
               </button>
 
-              <div className="app-content-actions">
+              <div className="nl-actions-group">
                 <button
                   type="button"
                   onClick={() => {
                     showToast("Filing details successfully saved as draft! You can access it anytime from Applied tab.");
                   }}
-                  className="outline-draft-btn "
+                  className="nl-btn-draft"
                 >
                   <span>Save as Draft</span>
                 </button>
@@ -552,15 +545,20 @@ export default function NewLicense({ setActiveTab, showToast }) {
                   onClick={() => {
                     // VALIDATIONS & ROUTING FOR NEXT
                     if (newLicStep === 2) {
-                       if (getActiveCategory() === "L-30") {
+                      const activeCat = getActiveCategory();
+                      if (activeCat === "MTP" || activeCat === "M&TP") {
+                        setIsMtpFlowActive(true);
+                        return;
+                      }
+                      if (activeCat === "L-30") {
                         setIsL30FlowActive(true);
                         return;
                       }
-                      if (getActiveCategory() === "HCR") {
+                      if (activeCat === "HCR") {
                         setIsHCRFlowActive(true);
                         return;
                       }
-                      if (getActiveCategory() === "Wholesale") {
+                      if (activeCat === "Wholesale") {
                         setIsWholesaleFlowActive(true);
                         return;
                       }
@@ -573,21 +571,20 @@ export default function NewLicense({ setActiveTab, showToast }) {
                     // Advance step
                     setNewLicStep(newLicStep + 1);
                   }}
-                  className="blue-gradient-next-btn"
+                  className="nl-btn-next"
                 >
                   <span>
                     {newLicStep === 2 
-                      ? (["HCR", "Wholesale", "L-30"].includes(getActiveCategory()) ? "Proceed to Select License" : "Submit & Pay")
+                      ? (["HCR", "Wholesale", "L-30", "MTP", "M&TP"].includes(getActiveCategory()) ? "Proceed to Select License" : "Submit & Pay")
                       : "Next Step"}
                   </span>
-                  <ArrowRight className="w-4 h-4 text-white" />
+                  <ArrowRight className="nl-btn-arrow-icon" />
                 </button>
               </div>
             </div>
 
           </div>
         )}
-
       </div>
     </div>
   );

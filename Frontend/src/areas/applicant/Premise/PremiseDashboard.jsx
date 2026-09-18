@@ -1,21 +1,6 @@
 import React from "react";
 import RegisterPremiseWizard from "./RegisteredPremise.jsx";
-
-const SectionTitle = ({ title, subtitle }) => {
-  return (
-    <div>
-      <h2 className="section-title">
-        {title}
-      </h2>
-
-      {subtitle && (
-        <p className="section-subtitle">
-          {subtitle}
-        </p>
-      )}
-    </div>
-  );
-};
+import AppliedPremise from "./AppliedPremise.jsx";
 
 export default function PremiseDashboard({
   activeTab,
@@ -27,6 +12,17 @@ export default function PremiseDashboard({
   if (activeTab === "Register Premise") {
     return (
       <div className="tab-container">
+         <AppliedPremise
+        premiseApplications={premiseApplications}
+        onNavigateToHome={() => setActiveTab("Home")}
+        onNavigateNewPremise={() => setActiveTab("Register Premise")}
+        onNavigateToRenewal={() => setActiveTab("Renewal License")}
+        onNavigateToDocumentRevalidate={() => setActiveTab("Document Revalidate")}
+        onViewPremise={(id) => {
+          if (showToast) showToast(`Viewing Premise Dossier ${id}`, "info");
+        }}
+        showToast={showToast}
+      />
         <RegisterPremiseWizard
           onBackToDashboard={() => setActiveTab("Home")}
           showToast={showToast}
