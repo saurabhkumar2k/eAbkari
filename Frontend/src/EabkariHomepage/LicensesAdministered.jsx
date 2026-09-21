@@ -644,22 +644,7 @@ export default function LicensesAdministered({ onNavigateHome }) {
   return (
     <div className="about-page-wrapper">
       
-      {/* 1. Official Government Top Bar */}
-      <div className="about-gov-topbar">
-        <div className="about-container">
-          <div className="about-breadcrumb-inner">
-            <div className="about-gov-title">
-              <span className="about-pulse-dot"></span>
-              <span>Government of NCT of Delhi • Department of Excise, Entertainment &amp; Luxury Tax</span>
-            </div>
-            <div className="about-gov-ref">
-              <span>Statutory Reference: Delhi Excise Act, 2009 &amp; Delhi Excise Rules, 2010</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Breadcrumb & Status Bar */}
+     {/* 2. Breadcrumb & Status Bar */}
       <div className="about-breadcrumb-bar">
         <div className="about-container">
           <div className="about-breadcrumb-inner">
@@ -715,28 +700,6 @@ export default function LicensesAdministered({ onNavigateHome }) {
               <p className="about-hero-desc">
                 Official compendium of all wholesale, retail, hospitality (hotel, club, restaurant), and industrial/medicinal licenses administered under the Delhi Excise Act, 2009 and Delhi Excise Rules, 2010. Featuring 100% paperless e-Abkari processing, transparent qualification criteria, and mandatory 2D QR serialization track-and-trace.
               </p>
-
-              {/* Action Buttons */}
-              <div className="about-hero-buttons" style={{ marginTop: '1.25rem' }}>
-                <button 
-                  onClick={() => {
-                    const first = LICENSES_ADMINISTERED_DATA[0];
-                    setSelectedLicenseModal(first);
-                  }}
-                  className="about-btn-primary"
-                  title="Open regulatory dossier overview"
-                >
-                  <Sparkles className="about-icon-xs" />
-                  <span>Launch Quick Dossier</span>
-                </button>
-                <button 
-                  onClick={handlePrint}
-                  className="about-btn-outline"
-                >
-                  <Printer className="about-icon-xs" />
-                  <span>Print Directory Dossier</span>
-                </button>
-              </div>
             </div>
 
             {/* Right Hero Image Card */}

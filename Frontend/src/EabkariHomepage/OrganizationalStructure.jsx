@@ -29,7 +29,9 @@ import {
   Building2,
   Briefcase,
   Layers,
-  ArrowDown
+  ArrowDown,
+  Printer,
+  Sparkles
 } from 'lucide-react';
 
 // Detailed statutory directory of offices & roles
@@ -415,52 +417,165 @@ const OrganizationalStructure = ({ onNavigateHome }) => {
   const handleResetZoom = () => setZoomLevel(1);
 
   return (
-    <div className="org-container">
-      {/* Home Navigation */}
-      <div className="org-nav-row">
-        <button 
-          type="button" 
-          className="org-btn-back"
-          onClick={onNavigateHome}
-        >
-          <Home className="org-back-icon" />
-          <span>Back to Home</span>
-        </button>
+    <div className="org-page-wrapper">
+      {/* 1. Top Operational Bar & Breadcrumb */}
+      <div className="org-breadcrumb-bar">
+        <div className="org-container">
+          <div className="org-breadcrumb-inner">
+            <div className="org-breadcrumb">
+              <button 
+                onClick={onNavigateHome ? onNavigateHome : () => window.location.href = "/"}
+                className="org-breadcrumb-link"
+              >
+                <Home className="icon-xs" />
+                <span>Home</span>
+              </button>
+              <ChevronRight className="org-breadcrumb-sep" />
+              <span className="org-breadcrumb-curr">About Us</span>
+              <ChevronRight className="org-breadcrumb-sep" />
+              <span className="org-breadcrumb-active">Organizational Structure</span>
+            </div>
+
+            <div className="org-status-group">
+              <div className="org-emblem-badge">
+                <span className="org-emblem-dot" />
+                <span>Delhi Excise Act, 2009 • Statutory Administrative Matrix</span>
+              </div>
+              <div className="org-status-pill">
+                <Building2 className="icon-xs text-slate-500" />
+                <span>19 Specialized Directorate Branches</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Title Section */}
-      <div className="org-header-row">
-        <div className="org-header-icon-box">
-          <Network className="org-header-icon" />
+      {/* 2. Executive Hero Banner */}
+      <section className="org-hero-section">
+        <div className="org-container">
+          <div className="org-hero-grid">
+            <div className="org-hero-content">
+              <div className="org-hero-tagline-box">
+                <span className="org-badge-amber">
+                  <Sparkles className="icon-xs" />
+                  Government of NCT of Delhi
+                </span>
+                <span className="org-badge-outline">
+                  Apex Administrative Framework
+                </span>
+                <span className="org-badge-outline">
+                  Executive Command Hierarchy
+                </span>
+              </div>
+
+              <h1 className="org-hero-title">
+                Departmental Organizational Structure
+              </h1>
+              <p className="org-hero-sub-meta">
+                Department of Excise, Entertainment &amp; Luxury Tax • Executive Directorate Hierarchy
+              </p>
+              <p className="org-hero-desc">
+                Statutory governance matrix delineating the executive chain of command from the Excise Commissioner (Head of Department) through Deputy Commissioners, Branch Heads, and Field Operations under the Delhi Excise Act, 2009.
+              </p>
+            </div>
+
+            {/* Quick Hero Action Buttons */}
+            <div className="org-hero-actions-col">
+              <button 
+                onClick={() => setSelectedOfficer(OFFICERS_DIRECTORY.commissioner)}
+                className="org-hero-primary-btn"
+                title="View Head of Department profile and statutory portfolio"
+              >
+                <Award className="icon-sm" />
+                <span>View Commissioner (HOD) Dossier</span>
+              </button>
+              <a 
+                href="/excise-commissioner"
+                className="org-hero-secondary-btn"
+              >
+                <User className="icon-sm" />
+                <span>Excise Commissioner Profile →</span>
+              </a>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2 className="org-header-title">
-            ORGANIZATIONAL STRUCTURE
-          </h2>
-          <p className="org-header-subtitle">
-            Department of Excise, Entertainment &amp; Luxury Tax • National Capital Territory of Delhi
-          </p>
-          <div className="org-header-divider" />
+      </section>
+
+      {/* 3. Metric Strip / KPI Bar */}
+      <div className="org-stats-section">
+        <div className="org-container">
+          <div className="org-stats-grid">
+            <div className="org-stat-card">
+              <div className="org-stat-icon-box" style={{ backgroundColor: '#e0f2fe', color: '#0284c7' }}>
+                <Award className="icon-md" />
+              </div>
+              <div className="org-stat-info">
+                <span className="org-stat-value">1 Post</span>
+                <span className="org-stat-label">Head of Department</span>
+                <span className="org-stat-sub">IAS (AGMUT Cadre) • Level 1</span>
+              </div>
+            </div>
+
+            <div className="org-stat-card">
+              <div className="org-stat-icon-box" style={{ backgroundColor: '#fef3c7', color: '#d97706' }}>
+                <Users className="icon-md" />
+              </div>
+              <div className="org-stat-info">
+                <span className="org-stat-value">2 Wings</span>
+                <span className="org-stat-label">Dy. Commissioners</span>
+                <span className="org-stat-sub">Senior DANICS • Level 2</span>
+              </div>
+            </div>
+
+            <div className="org-stat-card">
+              <div className="org-stat-icon-box" style={{ backgroundColor: '#d1fae5', color: '#059669' }}>
+                <Building2 className="icon-md" />
+              </div>
+              <div className="org-stat-info">
+                <span className="org-stat-value">19 Branches</span>
+                <span className="org-stat-label">Sanctioned Directorates</span>
+                <span className="org-stat-sub">IT, Enforcement, HCR &amp; Lab</span>
+              </div>
+            </div>
+
+            <div className="org-stat-card">
+              <div className="org-stat-icon-box" style={{ backgroundColor: '#ede9fe', color: '#7c3aed' }}>
+                <Monitor className="icon-md" />
+              </div>
+              <div className="org-stat-info">
+                <span className="org-stat-value">100%</span>
+                <span className="org-stat-label">e-Abkari Integrated</span>
+                <span className="org-stat-sub">Digital Single-Window Cadre</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* View Switcher: Visual Chart vs Tabular Hierarchy */}
-      <div className="org-switcher-wrapper">
-        <div className="org-switcher-box">
-          <button
-            onClick={() => setActiveTab('diagram')}
-            className={`org-switcher-btn ${activeTab === 'diagram' ? 'active' : ''}`}
-          >
-            Visual Chart &amp; Interactive Tree
-          </button>
-          <button
-            onClick={() => setActiveTab('interactive')}
-            className={`org-switcher-btn ${activeTab === 'interactive' ? 'active' : ''}`}
-          >
-            Tabular Hierarchy
-          </button>
+      {/* 4. Tabs & Content Container */}
+      <div className="org-container">
+        
+        {/* Tabs Bar matching About e-Abkari */}
+        <div className="org-tabs-container">
+          <div className="org-tabs-bar">
+            <button
+              onClick={() => setActiveTab('diagram')}
+              className={`org-tab-btn ${activeTab === 'diagram' ? 'active' : ''}`}
+            >
+              <Network className="icon-xs" />
+              <span>Visual Command Chart &amp; Interactive Tree</span>
+              <span className="org-tab-btn-badge">Interactive</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('interactive')}
+              className={`org-tab-btn ${activeTab === 'interactive' ? 'active' : ''}`}
+            >
+              <Layers className="icon-xs" />
+              <span>Tabular Hierarchy &amp; Branch Directory</span>
+              <span className="org-tab-btn-badge">3 Levels</span>
+            </button>
+          </div>
         </div>
-      </div>
 
       {activeTab === 'diagram' && (
         /* ========================================================================= */
@@ -554,7 +669,9 @@ const OrganizationalStructure = ({ onNavigateHome }) => {
       {/* Main Content Area */}
       <div style={{ position: 'relative' }}>
         {activeTab === 'diagram' ? (
-          /*VISUAL DIAGRAM VIEW*/
+          /* ========================================================================= */
+          /*                       VISUAL DIAGRAM VIEW                                 */
+          /* ========================================================================= */
           <div className="org-diagram-scroll">
             <div 
               className="org-chart-content"
@@ -1082,6 +1199,7 @@ const OrganizationalStructure = ({ onNavigateHome }) => {
             </div>
           </div>
         )}
+      </div>
       </div>
 
       {/* ========================================================================= */}

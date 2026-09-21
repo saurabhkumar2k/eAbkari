@@ -34,8 +34,7 @@ const Header = ({ onSelectView, currentView }) => {
         { label: 'About e-Abkari', view: 'ABOUT_E-ABKARI', path: '/about' },
         { label: 'Organizational Structure', view: 'ORGANIZATIONAL_STRUCTURE', path: '/organizational-structure' },
         { label: 'Staff', view: 'STAFF', path: '/staff' },
-        { label: 'Heads of Organizations', path: '#' },
-        { label: 'Excise Commissioners', view: 'EXCISE_COMMISSIONER', path: '/excise-commissioner' }
+        { label: 'Head of Department', view: 'EXCISE_COMMISSIONER', path: '/excise-commissioner' },
       ]
     },
     { 
@@ -44,12 +43,19 @@ const Header = ({ onSelectView, currentView }) => {
       view: 'HOME',
       hasDropdown: true,
       subItems: [
-           { label: 'Licenses Administered', view: 'LICENSES_ADMINISTERED', path: '/licenses-administered' },
+        { label: 'Licenses Administered', view: 'LICENSES_ADMINISTERED', path: '/licenses-administered' },
         { label: 'Registered Brands of Liquor', path: '#' }
       ]
     },
     { label: 'Acts, Rules & Orders', icon: <GavelSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
-    { label: 'Right to Information', icon: <InfoSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
+     { label: 'Right to Information', 
+      icon: <InfoSvg className="nav-icon-main" />,
+      view: 'RTI', 
+      hasDropdown: true,
+      subItems: [
+        {label:'Right to Information', view: 'RTI', path: '/rti' }
+      ]
+    },
     { 
       label: 'Feedback', 
       icon: <MessageSquareSvg className="nav-icon-main" />, 
@@ -62,7 +68,7 @@ const Header = ({ onSelectView, currentView }) => {
       ]
     },
     { label: 'Track & Trace', icon: <MapPinSvg className="nav-icon-main" />, view: 'HOME', path: '/' },
-    { label: 'User Manuals', icon: <BookOpenSvg className="nav-icon-main" />, view: 'HOME', path: '/' }
+   
   ];
   // const handleLoginOptionClick = (item) => {
   //   if (item === 'Applicant') {

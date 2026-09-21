@@ -197,7 +197,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
               <p className="login-form-subtitle">Internal Access Only - Authorized Personnel Only</p>
 
               {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-300 text-red-700 text-xs font-semibold rounded-lg flex items-center gap-2">
+                <div className="dl-error">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
                   <span>{error}</span>
                 </div>
