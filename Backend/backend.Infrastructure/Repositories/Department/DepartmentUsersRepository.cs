@@ -83,12 +83,12 @@ namespace backend.Infrastructure.Repositories.Department
             existingUser.UpdatedDate = DateTime.Now;
 
             var activeRole = await _context.DeptUserRoles
-                .FirstOrDefaultAsync(x => x.UserId == user.UserId && x.IsActive == "Y");
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId );
 
             if (activeRole != null && activeRole.RoleId != newRoleId)
             {
                 // Deactivate old role
-                activeRole.IsActive = "N";
+                //activeRole.IsActive = "N";
 
                 // Insert new role
                 _context.DeptUserRoles.Add(new DeptUserRoles
@@ -96,7 +96,7 @@ namespace backend.Infrastructure.Repositories.Department
                     UserId = user.UserId,
                     RoleId = newRoleId,
                     BranchCode = BranchCode,
-                    IsActive = "Y"
+                    //IsActive = "Y"
                 });
             }
 
