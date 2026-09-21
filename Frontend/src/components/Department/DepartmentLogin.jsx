@@ -29,7 +29,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-     setIsSubmitting(true);
+    setIsSubmitting(true);
 
     const trimmedId = userId.trim();
     const cleanIdUpper = trimmedId.toUpperCase();
@@ -222,19 +222,19 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
                 </div>
 
                 <div className="form-field">
-                    <div className="dept-input-wrapper">
-                      <LockSvg className="dept-field-icon" />
-                      <input  id='Password' type={showPassword ? 'text' : 'password'} className="dept-input-field" placeholder="" value={password} 
-                      onChange={(e) => { setPassword(e.target.value); if (error) setError(''); }} required/>
-                          <label htmlFor="Password">Password</label>
-                        <button type="button" className="password-toggle-btn" onClick={() => setShowPassword((prev) => !prev)}>
+                  <div className="dept-input-wrapper">
+                    <LockSvg className="dept-field-icon" />
+                    <input id='Password' type={showPassword ? 'text' : 'password'} className="dept-input-field" placeholder="" value={password}
+                      onChange={(e) => { setPassword(e.target.value); if (error) setError(''); }} required />
+                    <label htmlFor="Password">Password</label>
+                    <button type="button" className="password-toggle-btn" onClick={() => setShowPassword((prev) => !prev)}>
                       {showPassword ? (
-                      <EyeSvg className="icon-sm" />
+                        <EyeSvg className="icon-sm" />
                       ) : (
-                      <EyeSvg className="icon-sm" />
+                        <EyeSvg className="icon-sm" />
                       )}
-                   </button>
-                   </div>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Static Credentials Quick Fill Helper Box */}
@@ -282,12 +282,21 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
                   </button>
                 </div>
 
-                <button
+                {/* <button
                   type="submit"
                   className="login-btn-submit"
                 >
                   <LockSvg className="icon-xs margin-right-small" />
                   SIGN IN TO DEPARTMENT PORTAL
+                </button> */}
+
+                <button
+                  type="submit"
+                  className="login-btn-submit"
+                  disabled={isSubmitting}
+                >
+                  <LockSvg className="icon-xs margin-right-small" />
+                  {isSubmitting ? 'Signing in...' : 'SIGN IN TO DEPARTMENT PORTAL'}
                 </button>
 
                 {/* <div className="divider-container">
