@@ -46,15 +46,15 @@ export const createHCRAdditional = () => ({
   //   }
   // ],
 
-  restaurantDetails: [{
-    NameOfAdditionalRestaurant: "",
-    NumberOfSeatCovers: "",
-    NumberOfCounter: "",
-    AddtionalArea: "",
-    HoursofSale: "",
-    HoursofSaleAddtionalArea: "",
-    ForeignLiquor: "",
-    AreaSqMtr: "",
-  }
-]
+//   restaurantDetails: [{
+//     NameOfAdditionalRestaurant: "",
+//     NumberOfSeatCovers: "",
+//     NumberOfCounter: "",
+//     AddtionalArea: "",
+//     HoursofSale: "",
+//     HoursofSaleAddtionalArea: "",
+//     ForeignLiquor: "",
+//     AreaSqMtr: "",
+//   }
+// ]
 });

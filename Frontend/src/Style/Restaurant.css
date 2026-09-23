@@ -1,4 +1,4 @@
-.directors-container {
+.restaurant-container {
   background: #fff;
   border: 1px solid #dee2e6;
   border-radius: 8px;
@@ -7,7 +7,7 @@
 
 /* Main Header */
 
-.directors-header {
+.restaurants-header {
   display: flex;
   align-items: center;
 
@@ -20,7 +20,7 @@
 }
 
 /* Small accent line */
-.directors-header::before {
+.restaurants-header::before {
   content: "";
   width: 4px;
   height: 32px;
@@ -31,7 +31,7 @@
   margin-right: 12px;
 }
 
-.directors-header h2 {
+.restaurants-header h2 {
   margin: 0;
 
   font-size: 17px;
@@ -42,7 +42,7 @@
   letter-spacing: -0.1px;
 }
 
-.directors-header p {
+.restaurants-header p {
   margin: 3px 0 0;
 
   font-size: 12px;
@@ -52,14 +52,15 @@
 }
 
 
-/* Director Section */
 
-.directors-list {
+/* restaurant Section */
+
+.restaurant-list {
   padding: 14px;
   background: #f8f9fa;
 }
 
-.director-section {
+.restaurant-section {
   background: #fff;
   border: 1px solid #dee2e6;
   border-radius: 6px;
@@ -68,9 +69,9 @@
 }
 
 
-/* Director Header */
+/* restaurant Header */
 
-.director-header {
+.restaurant-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -79,7 +80,7 @@
   border-bottom: 1px solid #dee2e6;
 }
 
-.director-header h3 {
+.restaurant-header h3 {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
@@ -109,35 +110,35 @@
 }
 
 
-/* 3 x 2 Table */
-
-.director-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* 3 x 3 Grid Table Layout */
+.restaurant-grid { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  grid-template-rows: repeat(3, 1fr); 
 }
 
-
 /* Each Cell */
-
-.director-field {
+.restaurant-field {
   min-width: 0;
   padding: 12px 14px;
   border-right: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
 
-.director-field:nth-child(3n) {
+/* Remove right borders for the 3rd column (items 3, 6, 9) */
+.restaurant-field:nth-child(3n) {
   border-right: none;
 }
 
-.director-field:nth-child(n + 4) {
+/* Remove bottom borders ONLY for the 3rd row (items 7, 8, 9) */
+.restaurant-field:nth-child(n + 7) {
   border-bottom: none;
 }
 
 
 /* Label */
 
-.director-field>label:first-child {
+.restaurant-field>label:first-child {
   display: block;
   margin-bottom: 6px;
   color: #495057;
@@ -145,7 +146,7 @@
   font-weight: 500;
 }
 
-.director-field>label:first-child span {
+.restaurant-field>label:first-child span {
   color: #dc3545;
 }
 
@@ -316,35 +317,6 @@
   margin: 0;
 }
 
-/* .file-actions button,
-.file-replace {
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-
-  background: #fff;
-  cursor: pointer;
-
-  font-size: 12px;
-} */
-
-/* .file-view {
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-} */
-
 /* Prevent the SVG from shrinking inside the container */
 .file-view svg,.file-replace svg,.file-remove svg {
   flex-shrink: 0;
@@ -360,13 +332,7 @@
   border-radius: 4px;
 }
 
-/* .file-remove {
-  color: #dc3545;
-}
 
-.file-remove:hover {
-  background: #fee2e2 !important;
-} */
 
 .file-remove {
   display: inline-flex;
@@ -405,7 +371,7 @@
 }
 
 /* add and count */
-.directors-action-bar {
+.restaurants-action-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -417,7 +383,7 @@
   background: #fff;
 }
 
-.btn-add-director {
+.btn-add-restaurant {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -435,12 +401,12 @@
   cursor: pointer;
 }
 
-.btn-add-director:hover {
+.btn-add-restaurant:hover {
   background: #0b5ed7;
   border-color: #0a58ca;
 }
 
-.directors-count {
+.restaurants-count {
   display: inline-flex;
   align-items: center;
 
@@ -462,17 +428,17 @@
 
 @media (max-width: 767px) {
 
-  .director-grid {
+  .restaurant-grid {
     grid-template-columns: 1fr;
   }
 
-  .director-field,
-  .director-field:nth-child(3n) {
+  .restaurant-field,
+  .restaurant-field:nth-child(3n) {
     border-right: none;
     border-bottom: 1px solid #e9ecef;
   }
 
-  .director-field:last-child {
+  .restaurant-field:last-child {
     border-bottom: none;
   }
 
@@ -480,11 +446,11 @@
     max-width: 100%;
   }
 
-  .directors-list {
+  .restaurant-list {
     padding: 8px;
   }
 
-  .director-header {
+  .restaurant-header {
     padding: 9px 11px;
   }
 }
