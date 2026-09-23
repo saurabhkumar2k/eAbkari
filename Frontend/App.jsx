@@ -442,37 +442,51 @@ export default function App() {
             />
           }
         />
- {/* Staff */}
-      <Route
-        path="/staff"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="STAFF" />
-            <main>
-              <Staff onNavigateHome={() => window.location.href = "/"} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
+        {/* Staff */}
+        <Route
+          path="/staff"
+          element={
+            <>
+              <Header onSelectView={handleHeaderViewSelect} currentView="STAFF" />
+              <main>
+                <Staff onNavigateHome={() => window.location.href = "/"} />
+              </main>
+              <Footer />
+            </>
+          }
+        />
         {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
         <Route
           path="/dadashboard"
           element={
-            <DADashbord
-              onLogout={() => (window.location.href = "/departmentlogin")}
-              onNavigateHome={() => (window.location.href = "/")}
-            />
+           <div className="admin-app-layout ">
+              {/* <AdminHeader
+                navItems={navItems}
+                currentView="DEPARTMENT_DASHBOARD"
+                onNavigate={handleAdminNavigate}
+              /> */}
+              <DADashbord
+                onLogout={() => (window.location.href = "/")}
+                onNavigateHome={() => (window.location.href = "/")}
+              />
+            </div>
           }
         />
 
         <Route
           path="/dadashbord"
           element={
-            <DADashbord
-              onLogout={() => (window.location.href = "/departmentlogin")}
-              onNavigateHome={() => (window.location.href = "/")}
-            />
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="DEPARTMENT_DASHBOARD"
+                onNavigate={handleAdminNavigate}
+              />
+              <DADashbord
+                onLogout={() => (window.location.href = "/departmentlogin")}
+                onNavigateHome={() => (window.location.href = "/")}
+              />
+            </div>
           }
         />
    
