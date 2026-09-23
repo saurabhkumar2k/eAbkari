@@ -8,7 +8,7 @@ namespace backend.API.Licence.Controllers
     [ApiController]
     public class CommonLicenseController : ControllerBase
     {
-        private readonly ICommonLicenseServices _LicenseService;    
+        private readonly ICommonLicenseServices _LicenseService;
         public CommonLicenseController(ICommonLicenseServices services)
         {
             _LicenseService = services;
@@ -18,16 +18,16 @@ namespace backend.API.Licence.Controllers
         public async Task<IActionResult> CreateApplyLicense(LicenseApplicationUserDetailsDto dto)
         {
             if (!ModelState.IsValid)
-            {          
+            {
                 return BadRequest(ModelState);
             }
 
             var user = await _LicenseService.SaveApplicantDetails(dto);
             return Ok(new
-                    {
-                        applicationId = user,
-                        message = "Application Saved Successfully"
-                    });
+            {
+                applicationId = user,
+                message = "Application Saved Successfully"
+            });
         }
 
         [HttpGet("GetApplicantDetails/{AppId}")]
@@ -64,6 +64,30 @@ namespace backend.API.Licence.Controllers
                 applicationStatus = result,
                 message = "Application status updated successfully."
             });
+        }
+        [HttpPost("GetPendingApplicationIds")]
+        public async Task<IActionResult> GetPendingApplicationIds([FromBody] GetApplicationIdRequestDto dto)
+        {
+            var result = await _LicenseService.GetPendingApplicationIds(
+                dto.CatCode,
+                dto.RegID,
+                dto.FinYear);
+
+            if (result == null )
+            {
+                return NotFound(new
+                {
+                    message = "No pending application found."
+                });
+                
+            }
+            else
+            {
+               return Ok(result); 
+            }
+
+
+            //return Ok(result);
         }
     }
 }

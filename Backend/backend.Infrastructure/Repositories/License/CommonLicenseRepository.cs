@@ -28,7 +28,7 @@ namespace backend.Infrastructure.Repositories.License
             }
 
             string activeYear = FinYearV.Substring(2, 2);
-          
+
             return await _context.LicenseApplications
                 .Where(x => x.ApplicationIdNo != null &&
                  x.ApplicationIdNo.Length >= 7 &&
@@ -153,6 +153,26 @@ namespace backend.Infrastructure.Repositories.License
                 await _context.SaveChangesAsync();
             }
             return application?.ApplicationStatus ?? string.Empty;
+        }
+
+        public async Task<List<ApplicationIdResponseDto>> GetPendingApplicationIds(string catCode, int regId, string finYear)
+        {
+            var result = await (
+                from mst in _context.MstUsReg
+                join la in _context.LicenseApplications
+                    on mst.RegId equals la.RegId
+                where la.CatCode == catCode
+                      && mst.RegId == regId
+                      && la.FinYear == finYear
+                      && (la.ApplicationStatus == "02"
+                          || la.ApplicationStatus == "01")
+                select new ApplicationIdResponseDto
+                {
+                    ApplicationIdNo = la.ApplicationIdNo
+                }
+            ).ToListAsync();
+
+            return result;
         }
 
     }

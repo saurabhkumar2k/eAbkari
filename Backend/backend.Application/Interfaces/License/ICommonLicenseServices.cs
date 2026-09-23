@@ -9,5 +9,7 @@ namespace backend.Application.Interfaces.License
 
         Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus);
 
+        Task<List<ApplicationIdResponseDto>> GetPendingApplicationIds(string catCode,int regId,string finYear);
+
     }
 }
