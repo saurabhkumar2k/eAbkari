@@ -84,6 +84,7 @@ export default function DirectorRow({
               <div className="input-wrapper">
                 <Percent size={16} />
                 <input
+                  type="number"
                   value={director.PPerShare || ""}
                   onChange={(e) => onChange(index, "PPerShare", e.target.value)}
                 />

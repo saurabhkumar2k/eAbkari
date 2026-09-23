@@ -3,6 +3,7 @@ const HCRHCRBasicFieldsL16 = ({
   onChange,
   starCategory,
   starCategoryRating,
+  errors
 }) => {
   return (
     <>
@@ -14,7 +15,7 @@ const HCRHCRBasicFieldsL16 = ({
         </label>
 
         <input
-          type="text"
+          type="number"
           placeholder="Staff strength"
           value={additionalFrom.staffStrength || ""}
           onChange={(e) => {
@@ -27,6 +28,11 @@ const HCRHCRBasicFieldsL16 = ({
           maxLength={3}
           className="input-box"
         />
+        <div className="error-text-container">
+          {errors?.staffStrength && (
+            <span className="error-text-all">{errors?.staffStrength}</span>
+          )}
+        </div>
       </div>
 
       {/* Star category */}
@@ -37,11 +43,11 @@ const HCRHCRBasicFieldsL16 = ({
         </label>
 
         <select
-          value={additionalFrom.starCategory || "0"}
+          value={additionalFrom.starCategory || ""}
           onChange={(e) => onChange("starCategory", e.target.value)}
           className="input-box"
         >
-          <option value="0">--Select--</option>
+          <option value="">--Select--</option>
           <option value="Y">Yes</option>
           <option value="N">No</option>
 
@@ -51,9 +57,15 @@ const HCRHCRBasicFieldsL16 = ({
             </option>
           ))}
         </select>
+        <div className="error-text-container">
+          {errors?.starCategory && (
+            <span className="error-text-all">{errors?.starCategory}</span>
+          )}
+        </div>
       </div>
 
       {/* Star category Rating */}
+      {additionalFrom.starCategory === "Y" && (
       <div className="form-group">
         <label className="hcr-form-label">
           Star category
@@ -82,7 +94,13 @@ const HCRHCRBasicFieldsL16 = ({
             </option>
           ))}
         </select>
+        <div className="error-text-container">
+          {errors?.starCategoryRating && (
+            <span className="error-text-all">{errors?.starCategoryRating}</span>
+          )}
+        </div>
       </div>
+      )}
 
       {/* Educational Institution Distance */}
       <div className="form-group">
@@ -115,6 +133,11 @@ const HCRHCRBasicFieldsL16 = ({
             />
             Above 100 Meters
           </label>
+        </div>
+        <div className="error-text-container">
+          {errors?.educationalInsDist && (
+            <span className="error-text-all">{errors?.educationalInsDist}</span>
+          )}
         </div>
       </div>
 
@@ -149,6 +172,11 @@ const HCRHCRBasicFieldsL16 = ({
             />
             Above 100 Meters
           </label>
+        </div>
+        <div className="error-text-container">
+          {errors?.religiousPlaceDist && (
+            <span className="error-text-all">{errors?.religiousPlaceDist}</span>
+          )}
         </div>
       </div>
     </>

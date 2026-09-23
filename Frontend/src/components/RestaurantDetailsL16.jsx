@@ -1,33 +1,34 @@
 import React from "react";
-import DirectorRow from "./DirectorRow";
 import RestaurantDetailsRow from "./RestaurantDetailsRow";
 
 import "../Style/ApplyLicense.css";
-import "../Style/DirectorsList.css";
+import "../Style/Restaurant.css";
 
-const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, ConstitutionType, hoursOfSaleList }) => {
+const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, ConstitutionType, hoursOfSaleList, errors }) => {
   return (
-    <div className="directors-section">
+    <div className="restaurants-section">
       {/* Section Title */}
-      {/* <div className="directors-header-box">
-        <h3 className="directors-heading">
-          Directors / Partners / Proprietors
+      {/* <div className="restaurant-header-box">
+        <h3 className="restaurant-heading">
+          restaurant / Partners / Proprietors
         </h3>
-        <p className="directors-subheading">
+        <p className="restaurant-subheading">
           As per MCA Portal (Companies Act 2013)
         </p>
       </div> */}
-      <div className="directors-header">
+      <div className="restaurants-header">
         <div>
           <h2>Restaurant Details</h2>
-          {/* <p>As per MCA Portal (Companies Act 2013)</p> */}
+          <p className="restaurant-subheading">
+            As per MCA Portal (Companies Act 2013)
+          </p>
         </div>
       </div>
 
-      {/* Directors List */}
-      <div className="directors-wrapper">
+      {/* restaurants List */}
+      <div className="restaurants-wrapper">
         {RestaurantDetails.length === 0 ? (
-          <div className="directors-empty-state">
+          <div className="restaurants-empty-state">
             <p className="empty-message">No Restaurant Details added yet. Click "Add Restaurant Details" to start.</p>
           </div>
         ) : (
@@ -41,13 +42,14 @@ const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, Co
               ConstitutionType={ConstitutionType}
               disableDelete={false}
               hoursOfSaleList={hoursOfSaleList}
+              errors={errors?.[index]}
             />
           ))
         )}
       </div>
 
       {/* Add Button */}
-      {/* <div className="directors-action-bar">
+      {/* <div className="restaurant-action-bar">
         <button
           type="button"
           onClick={onAdd}
@@ -55,13 +57,13 @@ const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, Co
         >
           + Add Director
         </button>
-        {directors.length > 0 && (
-          <span className="directors-count">
-            {directors.length} director{directors.length !== 1 ? 's' : ''} added
+        {restaurant.length > 0 && (
+          <span className="restaurant-count">
+            {restaurant.length} director{restaurant.length !== 1 ? 's' : ''} added
           </span>
         )}
       </div> */}
-      <div className="directors-action-bar">
+      <div className="restaurants-action-bar">
         <button
           type="button"
           onClick={onAdd}
@@ -71,7 +73,7 @@ const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, Co
         </button>
 
         {RestaurantDetails.length > 0 && (
-          <span className="directors-count">
+          <span className="restaurants-count">
             {RestaurantDetails.length} restaurant detail{RestaurantDetails.length !== 1 ? "s" : ""} added
           </span>
         )}

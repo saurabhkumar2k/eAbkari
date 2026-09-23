@@ -61,6 +61,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.applicantName || ""}
                 onChange={(e) => onChange("applicantName", e.target.value.toUpperCase())}
+                disabled={true}
               />
             </div>
             {errors.applicantName && (
@@ -84,6 +85,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.dateOfBirth || ""}
                 onChange={(e) => onChange("dob", e.target.value)}
+                disabled={true}
               />
             </div>
             {errors.dob && (
@@ -104,6 +106,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 className="reg-input uppercase font-bold text-slate-800"
                 value={formData.fatherHusbandName || ""}
                 onChange={(e) => onChange("fatherName", e.target.value.toUpperCase())}
+                disabled={true}
               />
             </div>
           </div>
@@ -125,6 +128,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.occupation || ""}
                 onChange={(e) => onChange("occupation", e.target.value.toUpperCase())}
+                disabled={true}
               />
             </div>
             {errors.occupation && (
@@ -150,6 +154,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.panNo || ""}
                 onChange={(e) => onChange("panNo", e.target.value.toUpperCase())}
+                disabled={true}
               />
             </div>
             {errors.panNo && (
@@ -189,6 +194,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.addressLine1 || ""}
                 onChange={(e) => onChange("address1", e.target.value)}
+                disabled={true}
               />
             </div>
             {errors.address1 && (
@@ -209,6 +215,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 className="reg-input font-bold text-slate-800"
                 value={formData.addressLine2 || ""}
                 onChange={(e) => onChange("address2", e.target.value)}
+                disabled={true}
               />
             </div>
           </div>
@@ -237,6 +244,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 name="state"
                 value={formData.StateUT || ""}
                 onChange={(e) => onChange("StateUT", e.target.value.trim())}
+                disabled={true}
               >
                 <option value="">Select State</option>
 
@@ -277,8 +285,8 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <select
                 className="reg-select"
                 value={formData.district || ""}
-                disabled={!formData.StateUT}
                 onChange={(e) => onChange("district", e.target.value)}
+                disabled={true}
               >
                 <option value="">Select District</option>
 
@@ -317,11 +325,11 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               </select> */}
               <select
                 className="reg-select"
-                disabled={!formData.district}
                 value={formData.subDivision || ""}
                 onChange={(e) =>
                   onChange("subDivision", e.target.value)
                 }
+                disabled={true}
               >
                 <option value="">Select Sub Division</option>
 
@@ -356,6 +364,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.pin || ""}
                 onChange={(e) => onChange("pin", e.target.value.replace(/\D/g, ""))}
+                disabled={true}
               />
             </div>
             {errors.pin && (
@@ -396,6 +405,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.mobile || ""}
                 onChange={(e) => onChange("mobile", e.target.value.replace(/\D/g, ""))}
+                disabled={true}
               />
             </div>
             {errors.mobile && (
@@ -420,6 +430,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                   }`}
                 value={formData.email || ""}
                 onChange={(e) => onChange("email", e.target.value)}
+                disabled={true}
               />
             </div>
             {errors.email && (
@@ -440,6 +451,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 className="reg-input font-bold text-slate-800"
                 value={formData.landline || ""}
                 onChange={(e) => onChange("landline", e.target.value.replace(/\D/g, ""))}
+                disabled={true}
               />
             </div>
           </div>
@@ -457,6 +469,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 className="reg-input font-bold text-slate-800"
                 value={formData.fax || ""}
                 onChange={(e) => onChange("fax", e.target.value)}
+                disabled={true}
               />
             </div>
           </div>

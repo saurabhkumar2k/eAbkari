@@ -20,20 +20,18 @@ import HcrSiteDocumentsStep from "./HcrSiteDocumentsStep";
 import HcrDeclarationStep from "./HcrDeclarationStep";
 // import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 
-import {
-  nameCheck,
-  panCheck,
-  mobileCheck,
-  emailCheck,
-  pinCheck,
-  delhiPinCheck,
-  requiredCheck,
-  selectCheck,
-  validateRestaurantNum,
-  checkAnswersRequired,
-  validateDirectors,
-} from "./validation";
 
+
+import {
+  validateAdditionalSiteData,
+  validateSiteData,
+  validateApplicantData,
+} from "./HcrApplicationValidation";
+
+import {
+  validateDirectors,
+  validateRestaurantDetails
+} from "./validation";
 
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
@@ -254,43 +252,7 @@ export default function HcrLicensee({
 
   const validateApplicant = () => {
     debugger;
-    const errors = {};
-
-    // Run validators and capture error messages if they return a string
-    const nameError = nameCheck(applicantForm.applicantName);
-    if (nameError) errors.applicantName = nameError;
-
-    // For fields without complex regex, check if they exist or use requiredCheck
-    if (!applicantForm.dateOfBirth) {
-      errors.dateOfBirth = "Date of birth is required";
-    }
-
-    const occupationError = requiredCheck(applicantForm.occupation, "Occupation");
-    if (occupationError) errors.occupation = occupationError;
-
-    const panError = panCheck(applicantForm.panNo);
-    if (panError) errors.panNo = panError;
-
-    const addressError = requiredCheck(applicantForm.addressLine1, "Address Line 1");
-    if (addressError) errors.addressLine1 = addressError;
-
-    const stateErr = selectCheck(applicantForm.StateUT, "State");
-    if (stateErr) errors.StateUT = stateErr;
-
-    const districtErr = selectCheck(applicantForm.district, "District");
-    if (districtErr) errors.district = districtErr;
-
-    const subDivErr = selectCheck(applicantForm.subDivision, "Sub Division");
-    if (subDivErr) errors.subDivision = subDivErr;
-
-    const pinError = pinCheck(applicantForm.pin);
-    if (pinError) errors.pin = pinError;
-
-    const mobileError = mobileCheck(applicantForm.mobile);
-    if (mobileError) errors.mobile = mobileError;
-
-    const emailError = emailCheck(applicantForm.email);
-    if (emailError) errors.email = emailError;
+    const errors = validateApplicantData(applicantForm);
 
     // Update state and trigger toast notifications
     setApplicantErrors(errors);
@@ -332,36 +294,9 @@ export default function HcrLicensee({
 
   const validateRestaurant = () => {
     debugger;
-    const errors = {};
 
     // Check required text & code dropdown fields using your generic check
-    const siteNameErr = requiredCheck(siteForm.SiteName, "Restaurant Name");
-    if (siteNameErr) errors.SiteName = siteNameErr;
-
-    const addressErr = requiredCheck(siteForm.SiteAddress, "Restaurant Address");
-    if (addressErr) errors.SiteAddress = addressErr;
-
-    const stateErr = selectCheck(siteForm.State, "Restaurant state");
-    if (stateErr) errors.State = stateErr;
-
-    const districtErr = selectCheck(siteForm.DistrictCode, "Restaurant district");
-    if (districtErr) errors.DistrictCode = districtErr;
-
-    const subDivErr = selectCheck(siteForm.SubDivisionCode, "Restaurant subdivision");
-    if (subDivErr) errors.SubDivisionCode = subDivErr;
-
-    const policeErr = selectCheck(siteForm.PoliceStationCode, "Restaurant police station");
-    if (policeErr) errors.PoliceStationCode = policeErr;
-
-    const pinErr = delhiPinCheck(siteForm.SitePin);
-    if (pinErr) errors.SitePin = pinErr;
-
-    // Run specialized regex checks for Email and Mobile numbers
-    const emailErr = emailCheck(siteForm.SiteEmail);
-    if (emailErr) errors.SiteEmail = emailErr;
-
-    const mobileErr = mobileCheck(siteForm.SiteMobile);
-    if (mobileErr) errors.SiteMobile = mobileErr;
+    const errors = validateSiteData(siteForm);
 
     // Set the error state
     setSiteFormErrors(errors);
@@ -396,53 +331,16 @@ export default function HcrLicensee({
   };
 
 
-  const validateAdditionalRestaurant = () => {
+  const validateAdditionalSiteDetails = () => {
     debugger;
-    const errors = {};
 
-    // console.log("HcrLicensee - validateAdditionalRestaurant additionalFrom  ", additionalFrom)
+    console.log(additionalFrom)
+    const AdditionalRestaurantFrom = additionalFrom;
+    AdditionalRestaurantFrom.questions = questions;
+    AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
+    const errors = validateAdditionalSiteData(AdditionalRestaurantFrom, selectedLicenseCode);
+    console.log(errors)
 
-    //additionalFrom
-
-    // Check required text & code dropdown fields using your generic check
-    const numberOfBarAttendentErr = validateRestaurantNum(additionalFrom.numberOfBarAttendent, "Number of Bar Attendent");
-    if (numberOfBarAttendentErr) errors.numberOfBarAttendent = numberOfBarAttendentErr;
-
-    const numberOfDispensingCounterErr = validateRestaurantNum(additionalFrom.numberOfDispensingCounter, "Number of Dispensing Counter");
-    if (numberOfDispensingCounterErr) errors.numberOfDispensingCounter = numberOfDispensingCounterErr;
-
-    const numberOfKitchenStaffErr = validateRestaurantNum(additionalFrom.numberOfKitchenStaff, "Number of Kitchen Staff");
-    if (numberOfKitchenStaffErr) errors.numberOfKitchenStaff = numberOfKitchenStaffErr;
-
-    const numberOfManagersErr = validateRestaurantNum(additionalFrom.numberOfManagers, "Number of Managers");
-    if (numberOfManagersErr) errors.numberOfManagers = numberOfManagersErr;
-
-    const numberOfSeatCoversErr = validateRestaurantNum(additionalFrom.numberOfSeatCovers, "Number of Seat Covers");
-    if (numberOfSeatCoversErr) errors.numberOfSeatCovers = numberOfSeatCoversErr;
-
-    const numberOfUtlityEmployeesErr = validateRestaurantNum(additionalFrom.numberOfUtlityEmployees, "Number of Utility Employees");
-    if (numberOfUtlityEmployeesErr) errors.numberOfUtlityEmployees = numberOfUtlityEmployeesErr;
-
-    const restaurantAreaErr = validateRestaurantNum(additionalFrom.restaurantArea, "Restaurant Area");
-    if (restaurantAreaErr) errors.restaurantArea = restaurantAreaErr;
-
-    const additionalAreaErr = selectCheck(additionalFrom.additionalArea, "Additional Area");
-    if (additionalAreaErr) errors.additionalArea = additionalAreaErr;
-
-    const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
-    if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
-
-    const religiousPlaceDistErr = selectCheck(additionalFrom.religiousPlaceDist, "Religious Place Distance");
-    if (religiousPlaceDistErr) errors.religiousPlaceDist = religiousPlaceDistErr;
-
-    const hourOfSaleErr = selectCheck(additionalFrom.hourOfSale, "hour of sale");
-    if (hourOfSaleErr) errors.hourOfSale = hourOfSaleErr;
-
-    const answerErr = checkAnswersRequired(questionsAnswers);
-    if (answerErr) errors.answer = answerErr;
-
-    const directorsErr = validateDirectors(additionalFrom.directors);
-    if (directorsErr) errors.directors = directorsErr;
 
     // console.log("Test 111111111111")
     // Set the error state
@@ -455,7 +353,6 @@ export default function HcrLicensee({
     //   errors.directors.errors.some(err => err !== null)
     // ) 
 
-    debugger;
     const hasStringErrors = Object.keys(errors).some(key => {
       if (key === 'directors') return false; // Skip the nested object here
       return errors[key] !== ""; // Returns true if an error string is not empty
@@ -796,8 +693,19 @@ export default function HcrLicensee({
             : item
         );
       }
-    })
-  }
+
+      return [
+        ...prev,
+        {
+          applicationIdNo:
+            applicationId || "",
+          questionId,
+          answerGiven: answer,
+          slNo: index + 1,
+        },
+      ];
+    });
+  };
 
 
   const handleRestaurantDetailChange = (index, field, value) => {
@@ -818,21 +726,59 @@ export default function HcrLicensee({
     });
   };
 
-  const addRestaurantDetail = () => {
-    setAdditionalFrom((prev) => ({
-      ...prev,
-      restaurantDetails: [
-        ...(prev.restaurantDetails || []),
-        {
-          NameOfAdditionalRestaurant: "",
-          NumberOfSeatCovers: "",
-          NumberOfCounter: "",
-          AddtionalArea: "",
+const addRestaurantDetail = () => {
+  debugger;
+  const errors = {};
+  let additionalUpdateErrors = { ...additionalFormErrors };
 
-        },
-      ],
-    }));
-  };
+  // 1. Run the evaluation using your custom function
+  const restaurantErr = validateRestaurantDetails(additionalFrom.restaurantDetails);
+  if (restaurantErr) errors.restaurantDetails = restaurantErr;
+
+  // 2. Check if the data structure contains items before proceeding
+  const hasRestaurants = additionalFrom.restaurantDetails && additionalFrom.restaurantDetails.length > 0;
+
+  if (hasRestaurants) {
+    additionalUpdateErrors.restaurantDetails = errors.restaurantDetails;
+    setAdditionalFormErrors(additionalUpdateErrors);
+    console.log("HcrLicensee - addRestaurantDetail additionalFormErrors ", additionalFormErrors, additionalUpdateErrors);
+  }
+
+  // Condition 1: Function evaluation fails AND the array is populated
+  const isInvalidWithData = restaurantErr?.isValid === false && hasRestaurants;
+
+  // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+  const hasRowErrors = Array.isArray(restaurantErr?.errors) && restaurantErr.errors.some(err => err !== null);
+
+  // 3. Prevent structural addition if the active items contain errors
+  if (isInvalidWithData || hasRowErrors) {
+    return; // Halt structural changes
+  } else {
+    if (additionalUpdateErrors.restaurantDetails) {
+      additionalUpdateErrors.restaurantDetails.errors = []; // Flush existing error tracking array safely
+      setAdditionalFormErrors(additionalUpdateErrors);
+    }
+  }
+
+  // 4. Safely push the fresh entry layout block forward into the state container
+  setAdditionalFrom((prev) => ({
+    ...prev,
+    restaurantDetails: [
+      ...(prev.restaurantDetails || []),
+      {
+        NameOfAdditionalRestaurant: "",
+        NumberOfSeatCovers: "",
+        NumberOfCounter: "",
+        AddtionalArea: "",
+        AreaSqMtr: "",
+        ForeignLiquor: "",
+        HoursofSale: "",
+        HoursofSaleAddtionalArea: ""
+      },
+    ],
+  }));
+};
+
 
   const deleteRestaurantDetail = (index) => {
     setAdditionalFrom((prev) => ({
@@ -910,7 +856,8 @@ export default function HcrLicensee({
   const addDirector = () => {
     debugger;
     const errors = {};
-    const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
+    // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
+    let additionalUpdateErrors = { ...additionalFormErrors };
     // console.log("HcrLicensee - addDirector additionalFrom  ", additionalFrom.directors)
 
     // const directorsErr = validateDirectors(additionalFrom.directors);
@@ -934,7 +881,7 @@ export default function HcrLicensee({
     if (hasDirectors) {
       additionalUpdateErrors.directors = errors.directors; // Clear the errors array if no errors are found
       setAdditionalFormErrors(additionalUpdateErrors);
-      console.log("HcrLicensee - addDirector additionalFormErrors  ", additionalFormErrors)
+      console.log("HcrLicensee - addDirector additionalFormErrors  ", additionalFormErrors, additionalUpdateErrors)
     }
 
     // Condition 1: Local error object says invalid AND director list is not empty
@@ -948,9 +895,9 @@ export default function HcrLicensee({
       return; // Stop form submission
     } else {
       if (additionalUpdateErrors.directors) {
-        additionalUpdateErrors.directors.errors = [];
-      } // Clear the errors array if no errors are found
-      setAdditionalFormErrors(additionalUpdateErrors);
+        additionalUpdateErrors.directors.errors = []; // Clear the errors array if no errors are found
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
     }
 
 
@@ -1223,7 +1170,7 @@ export default function HcrLicensee({
     const applicationIdNo =
       localStorage.getItem("applicationId");
 
-    if (!validateAdditionalRestaurant()) {
+    if (!validateAdditionalSiteDetails()) {
       return false;
     }
 

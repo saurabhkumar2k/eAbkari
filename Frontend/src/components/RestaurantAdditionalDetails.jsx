@@ -49,6 +49,7 @@ export default function RestaurantAdditionalDetails({
                 onChange={onChange}
                 starCategory={starCategory}
                 starCategoryRating={starCategoryRating}
+                errors={errors}
               />
 
             )}
@@ -99,8 +100,13 @@ export default function RestaurantAdditionalDetails({
                   onAdd={onAddRestaurantDetail}
                   onDelete={ondeleteRestaurantDetail}
                   hoursOfSaleList={hoursOfSaleList}
+                  errors={errors?.restaurantError}
                 />
+                
               )}
+              <div className="error-text-container">
+                {errors?.restaurantGlobalError && <span className="error-text-all">{errors?.restaurantGlobalError}</span>}
+              </div>
             </div>
           </div>
         </form>
