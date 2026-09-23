@@ -8,7 +8,8 @@ import {
   HeadphonesSvg,
   GlobeSvg,
   ChevronDownSvg,
-  EyeSvg
+  EyeSvg,
+  EyeOffSvg,
 } from "../icons/GlobalIcons.jsx";
 
 import DepartmentHeader from "../DepartmentHeader.jsx";
@@ -231,7 +232,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
                       {showPassword ? (
                         <EyeSvg className="icon-sm" />
                       ) : (
-                        <EyeSvg className="icon-sm" />
+                        <EyeOffSvg className="icon-sm" />
                       )}
                     </button>
                   </div>

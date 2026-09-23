@@ -20,6 +20,7 @@ namespace backend.Core.DTOs
         public string? IsActive { get; set; } = "Y";    
         public int RoleId { get; set; }
         public long BranchCode { get; set; }
+        public string UserTypeCode { get; set; }
     }
     public class DepartmentUserLoginDto
     {
