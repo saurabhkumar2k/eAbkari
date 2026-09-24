@@ -174,6 +174,188 @@ namespace backend.Infrastructure.Repositories.License
 
             return result;
         }
+        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(string catCode, string DocType)
+        {
+            var result = await (
+                from LACD in _context.LicenseApplicationCategoryDocument
+                join MSTD in _context.MstLicenseApplicationDocument
+                  on LACD.DocId equals MSTD.DocId
+                where LACD.LicenseeCatCode == catCode
+                      && LACD.LicenseeTypeFlag == DocType
+                      && LACD.ActiveStatus == "Y"
+                select new GetApplicantDocResponseDto
+                {
+                    DocDesc = MSTD.DocDesc,
+                    DocID = MSTD.DocId,
+                    IsMandatory = LACD.IsMandatory,
+                    IsValid = MSTD.IsValid ?? false // null-coalescing operator
+                }
 
+            ).ToListAsync();
+
+            return result;
+        }
+
+        public async Task<string?> SaveAndUpdateApplicantDocumentsRepository(List<SaveAndUpdateApplicantDocumentsDto> dto)
+        {
+            try
+            {
+                if (dto == null || dto.Count == 0)
+                {
+                    return null;
+                }
+
+                
+                var applicationIdNo = dto.First().ApplicationIdNo;
+
+                if (string.IsNullOrWhiteSpace(applicationIdNo))
+                {
+                    return null;
+                }
+
+                // Get all existing documents of this application
+                var existingDocuments = await _context
+                    .LicenseApplicationUploadedDocument
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .ToListAsync();
+
+
+                // Find current maximum ApplicantSl
+                int applicantSl = existingDocuments
+                    .Select(x =>
+                        int.TryParse(x.ApplicantSl, out var value)
+                            ? value
+                            : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+
+                // Process each document
+                foreach (var document in dto)
+                {
+                    // Check existing document using
+                    // ApplicationIdNo + DocId
+                    var existingDocument = existingDocuments
+                        .FirstOrDefault(x =>
+                            x.ApplicationIdNo == applicationIdNo &&
+                            x.DocId == document.DocId);
+
+
+                    // =====================================================
+                    // UPDATE
+                    // =====================================================
+
+                    if (existingDocument != null)
+                    {
+                        string fileExtension = string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                        {
+                            fileExtension =
+                                Path.GetExtension(document.DocUrl);
+                        }
+
+                        string fileName =
+                            $"{applicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
+
+
+                        existingDocument.MobileNo =
+                            document.MobileNo;
+
+                        existingDocument.DocSl =
+                            document.DocSl;
+
+                        existingDocument.IsValid =
+                            document.IsValid;
+
+                        existingDocument.DateOfValidity =
+                            document.DateOfValidity;
+
+                        existingDocument.DocUrl =
+                            fileName;
+
+                        existingDocument.SubmitDate =
+                            DateTime.Now;
+                    }
+
+
+                    // =====================================================
+                    // INSERT
+                    // =====================================================
+
+                    else
+                    {
+                        applicantSl++;
+
+                        string fileExtension = string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                        {
+                            fileExtension =
+                                Path.GetExtension(document.DocUrl);
+                        }
+
+                        string fileName =
+                            $"{applicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
+
+
+                        var entity =
+                            new LicenseApplicationUploadedDocument
+                            {
+                                ApplicationIdNo = applicationIdNo,
+
+                                MobileNo =
+                                    document.MobileNo,
+
+                                ApplicantSl =
+                                    applicantSl.ToString(),
+
+                                DocId =
+                                    document.DocId,
+
+                                DocSl =
+                                    document.DocSl,
+
+                                DocStatus =
+                                    "N",
+
+                                IsValid =
+                                    document.IsValid ?? "N",
+
+                                DateOfValidity =
+                                    document.DateOfValidity,
+
+                                DocUrl =
+                                    fileName,
+
+                                SubmitDate =
+                                    DateTime.Now
+                            };
+
+
+                        await _context
+                            .LicenseApplicationUploadedDocument
+                            .AddAsync(entity);
+
+
+                        // Important:
+                        // Add newly inserted record to local list
+                        // so duplicate DocId in same request
+                        // can be detected.
+                        existingDocuments.Add(entity);
+                    }
+                }
+
+
+                // Save all changes together
+                await _context.SaveChangesAsync();
+
+                return "Documents saved/updated successfully.";
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

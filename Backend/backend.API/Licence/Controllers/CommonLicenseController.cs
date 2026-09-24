@@ -73,21 +73,52 @@ namespace backend.API.Licence.Controllers
                 dto.RegID,
                 dto.FinYear);
 
-            if (result == null )
+            if (result == null)
             {
                 return NotFound(new
                 {
                     message = "No pending application found."
                 });
-                
+
             }
             else
             {
-               return Ok(result); 
+                return Ok(result);
             }
 
+        }
+        [HttpPost("GetDocDescriptionCatWise")]
+        public async Task<IActionResult> GetDocDescriptionCatWise([FromBody] GetApplicantDocRequestDto dto)
+        {
+            var result = await _LicenseService.GetDocDescriptionCatWiseService(dto.CatCode, dto.DocType);
 
-            //return Ok(result);
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    message = "No Document Found."
+                });
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
+        [HttpPost("SaveAndUpdateApplicantDocuments")]        
+        public async Task<IActionResult> SaveAndUpdateApplicantDocuments( [FromBody] List<SaveAndUpdateApplicantDocumentsDto> dto)
+        {
+            var result = await _LicenseService.SaveAndUpdateApplicantDocumentsService(dto);
+
+            if (result == null)
+            {
+                return NotFound(new
+                {
+                    message = "No Document Found."
+                });
+            }
+
+            return Ok(result);
         }
     }
 }
