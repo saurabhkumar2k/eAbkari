@@ -17,6 +17,8 @@ public class DocumentDto
     public string? DocAppl { get; set; }
 
     public string? SDate { get; set; }
+    public string? VallidUpto { get; set; }
+
 
 
 
