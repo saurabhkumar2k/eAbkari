@@ -155,9 +155,12 @@ namespace backend.Infrastructure.Repositories.License
             return application?.ApplicationStatus ?? string.Empty;
         }
 
-        public async Task<List<ApplicationIdResponseDto>> GetPendingApplicationIds(string catCode, int regId, string finYear)
+        public async Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode, int regId)
         {
-            var result = await (
+            var finYear = await GetFinYear();
+            if (finYear != null)
+            {
+                var result = await (
                 from mst in _context.MstUsReg
                 join la in _context.LicenseApplications
                     on mst.RegId equals la.RegId
@@ -166,13 +169,19 @@ namespace backend.Infrastructure.Repositories.License
                       && la.FinYear == finYear
                       && (la.ApplicationStatus == "02"
                           || la.ApplicationStatus == "01")
+                orderby la.ApplicationDate descending
                 select new ApplicationIdResponseDto
                 {
                     ApplicationIdNo = la.ApplicationIdNo
                 }
-            ).ToListAsync();
+                ).FirstOrDefaultAsync();
 
-            return result;
+                return result;
+            }
+            else
+            {
+                throw new InvalidOperationException("Financial year cannot be null.");
+            }
         }
         public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(string catCode, string DocType)
         {

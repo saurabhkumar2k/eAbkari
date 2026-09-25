@@ -14,7 +14,7 @@ namespace backend.Core.Interfaces.License
 
         Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus);
 
-        Task<List<ApplicationIdResponseDto>> GetPendingApplicationIds(string catCode, int regId, string finYear);
+        Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode, int regId);
 
         Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry (string catCode ,string DocType);
         Task<string> SaveAndUpdateApplicantDocumentsRepository( List<SaveAndUpdateApplicantDocumentsDto> dto);

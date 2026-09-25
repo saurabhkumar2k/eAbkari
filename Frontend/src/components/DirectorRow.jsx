@@ -3,7 +3,7 @@ import React from "react";
 import "../Style/ApplyLicense.css";
 
 import {
-  Eye, 
+  Eye,
   X,
   RotateCw,
   User,
@@ -16,8 +16,6 @@ import {
   Trash2,
 } from "lucide-react";
 
-
-
 export default function DirectorRow({
   director,
   index,
@@ -25,7 +23,7 @@ export default function DirectorRow({
   onDelete,
   disableDelete,
   ConstitutionType,
-  directorsError
+  directorsError,
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
   // console.log("DirectorsList:", ConstitutionType);
@@ -33,9 +31,8 @@ export default function DirectorRow({
   // console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
   // console.log("DirectorRow ConstitutionType:", ConstitutionType);
   // console.log(director);
-  console.log("DirectorRow - directorsError  ", directorsError)
+  console.log("DirectorRow - directorsError  ", directorsError);
   return (
-
     <div className="directors-container">
       {/* Director List */}
       <div className="directors-list">
@@ -51,7 +48,7 @@ export default function DirectorRow({
               disabled={disableDelete}
             >
               {/* 🗑 Delete */}
-              <Trash2 size={16} strokeWidth={2.5} /> 
+              <Trash2 size={16} strokeWidth={2.5} />
             </button>
           </div>
 
@@ -84,13 +81,17 @@ export default function DirectorRow({
               <div className="input-wrapper">
                 <Percent size={16} />
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={3}
                   value={director.PPerShare || ""}
                   onChange={(e) => onChange(index, "PPerShare", e.target.value)}
                 />
               </div>
               {directorsError?.PPerShareErr && (
-                <span className="error-text">{directorsError.PPerShareErr}</span>
+                <span className="error-text">
+                  {directorsError.PPerShareErr}
+                </span>
               )}
             </div>
 
@@ -109,7 +110,9 @@ export default function DirectorRow({
                   placeholder="ABCDE1234F"
                   maxLength={10}
                   value={director.PPanNo || ""}
-                  onChange={(e) => onChange(index, "PPanNo", e.target.value.toUpperCase())}
+                  onChange={(e) =>
+                    onChange(index, "PPanNo", e.target.value.toUpperCase())
+                  }
                 />
               </div>
               {directorsError?.PPanNoErr && (
@@ -144,9 +147,10 @@ export default function DirectorRow({
               </div>
 
               {directorsError?.PExciseNomineeErr && (
-                <span className="error-text">{directorsError.PExciseNomineeErr}</span>
+                <span className="error-text">
+                  {directorsError.PExciseNomineeErr}
+                </span>
               )}
-
             </div>
 
             {/* PAN Proof */}
@@ -211,9 +215,7 @@ export default function DirectorRow({
                       <X size={16} strokeWidth={2.5} />
                     </button>
                   </div>
-
                 </div>
-
               )}
               {directorsError?.panFileErr && (
                 <span className="error-text">{directorsError.panFileErr}</span>
@@ -260,7 +262,6 @@ export default function DirectorRow({
                       {/* 👁 */}
 
                       <Eye size={16} strokeWidth={2.5} />
-
                     </button>
                     <div className="file-replace">
                       <label className="file-replace">
@@ -294,10 +295,11 @@ export default function DirectorRow({
                     </button>
                   </div>
                 </div>
-
               )}
               {directorsError?.addressFileErr && (
-                <span className="error-text">{directorsError.addressFileErr}</span>
+                <span className="error-text">
+                  {directorsError.addressFileErr}
+                </span>
               )}
             </div>
           </div>

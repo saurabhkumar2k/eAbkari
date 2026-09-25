@@ -22,8 +22,8 @@ import {
   FileCheck
 } from "lucide-react";
 import LicenseCategory from "./LicenseCategory";
-import HcrLicenseWizard from "./HCR/HcrLicense";
-import HcrLicenseWizard_M from "./HCR/HcrLicenseWizard_M";
+// import HcrLicenseWizard from "./HCR/HcrLicense";
+import HcrLicenseWizard from "./HCR/HcrLicenseWizard";
 import L30SelectLicense from "./L30/L30SelectLicense";
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 import MtpLicenseWizard from "./MNTP/MtpLicenseWizard";

@@ -1,21 +1,51 @@
 import { useEffect } from "react";
 
-const HCRHCRBasicFieldsL16 = ({
+const HCRHCRBasicFieldsL15 = ({
   additionalFrom,
   onChange,
   starCategory,
   starCategoryRating,
   errors,
 }) => {
-
   useEffect(() => {
     if (additionalFrom.starCategory === "N") {
-      onChange("starCategoryRating", ""); 
+      onChange("starCategoryRating", "");
     }
-  }, [additionalFrom.starCategory]);
-
+    if (additionalFrom.HasStoreProvisionYN === "N") {
+      onChange("StoreLocationInHotel", "");
+    }
+  }, [additionalFrom.starCategory,additionalFrom.HasStoreProvisionYN]);
   return (
     <>
+      {/* Total No. Rooms */}
+      <div className="form-group">
+        <label className="hcr-form-label">
+          Total No. Rooms
+          <span className="required">*</span>
+        </label>
+
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="Total No Rooms"
+          value={additionalFrom.totalRoom || ""}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            if (/^\d*\.?\d*$/.test(value)) {
+              onChange("totalRoom", value);
+            }
+          }}
+          maxLength={4}
+          className="input-box"
+        />
+        <div className="error-text-container">
+          {errors?.totalRoom && (
+            <span className="error-text-all">{errors?.totalRoom}</span>
+          )}
+        </div>
+      </div>
+
       {/* Staff strength */}
       <div className="form-group">
         <label className="hcr-form-label">
@@ -24,7 +54,8 @@ const HCRHCRBasicFieldsL16 = ({
         </label>
 
         <input
-          type="number"
+          type="text"
+          inputMode="numeric"
           placeholder="Staff strength"
           value={additionalFrom.staffStrength || ""}
           onChange={(e) => {
@@ -113,6 +144,65 @@ const HCRHCRBasicFieldsL16 = ({
         </div>
       )}
 
+      {/* provision for store */}
+      <div className="form-group">
+        <label className="hcr-form-label">
+          Whether the premises have provision for store
+          <span className="required">*</span>
+        </label>
+
+        <select
+          value={additionalFrom.HasStoreProvisionYN || ""}
+          onChange={(e) => onChange("HasStoreProvisionYN", e.target.value)}
+          className="input-box"
+        >
+          <option value="">--Select--</option>
+          <option value="Y">Yes</option>
+          <option value="N">No</option>
+
+          {starCategory.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+        </select>
+        <div className="error-text-container">
+          {errors?.HasStoreProvisionYN && (
+            <span className="error-text-all">
+              {errors?.HasStoreProvisionYN}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Location of store in Hotel */}
+      {additionalFrom.HasStoreProvisionYN === "Y" && (
+        <div className="form-group">
+          <label className="hcr-form-label">
+            Location of store in Hotel
+            <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Location of store"
+            value={additionalFrom.StoreLocationInHotel || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange("StoreLocationInHotel", value);
+            }}
+            className="input-box"
+          />
+
+          <div className="error-text-container">
+            {errors?.StoreLocationInHotel && (
+              <span className="error-text-all">
+                {errors?.StoreLocationInHotel}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Educational Institution Distance */}
       <div className="form-group">
         <label className="hcr-form-label">
@@ -194,4 +284,4 @@ const HCRHCRBasicFieldsL16 = ({
   );
 };
 
-export default HCRHCRBasicFieldsL16;
+export default HCRHCRBasicFieldsL15;

@@ -9,7 +9,7 @@ namespace backend.Core.DTOs
     {
         public string CatCode { get; set; } 
         public int RegID { get; set; }
-        public string FinYear { get; set; } 
+        // public string FinYear { get; set; } 
     }
 
     public class ApplicationIdResponseDto

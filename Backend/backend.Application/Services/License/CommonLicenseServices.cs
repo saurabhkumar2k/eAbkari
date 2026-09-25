@@ -203,9 +203,9 @@ namespace backend.Application.Services.License
                 return null;
             }
         }
-        public async Task<List<ApplicationIdResponseDto>> GetPendingApplicationIds(string catCode,int regId,string finYear)
+        public async Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode,int regId)
         {
-            return await _Licenserepository.GetPendingApplicationIds(catCode,regId,finYear);
+            return await _Licenserepository.GetPendingApplicationIds(catCode,regId);
         }
 
         public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseService(string CatCode,string DocType)
