@@ -181,8 +181,9 @@ namespace backend.Infrastructure.Repositories.License
                 join MSTD in _context.MstLicenseApplicationDocument
                   on LACD.DocId equals MSTD.DocId
                 where LACD.LicenseeCatCode == catCode
-                      && LACD.LicenseeTypeFlag == DocType
+                      && MSTD.DocStatus == DocType
                       && LACD.ActiveStatus == "Y"
+                      && MSTD.DeleteStatus =="N"
                 select new GetApplicantDocResponseDto
                 {
                     DocDesc = MSTD.DocDesc,

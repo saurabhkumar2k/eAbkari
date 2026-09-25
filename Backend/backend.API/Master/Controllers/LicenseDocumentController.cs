@@ -61,7 +61,10 @@ namespace backend.API.Controllers
                                 : (c.SubmitDate == null
                                     ? "View"
                                     : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),
-                    IsMandatory = b.IsMandatory
+                    IsMandatory = b.IsMandatory,
+                    VallidUpto = c != null && c.DateOfValidity.HasValue
+                                 ? c.DateOfValidity.Value.ToString("dd/MM/yyyy")
+                                : null
                 }).ToListAsync();
 
             return Ok(documents);
