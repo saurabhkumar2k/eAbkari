@@ -4,6 +4,7 @@ import DirectorsList from "./DirectorsList";
 import HcrQuestionList from "./HCRQuestionList";
 import HCRBasicFieldsL17 from "./HcrBasicFieldsL17";
 import HCRBasicFieldsL16 from "./HcrBasicFieldsL16";
+import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
 import RestaurantDetailsL16 from "./RestaurantDetailsL16";
 
 export default function RestaurantAdditionalDetails({
@@ -25,10 +26,9 @@ export default function RestaurantAdditionalDetails({
   starCategory,
   ondeleteRestaurantDetail,
   onAddRestaurantDetail,
-  onRestaurantDetailChange
+  onRestaurantDetailChange,
 }) {
-
-  console.log("RestaurantAdditionalDetails - errors  ", errors)
+  console.log("RestaurantAdditionalDetails - errors  ", errors);
   return (
     <div className="hcr-form-section animate-fade">
       {/* <div className="hcr-step-header">
@@ -51,7 +51,16 @@ export default function RestaurantAdditionalDetails({
                 starCategoryRating={starCategoryRating}
                 errors={errors}
               />
+            )}
 
+            {(CatCode === "03" || CatCode === "33") && (
+              <HCRBasicFieldsL15
+                additionalFrom={additionalFrom}
+                onChange={onChange}
+                starCategory={starCategory}
+                starCategoryRating={starCategoryRating}
+                errors={errors}
+              />
             )}
 
             {/* <div className="form-group full-width">
@@ -63,7 +72,10 @@ export default function RestaurantAdditionalDetails({
                 />
               </div>
             </div> */}
-            {(CatCode === '05' || CatCode === '31') && (
+            {(CatCode === "05" ||
+              CatCode === "31" ||
+              CatCode === "04" ||
+              CatCode === "30") && (
               <HCRBasicFieldsL17
                 additionalFrom={additionalFrom}
                 hoursOfSaleList={hoursOfSaleList}
@@ -73,9 +85,43 @@ export default function RestaurantAdditionalDetails({
             )}
 
             {/* Hcr Question List */}
-            <div className="form-group full-width">
-              <HcrQuestionList questions={questions} onChange={onQuestionsChange} error={errors?.answer} />
-            </div>
+            {(CatCode === "05" || CatCode === "31") && (
+              <div className="form-group full-width">
+                <HcrQuestionList
+                  questions={questions}
+                  onChange={onQuestionsChange}
+                  error={errors?.answer}
+                />
+              </div>
+            )}
+
+            {!(CatCode === "") && (
+              <div className="form-group">
+                <label className="hcr-form-label">
+                  Tin Number
+                  <span className="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Tin Number"
+                  value={additionalFrom.TINNumber}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    if (/^\d*\.?\d*$/.test(value)) {
+                      onChange("TINNumber", value);
+                    }
+                  }}
+                  maxLength={13}
+                  className="input-box"
+                />
+                {errors.TINNumber && (
+                  <p className="error-text">{errors.TINNumber}</p>
+                )}
+              </div>
+            )}
 
             <div className="form-group full-width">
               <DirectorsList
@@ -87,7 +133,11 @@ export default function RestaurantAdditionalDetails({
                 directorsError={errors?.directors}
               />
               <div className="error-text-container">
-                {errors?.directors?.globalError && <span className="error-text-all">{errors?.directors?.globalError}</span>}
+                {errors?.directors?.globalError && (
+                  <span className="error-text-all">
+                    {errors?.directors?.globalError}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -102,10 +152,13 @@ export default function RestaurantAdditionalDetails({
                   hoursOfSaleList={hoursOfSaleList}
                   errors={errors?.restaurantError}
                 />
-                
               )}
               <div className="error-text-container">
-                {errors?.restaurantGlobalError && <span className="error-text-all">{errors?.restaurantGlobalError}</span>}
+                {errors?.restaurantGlobalError && (
+                  <span className="error-text-all">
+                    {errors?.restaurantGlobalError}
+                  </span>
+                )}
               </div>
             </div>
           </div>

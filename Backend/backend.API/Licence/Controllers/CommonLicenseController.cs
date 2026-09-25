@@ -70,8 +70,8 @@ namespace backend.API.Licence.Controllers
         {
             var result = await _LicenseService.GetPendingApplicationIds(
                 dto.CatCode,
-                dto.RegID,
-                dto.FinYear);
+                dto.RegID
+                );
 
             if (result == null)
             {

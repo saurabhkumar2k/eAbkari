@@ -183,7 +183,43 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
 
     }
 
-    if ((CatCode === "04" || CatCode === "30") || (CatCode === '05' || CatCode === '31')) {
+    if ((CatCode === "03" || CatCode === "33")  ) {
+
+         const totalRoomErr = validateSiteNum(additionalFrom.totalRoom, "Total No. Rooms");
+        if (totalRoomErr) errors.totalRoom = totalRoomErr;
+
+        const staffStrengthErr = validateSiteNum(additionalFrom.staffStrength, "Staff strength");
+        if (staffStrengthErr) errors.staffStrength = staffStrengthErr;
+
+        const starCategoryErr = selectCheck(additionalFrom.starCategory, "Star category approval by Department");
+        if (starCategoryErr) errors.starCategory = starCategoryErr;
+        
+        if(additionalFrom.starCategory === "Y")
+        {
+            const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category");
+            if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
+        }
+
+        const HasStoreProvisionYNErr = selectCheck(additionalFrom.HasStoreProvisionYN, "Whether the premises have provision for store");
+        if (HasStoreProvisionYNErr) errors.HasStoreProvisionYN = HasStoreProvisionYNErr;
+
+        if(additionalFrom.HasStoreProvisionYN === "Y")
+        {
+            const StoreLocationInHotelErr = selectCheck(additionalFrom.StoreLocationInHotel, "Location of store in Hotel");
+            if (StoreLocationInHotelErr) errors.StoreLocationInHotel = StoreLocationInHotelErr;
+        }
+  
+        const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+        if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
+
+        const religiousPlaceDistErr = selectCheck(additionalFrom.religiousPlaceDist, "Religious Place Distance");
+        if (religiousPlaceDistErr) errors.religiousPlaceDist = religiousPlaceDistErr;
+
+        const directorsErr = validateDirectors(additionalFrom.directors);
+        if (directorsErr) errors.directors = directorsErr;
+    }
+
+    if ((CatCode === "04" || CatCode === "30") || (CatCode === '05' || CatCode === '31') ) {
         const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
         if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
@@ -196,6 +232,11 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
         const directorsErr = validateDirectors(additionalFrom.directors);
         if (directorsErr) errors.directors = directorsErr;
     }
+
+    const TINNumberErr = requiredCheck(additionalFrom.TINNumber, "Tin Number");
+    if (TINNumberErr) errors.TINNumber = TINNumberErr;
+
+
 
     // console.log("Test 111111111111")
     // Set the error state
@@ -210,7 +251,7 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
 
     return errors;
 
-    debugger;
+    // debugger;
     // const hasStringErrors = Object.keys(errors).some(key => {
     //   if (key === 'directors') return false; // Skip the nested object here
     //   return errors[key] !== ""; // Returns true if an error string is not empty

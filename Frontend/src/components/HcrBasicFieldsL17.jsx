@@ -301,11 +301,11 @@ const HcrBasicFields = ({
         </label>
 
         <select
-          value={additionalFrom.hourOfSale}
+          value={additionalFrom.hourOfSale || ""}
           onChange={(e) => onChange("hourOfSale", e.target.value)}
           className="input-box"
         >
-          <option value="0">Select Hour of Sale</option>
+          <option value="">Select Hour of Sale</option>
           <option value="1">11 AM - 1 AM</option>
           <option value="2">11 AM - 1 AM</option>
           {hoursOfSaleList.map((item) => (

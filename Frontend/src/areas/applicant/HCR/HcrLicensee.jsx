@@ -1,10 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  ShieldAlert,
-} from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ShieldAlert } from "lucide-react";
 
 import { createApplicant } from "../../../Model/Applicant";
 import { createHCRApplicant } from "../../../Model/HCRApplicant";
@@ -20,19 +15,13 @@ import HcrSiteDocumentsStep from "./HcrSiteDocumentsStep";
 import HcrDeclarationStep from "./HcrDeclarationStep";
 // import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 
-
-
 import {
   validateAdditionalSiteData,
   validateSiteData,
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import {
-  validateDirectors,
-  validateRestaurantDetails
-} from "./validation";
-
+import { validateDirectors, validateRestaurantDetails } from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -50,9 +39,8 @@ export default function HcrLicensee({
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicationId, setApplicationId] = useState(
-    localStorage.getItem("applicationId")
+    localStorage.getItem("applicationId"),
   );
-
 
   // =========================================================
   // Forms
@@ -68,7 +56,6 @@ export default function HcrLicensee({
   // Master Data
   // =========================================================
 
-
   const [states, setStates] = useState([]);
 
   const [applicantDistricts, setApplicantDistricts] = useState([]);
@@ -79,14 +66,11 @@ export default function HcrLicensee({
 
   const [restaurantSubDivisions, setRestaurantSubDivisions] = useState([]);
 
-  const [restaurantPoliceStations, setRestaurantPoliceStations] =
-    useState([]);
+  const [restaurantPoliceStations, setRestaurantPoliceStations] = useState([]);
 
   const [constitutionTypes, setConstitutionTypes] = useState([]);
 
   const [licenseGroups, setLicenseGroups] = useState([]);
-
-
 
   // =========================================================
   // Questions
@@ -249,7 +233,6 @@ export default function HcrLicensee({
     }));
   };
 
-
   const validateApplicant = () => {
     debugger;
     const errors = validateApplicantData(applicantForm);
@@ -260,7 +243,7 @@ export default function HcrLicensee({
     if (Object.keys(errors).length > 0) {
       triggerToast(
         "Please verify required fields in applicant profile.",
-        "error"
+        "error",
       );
       return false;
     }
@@ -303,10 +286,7 @@ export default function HcrLicensee({
 
     // Trigger Toast alerts if fields fail validation
     if (Object.keys(errors).length > 0) {
-      triggerToast(
-        "Please verify restaurant/site details.",
-        "error"
-      );
+      triggerToast("Please verify restaurant/site details.", "error");
       return false;
     }
 
@@ -330,17 +310,18 @@ export default function HcrLicensee({
     }));
   };
 
-
   const validateAdditionalSiteDetails = () => {
     debugger;
 
-    console.log(additionalFrom)
+    console.log(additionalFrom);
     const AdditionalRestaurantFrom = additionalFrom;
     AdditionalRestaurantFrom.questions = questions;
     AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
-    const errors = validateAdditionalSiteData(AdditionalRestaurantFrom, selectedLicenseCode);
-    console.log(errors)
-
+    const errors = validateAdditionalSiteData(
+      AdditionalRestaurantFrom,
+      selectedLicenseCode,
+    );
+    console.log(errors);
 
     // console.log("Test 111111111111")
     // Set the error state
@@ -351,22 +332,25 @@ export default function HcrLicensee({
     //   Object.keys(errors).length > 0 &&
     //   Array.isArray(errors.directors?.errors) &&
     //   errors.directors.errors.some(err => err !== null)
-    // ) 
+    // )
 
-    const hasStringErrors = Object.keys(errors).some(key => {
-      if (key === 'directors') return false; // Skip the nested object here
+    const hasStringErrors = Object.keys(errors).some((key) => {
+      if (key === "directors") return false; // Skip the nested object here
       return errors[key] !== ""; // Returns true if an error string is not empty
     });
 
     // 2. Check if the nested directors array contains any real error objects
-    const hasDirectorErrors = Array.isArray(errors.directors?.errors) &&
-      errors.directors.errors.some(err => err !== null && Object.keys(err || {}).length > 0);
+    const hasDirectorErrors =
+      Array.isArray(errors.directors?.errors) &&
+      errors.directors.errors.some(
+        (err) => err !== null && Object.keys(err || {}).length > 0,
+      );
 
     // 3. Stop submission if either condition is true
     if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
       triggerToast(
         "Please verify restaurant/site additional details.",
-        "error"
+        "error",
       );
       return false;
     }
@@ -394,9 +378,7 @@ export default function HcrLicensee({
   // =========================================================
 
   useEffect(() => {
-    fetch(
-      "http://localhost:5214/api/LGDiretory/ConstitutionType"
-    )
+    fetch("http://localhost:5214/api/LGDiretory/ConstitutionType")
       .then((res) => res.json())
       .then((data) => {
         setConstitutionTypes(data || []);
@@ -416,7 +398,7 @@ export default function HcrLicensee({
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`
+        `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`,
       );
 
       const data = await response.json();
@@ -442,7 +424,7 @@ export default function HcrLicensee({
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`,
       );
 
       const data = await response.json();
@@ -468,7 +450,7 @@ export default function HcrLicensee({
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`,
       );
 
       if (!response.ok) {
@@ -489,15 +471,13 @@ export default function HcrLicensee({
 
   useEffect(() => {
     if (applicantForm.StateUT) {
-      fetchDistricts(
-        applicantForm.StateUT, "applicantForm"
-      );
+      fetchDistricts(applicantForm.StateUT, "applicantForm");
     }
   }, [applicantForm.StateUT]);
 
   useEffect(() => {
     if (applicantForm.district) {
-      fetchSubDivisions(applicantForm.district, 'applicantForm');
+      fetchSubDivisions(applicantForm.district, "applicantForm");
     }
   }, [applicantForm.district]);
 
@@ -511,7 +491,6 @@ export default function HcrLicensee({
     }
   }, [siteForm.State]);
 
-
   useEffect(() => {
     if (siteForm.DistrictCode) {
       fetchPoliceStations(siteForm.DistrictCode);
@@ -519,20 +498,24 @@ export default function HcrLicensee({
     }
   }, [siteForm.DistrictCode]);
 
+  
+
   // =========================================================
   // Load Applicant
   // =========================================================
 
   useEffect(() => {
+    debugger;
     if (!regId) return;
-
-    loadApplicantData(regId);
+    if(!loadPreviousAppData(regId)){
+      loadApplicantData(regId);
+    }
   }, [regId]);
 
   const loadApplicantData = async (registrationId) => {
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`
+        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`,
       );
 
       if (!response.ok) {
@@ -541,73 +524,153 @@ export default function HcrLicensee({
 
       const data = await response.json();
 
-
       if (data.tateUT) {
-        await fetchDistricts(
-          data.stateUT,
-          "applicantForm"
-        );
+        await fetchDistricts(data.stateUT, "applicantForm");
       }
 
       setApplicantForm((prev) => ({
         ...prev,
 
-        applicantName:
-          `${data.firstName || ""} ${data.lastName || ""
-            }`.trim(),
+        applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
 
-        fatherHusbandName:
-          data.fatherHusbandName || "",
+        fatherHusbandName: data.fatherHusbandName || "",
 
-        dateOfBirth: data.dateOfBirth
-          ? data.dateOfBirth.split("T")[0]
-          : "",
+        dateOfBirth: data.dateOfBirth ? data.dateOfBirth.split("T")[0] : "",
 
         panNo: data.panNo || "",
 
-        ConstitutionType:
-          data.ConstitutionType || "",
+        ConstitutionType: data.ConstitutionType || "",
 
-        occupation:
-          data.occupation || "",
+        occupation: data.occupation || "",
 
-        addressLine1:
-          data.addressLine1 || "",
+        addressLine1: data.addressLine1 || "",
 
-        addressLine2:
-          data.addressLine2 || "",
+        addressLine2: data.addressLine2 || "",
 
-        StateUT:
-          data.stateUT.trim() || "",
+        StateUT: data.stateUT.trim() || "",
 
-        district:
-          data.district.trim() || "",
+        district: data.district.trim() || "",
 
-        subDivision:
-          data.subDivision.trim()
-            ? String(data.subDivision).trim()
-            : "",
+        subDivision: data.subDivision.trim()
+          ? String(data.subDivision).trim()
+          : "",
 
-        pin:
-          data.pin || "",
+        pin: data.pin || "",
 
-        email:
-          data.email || "",
+        email: data.email || "",
 
-        mobile:
-          data.mobile || "",
+        mobile: data.mobile || "",
 
-        landline:
-          data.landline || "",
+        landline: data.landline || "",
 
         ownerType,
         catCode: selectedLicenseCode,
       }));
-
     } catch (error) {
       console.error("Applicant Load Error:", error);
     }
   };
+
+  // =========================================================
+  // Load Previous Application Data if exist
+  // =========================================================
+
+  const loadPreviousAppData = async (regId) => {
+    const payload = {
+      catCode: selectedLicenseCode,
+      regID: regId
+    };
+    try {
+      
+    
+    const getAppId = await fetch(
+      "http://localhost:5214/api/CommonLicense/GetPendingApplicationIds",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+    if (!getAppId.ok) {
+      // throw new Error("Unable to load applicant");
+      return false
+    }
+    const data = await getAppId.json();
+    const applicationIdNo = data?.applicationIdNo
+    if(applicationIdNo){
+      BindPendingAppData(applicationIdNo)
+    }else{
+      return false
+    }
+    return true
+    } catch (error) {
+      return false
+    }
+  };
+
+  const BindPendingAppData = async (applicationIdNo) =>{
+    debugger;
+    try {
+      /*  Set Applicant Data using Application Id */ 
+      const response = await fetch(
+        `http://localhost:5214/api/CommonLicense/GetApplicantDetails/${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const data = await response.json();
+
+      if (data.stateUT) {
+        await fetchDistricts(data.stateUT, "applicantForm");
+      }
+
+      setApplicantForm((prev) => ({
+        ...prev,
+
+        applicantName: `${data.applicantName || ""}`.trim(),
+
+        fatherHusbandName: data.fatherHusbandName || "",
+
+        dateOfBirth: data.dob ? data.dob.split("T")[0] : "",
+
+        panNo: data.panNo || "",
+
+        ConstitutionType: data.ConstitutionType || "",
+
+        occupation: data.occupation || "",
+
+        addressLine1: data.permanentAddress || "",
+
+        addressLine2: data.presentAddress || "",
+
+        StateUT: data.stateUT.trim() || "",
+
+        district: data.district.trim() || "",
+
+        subDivision: data.subDivision.trim()
+          ? String(data.subDivision).trim()
+          : "",
+
+        pin: data.pin || "",
+
+        email: data.email || "",
+
+        mobile: data.mobile || "",
+
+        landline: data.landline || "",
+
+        ownerType,
+        catCode: selectedLicenseCode,
+      }));
+      
+    } catch (error) {
+      
+    }
+  }
 
   // =========================================================
   // Questions
@@ -623,7 +686,7 @@ export default function HcrLicensee({
   const fetchQuestions = async (catCode) => {
     try {
       const response = await fetch(
-        `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`
+        `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`,
       );
 
       if (!response.ok) {
@@ -641,16 +704,17 @@ export default function HcrLicensee({
         normalizedQuestions.map((question) => {
           const savedAnswer = questionsAnswers.find(
             (answer) =>
-              answer.questionId === (question.questionId ?? question.QuestionId)
+              answer.questionId ===
+              (question.questionId ?? question.QuestionId),
           );
 
           return savedAnswer
             ? {
-              ...question,
-              answer: savedAnswer.answerGiven,
-            }
+                ...question,
+                answer: savedAnswer.answerGiven,
+              }
             : question;
-        })
+        }),
       );
     } catch (error) {
       console.error("Question API Error:", error);
@@ -663,42 +727,37 @@ export default function HcrLicensee({
       prev.map((question) =>
         question.questionId === questionId
           ? {
-            ...question,
-            answer,
-          }
-          : question
-      )
+              ...question,
+              answer,
+            }
+          : question,
+      ),
     );
 
     setQuestionsAnswers((prev) => {
       const index = questions.findIndex(
-        (question) =>
-          question.questionId === questionId
+        (question) => question.questionId === questionId,
       );
 
-      const existing = prev.find(
-        (item) => item.questionId === questionId
-      );
+      const existing = prev.find((item) => item.questionId === questionId);
 
       if (existing) {
         return prev.map((item) =>
           item.questionId === questionId
             ? {
-              ...item,
-              applicationIdNo:
-                applicationId || "",
-              answerGiven: answer,
-              slNo: index + 1,
-            }
-            : item
+                ...item,
+                applicationIdNo: applicationId || "",
+                answerGiven: answer,
+                slNo: index + 1,
+              }
+            : item,
         );
       }
 
       return [
         ...prev,
         {
-          applicationIdNo:
-            applicationId || "",
+          applicationIdNo: applicationId || "",
           questionId,
           answerGiven: answer,
           slNo: index + 1,
@@ -707,12 +766,9 @@ export default function HcrLicensee({
     });
   };
 
-
   const handleRestaurantDetailChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
-      const restaurantDetails = [
-        ...(prev.restaurantDetails || []),
-      ];
+      const restaurantDetails = [...(prev.restaurantDetails || [])];
 
       restaurantDetails[index] = {
         ...restaurantDetails[index],
@@ -726,65 +782,75 @@ export default function HcrLicensee({
     });
   };
 
-const addRestaurantDetail = () => {
-  debugger;
-  const errors = {};
-  let additionalUpdateErrors = { ...additionalFormErrors };
+  const addRestaurantDetail = () => {
+    debugger;
+    const errors = {};
+    let additionalUpdateErrors = { ...additionalFormErrors };
 
-  // 1. Run the evaluation using your custom function
-  const restaurantErr = validateRestaurantDetails(additionalFrom.restaurantDetails);
-  if (restaurantErr) errors.restaurantDetails = restaurantErr;
+    // 1. Run the evaluation using your custom function
+    const restaurantErr = validateRestaurantDetails(
+      additionalFrom.restaurantDetails,
+    );
+    if (restaurantErr) errors.restaurantDetails = restaurantErr;
 
-  // 2. Check if the data structure contains items before proceeding
-  const hasRestaurants = additionalFrom.restaurantDetails && additionalFrom.restaurantDetails.length > 0;
+    // 2. Check if the data structure contains items before proceeding
+    const hasRestaurants =
+      additionalFrom.restaurantDetails &&
+      additionalFrom.restaurantDetails.length > 0;
 
-  if (hasRestaurants) {
-    additionalUpdateErrors.restaurantDetails = errors.restaurantDetails;
-    setAdditionalFormErrors(additionalUpdateErrors);
-    console.log("HcrLicensee - addRestaurantDetail additionalFormErrors ", additionalFormErrors, additionalUpdateErrors);
-  }
-
-  // Condition 1: Function evaluation fails AND the array is populated
-  const isInvalidWithData = restaurantErr?.isValid === false && hasRestaurants;
-
-  // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
-  const hasRowErrors = Array.isArray(restaurantErr?.errors) && restaurantErr.errors.some(err => err !== null);
-
-  // 3. Prevent structural addition if the active items contain errors
-  if (isInvalidWithData || hasRowErrors) {
-    return; // Halt structural changes
-  } else {
-    if (additionalUpdateErrors.restaurantDetails) {
-      additionalUpdateErrors.restaurantDetails.errors = []; // Flush existing error tracking array safely
+    if (hasRestaurants) {
+      additionalUpdateErrors.restaurantDetails = errors.restaurantDetails;
       setAdditionalFormErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addRestaurantDetail additionalFormErrors ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
     }
-  }
 
-  // 4. Safely push the fresh entry layout block forward into the state container
-  setAdditionalFrom((prev) => ({
-    ...prev,
-    restaurantDetails: [
-      ...(prev.restaurantDetails || []),
-      {
-        NameOfAdditionalRestaurant: "",
-        NumberOfSeatCovers: "",
-        NumberOfCounter: "",
-        AddtionalArea: "",
-        AreaSqMtr: "",
-        ForeignLiquor: "",
-        HoursofSale: "",
-        HoursofSaleAddtionalArea: ""
-      },
-    ],
-  }));
-};
+    // Condition 1: Function evaluation fails AND the array is populated
+    const isInvalidWithData =
+      restaurantErr?.isValid === false && hasRestaurants;
 
+    // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+    const hasRowErrors =
+      Array.isArray(restaurantErr?.errors) &&
+      restaurantErr.errors.some((err) => err !== null);
+
+    // 3. Prevent structural addition if the active items contain errors
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Halt structural changes
+    } else {
+      if (additionalUpdateErrors.restaurantDetails) {
+        additionalUpdateErrors.restaurantDetails.errors = []; // Flush existing error tracking array safely
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
+    }
+
+    // 4. Safely push the fresh entry layout block forward into the state container
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      restaurantDetails: [
+        ...(prev.restaurantDetails || []),
+        {
+          NameOfAdditionalRestaurant: "",
+          NumberOfSeatCovers: "",
+          NumberOfCounter: "",
+          AddtionalArea: "",
+          AreaSqMtr: "",
+          ForeignLiquor: "",
+          HoursofSale: "",
+          HoursofSaleAddtionalArea: "",
+        },
+      ],
+    }));
+  };
 
   const deleteRestaurantDetail = (index) => {
     setAdditionalFrom((prev) => ({
       ...prev,
       restaurantDetails: (prev.restaurantDetails || []).filter(
-        (_, i) => i !== index
+        (_, i) => i !== index,
       ),
     }));
   };
@@ -798,18 +864,16 @@ const addRestaurantDetail = () => {
       return;
     }
 
-    const applicationIdNo =
-      localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationId");
 
     if (!applicationIdNo || !selectedLicenseCode) {
       return;
     }
 
-    const docStatus =
-      currentStep === 4 ? "A" : "S";
+    const docStatus = currentStep === 4 ? "A" : "S";
 
     fetch(
-      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`
+      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
@@ -821,8 +885,7 @@ const addRestaurantDetail = () => {
         return [
           ...prev,
           {
-            applicationIdNo:
-              applicationId || "",
+            applicationIdNo: applicationId || "",
             questionId,
             answerGiven: answer,
             slNo: index + 1,
@@ -837,9 +900,7 @@ const addRestaurantDetail = () => {
 
   const handleDirectorChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
-      const directors = [
-        ...(prev.directors || []),
-      ];
+      const directors = [...(prev.directors || [])];
 
       directors[index] = {
         ...directors[index],
@@ -872,23 +933,28 @@ const addRestaurantDetail = () => {
     const directorsErr = validateDirectors(additionalFrom.directors);
     if (directorsErr) errors.directors = directorsErr;
 
-
-
-
     // Check if the array exists and has at least one object
-    const hasDirectors = Array.isArray(additionalFrom.directors) && additionalFrom.directors.length > 0;
+    const hasDirectors =
+      Array.isArray(additionalFrom.directors) &&
+      additionalFrom.directors.length > 0;
 
     if (hasDirectors) {
       additionalUpdateErrors.directors = errors.directors; // Clear the errors array if no errors are found
       setAdditionalFormErrors(additionalUpdateErrors);
-      console.log("HcrLicensee - addDirector additionalFormErrors  ", additionalFormErrors, additionalUpdateErrors)
+      console.log(
+        "HcrLicensee - addDirector additionalFormErrors  ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
     }
 
     // Condition 1: Local error object says invalid AND director list is not empty
     const isInvalidWithData = directorsErr?.isValid === false && hasDirectors;
 
     // Condition 2: Checks if the errors array exists AND contains at least one actual error object (filters out null)
-    const hasRowErrors = Array.isArray(directorsErr?.errors) && directorsErr.errors.some(err => err !== null);
+    const hasRowErrors =
+      Array.isArray(directorsErr?.errors) &&
+      directorsErr.errors.some((err) => err !== null);
 
     // Safely halts form submission using the fresh local evaluation
     if (isInvalidWithData || hasRowErrors) {
@@ -899,7 +965,6 @@ const addRestaurantDetail = () => {
         setAdditionalFormErrors(additionalUpdateErrors);
       }
     }
-
 
     setAdditionalFrom((prev) => ({
       ...prev,
@@ -916,9 +981,7 @@ const addRestaurantDetail = () => {
   const deleteDirector = (index) => {
     setAdditionalFrom((prev) => ({
       ...prev,
-      directors: (prev.directors || []).filter(
-        (_, i) => i !== index
-      ),
+      directors: (prev.directors || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -931,18 +994,16 @@ const addRestaurantDetail = () => {
       return;
     }
 
-    const applicationIdNo =
-      localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationId");
 
     if (!applicationIdNo || !selectedLicenseCode) {
       return;
     }
 
-    const docStatus =
-      currentStep === 4 ? "A" : "S";
+    const docStatus = currentStep === 4 ? "A" : "S";
 
     fetch(
-      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`
+      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
@@ -994,59 +1055,41 @@ const addRestaurantDetail = () => {
     const payload = {
       regId: Number(regId),
 
-      applicantName:
-        applicantForm.applicantName,
+      applicantName: applicantForm.applicantName,
 
-      dob:
-        applicantForm.dateOfBirth,
+      dob: applicantForm.dateOfBirth,
 
-      applicationIdNo:
-        applicantForm.applicationId || null,
+      applicationIdNo: applicantForm.applicationId || null,
 
-      fatherHusbandName:
-        applicantForm.fatherHusbandName,
+      fatherHusbandName: applicantForm.fatherHusbandName,
 
-      occupation:
-        applicantForm.occupation,
+      occupation: applicantForm.occupation,
 
-      panNo:
-        applicantForm.panNo,
+      panNo: applicantForm.panNo,
 
-      presentAddress:
-        applicantForm.addressLine1,
+      presentAddress: applicantForm.addressLine1,
 
-      permanentAddress:
-        applicantForm.addressLine2,
+      permanentAddress: applicantForm.addressLine2,
 
-      stateUT:
-        applicantForm.stateUT,
+      stateUT: applicantForm.stateUT,
 
-      district:
-        applicantForm.district,
+      district: applicantForm.district,
 
-      subDivision:
-        applicantForm.subDivision,
+      subDivision: applicantForm.subDivision,
 
-      pin:
-        applicantForm.pin,
+      pin: applicantForm.pin,
 
-      email:
-        applicantForm.email,
+      email: applicantForm.email,
 
-      mobile:
-        applicantForm.mobile,
+      mobile: applicantForm.mobile,
 
-      landLine:
-        applicantForm.landline || "",
+      landLine: applicantForm.landline || "",
 
-      ownerType:
-        ownerType.code,
+      ownerType: ownerType.code,
 
-      catCode:
-        selectedLicenseCode,
+      catCode: selectedLicenseCode,
 
-      activityId:
-        "F",
+      activityId: "F",
     };
 
     // console.log(payload)
@@ -1057,47 +1100,30 @@ const addRestaurantDetail = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       const data = await response.json();
 
-      setApplicationId(
-        data.applicationId
-      );
+      setApplicationId(data.applicationId);
       applicantForm.applicationId = data.applicationId;
 
-      localStorage.setItem(
-        "applicationId",
-        data.applicationId
-      );
+      localStorage.setItem("applicationId", data.applicationId);
 
-      localStorage.setItem(
-        "catCode",
-        data.catCode || selectedLicenseCode
-      );
+      localStorage.setItem("catCode", data.catCode || selectedLicenseCode);
 
       return true;
     } catch (error) {
-      console.error(
-        "Applicant Save Error:",
-        error
-      );
+      console.error("Applicant Save Error:", error);
 
-      triggerToast(
-        "Unable to save applicant data.",
-        "error"
-      );
+      triggerToast("Unable to save applicant data.", "error");
 
       return false;
     }
@@ -1117,10 +1143,7 @@ const addRestaurantDetail = () => {
 
       Regnumber: regId,
 
-      ApplicationIdNo:
-        localStorage.getItem(
-          "applicationId"
-        ),
+      ApplicationIdNo: localStorage.getItem("applicationId"),
 
       FinYear: "2026-2027",
 
@@ -1133,30 +1156,21 @@ const addRestaurantDetail = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Restaurant Save Error:",
-        error
-      );
+      console.error("Restaurant Save Error:", error);
 
-      triggerToast(
-        "Unable to save restaurant details.",
-        "error"
-      );
+      triggerToast("Unable to save restaurant details.", "error");
 
       return false;
     }
@@ -1167,8 +1181,7 @@ const addRestaurantDetail = () => {
   // =========================================================
 
   const saveAdditional = async () => {
-    const applicationIdNo =
-      localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationId");
 
     if (!validateAdditionalSiteDetails()) {
       return false;
@@ -1178,171 +1191,179 @@ const addRestaurantDetail = () => {
       const formData = new FormData();
 
       // Additional Details
-      Object.entries(additionalFrom).forEach(
-        ([key, value]) => {
-          if (key === "directors") return;
+      Object.entries(additionalFrom).forEach(([key, value]) => {
+        if (key === "directors") return;
 
-          const propertyName =
-            key.charAt(0).toUpperCase() +
-            key.slice(1);
+        const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
 
-          const booleanFields = [
-            "additionalArea",
-            "isSuitableGagdget",
-            "isLocalAuthorityApproved",
-            "isIndicatingLiquor",
-          ];
+        const booleanFields = [
+          "additionalArea",
+          "isSuitableGagdget",
+          "isLocalAuthorityApproved",
+          "isIndicatingLiquor",
+        ];
 
-          const normalizedValue =
-            booleanFields.includes(key)
-              ? value === true ||
-                value === "true" ||
-                value === "True" ||
-                value === "1" ||
-                value === 1
-                ? "true"
-                : value === false ||
-                  value === "false" ||
-                  value === "False" ||
-                  value === "0" ||
-                  value === 0
-                  ? "false"
-                  : String(value ?? "")
-              : value ?? "";
+        const normalizedValue = booleanFields.includes(key)
+          ? value === true ||
+            value === "true" ||
+            value === "True" ||
+            value === "1" ||
+            value === 1
+            ? "true"
+            : value === false ||
+                value === "false" ||
+                value === "False" ||
+                value === "0" ||
+                value === 0
+              ? "false"
+              : String(value ?? "")
+          : (value ?? "");
 
-          formData.append(
-            `AdditionalDetails.${propertyName}`,
-            normalizedValue
-          );
-        }
-      );
+        formData.append(`AdditionalDetails.${propertyName}`, normalizedValue);
+      });
 
-      formData.set(
-        "AdditionalDetails.ApplicationIdNo",
-        applicationIdNo || ""
-      );
+      formData.set("AdditionalDetails.ApplicationIdNo", applicationIdNo || "");
 
       // Partners
-      (
-        additionalFrom.directors || []
-      ).forEach((partner, index) => {
-        formData.append(
-          `Partners[${index}].Id`,
-          "0"
-        );
+      (additionalFrom.directors || []).forEach((partner, index) => {
+        formData.append(`Partners[${index}].Id`, "0");
 
         formData.append(
           `Partners[${index}].ApplicationIdNo`,
-          applicationIdNo || ""
+          applicationIdNo || "",
         );
 
-        formData.append(
-          `Partners[${index}].PName`,
-          partner.PName || ""
-        );
+        formData.append(`Partners[${index}].PName`, partner.PName || "");
 
         formData.append(
           `Partners[${index}].PPerShare`,
-          partner.PPerShare || ""
+          partner.PPerShare || "",
         );
 
-        formData.append(
-          `Partners[${index}].PPanNo`,
-          partner.PPanNo || ""
-        );
+        formData.append(`Partners[${index}].PPanNo`, partner.PPanNo || "");
 
         formData.append(
           `Partners[${index}].PExciseNominee`,
-          partner.PExciseNominee || ""
+          partner.PExciseNominee || "",
         );
 
-        formData.append(
-          `Partners[${index}].DINNo`,
-          partner.DINNo || ""
-        );
+        formData.append(`Partners[${index}].DINNo`, partner.DINNo || "");
 
         if (partner.panFile instanceof File) {
-          formData.append(
-            `Partners[${index}].PanFile`,
-            partner.panFile
-          );
+          formData.append(`Partners[${index}].PanFile`, partner.panFile);
 
           formData.append(
             `Partners[${index}].PanFileUploaded`,
-            partner.panFile.name
+            partner.panFile.name,
           );
         }
 
-        if (
-          partner.addressFile instanceof File
-        ) {
+        if (partner.addressFile instanceof File) {
           formData.append(
             `Partners[${index}].AddressFile`,
-            partner.addressFile
+            partner.addressFile,
           );
 
           formData.append(
             `Partners[${index}].AddressFileUploaded`,
-            partner.addressFile.name
+            partner.addressFile.name,
           );
         }
 
-        formData.append(
-          `Partners[${index}].SlNo`,
-          String(index + 1)
-        );
+        formData.append(`Partners[${index}].SlNo`, String(index + 1));
       });
 
       // Answers
-      questionsAnswers.forEach(
-        (item, index) => {
-          formData.append(
-            `ApplicantAnswers[${index}].ApplicationIdNo`,
-            applicationIdNo || ""
-          );
+      questionsAnswers?.forEach((item, index) => {
+        formData.append(
+          `ApplicantAnswers[${index}].ApplicationIdNo`,
+          applicationIdNo || "",
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].QuestionId`,
-            item.questionId
-          );
+        formData.append(
+          `ApplicantAnswers[${index}].QuestionId`,
+          item.questionId,
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].AnswerGiven`,
-            item.answerGiven || ""
-          );
+        formData.append(
+          `ApplicantAnswers[${index}].AnswerGiven`,
+          item.answerGiven || "",
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].SlNo`,
-            String(index + 1)
-          );
-        }
-      );
+        formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
+      });
+
+      additionalFrom?.restaurantDetails?.forEach((item, index) => {
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].ApplicationIdNo`,
+          item.ApplicationIdNo ?? applicationId ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NameOfAdditionalRestaurant`,
+          item.NameOfAdditionalRestaurant ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NumberOfSeatCovers`,
+          item.NumberOfSeatCovers ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NumberOfCounter`,
+          item.NumberOfCounter ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].AddtionalArea`,
+          item.AddtionalArea ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].HoursofSale`,
+          item.HoursofSale ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].HoursofSaleAddtionalArea`,
+          item.HoursofSaleAddtionalArea ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].ForeignLiquor`,
+          item.ForeignLiquor ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].AreaSqMtr`,
+          item.AreaSqMtr ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].slNo`,
+          item.slNo ?? index + 1,
+        );
+      });
+
+      console.log(formData);
 
       const response = await fetch(
         "http://localhost:5214/api/CommonHCR/SaveAdditionalHCRCompleteDetails",
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Additional Save Error:",
-        error
-      );
+      console.error("Additional Save Error:", error);
 
-      triggerToast(
-        "Unable to save additional details.",
-        "error"
-      );
+      triggerToast("Unable to save additional details.", "error");
 
       return false;
     }
@@ -1355,7 +1376,7 @@ const addRestaurantDetail = () => {
   const uploadDocuments = async () => {
     try {
       const filesToUpload = documents.filter(
-        (doc) => uploadedFiles[doc.docId]?.file
+        (doc) => uploadedFiles[doc.docId]?.file,
       );
 
       if (filesToUpload.length === 0) {
@@ -1366,41 +1387,26 @@ const addRestaurantDetail = () => {
 
       formData.append(
         "ApplicationIdNo",
-        localStorage.getItem(
-          "applicationId"
-        ) || ""
+        localStorage.getItem("applicationId") || "",
       );
 
-      formData.append(
-        "MobileNo",
-        applicantForm.mobile || ""
-      );
+      formData.append("MobileNo", applicantForm.mobile || "");
 
       let index = 0;
 
       filesToUpload.forEach((doc) => {
-        const uploaded =
-          uploadedFiles[doc.docId];
+        const uploaded = uploadedFiles[doc.docId];
 
         formData.append(
           `Documents[${index}].ApplicantSl`,
-          doc.applicantSl || 1
+          doc.applicantSl || 1,
         );
 
-        formData.append(
-          `Documents[${index}].DocId`,
-          doc.docId
-        );
+        formData.append(`Documents[${index}].DocId`, doc.docId);
 
-        formData.append(
-          `Documents[${index}].DocSl`,
-          doc.docSl || 1
-        );
+        formData.append(`Documents[${index}].DocSl`, doc.docSl || 1);
 
-        formData.append(
-          `Documents[${index}].DocumentFile`,
-          uploaded.file
-        );
+        formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
 
         index++;
       });
@@ -1410,25 +1416,20 @@ const addRestaurantDetail = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Document Upload Error:",
-        error
-      );
+      console.error("Document Upload Error:", error);
 
       triggerToast(
         "Unable to upload documents. Continuing to next step.",
-        "error"
+        "error",
       );
 
       return false;
@@ -1442,11 +1443,7 @@ const addRestaurantDetail = () => {
   const submitApplication = async () => {
     try {
       const finalSubmission = {
-        ApplicationIdNo:
-          applicationId ||
-          localStorage.getItem(
-            "applicationId"
-          ),
+        ApplicationIdNo: applicationId || localStorage.getItem("applicationId"),
 
         ApplicationStatus: "02",
       };
@@ -1456,64 +1453,39 @@ const addRestaurantDetail = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(
-            finalSubmission
-          ),
-        }
+          body: JSON.stringify(finalSubmission),
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
-      const appNo =
-        applicationId ||
-        localStorage.getItem(
-          "applicationId"
-        );
+      const appNo = applicationId || localStorage.getItem("applicationId");
 
       setReceiptData({
         applicationNo: appNo,
-        applicantName:
-          applicantForm.applicantName,
-        SiteName:
-          siteForm.SiteName,
-        SiteEmail:
-          siteForm.SiteEmail,
-        SiteMobile:
-          siteForm.SiteMobile,
-        dateFiled:
-          new Date().toLocaleDateString(
-            "en-IN"
-          ),
-        status:
-          "Filing Registered",
+        applicantName: applicantForm.applicantName,
+        SiteName: siteForm.SiteName,
+        SiteEmail: siteForm.SiteEmail,
+        SiteMobile: siteForm.SiteMobile,
+        dateFiled: new Date().toLocaleDateString("en-IN"),
+        status: "Filing Registered",
       });
 
       setSubmitSuccess(true);
 
       if (showToast) {
-        showToast(
-          "HCR Excise application submitted successfully!"
-        );
+        showToast("HCR Excise application submitted successfully!");
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Final Submission Error:",
-        error
-      );
+      console.error("Final Submission Error:", error);
 
-      triggerToast(
-        "Unable to submit application.",
-        "error"
-      );
+      triggerToast("Unable to submit application.", "error");
 
       return false;
     }
@@ -1536,8 +1508,7 @@ const addRestaurantDetail = () => {
   const handleNext = async () => {
     debugger;
     if (currentStep === 1) {
-      const success =
-        await saveApplicant();
+      const success = await saveApplicant();
 
       if (success) {
         setCurrentStep(2);
@@ -1548,8 +1519,7 @@ const addRestaurantDetail = () => {
     }
 
     if (currentStep === 2) {
-      const success =
-        await saveRestaurant();
+      const success = await saveRestaurant();
 
       if (success) {
         setCurrentStep(3);
@@ -1559,8 +1529,7 @@ const addRestaurantDetail = () => {
     }
 
     if (currentStep === 3) {
-      const success =
-        await saveAdditional();
+      const success = await saveAdditional();
 
       if (success) {
         setCurrentStep(4);
@@ -1600,7 +1569,6 @@ const addRestaurantDetail = () => {
   // console.log("COMPONENT:", RestaurantAdditionalDetails);
   // console.log("HcrApplicantStep - currentStep  ", currentStep)
 
-
   // =========================================================
   // RENDER
   // =========================================================
@@ -1619,80 +1587,71 @@ const addRestaurantDetail = () => {
 
   return (
     <div className="brand-registration-page select-none text-slate-800">
-
       {/* =====================================================
           HEADER / STEPPER
       ====================================================== */}
 
       <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 sm:p-5 mb-6 overflow-x-auto step-div-p">
         <div className="flex items-center justify-between min-w-[768px] relative px-2 sm:px-4">
-
           <div className="absolute top-[22px] left-8 right-8 h-[3px] bg-slate-100">
             <div
               className="h-full bg-blue-600 transition-all"
               style={{
-                width: `${((currentStep - 1) /
-                  (currentLicenseSteps.length - 1)) *
-                  100
-                  }%`,
+                width: `${
+                  ((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
+                }%`,
               }}
             />
           </div>
 
-          {currentLicenseSteps.map(
-            (step) => {
-              const isActive =
-                currentStep === step.num;
+          {currentLicenseSteps.map((step) => {
+            const isActive = currentStep === step.num;
 
-              const isCompleted =
-                currentStep > step.num;
+            const isCompleted = currentStep > step.num;
 
-              return (
+            return (
+              <div
+                key={step.id}
+                className="flex flex-col items-center flex-1 relative z-10"
+              >
                 <div
-                  key={step.id}
-                  className="flex flex-col items-center flex-1 relative z-10"
-                >
-                  <div
-                    className={`
+                  className={`
                       w-11 h-11 rounded-full
                       flex items-center justify-center
                       font-black text-sm border-2
-                      ${isCompleted
-                        ? "bg-emerald-600 border-emerald-600 text-white"
-                        : isActive
-                          ? "bg-blue-600 border-blue-600 text-white scale-110"
-                          : "bg-white border-slate-200 text-slate-400"
+                      ${
+                        isCompleted
+                          ? "bg-emerald-600 border-emerald-600 text-white"
+                          : isActive
+                            ? "bg-blue-600 border-blue-600 text-white scale-110"
+                            : "bg-white border-slate-200 text-slate-400"
                       }
                     `}
-                  >
-                    {isCompleted ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      step.num
-                    )}
-                  </div>
-
-                  <span
-                    className={`
-                      text-[11px] font-extrabold mt-2
-                      ${isActive
-                        ? "text-blue-600"
-                        : isCompleted
-                          ? "text-emerald-700"
-                          : "text-slate-500"
-                      }
-                    `}
-                  >
-                    {step.label}
-                  </span>
-
-                  <span className="text-[10px] text-slate-400 font-semibold">
-                    {step.sub}
-                  </span>
+                >
+                  {isCompleted ? <Check className="w-4 h-4" /> : step.num}
                 </div>
-              );
-            }
-          )}
+
+                <span
+                  className={`
+                      text-[11px] font-extrabold mt-2
+                      ${
+                        isActive
+                          ? "text-blue-600"
+                          : isCompleted
+                            ? "text-emerald-700"
+                            : "text-slate-500"
+                      }
+                    `}
+                >
+                  {step.label}
+                </span>
+
+                <span className="text-[10px] text-slate-400 font-semibold">
+                  {step.sub}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1701,7 +1660,6 @@ const addRestaurantDetail = () => {
       ====================================================== */}
 
       <div className="hcr-content-area">
-
         {/* STEP 4 */}
         {currentStep === 1 && (
           <HcrApplicantStep
@@ -1728,30 +1686,16 @@ const addRestaurantDetail = () => {
             states={states}
             districts={restaurantDistricts}
             subDivisions={restaurantSubDivisions}
-            policeStations={
-              restaurantPoliceStations
-            }
+            policeStations={restaurantPoliceStations}
             errors={siteFormErrors}
             onChange={handleRestaurantChange}
             onBack={() => setCurrentStep(1)}
             onContinue={handleNext}
-          />)}
+          />
+        )}
 
         {/* STEP 6 */}
         {currentStep === 3 && (
-          // <RestaurantAdditionalDetails
-          //   additionalFrom={testAdditionalFrom}
-          //   hoursOfSaleList={hoursOfSaleList}
-          //   constitutionType={applicantForm?.ConstitutionType}
-          //   questions={questions}
-          //   onChange={handleAdditionalChange}
-          //   onQuestionsChange={handleQuestions}
-          //   onDirectorChange={handleDirectorChange}
-          //   onAddDirector={addDirector}
-          //   onDeleteDirector={deleteDirector}
-          //   onBack={() => setCurrentStep(2)}
-          //   onContinue={handleNext}
-          // /> 
           <HcrAdditionalStep
             additionalFrom={additionalFrom}
             hoursOfSaleList={hoursOfSaleList}
@@ -1779,15 +1723,9 @@ const addRestaurantDetail = () => {
           <HcrPersonalDocumentsStep
             documents={documents}
             uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={
-              handleFileChange
-            }
-            handleDeleteFile={
-              handleDeleteFile
-            }
-            onBack={() =>
-              setCurrentStep(3)
-            }
+            handleDocumentFileChange={handleFileChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => setCurrentStep(3)}
             onContinue={goToSiteDocuments}
           />
         )}
@@ -1797,15 +1735,9 @@ const addRestaurantDetail = () => {
           <HcrSiteDocumentsStep
             documents={documents}
             uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={
-              handleFileChange
-            }
-            handleDeleteFile={
-              handleDeleteFile
-            }
-            onBack={() =>
-              setCurrentStep(4)
-            }
+            handleDocumentFileChange={handleFileChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => setCurrentStep(4)}
             onContinue={goToDeclaration}
           />
         )}
@@ -1816,9 +1748,7 @@ const addRestaurantDetail = () => {
             formData={applicantForm}
             formErrors={formErrors}
             onChange={handleApplicantChange}
-            onBack={() =>
-              setCurrentStep(5)
-            }
+            onBack={() => setCurrentStep(5)}
             onSubmit={handleNext}
           />
         )}

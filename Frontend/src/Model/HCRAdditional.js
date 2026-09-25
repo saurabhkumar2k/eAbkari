@@ -20,6 +20,9 @@ export const createHCRAdditional = () => ({
   starCategoryRating: "",
   restaurantArea: "",
   hourOfSale: "",
+  HasStoreProvisionYN: "",
+  StoreLocationInHotel:"",
+  TINNumber:"",
 
   // questionsList: [
   // ],
