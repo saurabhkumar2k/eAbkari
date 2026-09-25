@@ -194,7 +194,7 @@ namespace backend.API.Controllers
                         license.FatherHusbandName = dto.FatherHusbandName ?? "";
                         license.Occupation = dto.Occupation ?? "";
                         license.PanNo = dto.PanNo ?? "";
-                      
+
                         license.PresentAddress = dto.PresentAddress ?? "";
                         license.PermanentAddress = dto.PermanentAddress ?? "";
                         license.StateUT = dto.StateUT ?? "";
@@ -206,7 +206,7 @@ namespace backend.API.Controllers
                         license.LandLine = dto.LandLine ?? "";
                     }
 
-                    
+
                     existingApplication.LicenseType = dto.OwnerType;
 
                     await _context.SaveChangesAsync();
@@ -244,7 +244,7 @@ namespace backend.API.Controllers
                     RegId = (int)dto.RegId,
                     ApplicationIdNo = applicationId,
                     ApplicationDate = DateTime.Now,
-           
+
                     FinYear = finYear,
                     ApplicationStatus = "P",
                     CatCode = dto.CatCode,
@@ -289,19 +289,19 @@ namespace backend.API.Controllers
 
 
         }
-            
 
 
 
 
 
 
- [HttpPost("ApplyWarehouseLicense")]
-public async Task<IActionResult> CreateWarehouseLicense([FromBody] WarehouseDetailsDto dto)
-{
 
-if (!ModelState.IsValid)
-        return BadRequest(ModelState);
+        [HttpPost("ApplyWarehouseLicense")]
+        public async Task<IActionResult> CreateWarehouseLicense([FromBody] WarehouseDetailsDto dto)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
 
             //  var finYear = await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
@@ -481,15 +481,15 @@ if (!ModelState.IsValid)
                 // Agar CreatedDate ko preserve karna hai
                 // to yahan change mat karo.
             }
-    //        var licenseApplication =
-    //await _context.LicenseApplications
-    //    .FirstOrDefaultAsync(x =>
-    //        x.ApplicationIdNo == dto.ApplicationIdNo);
+            //        var licenseApplication =
+            //await _context.LicenseApplications
+            //    .FirstOrDefaultAsync(x =>
+            //        x.ApplicationIdNo == dto.ApplicationIdNo);
 
-    //        if (licenseApplication != null)
-    //        {
-    //            licenseApplication.CurrentStep = 3;
-    //        }
+            //        if (licenseApplication != null)
+            //        {
+            //            licenseApplication.CurrentStep = 3;
+            //        }
 
             await _context.SaveChangesAsync();
 
@@ -501,7 +501,7 @@ if (!ModelState.IsValid)
 
         }
 
-   
+
         [HttpPost("ApplyCompanydetails")]
         public async Task<IActionResult> ApplyCompanydetails(
     [FromForm] LicenseCompanyDetailsDto dto)
@@ -1224,7 +1224,7 @@ if (!ModelState.IsValid)
                             "N";
 
                         existingDocument.SubmitDate = DateTime.Now;
-                          
+
 
 
                         // ---------------------------------------------
@@ -1290,7 +1290,7 @@ if (!ModelState.IsValid)
                                 DocUrl =
                                     newFileName,
 
-                              SubmitDate = DateTime.Now
+                                SubmitDate = DateTime.Now
                             };
 
                         _context
@@ -1334,5 +1334,5 @@ if (!ModelState.IsValid)
 
     }
 
-  
+
 }

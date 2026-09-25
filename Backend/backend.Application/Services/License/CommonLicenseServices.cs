@@ -207,5 +207,15 @@ namespace backend.Application.Services.License
         {
             return await _Licenserepository.GetPendingApplicationIds(catCode,regId,finYear);
         }
+
+        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseService(string CatCode,string DocType)
+        {
+            return await _Licenserepository.GetDocDescriptionCatWiseRepositry( CatCode,DocType);
+        }
+
+        public async Task<string> SaveAndUpdateApplicantDocumentsService(List<SaveAndUpdateApplicantDocumentsDto> dto)
+        {
+            return await _Licenserepository.SaveAndUpdateApplicantDocumentsRepository(dto);
+        }
     }
 }
