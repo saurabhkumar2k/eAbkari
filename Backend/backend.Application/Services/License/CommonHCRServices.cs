@@ -40,7 +40,10 @@ namespace backend.Application.Services.License
                     SiteMobile = dto.SiteMobile,
                     SiteLandline = dto.SiteLandline,
                     SiteFax = dto.SiteFax,
-                    SitePan = dto.SitePan
+                    SitePan = dto.SitePan,
+                    LicenseValidFor = dto.LicenseValidFor,
+                    IsCommercialActivity = dto.IsCommercialActivity,
+                    CreatedDate = dto.CreatedDate
 
 
                 };

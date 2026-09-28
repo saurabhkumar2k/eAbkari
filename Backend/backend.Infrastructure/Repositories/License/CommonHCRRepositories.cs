@@ -19,48 +19,126 @@ namespace backend.Infrastructure.Repositories.License
 
         public async Task<string> SaveApplicantSiteDetails(LicenseSiteDetails dto)
         {
-            _context.LicenseSiteDetails.Add(dto);
-            _context.ChangeTracker.Entries();
-            await _context.SaveChangesAsync();
+            try
+            {
+                var siteDetailsCheck = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
 
-            return dto.ApplicationIdNo;
+                if (siteDetailsCheck == null)
+                {
+                    // INSERT: Record does not exist
+                    _context.LicenseSiteDetails.Add(dto);
+                }
+                else
+                {
+                    // UPDATE: Record already exists
+
+                    siteDetailsCheck.Regnumber = dto.Regnumber;
+                    siteDetailsCheck.FinYear = dto.FinYear;
+                    siteDetailsCheck.CatCode = dto.CatCode;
+                    siteDetailsCheck.SiteName = dto.SiteName;
+                    siteDetailsCheck.SiteAddress = dto.SiteAddress;
+                    siteDetailsCheck.SiteAddress2 = dto.SiteAddress2;
+                    siteDetailsCheck.State = dto.State;
+                    siteDetailsCheck.DistrictCode = dto.DistrictCode;
+                    siteDetailsCheck.SubDivisionCode = dto.SubDivisionCode;
+                    siteDetailsCheck.PoliceStationCode = dto.PoliceStationCode;
+                    siteDetailsCheck.SitePin = dto.SitePin;
+                    siteDetailsCheck.SiteEmail = dto.SiteEmail;
+                    siteDetailsCheck.SiteMobile = dto.SiteMobile;
+                    siteDetailsCheck.SiteLandline = dto.SiteLandline;
+                    siteDetailsCheck.SiteFax = dto.SiteFax;
+                    siteDetailsCheck.SitePan = dto.SitePan;
+                    siteDetailsCheck.LicenseValidFor = dto.LicenseValidFor;
+                    siteDetailsCheck.IsCommercialActivity = dto.IsCommercialActivity;
+                  
+                }
+                await _context.SaveChangesAsync();
+
+                return dto.ApplicationIdNo;           
+            }
+            catch (DbUpdateException ex)
+            {
+                // Actual database error
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+
+                throw new Exception(
+                    $"Database error while saving LicenseSiteDetails: {errorMessage}",
+                    ex
+                );
+            }
+            catch (Exception ex)
+            {
+                // Other errors
+                throw new Exception(
+                    $"An unexpected error occurred: {ex.Message}",
+                    ex
+                );
+            }
 
         }
 
         public async Task<LicenseSiteDetailsDto?> GetSiteDetailsRepo(string AppId)
         {
-            var site = await _context.LicenseSiteDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
-
-            if (site == null)
+            try
             {
-                return null;
+                //var site = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+                var site = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+
+
+                if (site == null)
+                {
+                    return null;
+                }
+
+                var dto = new LicenseSiteDetailsDto
+                {
+
+                    Regnumber = site.Regnumber,
+                    ApplicationIdNo = site.ApplicationIdNo,
+                    FinYear = site.FinYear,
+                    CatCode = site.CatCode,
+                    SiteName = site.SiteName,
+                    SiteAddress = site.SiteAddress,
+                    SiteAddress2 = site.SiteAddress2,
+                    State = site.State,
+                    DistrictCode = site.DistrictCode,
+                    SubDivisionCode = site.SubDivisionCode,
+                    PoliceStationCode = site.PoliceStationCode,
+                    SitePin = site.SitePin,
+                    //SiteAssembly = site.SiteAssembly,
+                    //SiteWard = site.SiteWard,
+                    SiteEmail = site.SiteEmail,
+                    SiteMobile = site.SiteMobile,
+                    SiteLandline = site.SiteLandline,
+                    SiteFax = site.SiteFax,
+                    SitePan = site.SitePan,
+                    LicenseValidFor = site.LicenseValidFor,
+                    IsCommercialActivity = site.IsCommercialActivity,
+                    CreatedDate = site.CreatedDate
+                };
+
+                return dto;
+            }
+            catch (DbUpdateException ex)
+            {
+                // Actual database error
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+
+                throw new Exception(
+                    $"Database error while saving LicenseSiteDetails: {errorMessage}",
+                    ex
+                );
+            }
+            catch (Exception ex)
+            {
+                // Other errors
+                throw new Exception(
+                    $"An unexpected error occurred: {ex.Message}",
+                    ex
+                );
             }
 
-            var dto = new LicenseSiteDetailsDto
-            {
-
-                Regnumber = site.Regnumber,
-                ApplicationIdNo = site.ApplicationIdNo,
-                FinYear = site.FinYear,
-                CatCode = site.CatCode,
-                SiteName = site.SiteName,
-                SiteAddress = site.SiteAddress,
-                SiteAddress2 = site.SiteAddress2,
-                State = site.State,
-                DistrictCode = site.DistrictCode,
-                SubDivisionCode = site.SubDivisionCode,
-                PoliceStationCode = site.PoliceStationCode,
-                SitePin = site.SitePin,
-                //SiteAssembly = site.SiteAssembly,
-                //SiteWard = site.SiteWard,
-                SiteEmail = site.SiteEmail,
-                SiteMobile = site.SiteMobile,
-                SiteLandline = site.SiteLandline,
-                SiteFax = site.SiteFax,
-                SitePan = site.SitePan
-            };
-
-            return dto;
+            
         }
         public async Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode)
         {
