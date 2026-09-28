@@ -23,11 +23,7 @@ namespace backend.API.Licence.Controllers
             }
 
             var user = await _LicenseService.SaveApplicantDetails(dto);
-            return Ok(new
-            {
-                applicationId = user,
-                message = "Application Saved Successfully"
-            });
+            return Ok(user);
         }
 
         [HttpGet("GetApplicantDetails/{AppId}")]
@@ -42,28 +38,9 @@ namespace backend.API.Licence.Controllers
         [Route("SubmitApplication")]
         public async Task<IActionResult> SubmitApplication(SubmitApplicationDTO dto)
         {
-            if (dto == null)
-            {
-                return BadRequest("Invalid Request");
-            }
+            var result = await _LicenseService.SubmitApplication(dto);
 
-            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
-            {
-                return BadRequest("ApplicationIdNo is required.");
-            }
-
-            var result = await _LicenseService.SubmitApplication(dto.ApplicationIdNo, dto.ApplicationStatus);
-            if (string.IsNullOrWhiteSpace(result))
-            {
-                return NotFound("Application not found.");
-            }
-
-            return Ok(new
-            {
-                applicationIdNo = dto.ApplicationIdNo,
-                applicationStatus = result,
-                message = "Application status updated successfully."
-            });
+            return Ok(result);
         }
         [HttpPost("GetPendingApplicationIds")]
         public async Task<IActionResult> GetPendingApplicationIds([FromBody] GetApplicationIdRequestDto dto)
