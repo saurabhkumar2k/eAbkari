@@ -125,9 +125,9 @@ const HCRHCRBasicFieldsL16 = ({
             <input
               type="radio"
               name="eduInsDistance"
-              value="Less than 100 Meters"
+              value="1"
               checked={
-                additionalFrom.educationalInsDist === "Less than 100 Meters"
+                additionalFrom.educationalInsDist === "1"
               }
               onChange={(e) => onChange("educationalInsDist", e.target.value)}
             />
@@ -138,8 +138,8 @@ const HCRHCRBasicFieldsL16 = ({
             <input
               type="radio"
               name="eduInsDistance"
-              value="Above 100 Meters"
-              checked={additionalFrom.educationalInsDist === "Above 100 Meters"}
+              value="2"
+              checked={additionalFrom.educationalInsDist === "2"}
               onChange={(e) => onChange("educationalInsDist", e.target.value)}
             />
             Above 100 Meters
@@ -164,9 +164,9 @@ const HCRHCRBasicFieldsL16 = ({
             <input
               type="radio"
               name="religiousPlaceDistance"
-              value="Less than 100 Meters"
+              value="1"
               checked={
-                additionalFrom.religiousPlaceDist === "Less than 100 Meters"
+                additionalFrom.religiousPlaceDist === "1"
               }
               onChange={(e) => onChange("religiousPlaceDist", e.target.value)}
             />
@@ -177,8 +177,8 @@ const HCRHCRBasicFieldsL16 = ({
             <input
               type="radio"
               name="religiousPlaceDistance"
-              value="Above 100 Meters"
-              checked={additionalFrom.religiousPlaceDist === "Above 100 Meters"}
+              value="2"
+              checked={additionalFrom.religiousPlaceDist === "2"}
               onChange={(e) => onChange("religiousPlaceDist", e.target.value)}
             />
             Above 100 Meters

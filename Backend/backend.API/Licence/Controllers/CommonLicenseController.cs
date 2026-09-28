@@ -52,8 +52,9 @@ namespace backend.API.Licence.Controllers
 
             if (result == null)
             {
-                return NotFound(new
+                return Ok(new
                 {
+                    applicationIdNo = "",
                     message = "No pending application found."
                 });
 
