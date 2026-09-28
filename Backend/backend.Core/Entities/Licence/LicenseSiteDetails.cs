@@ -15,7 +15,7 @@ namespace backend.Core.Entities.Licence
         [Key]
         [StringLength(30)]
         [Required(ErrorMessage = "Mandatory fields are required.")]
-        public string ApplicationIdNo { get; set; } 
+        public string ApplicationIdNo { get; set; }
 
         [StringLength(9)]
         [Column(TypeName = "char(9)")]
@@ -61,7 +61,7 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(5)]
         //[Required(ErrorMessage = "Mandatory fields are required.")]
-        public string SiteAssembly { get; set; }
+        public string? SiteAssembly { get; set; }
 
         [StringLength(150)]
         public string? SiteWard { get; set; }
@@ -82,5 +82,14 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(50)]
         public string? SitePan { get; set; }
+
+        [StringLength(1)]
+        public string? LicenseValidFor { get; set; }
+
+        [StringLength(1)]
+        public string? IsCommercialActivity { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
     }
 }
