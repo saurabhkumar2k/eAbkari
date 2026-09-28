@@ -498,21 +498,29 @@ export default function HcrLicensee({
     }
   }, [siteForm.DistrictCode]);
 
-  
-
   // =========================================================
   // Load Applicant
   // =========================================================
 
   useEffect(() => {
-    debugger;
+    console.log("Previous application check");
     if (!regId) return;
-    if(!loadPreviousAppData(regId)){
-      loadApplicantData(regId);
-    }
+
+    // Create an async helper function inside useEffect
+    const checkApplicationData = async () => {
+      // Await the actual true/false result of the promise
+      const hasPreviousData = await loadPreviousAppData(regId);
+
+      if (!hasPreviousData) {
+        loadApplicantData(regId);
+      }
+    };
+
+    checkApplicationData();
   }, [regId]);
 
   const loadApplicantData = async (registrationId) => {
+    debugger;
     try {
       const response = await fetch(
         `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`,
@@ -525,7 +533,7 @@ export default function HcrLicensee({
       const data = await response.json();
 
       if (data.tateUT) {
-        await fetchDistricts(data.stateUT, "applicantForm");
+        await fetchDistricts(data.StateUT, "applicantForm");
       }
 
       setApplicantForm((prev) => ({
@@ -578,42 +586,51 @@ export default function HcrLicensee({
   const loadPreviousAppData = async (regId) => {
     const payload = {
       catCode: selectedLicenseCode,
-      regID: regId
+      regID: regId,
     };
     try {
-      
-    
-    const getAppId = await fetch(
-      "http://localhost:5214/api/CommonLicense/GetPendingApplicationIds",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const getAppId = await fetch(
+        "http://localhost:5214/api/CommonLicense/GetPendingApplicationIds",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      },
-    );
-    if (!getAppId.ok) {
-      // throw new Error("Unable to load applicant");
-      return false
-    }
-    const data = await getAppId.json();
-    const applicationIdNo = data?.applicationIdNo
-    if(applicationIdNo){
-      BindPendingAppData(applicationIdNo)
-    }else{
-      return false
-    }
-    return true
+      );
+
+      if (getAppId.status === 404) {
+        return false;
+      }
+      if (!getAppId.ok) {
+        // throw new Error("Unable to load applicant");
+        return false;
+      }
+      const data = await getAppId.json();
+
+      if (!data || !data.applicationIdNo) {
+        return false;
+      }
+
+      const applicationIdNo = data?.applicationIdNo;
+      if (applicationIdNo) {
+        setApplicationId(applicationIdNo);
+        localStorage.setItem("applicationId", applicationIdNo);
+        BindPendingAppData(applicationIdNo);
+      } else {
+        return false;
+      }
+      return true;
     } catch (error) {
-      return false
+      return false;
     }
   };
 
-  const BindPendingAppData = async (applicationIdNo) =>{
+  const BindPendingAppData = async (applicationIdNo) => {
     debugger;
     try {
-      /*  Set Applicant Data using Application Id */ 
+      /*  Set Applicant Data using Application Id */
       const response = await fetch(
         `http://localhost:5214/api/CommonLicense/GetApplicantDetails/${applicationIdNo}`,
       );
@@ -624,8 +641,8 @@ export default function HcrLicensee({
 
       const data = await response.json();
 
-      if (data.stateUT) {
-        await fetchDistricts(data.stateUT, "applicantForm");
+      if (data.StateUT) {
+        await fetchDistricts(data.StateUT, "applicantForm");
       }
 
       setApplicantForm((prev) => ({
@@ -666,11 +683,8 @@ export default function HcrLicensee({
         ownerType,
         catCode: selectedLicenseCode,
       }));
-      
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
   // =========================================================
   // Questions
@@ -1071,7 +1085,7 @@ export default function HcrLicensee({
 
       permanentAddress: applicantForm.addressLine2,
 
-      stateUT: applicantForm.stateUT,
+      StateUT: applicantForm.StateUT,
 
       district: applicantForm.district,
 

@@ -73,9 +73,7 @@ export default function RestaurantAdditionalDetails({
               </div>
             </div> */}
             {(CatCode === "05" ||
-              CatCode === "31" ||
-              CatCode === "04" ||
-              CatCode === "30") && (
+              CatCode === "31") && (
               <HCRBasicFieldsL17
                 additionalFrom={additionalFrom}
                 hoursOfSaleList={hoursOfSaleList}
