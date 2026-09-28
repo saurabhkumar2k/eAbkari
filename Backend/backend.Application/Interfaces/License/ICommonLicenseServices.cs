@@ -1,13 +1,13 @@
 using backend.Core.DTOs;
+using backend.Core.Entities;
 
 namespace backend.Application.Interfaces.License
 {
     public interface ICommonLicenseServices
     {
-        Task<string> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto);
+        Task<ApiResponse<LicenseApplicationUserDetailsResponseDto>> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto);
         Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId);
-
-        Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus);
+        Task<ApiResponse<SubmitApplicationDTO>> SubmitApplication(SubmitApplicationDTO dto);
 
         Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode,int regId);
 

@@ -57,5 +57,9 @@ namespace backend.Core.DTOs
         //public DateTime? CreatedDate { get; set; }
 
     }
+    public class LicenseApplicationUserDetailsResponseDto
+    {
+        public string? ApplicationIdNo { get; set; } = string.Empty;
+    }
 
 }

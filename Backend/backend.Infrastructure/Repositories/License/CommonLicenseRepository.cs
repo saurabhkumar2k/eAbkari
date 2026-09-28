@@ -144,12 +144,13 @@ namespace backend.Infrastructure.Repositories.License
             return await _context.MstFlowApplicable.Where(x => x.ActivityId == ActivityId && x.LicenseCategory == CatCode).Select(x => x.FlowUptoCode).FirstOrDefaultAsync();
         }
 
-        public async Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus)
+        public async Task<string?> SubmitApplication(SubmitApplicationDTO dto)
         {
-            var application = await _context.LicenseApplications.Where(x => x.ApplicationIdNo == applicationIdNo).FirstOrDefaultAsync();
+            var application = await _context.LicenseApplications.Where(x => x.ApplicationIdNo == dto.ApplicationIdNo).FirstOrDefaultAsync();
             if (application != null)
             {
-                application.ApplicationStatus = applicationStatus;
+                application.ApplicationIdNo = dto.ApplicationIdNo;
+                application.ApplicationStatus = dto.ApplicationStatus;
                 await _context.SaveChangesAsync();
             }
             return application?.ApplicationStatus ?? string.Empty;
