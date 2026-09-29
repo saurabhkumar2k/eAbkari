@@ -156,33 +156,25 @@ namespace backend.Infrastructure.Repositories.License
             return application?.ApplicationStatus ?? string.Empty;
         }
 
-        public async Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode, int regId)
+        public async Task<ApplicationIdResponseDto> GetPendingApplicationId(string catCode, int regId, string FinYearV)
         {
-            var finYear = await GetFinYear();
-            if (finYear != null)
+            var result = await (
+            from mst in _context.MstUsReg
+            join la in _context.LicenseApplications
+                on mst.RegId equals la.RegId
+            where la.CatCode == catCode
+                  && mst.RegId == regId
+                  && la.FinYear == FinYearV
+                  && (la.ApplicationStatus == "02"
+                      || la.ApplicationStatus == "01")
+            orderby la.ApplicationDate descending
+            select new ApplicationIdResponseDto
             {
-                var result = await (
-                from mst in _context.MstUsReg
-                join la in _context.LicenseApplications
-                    on mst.RegId equals la.RegId
-                where la.CatCode == catCode
-                      && mst.RegId == regId
-                      && la.FinYear == finYear
-                      && (la.ApplicationStatus == "02"
-                          || la.ApplicationStatus == "01")
-                orderby la.ApplicationDate descending
-                select new ApplicationIdResponseDto
-                {
-                    ApplicationIdNo = la.ApplicationIdNo
-                }
-                ).FirstOrDefaultAsync();
+                ApplicationIdNo = la.ApplicationIdNo
+            }
+            ).FirstOrDefaultAsync();
 
-                return result;
-            }
-            else
-            {
-                throw new InvalidOperationException("Financial year cannot be null.");
-            }
+            return result;
         }
         public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(string catCode, string DocType)
         {
@@ -193,7 +185,7 @@ namespace backend.Infrastructure.Repositories.License
                 where LACD.LicenseeCatCode == catCode
                       && MSTD.DocStatus == DocType
                       && LACD.ActiveStatus == "Y"
-                      && MSTD.DeleteStatus =="N"
+                      && MSTD.DeleteStatus == "N"
                 select new GetApplicantDocResponseDto
                 {
                     DocDesc = MSTD.DocDesc,
@@ -216,7 +208,7 @@ namespace backend.Infrastructure.Repositories.License
                     return null;
                 }
 
-                
+
                 var applicationIdNo = dto.First().ApplicationIdNo;
 
                 if (string.IsNullOrWhiteSpace(applicationIdNo))
