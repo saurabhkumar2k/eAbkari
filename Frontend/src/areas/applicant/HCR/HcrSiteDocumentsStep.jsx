@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 
 import DocumentUpload from "../../../components/DocumentsDetails";
+import DocumentUploadWithDate from "../../../components/DocumentsDetailsWithDate";
 
 export default function HcrSiteDocumentsStep({
   documents,
@@ -26,7 +27,7 @@ export default function HcrSiteDocumentsStep({
       </div>
       <div className="hcr-license-card">
 
-        <DocumentUpload
+        <DocumentUploadWithDate
           documents={documents}
           uploadedFiles={uploadedFiles}
           handleDocumentFileChange={
