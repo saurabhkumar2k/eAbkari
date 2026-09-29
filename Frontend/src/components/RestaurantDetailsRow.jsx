@@ -1,16 +1,10 @@
 import React from "react";
 
 import "../Style/ApplyLicense.css";
+import {allowOnlyNumbers} from '../areas/applicant/HCR/validation'
 
 import {
   User,
-  Percent,
-  CreditCard,
-  BadgeCheck,
-  Upload,
-  FileText,
-  Eye,
-  RefreshCcw,
   Trash2,
 } from "lucide-react";
 
@@ -91,7 +85,7 @@ export default function RestaurantDetailsRow({
                   inputMode="numeric"
                   value={RestaurantDetail.NumberOfSeatCovers || ""}
                   onChange={(e) =>
-                    onChange(index, "NumberOfSeatCovers", e.target.value)
+                    onChange(index, "NumberOfSeatCovers", allowOnlyNumbers(e.target.value))
                   }
                   maxLength={3}
                 />
@@ -114,9 +108,7 @@ export default function RestaurantDetailsRow({
                   type="text"
                   inputMode="numeric"
                   value={RestaurantDetail.NumberOfCounter || ""}
-                  onChange={(e) =>
-                    onChange(index, "NumberOfCounter", e.target.value)
-                  }
+                  onChange={(e) => onChange(index, "NumberOfCounter", allowOnlyNumbers(e.target.value))}
                   maxLength={3}
                 />
               </div>
@@ -265,7 +257,7 @@ export default function RestaurantDetailsRow({
                   type="text"
                   inputMode="numeric"
                   value={RestaurantDetail.AreaSqMtr || ""}
-                  onChange={(e) => onChange(index, "AreaSqMtr", e.target.value)}
+                  onChange={(e) => onChange(index, "AreaSqMtr", allowOnlyNumbers(e.target.value))}
                   maxLength={3}
                 />
               </div>

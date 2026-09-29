@@ -20,25 +20,30 @@ import {
   Store,
 } from "lucide-react";
 
+import {Cat_Label} from "../areas/applicant/HCR/validation"
+
+
 const RestaurantDetails = ({
   siteForm,
   states = [],
   districts = [],
   subDivisions = [],
   policeStations = [],
+  CatCode,
   errors = {},
   onChange,
 }) => {
 
   // console.log("RestaurantDetails",siteForm)
+
   return (
     <div className="hcr-applicant-container animate-fade text-left">
       {/* HEADER */}
       <div className="premium-header">
         <div className="icon-box">🏬</div>
         <div>
-          <h2>Restaurant Details</h2>
-          <p>Enter Restaurant location & contact info</p>
+          <h2>{Cat_Label[CatCode]} Details</h2>
+          <p>Enter {Cat_Label[CatCode]} location & contact info</p>
         </div>
       </div>
 
@@ -50,7 +55,7 @@ const RestaurantDetails = ({
         <div className="form-grid">
           <div className="reg-field">
             <label className="reg-label">
-              Restaurant Name <span className="required">*</span>
+              {Cat_Label[CatCode]} Name <span className="required">*</span>
             </label>
 
             <div className="reg-input-group">
