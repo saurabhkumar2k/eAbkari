@@ -179,7 +179,7 @@ namespace backend.Application.Services.License
                 // STEP 6 : INSERT
                 // ==========================================
 
-                var response = await _Licenserepository.SaveApplicantDetails(license,application);
+                var response = await _Licenserepository.SaveApplicantDetails(license, application);
                 return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Ok(
                     new LicenseApplicationUserDetailsResponseDto
                     {
@@ -229,14 +229,57 @@ namespace backend.Application.Services.License
                 return ApiResponse<SubmitApplicationDTO>.Fail("Server error, try again later", ex.Message);
             }
         }
-        public async Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode,int regId)
+        public async Task<ApiResponse<ApplicationIdResponseDto>> GetPendingApplicationId(string catCode, int regId)
         {
-            return await _Licenserepository.GetPendingApplicationIds(catCode,regId);
+            try
+            {
+                var FinYearV = await _Licenserepository.GetFinYear();
+
+                if (string.IsNullOrWhiteSpace(FinYearV))
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Fail(
+                        "Financial Year is not available.");
+                }
+
+                var result = await _Licenserepository.GetPendingApplicationId(catCode, regId, FinYearV);
+                if (result == null)
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Fail("No pending application found.");
+                }
+                else
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Ok(
+                        new ApplicationIdResponseDto
+                        {
+                            ApplicationIdNo = result.ApplicationIdNo,
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<ApplicationIdResponseDto>.Fail("Server error, try again later", ex.Message);
+            }
         }
 
-        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseService(string CatCode,string DocType)
+        public async Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string CatCode, string DocType)
         {
-            return await _Licenserepository.GetDocDescriptionCatWiseRepositry( CatCode,DocType);
+            try
+            {
+                var result = await _Licenserepository.GetDocDescriptionCatWiseRepositry(CatCode, DocType);
+
+                if (result == null || result.Count == 0)
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("No Document Found.");
+                }
+                else
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("Server error, try again later", ex.Message);
+            }
         }
 
         public async Task<string> SaveAndUpdateApplicantDocumentsService(List<SaveAndUpdateApplicantDocumentsDto> dto)

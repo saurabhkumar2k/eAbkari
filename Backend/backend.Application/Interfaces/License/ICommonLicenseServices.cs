@@ -9,9 +9,9 @@ namespace backend.Application.Interfaces.License
         Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId);
         Task<ApiResponse<SubmitApplicationDTO>> SubmitApplication(SubmitApplicationDTO dto);
 
-        Task<ApplicationIdResponseDto> GetPendingApplicationIds(string catCode,int regId);
+        Task<ApiResponse<ApplicationIdResponseDto>> GetPendingApplicationId(string catCode,int regId);
 
-        Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseService(string CatCode,string DocType);
+        Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string CatCode,string DocType);
 
         Task<string> SaveAndUpdateApplicantDocumentsService(List<SaveAndUpdateApplicantDocumentsDto> dto);
 

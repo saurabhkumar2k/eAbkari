@@ -42,45 +42,19 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
-        [HttpPost("GetPendingApplicationIds")]
-        public async Task<IActionResult> GetPendingApplicationIds([FromBody] GetApplicationIdRequestDto dto)
+        [HttpGet("GetPendingApplicationIds")]
+        public async Task<IActionResult> GetPendingApplicationId(string catCode, int regId)
         {
-            var result = await _LicenseService.GetPendingApplicationIds(
-                dto.CatCode,
-                dto.RegID
-                );
+            var result = await _LicenseService.GetPendingApplicationId(catCode, regId);
 
-            if (result == null)
-            {
-                return Ok(new
-                {
-                    applicationIdNo = "",
-                    message = "No pending application found."
-                });
-
-            }
-            else
-            {
-                return Ok(result);
-            }
-
+            return Ok(result);
         }
-        [HttpPost("GetDocDescriptionCatWise")]
-        public async Task<IActionResult> GetDocDescriptionCatWise([FromBody] GetApplicantDocRequestDto dto)
+        [HttpGet("GetDocDescriptionCatWise")]
+        public async Task<IActionResult> GetDocDescriptionCatWise(string CatCode, string DocType)
         {
-            var result = await _LicenseService.GetDocDescriptionCatWiseService(dto.CatCode, dto.DocType);
+            var result = await _LicenseService.GetDocDescriptionCatWiseService(CatCode, DocType);
 
-            if (result == null)
-            {
-                return NotFound(new
-                {
-                    message = "No Document Found."
-                });
-            }
-            else
-            {
-                return Ok(result);
-            }
+            return Ok(result);
         }
 
         [HttpPost("SaveAndUpdateApplicantDocuments")]        
