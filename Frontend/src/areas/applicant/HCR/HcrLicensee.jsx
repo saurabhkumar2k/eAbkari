@@ -21,7 +21,7 @@ import {
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import { validateDirectors, validateRestaurantDetails } from "./validation";
+import { validateDirectors, validateRestaurantDetails,Cat_Label } from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -177,6 +177,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const currentLicenseSteps = useMemo(() => {
+    return(CatCode) => {
     return [
       {
         num: 1,
@@ -186,8 +187,8 @@ export default function HcrLicensee({
       },
       {
         num: 2,
-        id: "restaurant",
-        label: "Restaurant Details",
+        id: `${Cat_Label[CatCode]}`,
+        label: `${Cat_Label[CatCode]} Details`,
         sub: "Site Address",
       },
       {
@@ -214,7 +215,7 @@ export default function HcrLicensee({
         label: "Declaration",
         sub: "Submit",
       },
-    ];
+    ]};
   }, []);
 
   // =========================================================
@@ -1618,7 +1619,7 @@ export default function HcrLicensee({
             />
           </div>
 
-          {currentLicenseSteps.map((step) => {
+          {currentLicenseSteps(selectedLicenseCode).map((step) => {
             const isActive = currentStep === step.num;
 
             const isCompleted = currentStep > step.num;
@@ -1704,6 +1705,7 @@ export default function HcrLicensee({
             errors={siteFormErrors}
             onChange={handleRestaurantChange}
             onBack={() => setCurrentStep(1)}
+            CatCode={selectedLicenseCode}
             onContinue={handleNext}
           />
         )}

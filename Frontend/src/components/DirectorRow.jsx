@@ -1,6 +1,8 @@
 import React from "react";
 
 import "../Style/ApplyLicense.css";
+import {allowOnlyNumbers} from '../areas/applicant/HCR/validation'
+
 
 import {
   Eye,
@@ -85,7 +87,7 @@ export default function DirectorRow({
                   inputMode="numeric"
                   maxLength={3}
                   value={director.PPerShare || ""}
-                  onChange={(e) => onChange(index, "PPerShare", e.target.value)}
+                  onChange={(e) => onChange(index, "PPerShare", allowOnlyNumbers(e.target.value))}
                 />
               </div>
               {directorsError?.PPerShareErr && (

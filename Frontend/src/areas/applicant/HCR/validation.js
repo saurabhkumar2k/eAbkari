@@ -2,6 +2,42 @@ const panRegx = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const mobileRegex = /^[6-9][0-9]{9}$/;
 
+export const Cat_Label = Object.freeze({
+  "03": "Hotel",
+  33: "Hotel",
+  "04": "Restaurant",
+  30: "Restaurant",
+  "05": "Restaurant",
+  31: "Restaurant",
+  "06": "Restaurant",
+  32: "Restaurant",
+  "07": "Restaurant",
+  34: "Restaurant",
+  "08": "Club",
+  35: "Club",
+  "01": "Club",
+  36: "Club",
+});
+
+// Allows ONLY whole numbers (0-9)
+export const allowOnlyNumbers = (value) => {
+  return value.replace(/[^0-9]/g, "");
+};
+
+// Allows decimals (e.g., 12.34) and prevents multiple decimal points
+export const allowOnlyDecimals = (value) => {
+  // 1. Remove everything except digits and dots
+  let sanitized = value.replace(/[^0-9.]/g, "");
+
+  // 2. Prevent entering more than one decimal point (e.g., 12.3.4 becomes 12.34)
+  const parts = sanitized.split(".");
+  if (parts.length > 2) {
+    sanitized = parts[0] + "." + parts.slice(1).join("");
+  }
+
+  return sanitized;
+};
+
 export const panCheck = (panno) => {
   if (!panno || panno.length !== 10)
     return "Valid 10-digit PAN number is required";
@@ -224,7 +260,7 @@ export const validateDirectors = (directors) => {
       // if (typeError) {
       //   rowErrors.panFileErr = typeError;
       // }
-      const typeError = validateFileObject(d?.panFile,2, [".pdf"]);
+      const typeError = validateFileObject(d?.panFile, 2, [".pdf"]);
       if (typeError) {
         rowErrors.panFileErr = typeError;
       }
@@ -241,7 +277,7 @@ export const validateDirectors = (directors) => {
       // if (typeError) {
       //   rowErrors.addressFileErr = typeError;
       // }
-      const typeError = validateFileObject(d?.addressFile,2, [".pdf"]);
+      const typeError = validateFileObject(d?.addressFile, 2, [".pdf"]);
       if (typeError) {
         rowErrors.addressFileErr = typeError;
       }

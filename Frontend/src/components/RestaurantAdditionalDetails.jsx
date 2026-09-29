@@ -6,6 +6,8 @@ import HCRBasicFieldsL17 from "./HcrBasicFieldsL17";
 import HCRBasicFieldsL16 from "./HcrBasicFieldsL16";
 import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
 import RestaurantDetailsL16 from "./RestaurantDetailsL16";
+import {Cat_Label} from "../areas/applicant/HCR/validation"
+
 
 export default function RestaurantAdditionalDetails({
   additionalFrom,
@@ -29,6 +31,10 @@ export default function RestaurantAdditionalDetails({
   onRestaurantDetailChange,
 }) {
   console.log("RestaurantAdditionalDetails - errors  ", errors);
+  /* */
+  const HcrQuestionListCategories = ["04","05","06","30","31","32","07","34",];
+  /* */
+  const HCRBasicFieldsCategories = ["05", "06", "31", "32", "07", "34"];
   return (
     <div className="hcr-form-section animate-fade">
       {/* <div className="hcr-step-header">
@@ -72,26 +78,17 @@ export default function RestaurantAdditionalDetails({
                 />
               </div>
             </div> */}
-            {(CatCode === "05" ||
-              CatCode === "31") && (
-              <HCRBasicFieldsL17
-                additionalFrom={additionalFrom}
-                hoursOfSaleList={hoursOfSaleList}
-                onChange={onChange}
-                errors={errors}
-              />
-            )}
-
-            {/* Hcr Question List */}
-            {(CatCode === "05" || CatCode === "31") && (
-              <div className="form-group full-width">
-                <HcrQuestionList
-                  questions={questions}
-                  onChange={onQuestionsChange}
-                  error={errors?.answer}
+            {
+              // CatCode === "05" || CatCode === "31" || CatCode === "06" || CatCode === "32"
+              HCRBasicFieldsCategories.includes(CatCode) && (
+                <HCRBasicFieldsL17
+                  additionalFrom={additionalFrom}
+                  hoursOfSaleList={hoursOfSaleList}
+                  onChange={onChange}
+                  errors={errors}
                 />
-              </div>
-            )}
+              )
+            }
 
             {!(CatCode === "") && (
               <div className="form-group">
@@ -120,6 +117,20 @@ export default function RestaurantAdditionalDetails({
                 )}
               </div>
             )}
+
+            {/* Hcr Question List */}
+            {
+              // (CatCode === "05" || CatCode === "31" || CatCode === "06" ||  CatCode === "32" || CatCode === "04" || CatCode === "30")
+              HcrQuestionListCategories.includes(CatCode) && (
+                <div className="form-group full-width">
+                  <HcrQuestionList
+                    questions={questions}
+                    onChange={onQuestionsChange}
+                    error={errors?.answer}
+                  />
+                </div>
+              )
+            }
 
             <div className="form-group full-width">
               <DirectorsList

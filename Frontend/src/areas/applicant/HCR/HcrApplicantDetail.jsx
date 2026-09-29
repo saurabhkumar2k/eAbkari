@@ -9,12 +9,18 @@ import {
   FileText,
   Building,
   Hash,
-  Compass
+  Compass,
 } from "lucide-react";
 
-export default function HcrApplicantDetails({ formData, states, districts, subDivisions, onChange, errors = {} }) {
-
-  console.log("HCR App", formData)
+export default function HcrApplicantDetails({
+  formData,
+  states,
+  districts,
+  subDivisions,
+  onChange,
+  errors = {},
+}) {
+  console.log("HCR App", formData);
 
   return (
     <div className="hcr-applicant-container animate-fade text-left">
@@ -24,9 +30,13 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
           <User className="w-5 h-5 text-blue-600" />
         </div>
         <div>
-          <h4 className="info-banner-title">Pre-filed HCR Registered Profile Information</h4>
+          <h4 className="info-banner-title">
+            Pre-filed HCR Registered Profile Information
+          </h4>
           <p className="info-banner-text">
-            These applicant details are loaded automatically from your online HCR registry records. You can review and verify the demographic, residential, and verification fields.
+            These applicant details are loaded automatically from your online
+            HCR registry records. You can review and verify the demographic,
+            residential, and verification fields.
           </p>
         </div>
       </div>
@@ -34,13 +44,16 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
       {/* Section 1: Personal Details */}
       <div class="card-section">
         <div className="section-header">
-          <h3 className="section-title">
-            <span className="section-number">1</span>
-            Personal Details
-          </h3>
-          <p className="section-description">
-            Your legal credentials used during Delhi Excise Portal profile registration
-          </p>
+          <div className="title-wrapper">
+            <h3 className="section-title">
+              <span className="section-number">1</span>
+              Personal Details
+            </h3>
+            <p className="section-description">
+              Your legal credentials used during Delhi Excise Portal profile
+              registration
+            </p>
+          </div>
         </div>
 
         <div className="form-grid">
@@ -57,10 +70,13 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <input
                 type="text"
                 placeholder="Enter applicant name"
-                className={`reg-input uppercase font-bold text-slate-800 ${errors.applicantName ? "error" : ""
-                  }`}
+                className={`reg-input uppercase font-bold text-slate-800 ${
+                  errors.applicantName ? "error" : ""
+                }`}
                 value={formData.applicantName || ""}
-                onChange={(e) => onChange("applicantName", e.target.value.toUpperCase())}
+                onChange={(e) =>
+                  onChange("applicantName", e.target.value.toUpperCase())
+                }
                 disabled={true}
               />
             </div>
@@ -81,21 +97,22 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               </div>
               <input
                 type="date"
-                className={`reg-input font-bold text-slate-800 ${errors.dob ? "error" : ""
-                  }`}
+                className={`reg-input font-bold text-slate-800 ${
+                  errors.dob ? "error" : ""
+                }`}
                 value={formData.dateOfBirth || ""}
                 onChange={(e) => onChange("dob", e.target.value)}
                 disabled={true}
               />
             </div>
-            {errors.dob && (
-              <p className="error-text">{errors.dob}</p>
-            )}
+            {errors.dob && <p className="error-text">{errors.dob}</p>}
           </div>
 
           {/* Father's Name */}
           <div className="reg-field">
-            <label className="reg-label label-title">Father / Husband Name</label>
+            <label className="reg-label label-title">
+              Father / Husband Name
+            </label>
             <div className="reg-input-group">
               <div className="reg-input-icon">
                 <User className="w-4 h-4 text-blue-600" />
@@ -105,7 +122,9 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 placeholder="Father's / Husband's Name"
                 className="reg-input uppercase font-bold text-slate-800"
                 value={formData.fatherHusbandName || ""}
-                onChange={(e) => onChange("fatherName", e.target.value.toUpperCase())}
+                onChange={(e) =>
+                  onChange("fatherName", e.target.value.toUpperCase())
+                }
                 disabled={true}
               />
             </div>
@@ -124,10 +143,13 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <input
                 type="text"
                 placeholder="E.g. BUSINESS"
-                className={`reg-input uppercase font-bold text-slate-800 ${errors.occupation ? "error" : ""
-                  }`}
+                className={`reg-input uppercase font-bold text-slate-800 ${
+                  errors.occupation ? "error" : ""
+                }`}
                 value={formData.occupation || ""}
-                onChange={(e) => onChange("occupation", e.target.value.toUpperCase())}
+                onChange={(e) =>
+                  onChange("occupation", e.target.value.toUpperCase())
+                }
                 disabled={true}
               />
             </div>
@@ -150,16 +172,17 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 type="text"
                 maxLength={10}
                 placeholder="ABCDE1234F"
-                className={`reg-input uppercase font-mono font-bold text-slate-800 ${errors.panNo ? "error" : ""
-                  }`}
+                className={`reg-input uppercase font-mono font-bold text-slate-800 ${
+                  errors.panNo ? "error" : ""
+                }`}
                 value={formData.panNo || ""}
-                onChange={(e) => onChange("panNo", e.target.value.toUpperCase())}
+                onChange={(e) =>
+                  onChange("panNo", e.target.value.toUpperCase())
+                }
                 disabled={true}
               />
             </div>
-            {errors.panNo && (
-              <p className="error-text">{errors.panNo}</p>
-            )}
+            {errors.panNo && <p className="error-text">{errors.panNo}</p>}
           </div>
         </div>
       </div>
@@ -190,16 +213,15 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <input
                 type="text"
                 placeholder="HOUSE / PLOT NO, BUILDING, STREET"
-                className={`reg-input font-bold text-slate-800 ${errors.address1 ? "error" : ""
-                  }`}
+                className={`reg-input font-bold text-slate-800 ${
+                  errors.address1 ? "error" : ""
+                }`}
                 value={formData.addressLine1 || ""}
                 onChange={(e) => onChange("address1", e.target.value)}
                 disabled={true}
               />
             </div>
-            {errors.address1 && (
-              <p className="error-text">{errors.address1}</p>
-            )}
+            {errors.address1 && <p className="error-text">{errors.address1}</p>}
           </div>
 
           {/* Address 2 */}
@@ -255,9 +277,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 ))}
               </select>
             </div>
-            {errors.StateUT && (
-              <p className="error-text">{errors.StateUT}</p>
-            )}
+            {errors.StateUT && <p className="error-text">{errors.StateUT}</p>}
           </div>
 
           {/* District */}
@@ -297,9 +317,7 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 ))}
               </select>
             </div>
-            {errors.district && (
-              <p className="error-text">{errors.district}</p>
-            )}
+            {errors.district && <p className="error-text">{errors.district}</p>}
           </div>
 
           {/* Sub Division */}
@@ -326,20 +344,20 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <select
                 className="reg-select"
                 value={formData.subDivision || ""}
-                onChange={(e) =>
-                  onChange("subDivision", e.target.value)
-                }
+                onChange={(e) => onChange("subDivision", e.target.value)}
                 disabled={true}
               >
                 <option value="">Select Sub Division</option>
 
                 {(subDivisions || []).map((s) => (
-                  <option key={s.subDivisionCode} value={s.subDivisionCode.trim()}>
+                  <option
+                    key={s.subDivisionCode}
+                    value={s.subDivisionCode.trim()}
+                  >
                     {s.subDivisionName}
                   </option>
                 ))}
               </select>
-
             </div>
             {errors.subDivision && (
               <p className="error-text">{errors.subDivision}</p>
@@ -360,16 +378,17 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 type="text"
                 maxLength={6}
                 placeholder="110017"
-                className={`reg-input font-mono font-bold text-slate-800 ${errors.pin ? "error" : ""
-                  }`}
+                className={`reg-input font-mono font-bold text-slate-800 ${
+                  errors.pin ? "error" : ""
+                }`}
                 value={formData.pin || ""}
-                onChange={(e) => onChange("pin", e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  onChange("pin", e.target.value.replace(/\D/g, ""))
+                }
                 disabled={true}
               />
             </div>
-            {errors.pin && (
-              <p className="error-text">{errors.pin}</p>
-            )}
+            {errors.pin && <p className="error-text">{errors.pin}</p>}
           </div>
         </div>
       </div>
@@ -382,7 +401,8 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
             Contact Details
           </h3>
           <p className="section-description">
-            Active contact information for receiving validation tokens, OTPs, and permit PDF email notifications
+            Active contact information for receiving validation tokens, OTPs,
+            and permit PDF email notifications
           </p>
         </div>
 
@@ -401,16 +421,17 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 type="text"
                 maxLength={10}
                 placeholder="Enter 10-digit mobile"
-                className={`reg-input font-mono font-bold text-slate-800 ${errors.mobile ? "error" : ""
-                  }`}
+                className={`reg-input font-mono font-bold text-slate-800 ${
+                  errors.mobile ? "error" : ""
+                }`}
                 value={formData.mobile || ""}
-                onChange={(e) => onChange("mobile", e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  onChange("mobile", e.target.value.replace(/\D/g, ""))
+                }
                 disabled={true}
               />
             </div>
-            {errors.mobile && (
-              <p className="error-text">{errors.mobile}</p>
-            )}
+            {errors.mobile && <p className="error-text">{errors.mobile}</p>}
           </div>
 
           {/* Email */}
@@ -426,16 +447,15 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
               <input
                 type="email"
                 placeholder="Enter email address"
-                className={`reg-input font-bold text-slate-800 ${errors.email ? "error" : ""
-                  }`}
+                className={`reg-input font-bold text-slate-800 ${
+                  errors.email ? "error" : ""
+                }`}
                 value={formData.email || ""}
                 onChange={(e) => onChange("email", e.target.value)}
                 disabled={true}
               />
             </div>
-            {errors.email && (
-              <p className="error-text">{errors.email}</p>
-            )}
+            {errors.email && <p className="error-text">{errors.email}</p>}
           </div>
 
           {/* Landline */}
@@ -450,7 +470,9 @@ export default function HcrApplicantDetails({ formData, states, districts, subDi
                 placeholder="Landline number (Optional)"
                 className="reg-input font-bold text-slate-800"
                 value={formData.landline || ""}
-                onChange={(e) => onChange("landline", e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  onChange("landline", e.target.value.replace(/\D/g, ""))
+                }
                 disabled={true}
               />
             </div>
