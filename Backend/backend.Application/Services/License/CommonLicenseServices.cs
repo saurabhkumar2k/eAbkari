@@ -261,11 +261,11 @@ namespace backend.Application.Services.License
             }
         }
 
-        public async Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string CatCode, string DocType)
+        public async Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string applicationIdNo,string CatCode, string DocType)
         {
             try
             {
-                var result = await _Licenserepository.GetDocDescriptionCatWiseRepositry(CatCode, DocType);
+                var result = await _Licenserepository.GetDocDescriptionCatWiseRepositry(applicationIdNo,CatCode, DocType);
 
                 if (result == null || result.Count == 0)
                 {

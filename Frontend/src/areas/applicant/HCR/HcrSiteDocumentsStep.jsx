@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import DocumentUpload from "../../../components/DocumentsDetails";
 import DocumentUploadWithDate from "../../../components/DocumentsDetailsWithDate";
@@ -11,6 +8,7 @@ export default function HcrSiteDocumentsStep({
   documents,
   uploadedFiles,
   handleDocumentFileChange,
+  handleValidityDateChange,
   handleDeleteFile,
   onBack,
   onContinue,
@@ -26,25 +24,16 @@ export default function HcrSiteDocumentsStep({
         </div>
       </div>
       <div className="hcr-license-card">
-
         <DocumentUploadWithDate
           documents={documents}
           uploadedFiles={uploadedFiles}
-          handleDocumentFileChange={
-            handleDocumentFileChange
-          }
-          handleDeleteFile={
-            handleDeleteFile
-          }
+          handleDocumentFileChange={handleDocumentFileChange}
+          handleValidityDateChange={handleValidityDateChange}
+          handleDeleteFile={handleDeleteFile}
         />
 
         <div className="hcr-step-navigation">
-
-          <button
-            type="button"
-            onClick={onBack}
-            className="btn btn-secondary"
-          >
+          <button type="button" onClick={onBack} className="btn btn-secondary">
             <ChevronLeft className="w-5 h-5" />
             Go Back
           </button>
@@ -57,7 +46,6 @@ export default function HcrSiteDocumentsStep({
             Proceed to Declaration
             <ChevronRight className="w-5 h-5" />
           </button>
-
         </div>
       </div>
     </div>
