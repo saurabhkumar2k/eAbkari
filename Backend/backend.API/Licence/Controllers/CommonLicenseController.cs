@@ -50,9 +50,9 @@ namespace backend.API.Licence.Controllers
             return Ok(result);
         }
         [HttpGet("GetDocDescriptionCatWise")]
-        public async Task<IActionResult> GetDocDescriptionCatWise(string CatCode, string DocType)
+        public async Task<IActionResult> GetDocDescriptionCatWise(string applicationIdNo,string CatCode, string DocType)
         {
-            var result = await _LicenseService.GetDocDescriptionCatWiseService(CatCode, DocType);
+            var result = await _LicenseService.GetDocDescriptionCatWiseService(applicationIdNo,CatCode, DocType);
 
             return Ok(result);
         }

@@ -176,22 +176,48 @@ namespace backend.Infrastructure.Repositories.License
 
             return result;
         }
-        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(string catCode, string DocType)
+        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(String applicationIdNo,string catCode, string DocType)
         {
-            var result = await (
-                from LACD in _context.LicenseApplicationCategoryDocument
-                join MSTD in _context.MstLicenseApplicationDocument
-                  on LACD.DocId equals MSTD.DocId
-                where LACD.LicenseeCatCode == catCode
-                      && MSTD.DocStatus == DocType
-                      && LACD.ActiveStatus == "Y"
-                      && MSTD.DeleteStatus == "N"
+            var result = await (               
+                from a in _context.MstLicenseApplicationDocument
+                join b in _context.LicenseApplicationCategoryDocument
+                    on a.DocId equals b.DocId
+
+                where a.DocStatus == DocType
+                   && a.DeleteStatus == "N"
+                   && b.LicenseeCatCode == catCode
+                   && b.ActiveStatus == "Y"
+                   && b.LicenseeTypeFlag == "A" 
+
+                join c in _context.LicenseApplicationUploadedDocument
+                     //.Where(x => x.ApplicationIdNo == applicationIdNo &&
+                     //            x.MobileNoReleaseStatus == "N")
+                     .Where(x => x.ApplicationIdNo == applicationIdNo )
+                               
+                    on a.DocId equals c.DocId into gj
+
+                from c in gj.DefaultIfEmpty()
+
+                orderby (Convert.ToInt32(a.DocId) == 186 ? 999 : 1),
+                        Convert.ToInt32(a.DocId)
+
                 select new GetApplicantDocResponseDto
                 {
-                    DocDesc = MSTD.DocDesc,
-                    DocID = MSTD.DocId,
-                    IsMandatory = LACD.IsMandatory,
-                    IsValid = MSTD.IsValid ?? false // null-coalescing operator
+                    DocDesc = a.DocDesc,
+                    DocID = a.DocId,
+                    IsMandatory = b.IsMandatory,
+                    IsValid = a.IsValid ?? false, // null-coalescing operator                   
+                    DocUrl = c != null ? c.DocUrl : "",
+                    DocAppl = c != null && c.DocStatus == "N" ? "Yes" : "No",
+                    DocSl = c != null ? c.DocSl : null,
+                    SDate = c == null
+                                ? "View"
+                                : (c.SubmitDate == null
+                                    ? "View"
+                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),                   
+                    VallidUpto = c != null && c.DateOfValidity.HasValue
+                                 ? c.DateOfValidity.Value.ToString("dd/MM/yyyy")
+                                : null
                 }
 
             ).ToListAsync();

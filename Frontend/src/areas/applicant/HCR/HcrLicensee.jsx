@@ -888,11 +888,12 @@ export default function HcrLicensee({
     const docStatus = currentStep === 4 ? "A" : "S";
 
     fetch(
-      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?CatCode=${selectedLicenseCode}&DocType=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
-        setDocuments(data || []);
+        setDocuments(data.data || []);
       })
       .catch((error) => {
         console.error("Document API Error:", error);
@@ -1018,11 +1019,13 @@ export default function HcrLicensee({
     const docStatus = currentStep === 4 ? "A" : "S";
 
     fetch(
-      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?catCode=${selectedLicenseCode}&DocType=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
-        setDocuments(data || []);
+        setDocuments(data.data || []);
+
       })
       .catch((error) => {
         console.error("Document API Error:", error);
@@ -1038,6 +1041,16 @@ export default function HcrLicensee({
       [key]: {
         file,
         previewUrl: URL.createObjectURL(file),
+      },
+    }));
+  };
+
+  const handleValidityDateChange = (docId, validityDate) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [docId]: {
+        ...prev[docId],
+        validityDate,
       },
     }));
   };
@@ -1059,9 +1072,9 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveApplicant = async () => {
-    if (!validateApplicant()) {
-      return false;
-    }
+    // if (!validateApplicant()) {
+    //   return false;
+    // }
 
     // if (applicationId) {
     //   return true;
@@ -1149,9 +1162,9 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveRestaurant = async () => {
-    if (!validateRestaurant()) {
-      return false;
-    }
+    // if (!validateRestaurant()) {
+    //   return false;
+    // }
 
     const payload = {
       ...siteForm,
@@ -1198,9 +1211,9 @@ export default function HcrLicensee({
   const saveAdditional = async () => {
     const applicationIdNo = localStorage.getItem("applicationId");
 
-    if (!validateAdditionalSiteDetails()) {
-      return false;
-    }
+    // if (!validateAdditionalSiteDetails()) {
+    //   return false;
+    // }
 
     try {
       const formData = new FormData();
@@ -1422,6 +1435,12 @@ export default function HcrLicensee({
         formData.append(`Documents[${index}].DocSl`, doc.docSl || 1);
 
         formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
+
+        // Include the selected validity date with this document upload
+        formData.append(
+          `Documents[${index}].DateOfValidity`,
+          uploaded.validityDate || "",
+        );
 
         index++;
       });
@@ -1740,6 +1759,7 @@ export default function HcrLicensee({
             documents={documents}
             uploadedFiles={uploadedFiles}
             handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
             onBack={() => setCurrentStep(3)}
             onContinue={goToSiteDocuments}
@@ -1752,6 +1772,7 @@ export default function HcrLicensee({
             documents={documents}
             uploadedFiles={uploadedFiles}
             handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
             onBack={() => setCurrentStep(4)}
             onContinue={goToDeclaration}

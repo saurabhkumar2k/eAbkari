@@ -16,6 +16,15 @@ namespace backend.Core.DTOs
         public string DocID { get; set; }
         public string IsMandatory { get; set; }
         public bool IsValid { get; set; }
+
+        public string? DocUrl { get; set; }
+
+        public string? DocSl { get; set; }
+
+        public string? DocAppl { get; set; }
+
+        public string? SDate { get; set; }
+        public string? VallidUpto { get; set; }
     }
 
     public class GetApplicantDocumentRequestDto
@@ -52,7 +61,7 @@ namespace backend.Core.DTOs
 
         // public IFormFile? DocUrl { get; set; }
 
-        public string? DocUrl { get; set; }       
+        public string? DocUrl { get; set; }
         //public IFormFile? DocumentFile { get; set; } // ✅ POST upload
 
         //public string? SubmitDate { get; set; } 
