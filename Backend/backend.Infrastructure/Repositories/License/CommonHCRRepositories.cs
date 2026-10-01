@@ -50,7 +50,8 @@ namespace backend.Infrastructure.Repositories.License
                     siteDetailsCheck.SitePan = dto.SitePan;
                     siteDetailsCheck.LicenseValidFor = dto.LicenseValidFor;
                     siteDetailsCheck.IsCommercialActivity = dto.IsCommercialActivity;
-                  
+                    siteDetailsCheck.CreatedDate = DateTime.Now;
+
                 }
                 await _context.SaveChangesAsync();
 
@@ -114,7 +115,7 @@ namespace backend.Infrastructure.Repositories.License
                     SitePan = site.SitePan,
                     LicenseValidFor = site.LicenseValidFor,
                     IsCommercialActivity = site.IsCommercialActivity,
-                    CreatedDate = site.CreatedDate
+                    //CreatedDate = site.CreatedDate
                 };
 
                 return dto;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace backend.Core.DTOs
 {
@@ -38,33 +39,23 @@ namespace backend.Core.DTOs
         public string ApplicationIdNo { get; set; } = string.Empty;
 
         public string? MobileNo { get; set; }
-
-        //public string? ApplicantSl { get; set; }
-
+    
+       public List<LicenseApplicationUploadedDocumentHCRDto> Documents { get; set; } = new();
+    }
+    public class LicenseApplicationUploadedDocumentHCRDto
+    {
         public string? DocId { get; set; }
 
         public string? DocSl { get; set; }
-
-        //public string? DocStatus { get; set; }
-
-        //public string? MobileNoReleaseStatus { get; set; }
 
         public string? IsValid { get; set; }
 
         //public string? Remarks { get; set; }
 
-        public DateTime? DateOfValidity { get; set; }
-
-        //public string? DocumentvalidationYN { get; set; } 
-
-        //public string? LicenseeIdNo { get; set; }
-
-        // public IFormFile? DocUrl { get; set; }
+        public DateTime? DateOfValidity { get; set; }       
 
         public string? DocUrl { get; set; }
-        //public IFormFile? DocumentFile { get; set; } // ✅ POST upload
-
-        //public string? SubmitDate { get; set; } 
-        public string? DocType { get; set; } //added by Rahul for HCR
+        public IFormFile? DocumentFile { get; set; } // ✅ POST upload
+        
     }
 }

@@ -13,7 +13,7 @@ namespace backend.Application.Interfaces.License
 
         Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string applicationIdNo,string CatCode,string DocType);
 
-        Task<string> SaveAndUpdateApplicantDocumentsService(List<SaveAndUpdateApplicantDocumentsDto> dto);
+        Task<string> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto);
 
     }
 }

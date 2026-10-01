@@ -58,7 +58,7 @@ namespace backend.API.Licence.Controllers
         }
 
         [HttpPost("SaveAndUpdateApplicantDocuments")]        
-        public async Task<IActionResult> SaveAndUpdateApplicantDocuments( [FromBody] List<SaveAndUpdateApplicantDocumentsDto> dto)
+        public async Task<IActionResult> SaveAndUpdateApplicantDocuments( [FromForm] SaveAndUpdateApplicantDocumentsDto dto)
         {
             var result = await _LicenseService.SaveAndUpdateApplicantDocumentsService(dto);
 

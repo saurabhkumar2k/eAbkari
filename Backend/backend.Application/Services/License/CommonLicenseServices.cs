@@ -282,7 +282,7 @@ namespace backend.Application.Services.License
             }
         }
 
-        public async Task<string> SaveAndUpdateApplicantDocumentsService(List<SaveAndUpdateApplicantDocumentsDto> dto)
+        public async Task<string> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto)
         {
             return await _Licenserepository.SaveAndUpdateApplicantDocumentsRepository(dto);
         }

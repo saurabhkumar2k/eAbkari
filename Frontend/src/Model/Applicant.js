@@ -2,7 +2,7 @@ export const createApplicant = () => ({
   applicantName: "",
   CompanyName: "",
   dob: "",
-  applicationId: null,
+  applicationIdNo: null,
   FatherHusbandName: "",
   Occupation: "",
   PresentAddress: "",

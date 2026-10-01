@@ -38,8 +38,8 @@ export default function HcrLicensee({
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [applicationId, setApplicationId] = useState(
-    localStorage.getItem("applicationId"),
+  const [applicationIdNo, setApplicationId] = useState(
+    localStorage.getItem("applicationIdNo"),
   );
 
   // =========================================================
@@ -178,45 +178,46 @@ export default function HcrLicensee({
   // =========================================================
 
   const currentLicenseSteps = useMemo(() => {
-    return(CatCode) => {
-    return [
-      {
-        num: 1,
-        id: "applicant",
-        label: "Applicant Details",
-        sub: "Demographics",
-      },
-      {
-        num: 2,
-        id: `${Cat_Label[CatCode]}`,
-        label: `${Cat_Label[CatCode]} Details`,
-        sub: "Site Address",
-      },
-      {
-        num: 3,
-        id: "additional",
-        label: "Additional Details",
-        sub: "Additional Information",
-      },
-      {
-        num: 4,
-        id: "personalDocuments",
-        label: "Documents",
-        sub: "Personal Documents",
-      },
-      {
-        num: 5,
-        id: "siteDocuments",
-        label: "Documents",
-        sub: "Site Documents",
-      },
-      {
-        num: 6,
-        id: "declaration",
-        label: "Declaration",
-        sub: "Submit",
-      },
-    ]};
+    return (CatCode) => {
+      return [
+        {
+          num: 1,
+          id: "applicant",
+          label: "Applicant Details",
+          sub: "Demographics",
+        },
+        {
+          num: 2,
+          id: `${Cat_Label[CatCode]}`,
+          label: `${Cat_Label[CatCode]} Details`,
+          sub: "Site Address",
+        },
+        {
+          num: 3,
+          id: "additional",
+          label: "Additional Details",
+          sub: "Additional Information",
+        },
+        {
+          num: 4,
+          id: "personalDocuments",
+          label: "Documents",
+          sub: "Personal Documents",
+        },
+        {
+          num: 5,
+          id: "siteDocuments",
+          label: "Documents",
+          sub: "Site Documents",
+        },
+        {
+          num: 6,
+          id: "declaration",
+          label: "Declaration",
+          sub: "Submit",
+        },
+      ];
+    };
   }, []);
 
   // =========================================================
@@ -505,6 +506,7 @@ export default function HcrLicensee({
   // =========================================================
 
   useEffect(() => {
+    debugger;
     console.log("Previous application check");
     if (!regId) return;
 
@@ -586,43 +588,41 @@ export default function HcrLicensee({
   // =========================================================
 
   const loadPreviousAppData = async (regId) => {
-    const payload = {
-      catCode: selectedLicenseCode,
-      regID: regId,
-    };
+    // const payload = {
+    //   catCode: selectedLicenseCode,
+    //   regID: regId,
+    // };
     try {
+      debugger;
       const getAppId = await fetch(
-        "http://localhost:5214/api/CommonLicense/GetPendingApplicationIds",
+        `http://localhost:5214/api/CommonLicense/GetPendingApplicationIds?catCode=${selectedLicenseCode}&regID=${regId}`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          method: "GET",
         },
       );
-
       if (getAppId.status === 404) {
         return false;
       }
+
       if (!getAppId.ok) {
-        // throw new Error("Unable to load applicant");
         return false;
       }
+
       const data = await getAppId.json();
 
-      if (!data || !data.applicationIdNo) {
+      console.log("getAppId response:", data);
+
+      const applicationIdNo = data?.data?.applicationIdNo;
+
+      if (!data?.success || !applicationIdNo) {
         return false;
       }
 
-      const applicationIdNo = data?.applicationIdNo;
-      if (applicationIdNo) {
-        setApplicationId(applicationIdNo);
-        localStorage.setItem("applicationId", applicationIdNo);
-        BindPendingAppData(applicationIdNo);
-      } else {
-        return false;
-      }
+      setApplicationId(applicationIdNo);
+
+      localStorage.setItem("applicationIdNo", applicationIdNo);
+
+      BindPendingAppData(applicationIdNo);
       return true;
     } catch (error) {
       return false;
@@ -649,7 +649,7 @@ export default function HcrLicensee({
 
       setApplicantForm((prev) => ({
         ...prev,
-
+        applicationIdNo: applicationIdNo,
         applicantName: `${data.applicantName || ""}`.trim(),
 
         fatherHusbandName: data.fatherHusbandName || "",
@@ -762,7 +762,7 @@ export default function HcrLicensee({
           item.questionId === questionId
             ? {
                 ...item,
-                applicationIdNo: applicationId || "",
+                applicationIdNo: applicationIdNo || "",
                 answerGiven: answer,
                 slNo: index + 1,
               }
@@ -773,7 +773,7 @@ export default function HcrLicensee({
       return [
         ...prev,
         {
-          applicationIdNo: applicationId || "",
+          applicationIdNo: applicationIdNo || "",
           questionId,
           answerGiven: answer,
           slNo: index + 1,
@@ -966,7 +966,7 @@ export default function HcrLicensee({
       return;
     }
 
-    const applicationIdNo = localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
 
     if (!applicationIdNo || !selectedLicenseCode) {
       return;
@@ -976,7 +976,7 @@ export default function HcrLicensee({
 
     fetch(
       // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
-      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?CatCode=${selectedLicenseCode}&DocType=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&CatCode=${selectedLicenseCode}&DocType=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
@@ -988,7 +988,7 @@ export default function HcrLicensee({
         return [
           ...prev,
           {
-            applicationIdNo: applicationId || "",
+            applicationIdNo: applicationIdNo || "",
             questionId,
             answerGiven: answer,
             slNo: index + 1,
@@ -1097,7 +1097,7 @@ export default function HcrLicensee({
       return;
     }
 
-    const applicationIdNo = localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
 
     if (!applicationIdNo || !selectedLicenseCode) {
       return;
@@ -1107,12 +1107,11 @@ export default function HcrLicensee({
 
     fetch(
       // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
-      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?catCode=${selectedLicenseCode}&DocType=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&DocType=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
         setDocuments(data.data || []);
-
       })
       .catch((error) => {
         console.error("Document API Error:", error);
@@ -1121,6 +1120,7 @@ export default function HcrLicensee({
   }, [currentStep, selectedLicensee]);
 
   const handleFileChange = (key, file) => {
+    console.log("handleDocumentFileChange", key, file);
     if (!file) return;
 
     setUploadedFiles((prev) => ({
@@ -1159,9 +1159,9 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveApplicant = async () => {
-    // if (!validateApplicant()) {
-    //   return false;
-    // }
+    if (!validateApplicant()) {
+      return false;
+    }
 
     // if (applicationId) {
     //   return true;
@@ -1169,12 +1169,11 @@ export default function HcrLicensee({
 
     const payload = {
       regId: Number(regId),
-
       applicantName: applicantForm.applicantName,
 
       dob: applicantForm.dateOfBirth,
 
-      applicationIdNo: applicantForm.applicationId || null,
+      applicationIdNo: applicantForm.applicationIdNo || null,
 
       fatherHusbandName: applicantForm.fatherHusbandName,
 
@@ -1227,12 +1226,14 @@ export default function HcrLicensee({
 
       const data = await response.json();
 
-      setApplicationId(data.applicationId);
-      applicantForm.applicationId = data.applicationId;
+      const applicationIdNo = data?.data?.applicationIdNo;
 
-      localStorage.setItem("applicationId", data.applicationId);
+      setApplicationId(applicationIdNo);
+      applicantForm.applicationIdNo = applicationIdNo;
 
-      localStorage.setItem("catCode", data.catCode || selectedLicenseCode);
+      localStorage.setItem("applicationIdNo", applicationIdNo);
+
+      // localStorage.setItem("catCode", data.catCode || selectedLicenseCode);
 
       return true;
     } catch (error) {
@@ -1249,16 +1250,16 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveRestaurant = async () => {
-    // if (!validateRestaurant()) {
-    //   return false;
-    // }
+    if (!validateRestaurant()) {
+      return false;
+    }
 
     const payload = {
       ...siteForm,
 
       Regnumber: regId,
 
-      ApplicationIdNo: localStorage.getItem("applicationId"),
+      ApplicationIdNo: localStorage.getItem("applicationIdNo"),
 
       FinYear: "2026-2027",
 
@@ -1280,6 +1281,7 @@ export default function HcrLicensee({
       if (!response.ok) {
         throw new Error(await response.text());
       }
+      console.log("SaveSiteDetails", response);
 
       return true;
     } catch (error) {
@@ -1296,11 +1298,11 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveAdditional = async () => {
-    const applicationIdNo = localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
 
-    // if (!validateAdditionalSiteDetails()) {
-    //   return false;
-    // }
+    if (!validateAdditionalSiteDetails()) {
+      return false;
+    }
 
     try {
       const formData = new FormData();
@@ -1411,7 +1413,7 @@ export default function HcrLicensee({
       additionalFrom?.restaurantDetails?.forEach((item, index) => {
         formData.append(
           `AdditionalRestaurentDetails[${index}].ApplicationIdNo`,
-          item.ApplicationIdNo ?? applicationId ?? "",
+          item.ApplicationIdNo ?? applicationIdNo ?? "",
         );
 
         formData.append(
@@ -1490,8 +1492,10 @@ export default function HcrLicensee({
 
   const uploadDocuments = async () => {
     try {
+      debugger;
+      console.log("uploadDocuments", uploadDocuments);
       const filesToUpload = documents.filter(
-        (doc) => uploadedFiles[doc.docId]?.file,
+        (doc) => uploadedFiles[doc.docID]?.file,
       );
 
       if (filesToUpload.length === 0) {
@@ -1502,7 +1506,7 @@ export default function HcrLicensee({
 
       formData.append(
         "ApplicationIdNo",
-        localStorage.getItem("applicationId") || "",
+        localStorage.getItem("applicationIdNo") || "",
       );
 
       formData.append("MobileNo", applicantForm.mobile || "");
@@ -1510,35 +1514,36 @@ export default function HcrLicensee({
       let index = 0;
 
       filesToUpload.forEach((doc) => {
-        const uploaded = uploadedFiles[doc.docId];
+        const uploaded = uploadedFiles[doc.docID];
 
+        if (!uploaded?.file) return;
+
+        formData.append(`Documents[${index}].DocId`, doc.docID);
+        formData.append(`Documents[${index}].DocSl`, String(doc.docSl || 1));
         formData.append(
-          `Documents[${index}].ApplicantSl`,
-          doc.applicantSl || 1,
+          `Documents[${index}].IsValid`,
+          String(doc.isValid || 1),
         );
 
-        formData.append(`Documents[${index}].DocId`, doc.docId);
-
-        formData.append(`Documents[${index}].DocSl`, doc.docSl || 1);
-
-        formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
-
-        // Include the selected validity date with this document upload
         formData.append(
           `Documents[${index}].DateOfValidity`,
           uploaded.validityDate || "",
         );
 
+        formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
+
         index++;
       });
 
       const response = await fetch(
-        "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+        "http://localhost:5214/api/CommonLicense/SaveAndUpdateApplicantDocuments",
         {
           method: "POST",
           body: formData,
         },
       );
+
+      console.log("response", response);
 
       if (!response.ok) {
         throw new Error(await response.text());
@@ -1564,7 +1569,7 @@ export default function HcrLicensee({
   const submitApplication = async () => {
     try {
       const finalSubmission = {
-        ApplicationIdNo: applicationId || localStorage.getItem("applicationId"),
+        ApplicationIdNo: applicationIdNo || localStorage.getItem("applicationIdNo"),
 
         ApplicationStatus: "02",
       };
@@ -1584,7 +1589,7 @@ export default function HcrLicensee({
         throw new Error(await response.text());
       }
 
-      const appNo = applicationId || localStorage.getItem("applicationId");
+      const appNo = applicationIdNo || localStorage.getItem("applicationIdNo");
 
       setReceiptData({
         applicationNo: appNo,
