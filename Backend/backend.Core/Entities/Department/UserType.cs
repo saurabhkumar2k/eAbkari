@@ -30,5 +30,11 @@ namespace backend.Core.Entities.Department
         [StringLength(1)]
         public string? IsActive { get; set; }
 
+        [Required]
+        public int RoleID { get; set; }
+
+        [Required]
+        public long BranchCode { get; set; }
+
     }
 }

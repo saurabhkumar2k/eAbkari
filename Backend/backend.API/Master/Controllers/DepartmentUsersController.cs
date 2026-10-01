@@ -18,8 +18,8 @@ namespace backend.API.Master.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("GetAllDeptUser")]
+        public async Task<IActionResult> GetAllDeptUser()
         {
             var users = await _service.GetAllAsync();
 
@@ -55,7 +55,7 @@ namespace backend.API.Master.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("CreateDeptUser")]
         public async Task<IActionResult> Create(DepartmentUserDto userDto)
         {
            

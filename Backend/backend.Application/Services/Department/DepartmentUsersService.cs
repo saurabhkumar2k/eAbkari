@@ -14,12 +14,14 @@ namespace backend.Application.Services.Department
     {
         private readonly IDepartmentUserRepository _departmentUsersRepository;
         private readonly IRoleService _roleService;
+        private readonly IUserTypeService _userTypeService;
 
 
-        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository, IRoleService roleService)
+        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository, IRoleService roleService, IUserTypeService userTypeService)
         {
             _departmentUsersRepository = departmentUsersRepository;
             _roleService = roleService;
+            _userTypeService = userTypeService;
         }
 
         public async Task<IEnumerable<MstDistrict>> GetDistrict()
@@ -33,26 +35,72 @@ namespace backend.Application.Services.Department
             return districts;
         }
 
-        public async Task<IEnumerable<DepartmentUserDto>> GetAllAsync()
+        //public async Task<IEnumerable<DepartmentUserViewDto>> GetAllAsync()
+        //{
+        //    var users = await _departmentUsersRepository.GetAllAsync();
+
+        //    if (users == null || !users.Any())
+        //    {
+        //        return Enumerable.Empty<DepartmentUserViewDto>();
+        //    }
+
+        //    return users.Select(
+
+
+        //        x => new DepartmentUserViewDto
+        //        {
+        //            UserId = x.UserId,
+        //            UserName = x.UserName,
+        //            UserDesignation = x.UserDesignation,
+        //            Email = x.Email,
+        //            IsActive = x.IsActive,
+        //            MobileNo = x.MobileNo,
+        //            PermissionDesc = "",
+        //            UserTypeDesc = _userTypeService.GetTypeCodeAsync(x.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0, x.DeptUserRoles.FirstOrDefault()?.BranchCode ?? 0) 
+        //        }
+
+        //    );
+        //}
+
+
+
+        public async Task<IEnumerable<DepartmentUserViewDto>> GetAllAsync()
         {
             var users = await _departmentUsersRepository.GetAllAsync();
 
             if (users == null || !users.Any())
             {
-                return Enumerable.Empty<DepartmentUserDto>();
+                return Enumerable.Empty<DepartmentUserViewDto>();
             }
 
-            return users.Select(x => new DepartmentUserDto
+            var result = new List<DepartmentUserViewDto>();
+
+            foreach (var x in users)
             {
-                UserId = x.UserId,
-                UserName = x.UserName,
-                UserDesignation = x.UserDesignation,
-                Email = x.Email,
-                IsActive = x.IsActive,
-                RoleId = x.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0,
-                BranchCode = x.DeptUserRoles.FirstOrDefault()?.BranchCode ?? 0
-            });
+                var role = x.DeptUserRoles.FirstOrDefault();
+
+                var userTypeDesc = await _userTypeService.GetTypeCodeDescAsync(
+                    role?.RoleId ?? 0,
+                    role?.BranchCode ?? 0
+                );
+
+                result.Add(new DepartmentUserViewDto
+                {
+                    UserId = x.UserId,
+                    UserName = x.UserName,
+                    UserDesignation = x.UserDesignation,
+                    Email = x.Email,
+                    IsActive = x.IsActive,
+                    MobileNo = x.MobileNo,
+                    PermissionDesc = "",
+                    UserTypeDesc = userTypeDesc
+                });
+            }
+
+            return result;
         }
+
+
 
         public async Task<DepartmentUserDto?> GetByIdAsync(string userId)
         {
@@ -89,6 +137,9 @@ namespace backend.Application.Services.Department
 
             if (string.IsNullOrWhiteSpace(user.Email))
                 throw new ArgumentException("Email is required.");
+
+            if (string.IsNullOrWhiteSpace(user.MobileNo))
+                throw new ArgumentException("Mobile No. is required.");
 
             // Optional: Check if the user already exists
             var existingUser = await _departmentUsersRepository.GetByIdAsync(user.UserId);
@@ -142,6 +193,7 @@ namespace backend.Application.Services.Department
 
                 DepartmentUser.PasswordHash = sb.ToString();
             }
+            var UserTypeCode = await _userTypeService.GetTypeCodeAsync(user.RoleId, user.BranchCode);
             var DeptUserRoleId = await _departmentUsersRepository.GetNextDeptUserRoleIdAsync();
             var DeptUserRoles = new DeptUserRoles
             {
@@ -150,7 +202,8 @@ namespace backend.Application.Services.Department
                 UserId = user.UserId.Trim(),
                 RoleId = user.RoleId,
                 BranchCode = user.BranchCode,
-                UserTypeCode = user.UserTypeCode
+                UserTypeCode = UserTypeCode,
+                PermissionId = user.PermissionId  
                 //IsActive = "Y"
             };
 

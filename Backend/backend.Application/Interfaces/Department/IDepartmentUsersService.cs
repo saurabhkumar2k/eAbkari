@@ -6,7 +6,7 @@ namespace backend.Application.Interfaces.Department
 {
     public interface IDepartmentUsersService
     {
-        Task<IEnumerable<DepartmentUserDto>> GetAllAsync();
+        Task<IEnumerable<DepartmentUserViewDto>> GetAllAsync();
 
         Task<DepartmentUserDto?> GetByIdAsync(string userId);
 
