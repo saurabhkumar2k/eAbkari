@@ -83,16 +83,4 @@ namespace backend.Core.Entities.Department
         public virtual  MstLicenseeCategoryBranch? MstLicenseeCategoryBranch { get; set; }
     }
 
-    [Table("MstLicenseeCategoryBranch")]
-    public class MstLicenseeCategoryBranch
-    {
-        [Key]
-        public long BranchCode { get; set; } 
-
-        [StringLength(50)]
-        public string BranchName { get; set; }
-        
-        //public virtual ICollection<DeptUserRoles> DeptUserRoles { get; set; } = new List<DeptUserRoles>();
-    }
-
 }

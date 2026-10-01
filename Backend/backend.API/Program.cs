@@ -93,6 +93,9 @@ builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ILicenseeBranchService, LicenseeBranchService>();
+builder.Services.AddScoped<ILicenseeBranchRepository, LicenseeBranchRepository>();
+builder.Services.AddScoped<IUserTypeService, UserTypeService>();
 
 builder.Services.AddScoped<ICommonRetailRepository, CommonRetailRepository>();
 builder.Services.AddScoped<ICommonRetailServices, CommonRetailServices>();
