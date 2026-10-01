@@ -410,6 +410,7 @@ const RestaurantDetails = ({
 
               <input
                 type="text"
+                maxLength={12}
                 className="reg-input"
                 placeholder="Enter Landline Number"
                 value={siteForm.SiteLandline}
@@ -437,6 +438,7 @@ const RestaurantDetails = ({
 
               <input
                 type="text"
+                maxLength={14}
                 className="reg-input"
                 placeholder="Enter Fax Number"
                 value={siteForm.SiteFax}
@@ -461,15 +463,16 @@ const RestaurantDetails = ({
 
               <input
                 type="text"
-                className="reg-input"
-                placeholder="Enter PanNo Number"
-                value={siteForm.SitePan}
+                maxLength={10}
+                placeholder="ABCDE1234F"
+                className={`reg-input uppercase font-mono font-bold text-slate-800 ${
+                  errors.SitePan ? "error" : ""
+                }`}
+                value={siteForm.SitePan || ""}
                 onChange={(e) =>
-                  onChange(
-                    "SitePan",
-                    e.target.value.replace(/\D/g, ""),
-                  )
+                  onChange("SitePan", e.target.value.toUpperCase())
                 }
+                
               />
             </div>
             {errors.SitePan && (

@@ -23,6 +23,9 @@ export const createHCRAdditional = () => ({
   HasStoreProvisionYN: "",
   StoreLocationInHotel:"",
   TINNumber:"",
+  CompanyFirmPANNo:"",
+  ConstitutionType:"",
+  CINNo:"",
 
   // questionsList: [
   // ],

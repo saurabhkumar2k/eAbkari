@@ -71,3 +71,8 @@
     width: 100%;
   }
 }
+
+.section-title {
+  font-weight: bold;
+  text-decoration: underline;
+}

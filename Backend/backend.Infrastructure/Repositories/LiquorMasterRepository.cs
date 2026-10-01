@@ -90,7 +90,7 @@ namespace backend.Infrastructure.Repositories
             {
 
 
-                var HCRCodes = new[] { "03", "04", "05", "06", "07","30","31","32","33","34","35","36"};
+                var HCRCodes = new[] { "03", "04", "05", "06", "07","30","31","32","33","34","35","36","01","08","14","43","52"};
 
                 return await _context.MstLicenseeCategory
                     .Where(x => HCRCodes.Contains(x.LicenseeCatCode.Trim()))

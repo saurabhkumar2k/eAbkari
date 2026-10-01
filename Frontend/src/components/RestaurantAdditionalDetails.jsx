@@ -5,9 +5,10 @@ import HcrQuestionList from "./HCRQuestionList";
 import HCRBasicFieldsL17 from "./HcrBasicFieldsL17";
 import HCRBasicFieldsL16 from "./HcrBasicFieldsL16";
 import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
+import HCRBasicFieldsL28 from "./HCRBasicFieldsL28";
 import RestaurantDetailsL16 from "./RestaurantDetailsL16";
-import {Cat_Label} from "../areas/applicant/HCR/validation"
-
+import ClubDetailsL2829 from "./ClubDetailsL2829";
+import { Cat_Label } from "../areas/applicant/HCR/validation";
 
 export default function RestaurantAdditionalDetails({
   additionalFrom,
@@ -29,12 +30,26 @@ export default function RestaurantAdditionalDetails({
   ondeleteRestaurantDetail,
   onAddRestaurantDetail,
   onRestaurantDetailChange,
+  ConstitutionType,
+  onClubDetailChange,
+  onAddClubDetail,
+  ondeleteClubDetail,
 }) {
   console.log("RestaurantAdditionalDetails - errors  ", errors);
   /* */
-  const HcrQuestionListCategories = ["04","05","06","30","31","32","07","34",];
+  const HcrQuestionListCategories = [
+    "04",
+    "05",
+    "06",
+    "30",
+    "31",
+    "32",
+    "07",
+    "34",
+  ];
   /* */
   const HCRBasicFieldsCategories = ["05", "06", "31", "32", "07", "34"];
+  const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
   return (
     <div className="hcr-form-section animate-fade">
       {/* <div className="hcr-step-header">
@@ -69,15 +84,16 @@ export default function RestaurantAdditionalDetails({
               />
             )}
 
-            {/* <div className="form-group full-width">
-              <div className="hcr-form-grid">
-                <HCRBasicFieldsL17
-                  additionalFrom={additionalFrom}
-                  hoursOfSaleList={hoursOfSaleList}
-                  onChange={onChange}
-                />
-              </div>
-            </div> */}
+            {(CatCode === "01" || CatCode === "35" || CatCode === "08" || CatCode === "36") && (
+              <HCRBasicFieldsL28
+                additionalFrom={additionalFrom}
+                onChange={onChange}
+                hoursOfSaleList={hoursOfSaleList}
+                errors={errors}
+                ConstitutionType={ConstitutionType}
+              />
+            )}
+
             {
               // CatCode === "05" || CatCode === "31" || CatCode === "06" || CatCode === "32"
               HCRBasicFieldsCategories.includes(CatCode) && (
@@ -169,6 +185,26 @@ export default function RestaurantAdditionalDetails({
                   </span>
                 )}
               </div>
+            </div>
+
+            <div className="form-group full-width">
+              {(CatCode === "01" || CatCode === "35" || CatCode === "08" || CatCode === "36") && (
+                <ClubDetailsL2829
+                  ClubDetails={additionalFrom?.clubDetails || []}
+                  ConstitutionType={constitutionType}
+                  onChange={onClubDetailChange}
+                  onAdd={onAddClubDetail}
+                  onDelete={ondeleteClubDetail}                  
+                  errors={errors?.restaurantError}
+                />
+              )}
+              <div className="error-text-container">
+                {errors?.restaurantGlobalError && (
+                  <span className="error-text-all">
+                    {errors?.restaurantGlobalError}
+                  </span>
+                )}
+              </div> 
             </div>
           </div>
         </form>
