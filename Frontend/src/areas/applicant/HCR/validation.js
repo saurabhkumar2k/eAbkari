@@ -405,3 +405,107 @@ export const validateRestaurantDetails = (restaurantDetails) => {
 
   return result;
 };
+
+export const validateClubDetails = (clubDetails) => {
+  const result = {
+    isValid: true,
+    globalError: "",
+    errors: [],
+  };
+
+  // 1. Guard check if it doesn't exist or length is 0
+  if (
+    !clubDetails ||
+    !clubDetails.length ||
+    clubDetails.length === 0
+  ) {
+    result.isValid = false;
+    result.globalError = "At least one Club detail must be added";
+    return result;
+  }
+
+  // 2. Safe numeric loop that bypasses all array prototype/proxy limitations
+  for (let index = 0; index < clubDetails.length; index++) {
+    const club = clubDetails[index];
+
+    // Safety check in case the index item is empty or undefined
+    if (!club) continue;
+
+    const rowErrors = {};
+
+    // Validate NameOfAdditionalRestaurant
+    const nameErr = requiredCheck(
+      club.NameOfAdditionalRestaurant,
+      "Name of Additional Club",
+    );
+    if (nameErr) rowErrors.NameOfAdditionalRestaurantErr = nameErr;
+
+    // Validate HoursofSale
+    // const hourSaleErr = requiredCheck(restaurant.HoursofSale, "Hours of Sale");
+    // if (hourSaleErr) rowErrors.HoursofSaleErr = hourSaleErr;
+
+    // Validate ForeignLiquor
+    // if (!restaurant.ForeignLiquor) {
+    //   rowErrors.ForeignLiquorErr = "Foreign Liquor is Required";
+    // } else {
+    //   const foreignLiquorErr = requiredCheck(
+    //     restaurant.ForeignLiquor,
+    //     "Foreign Liquor",
+    //   );
+    //   if (foreignLiquorErr) rowErrors.ForeignLiquorErr = foreignLiquorErr;
+    // }
+
+    // Validate AddtionalArea
+    if (!club.AddtionalArea) {
+      rowErrors.AddtionalAreaErr = "Additional Area is Required";
+    } else {
+      const addAreaErr = requiredCheck(
+        club.AddtionalArea,
+        "Additional Area",
+      );
+      if (addAreaErr) rowErrors.AddtionalAreaErr = addAreaErr;
+    }
+
+    // ⚡ Conditional Constraint Rule: If AddtionalArea is "1", then HoursofSaleAddtionalArea is required
+    // if (restaurant.AddtionalArea === "1" || restaurant.AddtionalArea === 1) {
+    //   if (!restaurant.HoursofSaleAddtionalArea) {
+    //     rowErrors.HoursofSaleAddtionalAreaErr =
+    //       "Hours of Sale for Additional Area is Required";
+    //   } else {
+    //     const condHourErr = requiredCheck(
+    //       restaurant.HoursofSaleAddtionalArea,
+    //       "Hours of Sale for Additional Area",
+    //     );
+    //     if (condHourErr) rowErrors.HoursofSaleAddtionalAreaErr = condHourErr;
+    //   }
+    // }
+
+    // Validate AreaSqMtr (Number Validation)
+    // const areaErr = validateSiteNum(restaurant.AreaSqMtr, "Area (Sq Mtr)");
+    // if (areaErr) rowErrors.AreaSqMtrErr = areaErr;
+
+    // Validate NumberOfCounter (Number Validation)
+    const counterErr = validateSiteNum(
+      club.NumberOfCounter,
+      "Number of Counters",
+    );
+    if (counterErr) rowErrors.NumberOfCounterErr = counterErr;
+
+    // Validate NumberOfSeatCovers (Number Validation)
+    // const seatErr = validateSiteNum(
+    //   restaurant.NumberOfSeatCovers,
+    //   "Number of Seat Covers",
+    // );
+    // if (seatErr) rowErrors.NumberOfSeatCoversErr = seatErr;
+
+    // If this specific index has errors, collect them
+    if (Object.keys(rowErrors).length > 0) {
+      result.isValid = false;
+      result.errors[index] = rowErrors;
+    } else {
+      result.errors[index] = null; // Clean state for this row
+    }
+  }
+
+  return result;
+};

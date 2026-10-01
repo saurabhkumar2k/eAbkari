@@ -21,7 +21,7 @@ import {
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import { validateDirectors, validateRestaurantDetails,Cat_Label } from "./validation";
+import { validateDirectors, validateRestaurantDetails, validateClubDetails, Cat_Label } from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -95,6 +95,7 @@ export default function HcrLicensee({
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
   const [starCategory, setStarCategory] = useState([]);
   const [starCategoryRating, setStarCategoryRating] = useState([]);
+  const [constitutionType, setConstitutionType] = useState([]);
 
   // =========================================================
   // Errors
@@ -865,6 +866,92 @@ export default function HcrLicensee({
     setAdditionalFrom((prev) => ({
       ...prev,
       restaurantDetails: (prev.restaurantDetails || []).filter(
+        (_, i) => i !== index,
+      ),
+    }));
+  };
+
+  
+  const handleClubDetailChange = (index, field, value) => {
+    setAdditionalFrom((prev) => {
+      const clubDetails = [...(prev.clubDetails || [])];
+
+      clubDetails[index] = {
+        ...clubDetails[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        clubDetails,
+      };
+    });
+  };
+
+  const addClubDetail = () => {
+    debugger;
+    const errors = {};
+    let additionalUpdateErrors = { ...additionalFormErrors };
+
+    // 1. Run the evaluation using your custom function
+    const clubErr = validateClubDetails(
+      additionalFrom.clubDetails,
+    );
+    if (clubErr) errors.clubDetails = clubErr;
+
+    // 2. Check if the data structure contains items before proceeding
+    const hasClubs =
+      additionalFrom.clubDetails &&
+      additionalFrom.clubDetails.length > 0;
+
+    if (hasClubs) {
+      additionalUpdateErrors.clubDetails = errors.clubDetails;
+      setAdditionalFormErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addClubDetail additionalFormErrors ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
+    }
+
+    // Condition 1: Function evaluation fails AND the array is populated
+    const isInvalidWithData =
+      clubErr?.isValid === false && hasClubs;
+
+    // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+    const hasRowErrors =
+      Array.isArray(clubErr?.errors) &&
+      hasClubs?.errors?.some((err) => err !== null);
+
+    // 3. Prevent structural addition if the active items contain errors
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Halt structural changes
+    } else {
+      if (additionalUpdateErrors.clubDetails) {
+        additionalUpdateErrors.clubDetails.errors = []; // Flush existing error tracking array safely
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
+    }
+
+    // 4. Safely push the fresh entry layout block forward into the state container
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      clubDetails: [
+        ...(prev.clubDetails || []),
+        {
+          NameOfAdditionalRestaurant: "",       
+          NumberOfCounter: "",
+          AddtionalArea: "",
+          
+        },
+      ],
+    }));
+  };
+
+  const deleteClubDetail = (index) => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      clubDetails: (prev.clubDetails || []).filter(
         (_, i) => i !== index,
       ),
     }));
@@ -1747,9 +1834,13 @@ export default function HcrLicensee({
             CatCode={selectedLicenseCode}
             starCategory={starCategory}
             starCategoryRating={starCategoryRating}
+            ConstitutionType={constitutionType}
             onRestaurantDetailChange={handleRestaurantDetailChange}
             onAddRestaurantDetail={addRestaurantDetail}
             ondeleteRestaurantDetail={deleteRestaurantDetail}
+            onClubDetailChange={handleClubDetailChange}
+            onAddClubDetail={addClubDetail}
+            ondeleteClubDetail={deleteClubDetail}
           />
         )}
 

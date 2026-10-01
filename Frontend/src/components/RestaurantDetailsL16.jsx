@@ -8,14 +8,7 @@ const RestaurantDetailsL16 = ({ RestaurantDetails, onChange, onAdd, onDelete, Co
   return (
     <div className="restaurants-section">
       {/* Section Title */}
-      {/* <div className="restaurant-header-box">
-        <h3 className="restaurant-heading">
-          restaurant / Partners / Proprietors
-        </h3>
-        <p className="restaurant-subheading">
-          As per MCA Portal (Companies Act 2013)
-        </p>
-      </div> */}
+     
       <div className="restaurants-header">
         <div>
           <h2>Restaurant Details</h2>
