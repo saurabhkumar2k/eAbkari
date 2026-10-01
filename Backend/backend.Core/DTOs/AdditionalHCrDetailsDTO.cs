@@ -56,6 +56,12 @@ namespace backend.Core.DTOs
 
         public string? TINNumber { get; set; }
 
+        public string? CompanyFirmPANNo {get; set;}
+
+        public string? ConstitutionType {get; set;}
+
+        public string? CINNo {get; set;}
+
     }
 
 
