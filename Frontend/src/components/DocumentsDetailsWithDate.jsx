@@ -12,6 +12,7 @@ const DocumentUploadWithDate = ({
 }) => {
   // const [date, setDate] = useState("");
   console.log(documents)
+  console.log("uploadedFiles",uploadedFiles)
 
   // const handleChange = (e) => {
   //   debugger;
@@ -44,16 +45,16 @@ const DocumentUploadWithDate = ({
           /*
            * Existing/new uploaded file information
            */
-          const uploaded = uploadedFiles[doc.docId];
+          const uploaded = uploadedFiles[doc.docID];
 
           return (
-            <div key={doc.docId} className="doc-portal-container">
+            <div key={doc.docID} className="doc-portal-container">
               <div className="doc-portal-layout">
                 {/* DOCUMENT DESCRIPTION SECTION */}
                 <div className="doc-info-block">
                   <label className="doc-portal-label">
-                    {doc.docDesc} - {doc.isValid}
-                    {doc.isMandatory && (
+                    {doc.docDesc}
+                    {doc.isMandatory === "Y" && (
                       <span className="form-required-mark" aria-hidden="true">
                         {" "}
                         *
@@ -67,17 +68,17 @@ const DocumentUploadWithDate = ({
                   {/* DATE OF VALIDITY FIELD */}
                   {/* {(uploaded?.file || uploaded?.existingFile) && (
             <div className="form-field-group">
-              <label htmlFor={`validity-${doc.docId}`} className="form-field-label">
+              <label htmlFor={`validity-${doc.docID}`} className="form-field-label">
                 Date of Validity
               </label>
               <input
-                id={`validity-${doc.docId}`}
+                id={`validity-${doc.docID}`}
                 type="date"
                 className="form-date-input"
                 value={uploaded?.validityDate || ""}
                 onChange={(e) => {
                   if (handleValidityDateChange) {
-                    handleValidityDateChange(doc.docId, e.target.value);
+                    handleValidityDateChange(doc.docID, e.target.value);
                   }
                 }}
               />
@@ -87,19 +88,19 @@ const DocumentUploadWithDate = ({
                     (uploaded?.file || uploaded?.existingFile) && (
                       <div className="form-field-group">
                         <label
-                          htmlFor={`validity-${doc.docId}`}
+                          htmlFor={`validity-${doc.docID}`}
                           className="form-field-label"
                         >
                           Date of Validity
                         </label>
                         <input
-                          id={`validity-${doc.docId}`}
+                          id={`validity-${doc.docID}`}
                           type="date"
                           className="form-date-input"
                           value={uploaded?.validityDate || ""}
                           onChange={(e) =>
                             handleValidityDateChange?.(
-                              doc.docId,
+                              doc.docID,
                               e.target.value,
                             )
                           }
@@ -146,7 +147,7 @@ const DocumentUploadWithDate = ({
                             className="portal-btn btn-warning"
                             onClick={() => {
                               document
-                                .getElementById(`replace-file-${doc.docId}`)
+                                .getElementById(`replace-file-${doc.docID}`)
                                 ?.click();
                             }}
                           >
@@ -154,14 +155,14 @@ const DocumentUploadWithDate = ({
                           </button>
 
                           <input
-                            id={`replace-file-${doc.docId}`}
+                            id={`replace-file-${doc.docID}`}
                             type="file"
                             hidden
                             accept=".pdf,.jpg,.jpeg,.png"
                             onChange={(e) => {
                               const file = e.target.files?.[0] || null;
                               if (file)
-                                handleDocumentFileChange(doc.docId, file);
+                                handleDocumentFileChange(doc.docID, file);
                               e.target.value = "";
                             }}
                           />
@@ -169,7 +170,7 @@ const DocumentUploadWithDate = ({
                           <button
                             type="button"
                             className="portal-btn btn-danger"
-                            onClick={() => handleDeleteFile(doc.docId)}
+                            onClick={() => handleDeleteFile(doc.docID)}
                           >
                             <Trash2 size={15} /> Delete
                           </button>
@@ -208,7 +209,7 @@ const DocumentUploadWithDate = ({
                             onClick={() => {
                               document
                                 .getElementById(
-                                  `replace-existing-file-${doc.docId}`,
+                                  `replace-existing-file-${doc.docID}`,
                                 )
                                 ?.click();
                             }}
@@ -217,14 +218,14 @@ const DocumentUploadWithDate = ({
                           </button>
 
                           <input
-                            id={`replace-existing-file-${doc.docId}`}
+                            id={`replace-existing-file-${doc.docID}`}
                             type="file"
                             hidden
                             accept=".pdf,.jpg,.jpeg,.png"
                             onChange={(e) => {
                               const file = e.target.files?.[0] || null;
                               if (file)
-                                handleDocumentFileChange(doc.docId, file);
+                                handleDocumentFileChange(doc.docID, file);
                               e.target.value = "";
                             }}
                           />
@@ -232,7 +233,7 @@ const DocumentUploadWithDate = ({
                           <button
                             type="button"
                             className="portal-btn btn-danger"
-                            onClick={() => handleDeleteFile(doc.docId)}
+                            onClick={() => handleDeleteFile(doc.docID)}
                           >
                             <Trash2 size={15} /> Delete
                           </button>
@@ -248,20 +249,20 @@ const DocumentUploadWithDate = ({
                           className="portal-btn btn-primary-Doc"
                           onClick={() => {
                             document
-                              .getElementById(`upload-file-${doc.docId}`)
+                              .getElementById(`upload-file-${doc.docID}`)
                               ?.click();
                           }}
                         >
                           <Upload size={15} /> Upload Document
                         </button>
                         <input
-                          id={`upload-file-${doc.docId}`}
+                          id={`upload-file-${doc.docID}`}
                           type="file"
                           hidden
                           accept=".pdf,.jpg,.jpeg,.png"
                           onChange={(e) => {
                             const file = e.target.files?.[0] || null;
-                            if (file) handleDocumentFileChange(doc.docId, file);
+                            if (file) handleDocumentFileChange(doc.docID, file);
                             e.target.value = "";
                           }}
                         />

@@ -43,7 +43,7 @@ namespace backend.Application.Services.License
                     SitePan = dto.SitePan,
                     LicenseValidFor = dto.LicenseValidFor,
                     IsCommercialActivity = dto.IsCommercialActivity,
-                    CreatedDate = dto.CreatedDate
+                    CreatedDate = DateTime.Now
 
 
                 };

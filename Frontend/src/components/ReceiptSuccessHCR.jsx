@@ -84,7 +84,7 @@ const ReceiptSuccessHCR = ({
                 </div>
 
                 <div className="application-number">
-                  {applicant?.applicationId || "—"}
+                  {applicant?.applicationIdNo || "—"}
                 </div>
               </div>
 

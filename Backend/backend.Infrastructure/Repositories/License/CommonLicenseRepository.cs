@@ -192,7 +192,7 @@ namespace backend.Infrastructure.Repositories.License
                 join c in _context.LicenseApplicationUploadedDocument
                      //.Where(x => x.ApplicationIdNo == applicationIdNo &&
                      //            x.MobileNoReleaseStatus == "N")
-                     .Where(x => x.ApplicationIdNo == applicationIdNo )
+                     .Where(x => x.ApplicationIdNo == applicationIdNo && x.DocStatus == "Y")
                                
                     on a.DocId equals c.DocId into gj
 
@@ -225,17 +225,17 @@ namespace backend.Infrastructure.Repositories.License
             return result;
         }
 
-        public async Task<string?> SaveAndUpdateApplicantDocumentsRepository(List<SaveAndUpdateApplicantDocumentsDto> dto)
+        public async Task<string?> SaveAndUpdateApplicantDocumentsRepository(SaveAndUpdateApplicantDocumentsDto dto)
         {
             try
             {
-                if (dto == null || dto.Count == 0)
+                if (dto == null || dto.Documents.Count == 0)
                 {
                     return null;
                 }
 
 
-                var applicationIdNo = dto.First().ApplicationIdNo;
+                var applicationIdNo = dto.ApplicationIdNo;
 
                 if (string.IsNullOrWhiteSpace(applicationIdNo))
                 {
@@ -260,7 +260,7 @@ namespace backend.Infrastructure.Repositories.License
 
 
                 // Process each document
-                foreach (var document in dto)
+                foreach (var document in dto.Documents)
                 {
                     // Check existing document using
                     // ApplicationIdNo + DocId
@@ -289,7 +289,7 @@ namespace backend.Infrastructure.Repositories.License
 
 
                         existingDocument.MobileNo =
-                            document.MobileNo;
+                            dto.MobileNo;
 
                         existingDocument.DocSl =
                             document.DocSl;
@@ -334,7 +334,7 @@ namespace backend.Infrastructure.Repositories.License
                                 ApplicationIdNo = applicationIdNo,
 
                                 MobileNo =
-                                    document.MobileNo,
+                                    dto.MobileNo,
 
                                 ApplicantSl =
                                     applicantSl.ToString(),
@@ -346,7 +346,7 @@ namespace backend.Infrastructure.Repositories.License
                                     document.DocSl,
 
                                 DocStatus =
-                                    "N",
+                                    "Y",
 
                                 IsValid =
                                     document.IsValid ?? "N",

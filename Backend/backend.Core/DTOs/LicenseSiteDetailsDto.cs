@@ -57,7 +57,7 @@ namespace backend.Core.DTOs
 
         public string? LicenseValidFor { get; set; }
         public string? IsCommercialActivity { get; set; }
-        public DateTime CreatedDate { get; set; }
+       // public DateTime CreatedDate { get; set; }
 
     }
 }
