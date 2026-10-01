@@ -695,15 +695,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           body: JSON.stringify(finalSubmission),
         },
       );
+      const updatedApplication = await responseForward.json();
 
-      if (!responseForward.ok) {
+
+      console.log("responseForward",responseForward)
+
+      if (!responseForward.ok || !updatedApplication.success) {
         throw new Error(await responseForward.text());
       }
 
-      const updatedApplication = await responseForward.json();
-      if (String(updatedApplication.applicationStatus).trim() !== "03") {
-        throw new Error("Application status was not persisted as 03.");
-      }
+      // if (String(updatedApplication.data.applicationStatus).trim() !== "03") {
+      //   throw new Error("Application status was not persisted as 03.");
+      // }
 
       const obj = {
         applicationIdNo,
@@ -911,6 +914,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       item.id.toLowerCase().includes(search.toLowerCase()),
   );
 
+  console.log("applications",applications)
+
   return (
     <div className="app-layout">
       {/* HEADER WITH CENTERED HORIZONTAL MENU */}
@@ -1072,7 +1077,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   <h3 className="applications-title">Active Applications</h3>
                   <span className="applications-badge">
                     {" "}
-                    3 Applications Total{" "}
+                    {applications.length} Applications Total{" "}
                   </span>
                 </div>
               </div>
