@@ -82,5 +82,14 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(20)]
         public string? TINNumber {get; set;}
+
+        [StringLength(50)]
+        public string? CompanyFirmPANNo {get; set;}
+
+        [StringLength(1)]
+        public string? ConstitutionType {get; set;}
+
+        [StringLength(20)]
+        public string? CINNo {get; set;}
     }
 }

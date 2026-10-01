@@ -227,7 +227,11 @@ namespace backend.Infrastructure.Repositories.License
                         HourOfSale = dto.AdditionalDetails.HourOfSale,
                         HasStoreProvisionYN = dto.AdditionalDetails.HasStoreProvisionYN,
                         StoreLocationInHotel = dto.AdditionalDetails.StoreLocationInHotel,
-                        TINNumber = dto.AdditionalDetails.TINNumber
+                        TINNumber = dto.AdditionalDetails.TINNumber,
+                        CompanyFirmPANNo = dto.AdditionalDetails.CompanyFirmPANNo,
+                        ConstitutionType = dto.AdditionalDetails.ConstitutionType,
+                        CINNo = dto.AdditionalDetails.CINNo
+                        
                     };
 
                     _context.AdditionalHCRDetails.Add(details);
@@ -258,6 +262,9 @@ namespace backend.Infrastructure.Repositories.License
                     details.HasStoreProvisionYN = dto.AdditionalDetails.HasStoreProvisionYN;
                     details.StoreLocationInHotel = dto.AdditionalDetails.StoreLocationInHotel;
                     details.TINNumber = dto.AdditionalDetails.TINNumber;
+                    details.CompanyFirmPANNo = dto.AdditionalDetails.CompanyFirmPANNo;
+                    details.ConstitutionType = dto.AdditionalDetails.ConstitutionType;
+                    details.CINNo = dto.AdditionalDetails.CINNo;
                 }
 
                 //==========================
@@ -405,7 +412,10 @@ namespace backend.Infrastructure.Repositories.License
                         HourOfSale = x.HourOfSale,
                         HasStoreProvisionYN = x.HasStoreProvisionYN,
                         StoreLocationInHotel = x.StoreLocationInHotel,
-                        TINNumber = x.TINNumber
+                        TINNumber = x.TINNumber,
+                        CompanyFirmPANNo = x.CompanyFirmPANNo,
+                        ConstitutionType = x.ConstitutionType,
+                        CINNo = x.CINNo
                     })
                     .FirstOrDefaultAsync();
 

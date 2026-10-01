@@ -95,20 +95,20 @@ const HCRHCRBasicFieldsL28 = ({
         <input
           type="number"
           placeholder="Club Area"
-          value={additionalFrom.numberOfClubMember || ""}
+          value={additionalFrom.totalArea || ""}
           onChange={(e) => {
             const value = e.target.value;
 
             if (/^\d*\.?\d*$/.test(value)) {
-              onChange("numberOfClubMember", value);
+              onChange("totalArea", value);
             }
           }}
           maxLength={3}
           className="input-box"
         />
         <div className="error-text-container">
-          {errors?.numberOfClubMember && (
-            <span className="error-text-all">{errors?.numberOfClubMember}</span>
+          {errors?.totalArea && (
+            <span className="error-text-all">{errors?.totalArea}</span>
           )}
         </div>
       </div>
