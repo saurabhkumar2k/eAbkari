@@ -21,7 +21,7 @@ namespace backend.Infrastructure.Repositories.License
         {
             try
             {
-                var siteDetailsCheck = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
+                var siteDetailsCheck = await _context.LicenseSiteDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == dto.ApplicationIdNo);
 
                 if (siteDetailsCheck == null)
                 {

@@ -188,7 +188,7 @@ export default function RestaurantAdditionalDetails({
             </div>
 
             <div className="form-group full-width">
-              {(CatCode === "01" || CatCode === "35" || CatCode === "08" || CatCode === "36") && (
+              {HCRClubAdditionalCategories.includes(CatCode) && (
                 <ClubDetailsL2829
                   ClubDetails={additionalFrom?.clubDetails || []}
                   ConstitutionType={constitutionType}
@@ -199,9 +199,9 @@ export default function RestaurantAdditionalDetails({
                 />
               )}
               <div className="error-text-container">
-                {errors?.restaurantGlobalError && (
+                {errors?.clubGlobalError && (
                   <span className="error-text-all">
-                    {errors?.restaurantGlobalError}
+                    {errors?.clubGlobalError}
                   </span>
                 )}
               </div> 

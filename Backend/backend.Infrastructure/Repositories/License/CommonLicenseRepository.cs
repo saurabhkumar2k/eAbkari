@@ -176,9 +176,9 @@ namespace backend.Infrastructure.Repositories.License
 
             return result;
         }
-        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(String applicationIdNo,string catCode, string DocType)
+        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(String applicationIdNo, string catCode, string DocType)
         {
-            var result = await (               
+            var result = await (
                 from a in _context.MstLicenseApplicationDocument
                 join b in _context.LicenseApplicationCategoryDocument
                     on a.DocId equals b.DocId
@@ -187,13 +187,13 @@ namespace backend.Infrastructure.Repositories.License
                    && a.DeleteStatus == "N"
                    && b.LicenseeCatCode == catCode
                    && b.ActiveStatus == "Y"
-                   && b.LicenseeTypeFlag == "A" 
+                   && b.LicenseeTypeFlag == "A"
 
                 join c in _context.LicenseApplicationUploadedDocument
                      //.Where(x => x.ApplicationIdNo == applicationIdNo &&
                      //            x.MobileNoReleaseStatus == "N")
                      .Where(x => x.ApplicationIdNo == applicationIdNo && x.DocStatus == "Y")
-                               
+
                     on a.DocId equals c.DocId into gj
 
                 from c in gj.DefaultIfEmpty()
@@ -214,7 +214,7 @@ namespace backend.Infrastructure.Repositories.License
                                 ? "View"
                                 : (c.SubmitDate == null
                                     ? "View"
-                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),                   
+                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),
                     VallidUpto = c != null && c.DateOfValidity.HasValue
                                  ? c.DateOfValidity.Value.ToString("dd/MM/yyyy")
                                 : null
@@ -348,8 +348,7 @@ namespace backend.Infrastructure.Repositories.License
                                 DocStatus =
                                     "Y",
 
-                                IsValid =
-                                    document.IsValid ?? "N",
+                                IsValid = document.IsValid,
 
                                 DateOfValidity =
                                     document.DateOfValidity,

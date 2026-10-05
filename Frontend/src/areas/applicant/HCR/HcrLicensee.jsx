@@ -21,7 +21,12 @@ import {
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import { validateDirectors, validateRestaurantDetails, validateClubDetails, Cat_Label } from "./validation";
+import {
+  validateDirectors,
+  validateRestaurantDetails,
+  validateClubDetails,
+  Cat_Label,
+} from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -871,7 +876,6 @@ export default function HcrLicensee({
     }));
   };
 
-  
   const handleClubDetailChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
       const clubDetails = [...(prev.clubDetails || [])];
@@ -894,15 +898,12 @@ export default function HcrLicensee({
     let additionalUpdateErrors = { ...additionalFormErrors };
 
     // 1. Run the evaluation using your custom function
-    const clubErr = validateClubDetails(
-      additionalFrom.clubDetails,
-    );
+    const clubErr = validateClubDetails(additionalFrom.clubDetails);
     if (clubErr) errors.clubDetails = clubErr;
 
     // 2. Check if the data structure contains items before proceeding
     const hasClubs =
-      additionalFrom.clubDetails &&
-      additionalFrom.clubDetails.length > 0;
+      additionalFrom.clubDetails && additionalFrom.clubDetails.length > 0;
 
     if (hasClubs) {
       additionalUpdateErrors.clubDetails = errors.clubDetails;
@@ -915,8 +916,7 @@ export default function HcrLicensee({
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
-    const isInvalidWithData =
-      clubErr?.isValid === false && hasClubs;
+    const isInvalidWithData = clubErr?.isValid === false && hasClubs;
 
     // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
     const hasRowErrors =
@@ -939,10 +939,9 @@ export default function HcrLicensee({
       clubDetails: [
         ...(prev.clubDetails || []),
         {
-          NameOfAdditionalRestaurant: "",       
+          NameOfAdditionalRestaurant: "",
           NumberOfCounter: "",
           AddtionalArea: "",
-          
         },
       ],
     }));
@@ -951,9 +950,7 @@ export default function HcrLicensee({
   const deleteClubDetail = (index) => {
     setAdditionalFrom((prev) => ({
       ...prev,
-      clubDetails: (prev.clubDetails || []).filter(
-        (_, i) => i !== index,
-      ),
+      clubDetails: (prev.clubDetails || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -1520,10 +1517,7 @@ export default function HcrLicensee({
 
         formData.append(`Documents[${index}].DocId`, doc.docID);
         formData.append(`Documents[${index}].DocSl`, String(doc.docSl || 1));
-        formData.append(
-          `Documents[${index}].IsValid`,
-          String(doc.isValid || 1),
-        );
+        formData.append(`Documents[${index}].IsValid`, doc.isValid ? "Y" : "N");
 
         formData.append(
           `Documents[${index}].DateOfValidity`,
@@ -1569,7 +1563,8 @@ export default function HcrLicensee({
   const submitApplication = async () => {
     try {
       const finalSubmission = {
-        ApplicationIdNo: applicationIdNo || localStorage.getItem("applicationIdNo"),
+        ApplicationIdNo:
+          applicationIdNo || localStorage.getItem("applicationIdNo"),
 
         ApplicationStatus: "02",
       };
