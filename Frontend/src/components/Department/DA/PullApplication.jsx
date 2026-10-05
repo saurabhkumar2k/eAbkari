@@ -189,13 +189,13 @@ const handlePullSelected = async () => {
     return;
   }
 
-  const selectedApplications = fetchedData
-    .filter(item => selectedIds.includes(item.id))
-    .map(item => ({
-      applicationIdNo: item.id,
-      hierarchyID: item.hierarchyID,
-      flowUpto: item.flowUpto
-    }));
+const selectedApplications = fetchedData
+  .filter(item => selectedIds.includes(item.id))
+  .map(item => ({
+    applicationIdNo: item.id,
+    hierarchyID: Number(item.hierarchyID),
+    flowUpto: String(item.flowUpto)
+  }));
 
   const payload = {
     userId: localStorage.getItem("userId"),
