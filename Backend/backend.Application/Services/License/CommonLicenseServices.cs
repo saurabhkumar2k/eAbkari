@@ -282,9 +282,33 @@ namespace backend.Application.Services.License
             }
         }
 
-        public async Task<string> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto)
+        public async Task<ApiResponse<string>> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto)
         {
-            return await _Licenserepository.SaveAndUpdateApplicantDocumentsRepository(dto);
+            try
+            {
+                if (dto == null || dto.Documents.Count == 0)
+                {
+                    return ApiResponse<string>.Fail("Invalid Request");
+                }
+
+                var applicationIdNo = dto.ApplicationIdNo;
+
+                if (string.IsNullOrWhiteSpace(applicationIdNo))
+                {
+                    return ApiResponse<string>.Fail("Invalid Application Id");
+                }
+                
+                var response = await _Licenserepository.SaveAndUpdateApplicantDocumentsRepository(dto);
+                if (response == null)
+                {
+                    return ApiResponse<string>.Fail("No document found");
+                }
+                return ApiResponse<string>.Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<string>.Fail("Server error, try again later", ex.Message);
+            }
         }
     }
 }

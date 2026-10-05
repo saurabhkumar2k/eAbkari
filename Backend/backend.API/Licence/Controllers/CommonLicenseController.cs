@@ -62,14 +62,6 @@ namespace backend.API.Licence.Controllers
         {
             var result = await _LicenseService.SaveAndUpdateApplicantDocumentsService(dto);
 
-            if (result == null)
-            {
-                return NotFound(new
-                {
-                    message = "No Document Found."
-                });
-            }
-
             return Ok(result);
         }
     }
