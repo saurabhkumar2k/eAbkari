@@ -20,6 +20,12 @@ export const createHCRAdditional = () => ({
   starCategoryRating: "",
   restaurantArea: "",
   hourOfSale: "",
+  HasStoreProvisionYN: "",
+  StoreLocationInHotel:"",
+  TINNumber:"",
+  CompanyFirmPANNo:"",
+  ConstitutionType:"",
+  CINNo:"",
 
   // questionsList: [
   // ],
@@ -38,11 +44,23 @@ export const createHCRAdditional = () => ({
     },
   ],
 
-  applicantAnswers: [
-    {
-      "applicationIdNo": "",
-      "questionId": "",
-      "answerGiven": "",
-    }
-  ]
+  // applicantAnswers: [
+  //   {
+  //     "applicationIdNo": "",
+  //     "questionId": "",
+  //     "answerGiven": "",
+  //   }
+  // ],
+
+//   restaurantDetails: [{
+//     NameOfAdditionalRestaurant: "",
+//     NumberOfSeatCovers: "",
+//     NumberOfCounter: "",
+//     AddtionalArea: "",
+//     HoursofSale: "",
+//     HoursofSaleAddtionalArea: "",
+//     ForeignLiquor: "",
+//     AreaSqMtr: "",
+//   }
+// ]
 });

@@ -85,6 +85,7 @@ namespace backend.Infrastructure.Data
         public DbSet<PlaAccessPermissionHistory> PlaAccessPermissionHistory { get; set; }
         public DbSet<MstForwardingHierarchy> MstForwardingHierarchy { get; set; }
         public DbSet<HCRAdditionalRestaurantMaster> HCRAdditionalRestaurantMaster {get; set;}
+        public DbSet<MstLicenseeCategoryBranch> MstLicenseeCategoryBranch { get; set;}
 
 
         public DbSet<ApplicationHierarchyMapping> ApplicationHierarchyMapping { get; set; }

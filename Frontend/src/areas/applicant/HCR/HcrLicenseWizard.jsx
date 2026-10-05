@@ -12,6 +12,7 @@ export default function HcrLicenseWizard() {
   });
 
   const handleSelectorContinue = (data) => {
+    debugger;
     console.log("Selected Data:", data);
 
     setSelectedData(data);

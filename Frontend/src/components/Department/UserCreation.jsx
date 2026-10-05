@@ -16,45 +16,48 @@ import {
   RotateCcw
 } from "lucide-react";
 
-const DEFAULT_USERS = [
-  {
-    userId: "EXCISE_ADMIN_01",
-    userName: "Rajesh Kumar",
-    userType: "Department User",
-    userTitle: "Assistant Commissioner",
-    district: "NCT of Delhi",
-    userAccess: "Full Access",
-    mobileNo: "9876543210",
-    email: "rajesh.excise@delhi.gov.in",
-    userStatus: "Active"
-  },
-  {
-    userId: "INSPECT_ND_04",
-    userName: "Suresh Sharma",
-    userType: "Inspection Officer",
-    userTitle: "Excise Inspector",
-    district: "NEW DELHI",
-    userAccess: "Inspection Access",
-    mobileNo: "9812345678",
-    email: "suresh.inspector@delhi.gov.in",
-    userStatus: "Active"
-  }
-];
+// const DEFAULT_USERS = [
+//   {
+//     userId: "EXCISE_ADMIN_01",
+//     userName: "Rajesh Kumar",
+//     userType: "Department User",
+//     userTitle: "Assistant Commissioner",
+//     district: "NCT of Delhi",
+//     userAccess: "Full Access",
+//     mobileNo: "9876543210",
+//     email: "rajesh.excise@delhi.gov.in",
+//     userStatus: "Active"
+//   },
+//   {
+//     userId: "INSPECT_ND_04",
+//     userName: "Suresh Sharma",
+//     userType: "Inspection Officer",
+//     userTitle: "Excise Inspector",
+//     district: "NEW DELHI",
+//     userAccess: "Inspection Access",
+//     mobileNo: "9812345678",
+//     email: "suresh.inspector@delhi.gov.in",
+//     userStatus: "Active"
+//   }
+// ];
 
 const Role_API_URL = 'http://localhost:5214/api/Role/getRole'; 
-const District_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDistrict'; 
+//const District_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDistrict'; 
+const Branch_API_URL = 'http://localhost:5214/api/LicenseeBranch/getBranch'; 
+const DeptUser_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDeptUser'; 
+const DeptUser_Save_API_URL = 'http://localhost:5214/api/DepartmentUsers/CreateDeptUser'; 
 
 export default function UserCreation({ onBack }) {
   const [formData, setFormData] = useState({
-    userType: "",
-    district: "NCT of Delhi",
     userId: "",
-    userAccess: "",
     userName: "",
-    userTitle: "",
-    mobileNo: "",
+    userDesignation: "",
     email: "",
-    userStatus: ""
+    mobileNo: "",
+    isActive: "",
+    roleId: 0,
+    branchCode: 0,
+    permissionId: 0
   });
 
   const [toast, setToast] = useState(null);
@@ -62,19 +65,21 @@ export default function UserCreation({ onBack }) {
   const [activeTab, setActiveTab] = useState("create"); // 'create' | 'list'
   const [searchTerm, setSearchTerm] = useState("");
   const [userRoles, setUserRoles] = useState([]);
-  const [District, setDistrict] = useState([]);
+  const [Branch, setBranch] = useState([]);
 
-  const [usersList, setUsersList] = useState(() => {
-    const saved = localStorage.getItem("dept_created_users");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return DEFAULT_USERS;
-  });
+  const [usersList, setUsersList] = useState([]);
+
+  // const [usersList, setUsersList] = useState(() => {
+  //   const saved = localStorage.getItem("dept_created_users");
+  //   if (saved) {
+  //     try {
+  //       return JSON.parse(saved);
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }
+  //   return DEFAULT_USERS;
+  // });
 
   const showToast = (type, message) => {
     setToast({ type, message });
@@ -91,27 +96,34 @@ export default function UserCreation({ onBack }) {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.userType) newErrors.userType = "User Type is required";
     if (!formData.userId.trim()) {
       newErrors.userId = "User ID is required";
     } else if (formData.userId.length > 25) {
       newErrors.userId = "User ID length maximum 25 characters";
     }
-    if (!formData.userAccess) newErrors.userAccess = "User Access is required";
+    
     if (!formData.userName.trim()) newErrors.userName = "User Name is required";
-    if (!formData.userTitle.trim()) newErrors.userTitle = "User Title is required";
-    if (!formData.mobileNo.trim()) {
-      newErrors.mobileNo = "Mobile No is required";
-    } else if (!/^\d{10}$/.test(formData.mobileNo.trim())) {
-      newErrors.mobileNo = "Enter valid 10-digit mobile number";
-    }
+
+    if (!formData.userDesignation.trim()) newErrors.userDesignation = "User Title is required";
+
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email.trim())) {
       newErrors.email = "Enter a valid email address";
     }
-    if (!formData.userStatus) newErrors.userStatus = "User Status is required";
 
+    if (!formData.mobileNo.trim()) {
+      newErrors.mobileNo = "Mobile No is required";
+    } else if (!/^\d{10}$/.test(formData.mobileNo.trim())) {
+      newErrors.mobileNo = "Enter valid 10-digit mobile number";
+    }
+
+    if (!formData.isActive) newErrors.isActive = "User Status is required";
+
+    if (!formData.roleId) newErrors.userType = "User Role is required";
+
+    if (!formData.branchCode) newErrors.branch = "User branch is required";
+   
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -133,34 +145,62 @@ export default function UserCreation({ onBack }) {
       return;
     }
 
+    // const newUser = {
+    //   ...formData,
+    //   userId: formData.userId.trim(),
+    //   userName: formData.userName.trim(),
+    //   userTitle: formData.userTitle.trim(),
+    //   mobileNo: formData.mobileNo.trim(),
+    //   email: formData.email.trim()
+    // };
+
+    // const updatedList = [newUser, ...usersList];
+    // setUsersList(updatedList);
+    // localStorage.setItem("dept_created_users", JSON.stringify(updatedList));
+
     const newUser = {
-      ...formData,
       userId: formData.userId.trim(),
       userName: formData.userName.trim(),
-      userTitle: formData.userTitle.trim(),
+      userDesignation: formData.userDesignation.trim(),
+      email: formData.email.trim(),
       mobileNo: formData.mobileNo.trim(),
-      email: formData.email.trim()
+      isActive: formData.isActive,
+      roleId: formData.roleId,
+      branchCode: formData.branchCode,
+      permissionId: formData.permissionId,
     };
 
-    const updatedList = [newUser, ...usersList];
-    setUsersList(updatedList);
-    localStorage.setItem("dept_created_users", JSON.stringify(updatedList));
+    // Call API
+    const result = createDeptUser(newUser);
 
-    showToast("success", `User '${newUser.userId}' created successfully!`);
+    if (!result.success) {
+      showToast("error", result.message);
+      return;
+    }
+
+    // API success
+    showToast(
+      "success",
+      `User '${newUser.userId}' created successfully!`
+    );
+
+    // Update local UI list
+    // setUsersList((prev) => [newUser, ...prev]);
 
     // Reset form
     setFormData({
-      userType: "",
-      district: "NCT of Delhi",
       userId: "",
-      userAccess: "",
       userName: "",
-      userTitle: "",
-      mobileNo: "",
+      userDesignation: "",
       email: "",
-      userStatus: ""
+      mobileNo: "",
+      isActive: "",
+      roleId: 0,
+      branchCode: 0,
+      permissionId: 0
     });
     setErrors({});
+    fetchDeptUser();
   };
 
   const handleCancel = () => {
@@ -173,7 +213,7 @@ export default function UserCreation({ onBack }) {
       userTitle: "",
       mobileNo: "",
       email: "",
-      userStatus: ""
+      isActive: ""
     });
     setErrors({});
     if (onBack) {
@@ -187,9 +227,9 @@ export default function UserCreation({ onBack }) {
     (u) =>
       u.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.userType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.district.toLowerCase().includes(searchTerm.toLowerCase())
+      u.userTypeDesc.toLowerCase().includes(searchTerm.toLowerCase())      
   );
+
   const fetchUserTypes = async () => {
     try {
     const response = await fetch(Role_API_URL, {
@@ -207,13 +247,13 @@ export default function UserCreation({ onBack }) {
     setUserRoles(data);
 
     } catch (error) {
-      
+      throw new Error(error);
     }
   };
 
-   const fetchDistrict = async () => {
+  const fetchBranch = async () => {
     try {
-    const response = await fetch(District_API_URL, {
+    const response = await fetch(Branch_API_URL, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -221,22 +261,79 @@ export default function UserCreation({ onBack }) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch District");
+      throw new Error("Failed to fetch Branch");
     }
 
     const data = await response.json();
     console.log("API response:", data);
     console.log("Is array:", Array.isArray(data));
-    setDistrict(data);
+    setBranch(data);
 
     } catch (error) {
-      
+      throw new Error(error);
     }
   };
 
+  
+  const fetchDeptUser = async () => {
+    try {
+    const response = await fetch(DeptUser_API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch User");
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+    console.log("Is array:", Array.isArray(data));
+    setUsersList(data);
+
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  const createDeptUser = async (userData) => {
+    try {
+      const response = await fetch(DeptUser_Save_API_URL,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+        
+      });
+
+      const result = await response.text();
+
+      if (!response.ok) {
+        throw new Error(result || "Unable to create user.");
+      }
+
+      return {
+        success: true,
+        message: result,
+      };
+    } catch (error) {
+      console.error("CreateDeptUser API Error:", error);
+
+      return {
+        success: false,
+        message: error.message || "Something went wrong.",
+      };
+    }
+  };
+
+
   useEffect(() => {
     fetchUserTypes();
-    fetchDistrict();
+    fetchBranch();
+    fetchDeptUser();
   }, []);
 
   return (
@@ -291,7 +388,7 @@ export default function UserCreation({ onBack }) {
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab("list")}
+              onClick={() => {setActiveTab("list"); fetchDeptUser();}}
               className={`user-creation-tab-btn ${activeTab === "list" ? "active" : ""}`}
             >
               <Users className="w-3.5 h-3.5" />
@@ -338,18 +435,19 @@ export default function UserCreation({ onBack }) {
               </div>
 
               <form onSubmit={handleSave} className="user-creation-form-grid">
-                {/* User Type */}
+
+                {/* User Role */}
                 <div className="user-creation-form-group">
                   <label className="user-creation-label">
                     User Role <span className="user-creation-req">*</span>
                   </label>
                   <div className="user-creation-input-wrap">
                     <select
-                      value={formData.userType}
-                      onChange={(e) => handleInputChange("userType", e.target.value)}
+                      value={formData.roleId}
+                      onChange={(e) => handleInputChange("roleId", e.target.value)}
                       className="user-creation-input"
                     >
-                       <option value="">--Select--</option>
+                       <option value="0">--Select--</option>
 
                         {userRoles.map((userRoles) => (
                           <option key={userRoles.roleId} value={userRoles.roleId}>
@@ -357,31 +455,31 @@ export default function UserCreation({ onBack }) {
                           </option>
                         ))}
                     </select>
-                    {errors.userType && (
-                      <span className="user-creation-subtext">{errors.userType}</span>
+                    {errors.roleId && (
+                      <span className="user-creation-subtext">{errors.roleId}</span>
                     )}
                   </div>
                 </div>
 
                 {/* District */}
                 <div className="user-creation-form-group">
-                  <label className="user-creation-label">District</label>
+                  <label className="user-creation-label">Branch</label>
                   <div className="user-creation-input-wrap">
                     <select
-                      value={formData.district}
-                      onChange={(e) => handleInputChange("district", e.target.value)}
+                      value={formData.branchCode}
+                      onChange={(e) => handleInputChange("branchCode", e.target.value)}
                       className="user-creation-input"
                     >
                       <option value="">--Select--</option>
 
-                        {District.map((District) => (
-                          <option key={District.districtCode} value={District.districtCode}>
-                            {District.districtName}
+                        {Branch.map((Branch) => (
+                          <option key={Branch.branchCode} value={Branch.branchCode}>
+                            {Branch.branchName}
                           </option>
                         ))}
                     </select>
-                    {errors.District && (
-                      <span className="user-creation-subtext">{errors.District}</span>
+                    {errors.branchCode && (
+                      <span className="user-creation-subtext">{errors.branchCode}</span>
                     )}
                   </div>
                 </div>
@@ -414,18 +512,18 @@ export default function UserCreation({ onBack }) {
                   </label>
                   <div className="user-creation-input-wrap">
                     <select
-                      value={formData.userAccess}
-                      onChange={(e) => handleInputChange("userAccess", e.target.value)}
+                      value={formData.permissionId}
+                      onChange={(e) => handleInputChange("permissionId", e.target.value)}
                       className="user-creation-input"
                     >
-                      <option value="">--Select--</option>
-                      <option value="Full Access">Full Access</option>
-                      <option value="Read Only">Read Only</option>
-                      <option value="Approval Access">Approval Access</option>
-                      <option value="Inspection Access">Inspection Access</option>
+                      <option value="0">--Select--</option>
+                      <option value="1">Full Access</option>
+                      <option value="2">Read Only</option>
+                      <option value="3">Approval Access</option>
+                      <option value="4">Inspection Access</option>
                     </select>
-                    {errors.userAccess && (
-                      <span className="user-creation-subtext">{errors.userAccess}</span>
+                    {errors.permissionId && (
+                      <span className="user-creation-subtext">{errors.permissionId}</span>
                     )}
                   </div>
                 </div>
@@ -448,20 +546,20 @@ export default function UserCreation({ onBack }) {
                   </div>
                 </div>
 
-                {/* User Title */}
+                {/* User Designation */}
                 <div className="user-creation-form-group">
                   <label className="user-creation-label">
-                    User Title <span className="user-creation-req">*</span>
+                    User Designation <span className="user-creation-req">*</span>
                   </label>
                   <div className="user-creation-input-wrap">
                     <input
                       type="text"
-                      value={formData.userTitle}
-                      onChange={(e) => handleInputChange("userTitle", e.target.value)}
+                      value={formData.userDesignation}
+                      onChange={(e) => handleInputChange("userDesignation", e.target.value)}
                       className="user-creation-input"
                     />
-                    {errors.userTitle && (
-                      <span className="user-creation-subtext">{errors.userTitle}</span>
+                    {errors.userDesignation && (
+                      <span className="user-creation-subtext">{errors.userDesignation}</span>
                     )}
                   </div>
                 </div>
@@ -512,17 +610,16 @@ export default function UserCreation({ onBack }) {
                   </label>
                   <div className="user-creation-input-wrap">
                     <select
-                      value={formData.userStatus}
-                      onChange={(e) => handleInputChange("userStatus", e.target.value)}
+                      value={formData.isActive}
+                      onChange={(e) => handleInputChange("isActive", e.target.value)}
                       className="user-creation-input"
                     >
                       <option value="">--Select--</option>
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
-                      <option value="Pending">Pending</option>
+                      <option value="Y">Active</option>
+                      <option value="N">Inactive</option>
                     </select>
-                    {errors.userStatus && (
-                      <span className="user-creation-subtext">{errors.userStatus}</span>
+                    {errors.isActive && (
+                      <span className="user-creation-subtext">{errors.isActive}</span>
                     )}
                   </div>
                 </div>
@@ -569,11 +666,10 @@ export default function UserCreation({ onBack }) {
                       <th>Name</th>
                       <th>Title</th>
                       <th>Type</th>
-                      <th>District</th>
-                      <th>Access Level</th>
+                      <th>Email</th>
                       <th>Mobile</th>
                       <th>Status</th>
-                    </tr>
+                    </tr>       
                   </thead>
                   <tbody>
                     {filteredUsers.length === 0 ? (
@@ -587,20 +683,20 @@ export default function UserCreation({ onBack }) {
                         <tr key={idx}>
                           <td className="font-mono font-bold text-sky-700">{u.userId}</td>
                           <td className="font-semibold text-slate-900">{u.userName}</td>
-                          <td>{u.userTitle}</td>
-                          <td>{u.userType}</td>
-                          <td>{u.district}</td>
-                          <td>{u.userAccess}</td>
+                          <td>{u.userDesignation}</td>
+                          <td>{u.userTypeDesc}</td>
+                          <td>{u.email}</td>
                           <td>{u.mobileNo}</td>
+                          {/* <td>{u.isActive}</td> */}
                           <td>
                             <span
                               className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold ${
-                                u.userStatus === "Active"
+                                u.isActive === "Y"
                                   ? "bg-emerald-100 text-emerald-800"
                                   : "bg-slate-100 text-slate-700"
                               }`}
                             >
-                              {u.userStatus}
+                              {u.isActive}
                             </span>
                           </td>
                         </tr>

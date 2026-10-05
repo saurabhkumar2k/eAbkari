@@ -46,6 +46,21 @@ namespace backend.Infrastructure.Repositories.Admin
                 .AnyAsync(x => x.UserTypeCode == TypeCode);
         }
 
+        public async Task<string> GetUserTypeCodeByRoleIdAndBranchCd(int roleId, long branchCd)
+        {
+            return await _context.MstUserType
+                .Where(r => r.RoleID == roleId && r.BranchCode == branchCd) 
+                .Select(r => r.UserTypeCode)
+                .FirstOrDefaultAsync() ?? "";
+        }
+        public async Task<string> GetUserTypeCodeDescByRoleIdAndBranchCd(int roleId, long branchCd)
+        {
+            return await _context.MstUserType
+                .Where(r => r.RoleID == roleId && r.BranchCode == branchCd)
+                .Select(r => r.UserTypeDescDisplay)
+                .FirstOrDefaultAsync() ?? "";
+        }
+
 
         //public async Task<bool> RoleExistsByNameAsync(string roleName)
         //{
@@ -59,7 +74,7 @@ namespace backend.Infrastructure.Repositories.Admin
 
         //    return maxRoleId + 1;
         //}
-        
+
 
 
         //public async Task<MstRoles> UpdateRoleAsync(UpdateRoleDto model)

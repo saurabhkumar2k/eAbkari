@@ -12,8 +12,11 @@ namespace backend.Core.Interfaces.License
 
         Task<string?>GetFlowUpto( string CatCode, string ActivityId);
 
-        Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus);
+        Task<string?> SubmitApplication(SubmitApplicationDTO dto);
 
-        
+        Task<ApplicationIdResponseDto> GetPendingApplicationId(string catCode, int regId, string FinYearV);
+
+        Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry (string applicationIdNo,string catCode ,string DocType);
+        Task<string> SaveAndUpdateApplicantDocumentsRepository( SaveAndUpdateApplicantDocumentsDto dto);
     }
 }

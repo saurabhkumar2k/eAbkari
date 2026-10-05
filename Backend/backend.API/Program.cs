@@ -25,6 +25,8 @@ using backend.Infrastructure.Repositories.Admin;
 
 
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to container
@@ -91,6 +93,7 @@ builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
+
 builder.Services.AddScoped<IPLAPullApplicationService, PLAPullApplicationService>();
 
 builder.Services.AddScoped<IPLAPullApplicationRepository, PLAPullApplicationRepository>();
@@ -107,6 +110,14 @@ builder.Services.AddScoped< IPLAPullApplicationService, PLAPullApplicationServic
 
 
 
+
+
+builder.Services.AddScoped<ILicenseeBranchService, LicenseeBranchService>();
+builder.Services.AddScoped<ILicenseeBranchRepository, LicenseeBranchRepository>();
+builder.Services.AddScoped<IUserTypeService, UserTypeService>();
+
+builder.Services.AddScoped<ICommonRetailRepository, CommonRetailRepository>();
+builder.Services.AddScoped<ICommonRetailServices, CommonRetailServices>();
 
 
 // Swagger

@@ -3,6 +3,9 @@ import HcrApplicantDetails from "../HCR/HcrApplicantDetail";
 
 export default function HcrApplicantStep({
   applicantForm,
+  states,
+  districts,
+  subDivisions,
   onChange,
   errors,
   ownerType,
@@ -30,8 +33,7 @@ export default function HcrApplicantStep({
 
     setCurrentStep(currentStep + 1);
   };
-
-  console.log("HcrApplicantStep - currentStep  ", currentStep)
+  console.log("HcrApplicantStep - subDivisions  ", subDivisions)
 
   return (
     <div className="hcr-form-section animate-fade">
@@ -71,8 +73,12 @@ export default function HcrApplicantStep({
 
           <HcrApplicantDetails
             formData={applicantForm}
+            states={states}
+            districts={districts}
+            subDivisions={subDivisions}
             onChange={onChange}
             errors={errors}
+           
           />
 
         </div>

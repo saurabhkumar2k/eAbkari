@@ -4,16 +4,22 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+import DocumentUploadWithDate from "../../../components/DocumentsDetailsWithDate";
 import DocumentUpload from "../../../components/DocumentsDetails";
 
 export default function HcrPersonalDocumentsStep({
   documents,
   uploadedFiles,
   handleDocumentFileChange,
+  handleValidityDateChange,
   handleDeleteFile,
   onBack,
   onContinue,
 }) {
+
+
+
+  
   return (
     <div className="form-group full-width ">
       <div className="hcr-step-header">
@@ -26,15 +32,12 @@ export default function HcrPersonalDocumentsStep({
       </div>
       <div className="hcr-license-card">
 
-        <DocumentUpload
+        <DocumentUploadWithDate
           documents={documents}
           uploadedFiles={uploadedFiles}
-          handleDocumentFileChange={
-            handleDocumentFileChange
-          }
-          handleDeleteFile={
-            handleDeleteFile
-          }
+          handleDocumentFileChange={handleDocumentFileChange}
+          handleValidityDateChange={handleValidityDateChange}
+          handleDeleteFile={handleDeleteFile}
         />
 
         <div className="hcr-step-navigation">

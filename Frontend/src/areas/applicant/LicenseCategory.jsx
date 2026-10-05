@@ -8,7 +8,7 @@ import {
   ChevronRight
 } from "lucide-react";
 
-export default function LicenseCategory({ newLicData, setNewLicData, showToast, getActiveCategory }) {
+export default function LicenseCategory({ newLicData, setNewLicData, showToast, getActiveCategory, onSelectCategory }) {
   const categories = [
     {
       id: "HCR",
@@ -85,12 +85,12 @@ export default function LicenseCategory({ newLicData, setNewLicData, showToast, 
       defaultSub: "L-30 (A) Registered User of Liquor at Home in Excess of Individual Possession Limit"
     }
   ];
-
+   const activeCat = getActiveCategory ? getActiveCategory() : "";
   return (
     <div className="basic-details-card animate-fade">
       <div className="section-header">
-        <div className="section-header-icon p-2.5 bg-blue-50 text-blue-600 rounded-xl">
-          <Grid3X3 className="w-7 h-7 text-blue-600" />
+         <div className="section-header-icon">
+          <Grid3X3 />
         </div>
         <div className="section-header-content">
           <h2 className="section-title">
@@ -108,7 +108,7 @@ export default function LicenseCategory({ newLicData, setNewLicData, showToast, 
           const isActive = getActiveCategory() === cat.id;
           const IconComponent = cat.icon;
           return (
-            <button
+             <button
               key={cat.id}
               type="button"
               onClick={() => {
@@ -118,6 +118,14 @@ export default function LicenseCategory({ newLicData, setNewLicData, showToast, 
                   selectedSubLicense: cat.defaultSub
                 });
                 showToast(`Selected Division: ${cat.subtitle}`);
+                if (onSelectCategory) {
+                  onSelectCategory(cat.id);
+                }
+              }}
+              onDoubleClick={() => {
+                if (onSelectCategory) {
+                  onSelectCategory(cat.id);
+                }
               }}
               className={`category-card ${isActive ? "active" : ""}`}
             >

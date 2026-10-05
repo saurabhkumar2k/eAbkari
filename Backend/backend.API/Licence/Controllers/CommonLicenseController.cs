@@ -8,7 +8,7 @@ namespace backend.API.Licence.Controllers
     [ApiController]
     public class CommonLicenseController : ControllerBase
     {
-        private readonly ICommonLicenseServices _LicenseService;    
+        private readonly ICommonLicenseServices _LicenseService;
         public CommonLicenseController(ICommonLicenseServices services)
         {
             _LicenseService = services;
@@ -18,16 +18,12 @@ namespace backend.API.Licence.Controllers
         public async Task<IActionResult> CreateApplyLicense(LicenseApplicationUserDetailsDto dto)
         {
             if (!ModelState.IsValid)
-            {          
+            {
                 return BadRequest(ModelState);
             }
 
             var user = await _LicenseService.SaveApplicantDetails(dto);
-            return Ok(new
-                    {
-                        applicationId = user,
-                        message = "Application Saved Successfully"
-                    });
+            return Ok(user);
         }
 
         [HttpGet("GetApplicantDetails/{AppId}")]
@@ -42,28 +38,39 @@ namespace backend.API.Licence.Controllers
         [Route("SubmitApplication")]
         public async Task<IActionResult> SubmitApplication(SubmitApplicationDTO dto)
         {
-            if (dto == null)
+            var result = await _LicenseService.SubmitApplication(dto);
+
+            return Ok(result);
+        }
+        [HttpGet("GetPendingApplicationIds")]
+        public async Task<IActionResult> GetPendingApplicationId(string catCode, int regId)
+        {
+            var result = await _LicenseService.GetPendingApplicationId(catCode, regId);
+
+            return Ok(result);
+        }
+        [HttpGet("GetDocDescriptionCatWise")]
+        public async Task<IActionResult> GetDocDescriptionCatWise(string applicationIdNo,string CatCode, string DocType)
+        {
+            var result = await _LicenseService.GetDocDescriptionCatWiseService(applicationIdNo,CatCode, DocType);
+
+            return Ok(result);
+        }
+
+        [HttpPost("SaveAndUpdateApplicantDocuments")]        
+        public async Task<IActionResult> SaveAndUpdateApplicantDocuments( [FromForm] SaveAndUpdateApplicantDocumentsDto dto)
+        {
+            var result = await _LicenseService.SaveAndUpdateApplicantDocumentsService(dto);
+
+            if (result == null)
             {
-                return BadRequest("Invalid Request");
+                return NotFound(new
+                {
+                    message = "No Document Found."
+                });
             }
 
-            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
-            {
-                return BadRequest("ApplicationIdNo is required.");
-            }
-
-            var result = await _LicenseService.SubmitApplication(dto.ApplicationIdNo, dto.ApplicationStatus);
-            if (string.IsNullOrWhiteSpace(result))
-            {
-                return NotFound("Application not found.");
-            }
-
-            return Ok(new
-            {
-                applicationIdNo = dto.ApplicationIdNo,
-                applicationStatus = result,
-                message = "Application status updated successfully."
-            });
+            return Ok(result);
         }
     }
 }

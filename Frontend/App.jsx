@@ -1,4 +1,4 @@
- import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from './src/components/Header';
@@ -25,37 +25,22 @@ import ExploreServicesModal from './src/Homepage/ExploreServicesModal.jsx';
 import OwnerType from './src/components/Department/OwnerTypeMaster.jsx';
 import UserCreation from './src/components/Department/UserCreation.jsx';
 import AboutUsModal from './src/EabkariHomepage/AboutUsModal.jsx';
+import AboutUsPage from './src/EabkariHomepage/AboutUsPage.jsx';
 import FeedbackForm from './src/EabkariHomepage/FeedbackForm.jsx';
+import Staff from './src/EabkariHomepage/Staff.jsx';
 import OrganizationalStructure from './src/EabkariHomepage/OrganizationalStructure.jsx';
+import LicensesAdministered from './src/EabkariHomepage/LicensesAdministered.jsx';
+import ExciseCommissioner from './src/EabkariHomepage/ExciseCommissioner.jsx';
+import RightToInformation from './src/EabkariHomepage/RightToInformation.jsx';
+import RenewalLicense from './src/areas/applicant/License/RenewalLicense.jsx';
+import DocumentRevalidation from './src/areas/applicant/License/DocumentRevalidation.jsx';
+import AppliedMTP from './src/areas/applicant/MNTP/AppliedMtp.jsx';
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
 
-
-import {
-  ChevronDownSvg,
-  FileEditSvg,
-  ShieldSvg,
-  TimerSvg,
-  BarChart3Svg,
-  HeadphonesSvg,
-  BellSvg,
-  DownloadSvg,
-  ChevronLeftSvg,
-  ChevronRightSvg,
-  LayoutGridSvg,
-  BuildingSvg,
-  HomeSvg,
-  FolderSvg,
-  DatabaseSvg,
-  TicketSvg,
-  FileTextSvg,
-  WalletSvg,
-  PenToolSvg,
-  TagSvg,
-  MessageSquareSvg,
-  PieChartSvg,
-  SettingsSvg,
-  LogOutSvg
-} from "./src/components/icons/GlobalIcons";
+import { ChevronDownSvg, FileEditSvg, ShieldSvg, TimerSvg, BarChart3Svg, HeadphonesSvg, BellSvg,
+  DownloadSvg, ChevronLeftSvg, ChevronRightSvg, LayoutGridSvg, BuildingSvg, HomeSvg, FolderSvg, 
+  DatabaseSvg, TicketSvg, FileTextSvg, WalletSvg, PenToolSvg, TagSvg, MessageSquareSvg,
+  PieChartSvg, SettingsSvg, LogOutSvg } from "./src/components/icons/GlobalIcons";
 
 import { ArrowRightSvg } from './src/Style/images/Icons';
 
@@ -82,15 +67,15 @@ export default function App() {
       case "BRANDOWNER":
         window.location.href = "/brandowner";
         break;
-      
+
       case "DIR_EXCISE_LICENSE":
       case "LICENSE TITLE":
         window.location.href = "/departmentdashboard/directory=license-title";
-        break;   
-       case "TRANSPORT : BULK SPIRIT":
+        break;
+      case "TRANSPORT : BULK SPIRIT":
         window.location.href = "/TransportBulkSpiritValidity";
         break;
-      
+
       case "TRANSPORT : PACKAGED FL":
         window.location.href = "/TransportPackagedFL";
         break;
@@ -102,18 +87,18 @@ export default function App() {
       case "IMPORT : BULK SPIRIT":
         window.location.href = "/importpermitpass";
         break;
-       case "NEW USER CREATION":
+      case "NEW USER CREATION":
         window.location.href = "/departmentdashboard/user-creation";
         break;
       case "USER CREATION":
       case "USER_CREATION":
       case "NEW_USER_CREATION":
-         window.location.href = "/departmentdashboard/user-creation";
+        window.location.href = "/departmentdashboard/user-creation";
         break;
       case "USER MAINTENANCE":
         window.location.href = "/departmentdashboard/user-creation";
         break;
-        case "USER HIERARCHY":
+      case "USER HIERARCHY":
       case "USER_HIERARCHY":
       case "FLOW HIERARCHY":
       case "FLOW_HIERARCHY":
@@ -128,17 +113,17 @@ export default function App() {
       case "Home":
         window.location.href = "/departmentdashboard";
         break;
-        
+
       case "LOGOUT":
-      window.location.href = "/";
-      break;
+        window.location.href = "/";
+        break;
 
       default:
         console.log("Unknown route:", view);
         break;
     }
   };
- const handleHeaderViewSelect = (view) => {
+  const handleHeaderViewSelect = (view) => {
     switch (view) {
       case 'HOME':
         window.location.href = '/';
@@ -149,110 +134,155 @@ export default function App() {
       case 'DEPARTMENT_LOGIN':
         window.location.href = '/departmentlogin';
         break;
-       case 'LICENSEE_LOGIN':
+      case 'LICENSEE_LOGIN':
         window.location.href = '/licensee-login';
         break;
-     case 'ORGANIZATIONAL_STRUCTURE':
+      case 'ABOUT_E-ABKARI':
+      case 'ABOUT_EABKARI':
+      case 'ABOUT_US':
+      case 'ABOUT':
+        if (typeof window !== "undefined" && window.location.pathname !== '/about') {
+          window.location.href = '/about';
+        }
+        break;
+      case 'ORGANIZATIONAL_STRUCTURE':
         if (typeof window !== "undefined" && window.location.pathname !== '/organizational-structure') {
           window.location.href = '/organizational-structure';
         }
         break;
-        case 'FEEDBACK_FORM':
+      case 'FEEDBACK_FORM':
       case 'FEEDBACK':
         window.location.href = '/feedback';
+        break;
+      case 'STAFF':
+        if (typeof window !== "undefined" && window.location.pathname !== '/staff') {
+          window.location.href = '/staff';
+        }
         break;
       case 'FEEDBACK_STATUS':
         window.location.href = '/feedback?tab=track';
         break;
-        default:
+      case 'LICENSES_ADMINISTERED':
+      case 'FACTS_FIGURES':
+        if (typeof window !== "undefined" && window.location.pathname !== '/licenses-administered') {
+          window.location.href = '/licenses-administered';
+        }
+        break;
+       case 'RTI':
+      case 'RIGHT_TO_INFORMATION':
+      case 'RIGHT-TO-INFORMATION':
+        if (typeof window !== "undefined" && window.location.pathname !== '/rti') {
+          window.location.href = '/rti';
+        }
+        break;
+      default:
         window.location.href = '/';
     }
   };
-return (
-  <BrowserRouter>
-    <Routes>
+  return (
+    <BrowserRouter>
+      <Routes>
 
-       {/* Home */}
-      <Route
-        path="/"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent /></main>
-            <Footer />
-          </>
-        }
-      />
-       {/* About Us Direct Routes */}
-      <Route
-        path="/about"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/about-us"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/about-eabkari"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/about-e-abkari"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
+        {/* Home */}
+        <Route path="/" element={ <> <Header onSelectView={handleHeaderViewSelect} currentView="HOME" /> <main><HomeContent /></main> <Footer /></>}/>
+        
+        {/* Dedicated About Us Routes */}
+        <Route path="/about" element={<><Header onSelectView={handleHeaderViewSelect} currentView="ABOUT_US" />
+        <main><AboutUsPage onNavigateHome={() => (window.location.href = "/")} onNavigateToView={handleHeaderViewSelect}/></main><Footer /></>}/>
 
+        <Route path="/about-us" element={<><Header onSelectView={handleHeaderViewSelect} currentView="ABOUT_US" />
+        <main><AboutUsPage onNavigateHome={() => (window.location.href = "/")} onNavigateToView={handleHeaderViewSelect}/></main><Footer /></>}/>
+        
+        <Route path="/about-eabkari" element={<><Header onSelectView={handleHeaderViewSelect} currentView="ABOUT_US" />
+        <main><AboutUsPage onNavigateHome={() => (window.location.href = "/")} onNavigateToView={handleHeaderViewSelect}/></main><Footer /></>}/>
 
-      {/* Applicant Login */}
-      <Route
-        path="/login"
-        element={
-          <Login
-            onNavigateToRegister={() =>
-              (window.location.href = "/registration")
-            }
-            onNavigateHome={() =>
-              (window.location.href = "/")
-            }
-            onLoginSuccess={() =>
-              (window.location.href = "/applicantdashboard")
-            }
-          />
-        }
-      />
+        <Route path="/about-e-abkari" element={<><Header onSelectView={handleHeaderViewSelect} currentView="ABOUT_US" />
+        <main><AboutUsPage onNavigateHome={() => (window.location.href = "/")} onNavigateToView={handleHeaderViewSelect}/></main><Footer /></>}/>
+        
+        {/* Right to Information (RTI) */}
+        <Route path="/rti" element={<><Header onSelectView={handleHeaderViewSelect} currentView="RTI" />
+        <main><RightToInformation onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        <Route path="/right-to-information" element={<><Header onSelectView={handleHeaderViewSelect} currentView="RTI" />
+        <main><RightToInformation onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        {/* Excise Commissioner / Head of Department */}
+        <Route path="/excise-commissioner" element={<><Header onSelectView={handleHeaderViewSelect} currentView="EXCISE_COMMISSIONER" />
+        <main><ExciseCommissioner onNavigateHome={() => window.location.href = "/"} /></main><Footer /></>}/>
+        
+        <Route path="/head-of-department" element={<><Header onSelectView={handleHeaderViewSelect} currentView="EXCISE_COMMISSIONER" />
+        <main><ExciseCommissioner onNavigateHome={() => window.location.href = "/"} /></main><Footer /></>}/>
+        
+        {/* Licenses Administered / Facts & Figures */}
+        <Route path="/licenses-administered" element={<><Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+        <main><LicensesAdministered onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        <Route path="/licensesadministered" element={<><Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+        <main><LicensesAdministered onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        <Route path="/facts-figures/licenses-administered" element={<><Header onSelectView={handleHeaderViewSelect} currentView="LICENSES_ADMINISTERED" />
+        <main><LicensesAdministered onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
 
-      {/* Registration */}
-      <Route
-        path="/registration"
-        element={<Registration />}
-      />
+        {/* Applicant Login */}
+        <Route path="/login" element={<Login onNavigateToRegister={() => (window.location.href = "/registration")}
+        onNavigateHome={() =>(window.location.href = "/")}onLoginSuccess={() =>(window.location.href = "/applicantdashboard")}/>}/>
 
-      {/* Applicant Dashboard */}
+        {/* Registration */}
+        <Route path="/registration" element={<Registration />}/>
+
+        {/* Applicant Dashboard */}
+        <Route path="/applicantdashboard" element={<ApplicantDashboard onLogout={() =>(window.location.href = "/")}onNavigateToHome={() =>(window.location.href = "/")}/>}/>
+          
+        <Route path="/newpermit" element={<PermitForm onBack={() => (window.location.href = "/applicantdashboard")}/>}/>
+
+        {/* About Us Direct Routes */}
+        <Route path="/about" element={ <><Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+        <main><HomeContent initialAboutUsOpen={true} /></main><Footer /></>}/>
+
+        <Route path="/about-us" element={<><Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
+        <main><HomeContent initialAboutUsOpen={true} /></main><Footer /></>}/>
+        
+        {/* Organizational Structure */}
+        <Route path="/organizational-structure" element={<><Header onSelectView={handleHeaderViewSelect} currentView="ORGANIZATIONAL_STRUCTURE" />
+        <main><OrganizationalStructure onNavigateHome={() => window.location.href = "/"} /></main><Footer /></>}/>
+
+        {/* Feedback Routes */}
+        <Route path="/feedback" element={<><Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
+        <main><FeedbackForm onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        <Route path="/feedback-form" element={<><Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
+        <main><FeedbackForm onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+        
+        <Route path="/feedbak" element={<><Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
+        <main><FeedbackForm onNavigateHome={() => (window.location.href = "/")} /></main><Footer /></>}/>
+
+        {/* Licensee Login */}
+        <Route path="/licensee-login" element={<LicenseeLogin onNavigateToRegister={() => (window.location.href = "/registration")}
+        onNavigateHome={() => (window.location.href = "/") } onLoginSuccess={() => (window.location.href = "/applicantdashboard")}/>}/>
+
+        <Route path="/licenseelogin" element={<LicenseeLogin onNavigateToRegister={() =>(window.location.href = "/registration")}
+        onNavigateHome={() => (window.location.href = "/")}onLoginSuccess={() =>(window.location.href = "/applicantdashboard")}/>}/>
+        
+        {/* Renewal License Routes */}
+        <Route path="/renewallicense" element={<ApplicantDashboard onLogout={() =>(window.location.href = "/")}
+        onNavigateToHome={() =>(window.location.href = "/")}initialTab="Renewal License"/>}/>
+        
+        <Route path="/renewal-license" element={<ApplicantDashboard onLogout={() =>(window.location.href = "/")} 
+        onNavigateToHome={() =>(window.location.href = "/")}initialTab="Renewal License"/>}/>
+        
+        {/* Applied Dealer Routes */}
+        <Route path="/applieddealer"element={<ApplicantDashboard onLogout={() => (window.location.href = "/")} 
+        onNavigateToHome={() =>(window.location.href = "/") }initialTab="Applied Dealers"/>} />
+  
+        <Route path="/applied-dealer" element={<ApplicantDashboard onLogout={() => (window.location.href = "/") }
+        onNavigateToHome={() =>(window.location.href = "/")}initialTab="Applied Dealers"/>}/>
+      
+      {/* Document Revalidation Routes */}
+      <Route path="/documentrevalidation" element={<ApplicantDashboard onLogout={() => (window.location.href = "/")}onNavigateToHome={() =>
+      (window.location.href = "/")} initialTab="Document Revalidate"/>} />
+
       <Route
-        path="/applicantdashboard"
+        path="/document-revalidation"
         element={
           <ApplicantDashboard
             onLogout={() =>
@@ -261,347 +291,390 @@ return (
             onNavigateToHome={() =>
               (window.location.href = "/")
             }
+            initialTab="Document Revalidate"
           />
         }
       />
-      <Route 
-      path="/newpermit"
-      element={
-        <PermitForm
-          onBack={() => (window.location.href = "/applicantdashboard")}
-        />
-      }
-      
-      />
-
-      {/* About Us Direct Routes */}
+       {/* Applied M&TP Routes */}
       <Route
-        path="/about"
+        path="/appliedmtp"
         element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/about-us"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="HOME" />
-            <main><HomeContent initialAboutUsOpen={true} /></main>
-            <Footer />
-          </>
-        }
-      />
-       {/* Organizational Structure */}
-      <Route
-        path="/organizational-structure"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="ORGANIZATIONAL_STRUCTURE" />
-            <main>
-              <OrganizationalStructure onNavigateHome={() => window.location.href = "/"} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
-      
-      {/* Feedback Routes */}
-      <Route
-        path="/feedback"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
-            <main>
-              <FeedbackForm onNavigateHome={() => (window.location.href = "/")} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/feedback-form"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
-            <main>
-              <FeedbackForm onNavigateHome={() => (window.location.href = "/")} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
-      <Route
-        path="/feedbak"
-        element={
-          <>
-            <Header onSelectView={handleHeaderViewSelect} currentView="FEEDBACK_FORM" />
-            <main>
-              <FeedbackForm onNavigateHome={() => (window.location.href = "/")} />
-            </main>
-            <Footer />
-          </>
-        }
-      />
-      {/* Licensee Login */}
-      <Route
-        path="/licensee-login"
-        element={
-          <LicenseeLogin
-            onNavigateToRegister={() =>
-              (window.location.href = "/registration")
-            }
-            onNavigateHome={() =>
+          <ApplicantDashboard
+            onLogout={() =>
               (window.location.href = "/")
             }
-            onLoginSuccess={() =>
-              (window.location.href = "/applicantdashboard")
-            }
-          />
-        }
-      />
-      <Route
-        path="/licenseelogin"
-        element={
-          <LicenseeLogin
-            onNavigateToRegister={() =>
-              (window.location.href = "/registration")
-            }
-            onNavigateHome={() =>
+            onNavigateToHome={() =>
               (window.location.href = "/")
             }
-            onLoginSuccess={() =>
-              (window.location.href = "/applicantdashboard")
-            }
+            initialTab="Applied M&TP"
           />
         }
       />
-      {/* Department Login */}
       <Route
-        path="/departmentlogin"
+        path="/applied-mtp"
         element={
-          <DepartmentLogin
-            onNavigateHome={() =>
+          <ApplicantDashboard
+            onLogout={() =>
               (window.location.href = "/")
             }
-            onLoginSuccess={(role) => {
-              if (role === "DA" || role === "da") {
-                window.location.href = "/dadashboard";
-              } else {
-                window.location.href = "/departmentdashboard";
-              }
-            }}
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="Applied M&TP"
           />
         }
       />
-      
-      {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
+         {/* Applied Premise Routes */}
       <Route
-        path="/dadashboard"
+        path="/appliedpremise"
         element={
-          <DADashbord
-            onLogout={() => (window.location.href = "/departmentlogin")}
-            onNavigateHome={() => (window.location.href = "/")}
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="Applied Premise"
           />
         }
       />
-
       <Route
-        path="/dadashbord"
+        path="/applied-premise"
         element={
-          <DADashbord
-            onLogout={() => (window.location.href = "/departmentlogin")}
-            onNavigateHome={() => (window.location.href = "/")}
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="Applied Premise"
           />
         }
       />
-
-      {/* Department Dashboard */}
       <Route
-        path="/departmentdashboard"
+        path="/applied-premises"
         element={
-          <div className="admin-app-layout ">
-            <AdminHeader
-              navItems={navItems}
-              currentView="DEPARTMENT_DASHBOARD"
-              onNavigate={handleAdminNavigate}
-            />
-
-            <DepartmentDashboard
-              onLogout={() =>
-                (window.location.href = "/departmentlogin")
-              }
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="Applied Premise"
+          />
+        }
+      />
+      <Route
+        path="/premise"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="Applied Premise"
+          />
+        }
+      />
+         {/* Change Password Routes */}
+      <Route
+        path="/changepassword"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="ChangePassword"
+          />
+        }
+      />
+      <Route
+        path="/change-password"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="ChangePassword"
+          />
+        }
+      />
+      <Route
+        path="/password"
+        element={
+          <ApplicantDashboard
+            onLogout={() =>
+              (window.location.href = "/")
+            }
+            onNavigateToHome={() =>
+              (window.location.href = "/")
+            }
+            initialTab="ChangePassword"
+          />
+        }
+      />
+        {/* Department Login */}
+        <Route
+          path="/departmentlogin"
+          element={
+            <DepartmentLogin
               onNavigateHome={() =>
                 (window.location.href = "/")
               }
+              onLoginSuccess={(role) => {
+                if (role === "DA" || role === "da") {
+                  window.location.href = "/dadashboard";
+                } else {
+                  window.location.href = "/departmentdashboard";
+                }
+              }}
             />
-          </div>
-        }
-      />
-       {/* Transport Packaged FL */}
-      <Route
-        path="/TransportPackagedFL"
-        element={
-          <div className="admin-app-layout ">
-            <AdminHeader
-              navItems={navItems}
-              currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
-              onNavigate={handleAdminNavigate}
+          }
+        />
+        {/* Staff */}
+        <Route
+          path="/staff"
+          element={
+            <>
+              <Header onSelectView={handleHeaderViewSelect} currentView="STAFF" />
+              <main>
+                <Staff onNavigateHome={() => window.location.href = "/"} />
+              </main>
+              <Footer />
+            </>
+          }
+        />
+        {/* DA Dashboard (Handling both /dadashboard and /dadashbord with DAHeader) */}
+        <Route
+          path="/dadashboard"
+          element={
+           <div className="admin-app-layout ">
+              {/* <AdminHeader
+                navItems={navItems}
+                currentView="DEPARTMENT_DASHBOARD"
+                onNavigate={handleAdminNavigate}
+              /> */}
+              <DADashbord
+                onLogout={() => (window.location.href = "/")}
+                onNavigateHome={() => (window.location.href = "/")}
+              />
+            </div>
+          }
+        />
+
+        <Route
+          path="/dadashbord"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="DEPARTMENT_DASHBOARD"
+                onNavigate={handleAdminNavigate}
+              />
+              <DADashbord
+                onLogout={() => (window.location.href = "/departmentlogin")}
+                onNavigateHome={() => (window.location.href = "/")}
+              />
+            </div>
+          }
+        />
+   
+        {/* Department Dashboard */}
+        <Route
+          path="/departmentdashboard"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="DEPARTMENT_DASHBOARD"
+                onNavigate={handleAdminNavigate}
+              />
+
+              <DepartmentDashboard
+                onLogout={() =>
+                  (window.location.href = "/departmentlogin")
+                }
+                onNavigateHome={() =>
+                  (window.location.href = "/")
+                }
+              />
+            </div>
+          }
+        />
+        {/* Transport Packaged FL */}
+        <Route
+          path="/TransportPackagedFL"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="TRANSPORT_PACKAGED_FL_VALIDITY"
+                onNavigate={handleAdminNavigate}
+              />
+              <TransportPackagedFL />
+            </div>
+          }
+        />
+        {/* Import Permit */}
+        <Route
+          path="/importpermitpass"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="IMPORT_PERMIT_PASS"
+                onNavigate={handleAdminNavigate}
+              />
+
+              <ImportPermitPass />
+            </div>
+          }
+        />
+        {/* Import Packaged */}
+        <Route
+          path="/importpackaged"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="IMPORT_PACKAGED"
+                onNavigate={handleAdminNavigate}
+              />
+              <ImportPackaged onNavigateHome={() => window.location.href = "/departmentdashboard"} />
+            </div>
+          }
+        />
+
+        {/* Liquor Brand */}
+        <Route
+          path="/liquorbrand"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="LIQUOR_BRAND"
+                onNavigate={handleAdminNavigate}
+              />
+
+              <LiquorBrand
+                onBack={() => window.location.href = "/departmentdashboard"}
+              />
+            </div>
+          }
+        />
+        <Route
+          path="/TransportBulkSpiritValidity"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="TRANSPORT_BULK_SPIRIT_VALIDITY"
+                onNavigate={handleAdminNavigate}
+              />
+              <TransportBulkSpiritValidity />
+            </div>
+          }
+        />
+        <Route
+          path="/departmentdashboard/user-creation"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="OWNER_TYPE"
+                onNavigate={handleAdminNavigate}
+              />
+              {/* <OwnerType onBack={() => window.location.href = "/departmentdashboard"} /> */}
+              <UserCreation onBack={() => window.location.href = "/departmentdashboard"} />
+            </div>
+          }
+        />
+        {/* New Permit */}
+        <Route
+          path="/newpermit"
+          element={
+            <ApplicantDashboard
+              onLogout={() =>
+                (window.location.href = "/")
+              }
+              onNavigateToHome={() =>
+                (window.location.href = "/")
+              }
+              initialTab="New Permit"
             />
-            <TransportPackagedFL/>
-          </div>
-        }
-      />
-      {/* Import Permit */}
-      <Route
-        path="/importpermitpass"
-        element={
-          <div className="admin-app-layout ">
-            <AdminHeader
-              navItems={navItems}
-              currentView="IMPORT_PERMIT_PASS"
-              onNavigate={handleAdminNavigate}
-            />
+          }
+        />
+        <Route
+          path="/bottlermaster"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="BOTTLER_MASTER"
+                onNavigate={handleAdminNavigate}
+              />
 
-            <ImportPermitPass />
-          </div>
-        }
-      />
-      {/* Import Packaged */}
-     <Route
-        path="/importpackaged"  
-      element={
-        <div className="admin-app-layout ">
-          <AdminHeader  
-          navItems={navItems}
-          currentView="IMPORT_PACKAGED"
-          onNavigate={handleAdminNavigate}
-          />
-          <ImportPackaged onNavigateHome={() => window.location.href = "/departmentdashboard"} />
-        </div>
-      }
-      />
-     
-      {/* Liquor Brand */}
-      <Route
-  path="/liquorbrand"
-  element={
-    <div className="admin-app-layout ">
-      <AdminHeader
-        navItems={navItems}
-        currentView="LIQUOR_BRAND"
-        onNavigate={handleAdminNavigate}
-      />
-
-      <LiquorBrand
-        onBack={() => window.location.href = "/departmentdashboard"}
-      />
-    </div>
-  }
-/>
-<Route
-path= "/TransportBulkSpiritValidity"
-element={
-  <div className="admin-app-layout ">
-    <AdminHeader
-      navItems={navItems}
-      currentView="TRANSPORT_BULK_SPIRIT_VALIDITY"
-      onNavigate={handleAdminNavigate}
-    />
-    <TransportBulkSpiritValidity />
-  </div>
-}
-/>
-<Route
-path="/departmentdashboard/user-creation"
-element={
-  <div className="admin-app-layout ">
-    <AdminHeader
-      navItems={navItems}
-      currentView="OWNER_TYPE"
-      onNavigate={handleAdminNavigate}
-    />
-    {/* <OwnerType onBack={() => window.location.href = "/departmentdashboard"} /> */}
-    <UserCreation onBack={() => window.location.href = "/departmentdashboard"} />
-  </div>
-}
-/>
-  {/* New Permit */}
-      <Route
-        path="/newpermit"
-        element={
-          <ApplicantDashboard
-            onLogout={() =>
-              (window.location.href = "/")
-            }
-            onNavigateToHome={() =>
-              (window.location.href = "/")
-            }
-            initialTab="New Permit"
-          />
-        }
-      />
-<Route
-  path="/bottlermaster"
-  element={
-    <div className="admin-app-layout ">
-      <AdminHeader
-        navItems={navItems}
-        currentView="BOTTLER_MASTER"
-        onNavigate={handleAdminNavigate}
-      />
-
-      <BottlerMaster
-        onBack={() => (window.location.href = "/departmentdashboard")}
-      />
-    </div>
-  }
-/>
-<Route
-  path="/brandowner"
-  element={
-    <div className="admin-app-layout ">
-      <AdminHeader
-        navItems={navItems}
-        currentView="BRAND_OWNER"
-        onNavigate={handleAdminNavigate}
-      />
-      <BrandOwner
-        onBack={() => (window.location.href = "/departmentdashboard")}
-      />
-    </div>
-  }
-/>
-<Route
-path="/departmentdashboard/owner-type"
-element={
-  <div className="admin-app-layout ">
-    <AdminHeader
-      navItems={navItems}
-      currentView="OWNER_TYPE"
-      onNavigate={handleAdminNavigate}
-    />
-    <OwnerType onBack={() => window.location.href = "/departmentdashboard"} />
-  </div>
-}
-/>
-</Routes>
-  </BrowserRouter>
-);
+              <BottlerMaster
+                onBack={() => (window.location.href = "/departmentdashboard")}
+              />
+            </div>
+          }
+        />
+        <Route
+          path="/brandowner"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="BRAND_OWNER"
+                onNavigate={handleAdminNavigate}
+              />
+              <BrandOwner
+                onBack={() => (window.location.href = "/departmentdashboard")}
+              />
+            </div>
+          }
+        />
+        <Route
+          path="/departmentdashboard/owner-type"
+          element={
+            <div className="admin-app-layout ">
+              <AdminHeader
+                navItems={navItems}
+                currentView="OWNER_TYPE"
+                onNavigate={handleAdminNavigate}
+              />
+              <OwnerType onBack={() => window.location.href = "/departmentdashboard"} />
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 // Navigation menu configuration
 const navItems = [
   { label: "Home", icon: <HomeSvg className="dept-nav-icon" /> },
 
-  { label: "Directory Data", 
-    icon: <FolderSvg className="dept-nav-icon" />, 
+  {
+    label: "Directory Data",
+    icon: <FolderSvg className="dept-nav-icon" />,
     hasDropdown: true,
-    items:[
-      { label: "Excise License",
+    items: [
+      {
+        label: "Excise License",
         hasSideMenu: true,
         sideItems: [
           "Owner Type",
@@ -610,7 +683,7 @@ const navItems = [
           "Sub Category"
         ]
       }
-    ] 
+    ]
   },
 
   {
@@ -618,7 +691,8 @@ const navItems = [
     icon: <DatabaseSvg className="dept-nav-icon" />,
     hasDropdown: true,
     items: [
-      { label: "Packaged Liquor",
+      {
+        label: "Packaged Liquor",
         hasSideMenu: true,
         sideItems: [
           "Brand",
@@ -641,8 +715,7 @@ const navItems = [
       { label: "Misc. Case" },
       { label: "Fee/Duty Rate" },
       { label: "Export : Packaged Liquor" },
-      { label: "Others" },
-      { label: "M&TP" },
+      { label: "Others" }
     ],
   },
 
@@ -667,17 +740,17 @@ const navItems = [
   {
     label: "Stationary Management",
     icon: <PenToolSvg className="dept-nav-icon" />,
-      hasDropdown: true,
-      items: [
-          {
-              label: "Issue Stationary",
-              hasSideMenu: true,
-              sideItems: [
-                  "IP-TP",
-                  "CSD"
-              ]
-          }
-      ]
+    hasDropdown: true,
+    items: [
+      {
+        label: "Issue Stationary",
+        hasSideMenu: true,
+        sideItems: [
+          "IP-TP",
+          "CSD"
+        ]
+      }
+    ]
   },
 
   { label: "Label Regn.", icon: <TagSvg className="dept-nav-icon" /> },
@@ -686,40 +759,45 @@ const navItems = [
 
   { label: "MIS", icon: <PieChartSvg className="dept-nav-icon" /> },
 
-   {
+  {
     label: "House Keeping",
     icon: <SettingsSvg className="dept-nav-icon" />,
     hasDropdown: true,
     items: [
-      { label: "User Maintenance",
+      {
+        label: "User Maintenance",
         hasSideMenu: true,
         sideItems: [
-        "User Profile",
-        "Change Password (Dept.)",
-        "New User Creation",
-        "User Reset Password",
-        "Audit Trail",
-        "User Hierarchy",
-        "Reset Registration Password",
-        "User Transfer",
-        "PO Activation/Deactivation",
-        "OS File Transfer"
+          "User Profile",
+          "Change Password (Dept.)",
+          "New User Creation",
+          "User Reset Password",
+          "Audit Trail",
+          "User Hierarchy",
+          "Reset Registration Password",
+          "User Transfer",
+          "PO Activation/Deactivation",
+          "OS File Transfer"
         ]
       },]
-    }, 
+  },
   { label: 'Logout', icon: <LogOutSvg className="dept-nav-icon" />, isLogout: true }
 ];
 
-function HomeContent({ initialAboutUsOpen = false }) {
+function HomeContent() {
   const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
-   const [isAboutUsModalOpen, setIsAboutUsModalOpen] = useState(() => {
-    if (initialAboutUsOpen) return true;
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("about") === "true" || params.get("modal") === "about";
-    }
-    return false;
-  });
+  const [isAboutUsModalOpen, setIsAboutUsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenAbout = () => {
+      setIsAboutUsModalOpen(true);
+    };
+    window.addEventListener('open-about-modal', handleOpenAbout);
+    return () => {
+      window.removeEventListener('open-about-modal', handleOpenAbout);
+    };
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
@@ -829,8 +907,9 @@ function HomeContent({ initialAboutUsOpen = false }) {
                 ))}
               </tbody>
             </table>
-          </div> 
-            <div className="card-footer-action">
+          </div>
+
+          <div className="card-footer-action">
             <button className="btn-orange">
               <LayoutGridSvg className="icon-xs" />
               ALL NOTICE
@@ -851,14 +930,24 @@ function HomeContent({ initialAboutUsOpen = false }) {
             <p className="about-text">
               The Department of Excise, NCT of Delhi is committed to efficient administration, transparent processes and maximizing revenue for the welfare of the society. Through digital transformation, we aim to deliver seamless services and building a trusted ecosystem for stakeholders.
             </p>
-            <button 
-              onClick={() => setIsAboutUsModalOpen(true)}
-              className="btn-outline-blue btn-w-auto"
-              title="Open Department Overview, Vision, Mission & Roles"
-            >
-              Read More
-              <ArrowRightSvg className="icon-xs" />
-            </button>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+              <button 
+                onClick={() => setIsAboutUsModalOpen(true)}
+                className="btn-outline-blue btn-w-auto"
+                title="Open About Us Overview Window"
+              >
+                Read More
+                <ArrowRightSvg className="icon-xs" />
+              </button>
+              <button 
+                onClick={() => (window.location.href = '/about')}
+                className="btn-secondary-custom"
+                style={{ fontSize: '0.8125rem', padding: '0.45rem 0.85rem' }}
+                title="Open Dedicated About e-Abkari Dashboard"
+              >
+                e-Abkari Dashboard &rarr;
+              </button>
+            </div>
           </div>
 
           <div className="info-card">
@@ -1003,7 +1092,8 @@ function HomeContent({ initialAboutUsOpen = false }) {
           }
         }}
       />
-    
+
+      {/* Floating About Us Pop Window Modal */}
       <AboutUsModal
         isOpen={isAboutUsModalOpen}
         onClose={() => setIsAboutUsModalOpen(false)}
@@ -1012,12 +1102,12 @@ function HomeContent({ initialAboutUsOpen = false }) {
           setIsExploreModalOpen(true);
         }}
         onNavigate={(path) => {
+          setIsAboutUsModalOpen(false);
           if (path.startsWith('/')) {
             window.location.href = path;
           }
         }}
       />
-    </> 
+    </>
   );
 }
-

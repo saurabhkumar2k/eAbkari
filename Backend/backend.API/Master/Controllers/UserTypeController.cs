@@ -4,6 +4,7 @@ using backend.Core.Interfaces.Admin;
 using backend.Infrastructure.Data;
 using backend.Infrastructure.Repositories.Department;
 using Microsoft.EntityFrameworkCore;
+using backend.Application.Interfaces.Department;
 
 namespace backend.API.Master.Controllers
 {
@@ -12,11 +13,11 @@ namespace backend.API.Master.Controllers
     [Route("api/[controller]")]
     public class UserTypeController : Controller
     {
-        private readonly IUserTypeRepository _repository;
+        private readonly IUserTypeService _UserTypeService;
 
-        public UserTypeController(IUserTypeRepository repository)
+        public UserTypeController(IUserTypeService UserTypeService)
         {
-            _repository = repository;
+            _UserTypeService = UserTypeService;
         }
 
 
@@ -24,7 +25,7 @@ namespace backend.API.Master.Controllers
         public async Task<IActionResult> GetUserType()
         {
 
-            var data = await _repository.GetUserTypeAsync();
+            var data = await _UserTypeService.GetUserType();
 
             if (data == null || !data.Any())
             {

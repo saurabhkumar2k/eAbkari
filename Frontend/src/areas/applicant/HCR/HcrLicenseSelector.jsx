@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./HcrLicenseSelector.css";
+import "../../../Style/Applicant/HcrLicenseSelector.css";
 
 export default function HcrLicenseSelector({
   regId,
@@ -7,6 +7,7 @@ export default function HcrLicenseSelector({
 }) {
   const [ownerTypes, setOwnerTypes] = useState([]);
   const [licenseGroups, setLicenseGroups] = useState([]);
+  const [licenseGroupsError, setLicenseGroupsError] = useState([]);
 
   // Store selected values as objects
   const [selectedOwnerType, setSelectedOwnerType] = useState({
@@ -83,13 +84,19 @@ export default function HcrLicenseSelector({
   // Continue
   // =====================================================
   const handleContinue = () => {
+    const error=[]
     if (!selectedOwnerType.code) {
-      alert("Please select Owner Type");
-      return;
+      // alert("Please select Owner Type");
+      error.push({selectedOwnerTypeErr :"Please select Owner Type"});
     }
 
     if (!selectedLicensee.licenseeCatCode) {
-      alert("Please select a Licensee");
+      // alert("Please select a Licensee");
+      error.push({selectedLicenseeErr :"Please select a License Category"});
+    }
+
+    if (error.length > 0) {
+      setLicenseGroupsError(error);
       return;
     }
 
@@ -171,6 +178,13 @@ export default function HcrLicenseSelector({
                 </option>
               ))}
             </select>
+            <div className="error-text-container">
+              {licenseGroupsError.some((err) => err.selectedOwnerTypeErr) && (
+                <span className="error-text">
+                  {licenseGroupsError.find((err) => err.selectedOwnerTypeErr).selectedOwnerTypeErr}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* ================================================= */}
@@ -257,6 +271,11 @@ export default function HcrLicenseSelector({
               )}
 
             </div>
+            {licenseGroupsError.some((err) => err.selectedLicenseeErr) && (
+                <span className="error-text">
+                  {licenseGroupsError.find((err) => err.selectedLicenseeErr).selectedLicenseeErr}
+                </span>
+              )}
           </div>
 
           {/* ================================================= */}

@@ -4,7 +4,7 @@ import DirectorRow from "./DirectorRow";
 import "../Style/ApplyLicense.css";
 import "../Style/DirectorsList.css";
 
-const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType }) => {
+const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType, directorsError }) => {
   return (
     <div className="directors-section">
       {/* Section Title */}
@@ -39,6 +39,7 @@ const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType 
               onDelete={onDelete}
               ConstitutionType={ConstitutionType}
               disableDelete={false}
+              directorsError={directorsError?.errors?.[index] || {}}
             />
           ))
         )}

@@ -8,7 +8,8 @@ import {
   HeadphonesSvg,
   GlobeSvg,
   ChevronDownSvg,
-  EyeSvg
+  EyeSvg,
+  EyeOffSvg,
 } from "../icons/GlobalIcons.jsx";
 
 import DepartmentHeader from "../DepartmentHeader.jsx";
@@ -30,6 +31,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
     debugger;
     e.preventDefault();
     setError('');
+    setIsSubmitting(true);
 
     const trimmedId = userId.trim();
     const cleanIdUpper = trimmedId.toUpperCase();
@@ -81,7 +83,10 @@ console.log("LOGIN RESPONSE:", data);
         setError("Invalid Officer ID. Enter 'DA' for DADashboard or 'Admin' for DepartmentDashboard.");
       }
     } catch (error) {
-
+      console.error(error);
+      setError(error.message || "Unable to connect");
+    } finally {
+      setIsSubmitting(false);
     }
     //API Call
 
@@ -157,7 +162,7 @@ console.log("LOGIN RESPONSE:", data);
           </div>
 
           <div className="login-info-footer">
-            <p className="login-footer-text">© 2024 Department of Excise, Government of NCT of Delhi. All rights reserved.</p>
+            <p className="login-footer-text">� 2024 Department of Excise, Government of NCT of Delhi. All rights reserved.</p>
           </div>
 
           {/* Decorative Background Image */}
@@ -195,7 +200,7 @@ console.log("LOGIN RESPONSE:", data);
               <p className="login-form-subtitle">Internal Access Only - Authorized Personnel Only</p>
 
               {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-300 text-red-700 text-xs font-semibold rounded-lg flex items-center gap-2">
+                <div className="dl-error">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
                   <span>{error}</span>
                 </div>
@@ -220,19 +225,19 @@ console.log("LOGIN RESPONSE:", data);
                 </div>
 
                 <div className="form-field">
-                    <div className="dept-input-wrapper">
-                      <LockSvg className="dept-field-icon" />
-                      <input  id='Password' type={showPassword ? 'text' : 'password'} className="dept-input-field" placeholder="" value={password} 
-                      onChange={(e) => { setPassword(e.target.value); if (error) setError(''); }} required/>
-                          <label htmlFor="Password">Password</label>
-                        <button type="button" className="password-toggle-btn" onClick={() => setShowPassword((prev) => !prev)}>
+                  <div className="dept-input-wrapper">
+                    <LockSvg className="dept-field-icon" />
+                    <input id='Password' type={showPassword ? 'text' : 'password'} className="dept-input-field" placeholder="" value={password}
+                      onChange={(e) => { setPassword(e.target.value); if (error) setError(''); }} required />
+                    <label htmlFor="Password">Password</label>
+                    <button type="button" className="password-toggle-btn" onClick={() => setShowPassword((prev) => !prev)}>
                       {showPassword ? (
-                      <EyeSvg className="icon-sm" />
+                        <EyeSvg className="icon-sm" />
                       ) : (
-                      <EyeSvg className="icon-sm" />
+                        <EyeOffSvg className="icon-sm" />
                       )}
-                   </button>
-                   </div>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Static Credentials Quick Fill Helper Box */}
@@ -280,12 +285,21 @@ console.log("LOGIN RESPONSE:", data);
                   </button>
                 </div>
 
-                <button
+                {/* <button
                   type="submit"
                   className="login-btn-submit"
                 >
                   <LockSvg className="icon-xs margin-right-small" />
                   SIGN IN TO DEPARTMENT PORTAL
+                </button> */}
+
+                <button
+                  type="submit"
+                  className="login-btn-submit"
+                  disabled={isSubmitting}
+                >
+                  <LockSvg className="icon-xs margin-right-small" />
+                  {isSubmitting ? 'Signing in...' : 'SIGN IN TO DEPARTMENT PORTAL'}
                 </button>
 
                 {/* <div className="divider-container">

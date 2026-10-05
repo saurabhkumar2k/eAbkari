@@ -210,7 +210,7 @@ const ActOnNewLicenseApplication = () => {
             {!loading &&
               applications.map((application, index) => (
 
-                <tr key={application.applicationId || index}>
+                <tr key={application.applicationIdNo || index}>
 
                   {/* ==============================
                       SERIAL NUMBER
@@ -238,7 +238,7 @@ const ActOnNewLicenseApplication = () => {
                       </span>
 
                       <strong>
-                        {application.applicationId}
+                        {application.applicationIdNo}
                       </strong>
 
                     </div>

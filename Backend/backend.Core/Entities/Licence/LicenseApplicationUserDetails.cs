@@ -21,7 +21,7 @@ namespace backend.Core.Entities.Licence
         [Required]
         [StringLength(21)]
         [Column(TypeName = "CHAR(21)")]
-        public string ApplicationIdNo { get; set; } = string.Empty;
+        public string ApplicationIdNo { get; set; }
 
         [StringLength(5)]
         [Column(TypeName = "CHAR(5)")]

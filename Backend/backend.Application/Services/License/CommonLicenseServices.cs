@@ -1,5 +1,6 @@
 using backend.Application.Interfaces.License;
 using backend.Core.DTOs;
+using backend.Core.Entities;
 using backend.Core.Entities.Licence;
 using backend.Core.Interfaces.License;
 
@@ -15,10 +16,7 @@ namespace backend.Application.Services.License
             _Licenserepository = repository;
 
         }
-
-
-
-        public async Task<string> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto)
+        public async Task<ApiResponse<LicenseApplicationUserDetailsResponseDto>> SaveApplicantDetails(LicenseApplicationUserDetailsDto dto)
         {
             try
             {
@@ -28,7 +26,8 @@ namespace backend.Application.Services.License
 
                 if (dto == null)
                 {
-                    return "Request data is null";
+                    return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Fail(
+                            "Request data is null");
                 }
                 // ==========================================
                 // STEP 1 : CHECK EXISTING APPLICATION
@@ -74,9 +73,16 @@ namespace backend.Application.Services.License
                             ApplicationFlag = dto.ActivityId
                         };
 
-                        return await _Licenserepository.SaveApplicantDetails(
+                        var resdata = await _Licenserepository.SaveApplicantDetails(
                             Existinglicense,
                             Existingapplication);
+                        return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Ok(
+                            new LicenseApplicationUserDetailsResponseDto
+                            {
+                                ApplicationIdNo = resdata
+                            },
+                            "Application saved successfully"
+                            );
                     }
                 }
 
@@ -93,7 +99,8 @@ namespace backend.Application.Services.License
 
                 if (string.IsNullOrWhiteSpace(FinYearV))
                 {
-                    return "Financial Year is not available.";
+                    return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Fail(
+                        "Financial Year is not available.");
                 }
 
                 string activeYear = FinYearV.Substring(2, 2);
@@ -172,13 +179,17 @@ namespace backend.Application.Services.License
                 // STEP 6 : INSERT
                 // ==========================================
 
-                return await _Licenserepository.SaveApplicantDetails(
-                    license,
-                    application);
+                var response = await _Licenserepository.SaveApplicantDetails(license, application);
+                return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Ok(
+                    new LicenseApplicationUserDetailsResponseDto
+                    {
+                        ApplicationIdNo = response
+                    }, "Application Saved Successfully");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ApiResponse<LicenseApplicationUserDetailsResponseDto>.Fail(
+                    "Server error, try again later", ex.Message);
             }
         }
         public async Task<LicenseApplicationUserDetailsDto> GetApplicantDetails(string AppId)
@@ -186,22 +197,94 @@ namespace backend.Application.Services.License
             return await _Licenserepository.GetApplicantDetails(AppId);
         }
 
-        public async Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus)
+        public async Task<ApiResponse<SubmitApplicationDTO>> SubmitApplication(SubmitApplicationDTO dto)
         {
             try
             {
-                // var applicationStatus = new LicenseApplication
-                // {
-                //     ApplicationStatus = "02" // Update the status to "02" (Submitted)
+                if (dto == null)
+                {
+                    return ApiResponse<SubmitApplicationDTO>.Fail("Invalid Request");
+                }
 
-                // };
+                if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                {
+                    return ApiResponse<SubmitApplicationDTO>.Fail("ApplicationIdNo is required.");
+                }
 
-                return await _Licenserepository.SubmitApplication(applicationIdNo, applicationStatus);
+                var result = await _Licenserepository.SubmitApplication(dto);
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    return ApiResponse<SubmitApplicationDTO>.Fail("Application not found.");
+                }
+
+                return ApiResponse<SubmitApplicationDTO>.Ok(
+                    new SubmitApplicationDTO
+                    {
+                        ApplicationStatus = result
+                    }, "Application status updated successfully.");
             }
             catch (Exception ex)
             {
-                return null;
+                return ApiResponse<SubmitApplicationDTO>.Fail("Server error, try again later", ex.Message);
             }
+        }
+        public async Task<ApiResponse<ApplicationIdResponseDto>> GetPendingApplicationId(string catCode, int regId)
+        {
+            try
+            {
+                var FinYearV = await _Licenserepository.GetFinYear();
+
+                if (string.IsNullOrWhiteSpace(FinYearV))
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Fail(
+                        "Financial Year is not available.");
+                }
+
+                var result = await _Licenserepository.GetPendingApplicationId(catCode, regId, FinYearV);
+                if (result == null)
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Fail("No pending application found.");
+                }
+                else
+                {
+                    return ApiResponse<ApplicationIdResponseDto>.Ok(
+                        new ApplicationIdResponseDto
+                        {
+                            ApplicationIdNo = result.ApplicationIdNo,
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<ApplicationIdResponseDto>.Fail("Server error, try again later", ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string applicationIdNo,string CatCode, string DocType)
+        {
+            try
+            {
+                var result = await _Licenserepository.GetDocDescriptionCatWiseRepositry(applicationIdNo,CatCode, DocType);
+
+                if (result == null || result.Count == 0)
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("No Document Found.");
+                }
+                else
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("Server error, try again later", ex.Message);
+            }
+        }
+
+        public async Task<string> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto)
+        {
+            return await _Licenserepository.SaveAndUpdateApplicantDocumentsRepository(dto);
         }
     }
 }

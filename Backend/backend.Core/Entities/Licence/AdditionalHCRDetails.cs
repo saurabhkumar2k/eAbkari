@@ -38,7 +38,7 @@ namespace backend.Core.Entities.Licence
         [StringLength(50)]
         public string? StaffStrength { get; set; }
 
-        [StringLength(50)]
+        [StringLength(1)]
         public string? StarCategory { get; set; }
 
         [StringLength(50)]
@@ -73,5 +73,23 @@ namespace backend.Core.Entities.Licence
 
         [StringLength(1)]
         public string? HourOfSale {get; set;}
+
+        [StringLength(1)]
+        public string? HasStoreProvisionYN {get; set;}
+
+        [StringLength(150)]
+        public string? StoreLocationInHotel {get; set;}
+
+        [StringLength(20)]
+        public string? TINNumber {get; set;}
+
+        [StringLength(50)]
+        public string? CompanyFirmPANNo {get; set;}
+
+        [StringLength(1)]
+        public string? ConstitutionType {get; set;}
+
+        [StringLength(20)]
+        public string? CINNo {get; set;}
     }
 }

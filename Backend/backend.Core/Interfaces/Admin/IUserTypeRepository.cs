@@ -13,5 +13,7 @@ namespace backend.Core.Interfaces.Admin
         Task<MstUserType?> GetUserTypeByTypeCode(string TypeCode);
 
         Task<bool> UserTypeExistsAsync(string TypeCode);
+        Task<string> GetUserTypeCodeByRoleIdAndBranchCd(int roleId, long branchCd);
+        Task<string> GetUserTypeCodeDescByRoleIdAndBranchCd(int roleId, long branchCd);
     }
 }

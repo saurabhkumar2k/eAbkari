@@ -16,7 +16,7 @@ namespace backend.Core.DTOs
         public int RegId { get; set; }
 
         //public long RegId { get; set; }
-         //public int RegId { get; set; }
+        //public int RegId { get; set; }
 
         public string? Mobile { get; set; }
         public string ApplicantName { get; set; } = string.Empty;
@@ -25,17 +25,17 @@ namespace backend.Core.DTOs
         public string? ApplicationIdNo { get; set; }
         //public DateTime? OprDate { get; set; }
 
-    public string FatherHusbandName { get; set; } = string.Empty;
-    public string Occupation { get; set; } = string.Empty;
-    public string? PresentAddress { get; set; } = string.Empty;
-    public string? PermanentAddress { get; set; } = string.Empty;
-    public string StateUT { get; set; } = string.Empty;
-    public string District { get; set; } = string.Empty;
-    public string PIN { get; set; } = string.Empty;
-    
-    //public string PoliceStation { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string? LandLine { get; set; } = string.Empty;
+        public string FatherHusbandName { get; set; } = string.Empty;
+        public string Occupation { get; set; } = string.Empty;
+        public string? PresentAddress { get; set; } = string.Empty;
+        public string? PermanentAddress { get; set; } = string.Empty;
+        public string StateUT { get; set; } = string.Empty;
+        public string District { get; set; } = string.Empty;
+        public string PIN { get; set; } = string.Empty;
+
+        //public string PoliceStation { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string? LandLine { get; set; } = string.Empty;
 
         //public string Fax { get; set; } = string.Empty;
 
@@ -56,6 +56,10 @@ namespace backend.Core.DTOs
 
         //public DateTime? CreatedDate { get; set; }
 
+    }
+    public class LicenseApplicationUserDetailsResponseDto
+    {
+        public string? ApplicationIdNo { get; set; } = string.Empty;
     }
 
 }

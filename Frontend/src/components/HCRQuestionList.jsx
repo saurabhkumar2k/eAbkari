@@ -1,6 +1,6 @@
 import React from "react";
 
-const HcrQuestionList = ({ questions, onChange }) => {
+const HcrQuestionList = ({ questions, onChange, error }) => {
   return (
     <div className="card-section">
       <h3>All fields are mandatory
@@ -55,9 +55,12 @@ const HcrQuestionList = ({ questions, onChange }) => {
                 </label>
 
               </div>
-
+              
             </div>
           ))}
+          <div className="error-text-container">
+            {error && <span className="error-text-all">{error}</span>}
+          </div>
 
         </div>
       ) : (

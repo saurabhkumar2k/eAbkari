@@ -28,7 +28,7 @@ namespace backend.Infrastructure.Repositories.License
             }
 
             string activeYear = FinYearV.Substring(2, 2);
-          
+
             return await _context.LicenseApplications
                 .Where(x => x.ApplicationIdNo != null &&
                  x.ApplicationIdNo.Length >= 7 &&
@@ -144,16 +144,247 @@ namespace backend.Infrastructure.Repositories.License
             return await _context.MstFlowApplicable.Where(x => x.ActivityId == ActivityId && x.LicenseCategory == CatCode).Select(x => x.FlowUptoCode).FirstOrDefaultAsync();
         }
 
-        public async Task<string?> SubmitApplication(string applicationIdNo, string applicationStatus)
+        public async Task<string?> SubmitApplication(SubmitApplicationDTO dto)
         {
-            var application = await _context.LicenseApplications.Where(x => x.ApplicationIdNo == applicationIdNo).FirstOrDefaultAsync();
+            var application = await _context.LicenseApplications.Where(x => x.ApplicationIdNo == dto.ApplicationIdNo).FirstOrDefaultAsync();
             if (application != null)
             {
-                application.ApplicationStatus = applicationStatus;
+                application.ApplicationIdNo = dto.ApplicationIdNo;
+                application.ApplicationStatus = dto.ApplicationStatus;
                 await _context.SaveChangesAsync();
             }
             return application?.ApplicationStatus ?? string.Empty;
         }
 
+        public async Task<ApplicationIdResponseDto> GetPendingApplicationId(string catCode, int regId, string FinYearV)
+        {
+            var result = await (
+            from mst in _context.MstUsReg
+            join la in _context.LicenseApplications
+                on mst.RegId equals la.RegId
+            where la.CatCode == catCode
+                  && mst.RegId == regId
+                  && la.FinYear == FinYearV
+                  && (la.ApplicationStatus == "02"
+                      || la.ApplicationStatus == "01")
+            orderby la.ApplicationDate descending
+            select new ApplicationIdResponseDto
+            {
+                ApplicationIdNo = la.ApplicationIdNo
+            }
+            ).FirstOrDefaultAsync();
+
+            return result;
+        }
+        public async Task<List<GetApplicantDocResponseDto>> GetDocDescriptionCatWiseRepositry(String applicationIdNo,string catCode, string DocType)
+        {
+            var result = await (               
+                from a in _context.MstLicenseApplicationDocument
+                join b in _context.LicenseApplicationCategoryDocument
+                    on a.DocId equals b.DocId
+
+                where a.DocStatus == DocType
+                   && a.DeleteStatus == "N"
+                   && b.LicenseeCatCode == catCode
+                   && b.ActiveStatus == "Y"
+                   && b.LicenseeTypeFlag == "A" 
+
+                join c in _context.LicenseApplicationUploadedDocument
+                     //.Where(x => x.ApplicationIdNo == applicationIdNo &&
+                     //            x.MobileNoReleaseStatus == "N")
+                     .Where(x => x.ApplicationIdNo == applicationIdNo && x.DocStatus == "Y")
+                               
+                    on a.DocId equals c.DocId into gj
+
+                from c in gj.DefaultIfEmpty()
+
+                orderby (Convert.ToInt32(a.DocId) == 186 ? 999 : 1),
+                        Convert.ToInt32(a.DocId)
+
+                select new GetApplicantDocResponseDto
+                {
+                    DocDesc = a.DocDesc,
+                    DocID = a.DocId,
+                    IsMandatory = b.IsMandatory,
+                    IsValid = a.IsValid ?? false, // null-coalescing operator                   
+                    DocUrl = c != null ? c.DocUrl : "",
+                    DocAppl = c != null && c.DocStatus == "N" ? "Yes" : "No",
+                    DocSl = c != null ? c.DocSl : null,
+                    SDate = c == null
+                                ? "View"
+                                : (c.SubmitDate == null
+                                    ? "View"
+                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy")),                   
+                    VallidUpto = c != null && c.DateOfValidity.HasValue
+                                 ? c.DateOfValidity.Value.ToString("dd/MM/yyyy")
+                                : null
+                }
+
+            ).ToListAsync();
+
+            return result;
+        }
+
+        public async Task<string?> SaveAndUpdateApplicantDocumentsRepository(SaveAndUpdateApplicantDocumentsDto dto)
+        {
+            try
+            {
+                if (dto == null || dto.Documents.Count == 0)
+                {
+                    return null;
+                }
+
+
+                var applicationIdNo = dto.ApplicationIdNo;
+
+                if (string.IsNullOrWhiteSpace(applicationIdNo))
+                {
+                    return null;
+                }
+
+                // Get all existing documents of this application
+                var existingDocuments = await _context
+                    .LicenseApplicationUploadedDocument
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .ToListAsync();
+
+
+                // Find current maximum ApplicantSl
+                int applicantSl = existingDocuments
+                    .Select(x =>
+                        int.TryParse(x.ApplicantSl, out var value)
+                            ? value
+                            : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+
+                // Process each document
+                foreach (var document in dto.Documents)
+                {
+                    // Check existing document using
+                    // ApplicationIdNo + DocId
+                    var existingDocument = existingDocuments
+                        .FirstOrDefault(x =>
+                            x.ApplicationIdNo == applicationIdNo &&
+                            x.DocId == document.DocId);
+
+
+                    // =====================================================
+                    // UPDATE
+                    // =====================================================
+
+                    if (existingDocument != null)
+                    {
+                        string fileExtension = string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                        {
+                            fileExtension =
+                                Path.GetExtension(document.DocUrl);
+                        }
+
+                        string fileName =
+                            $"{applicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
+
+
+                        existingDocument.MobileNo =
+                            dto.MobileNo;
+
+                        existingDocument.DocSl =
+                            document.DocSl;
+
+                        existingDocument.IsValid =
+                            document.IsValid;
+
+                        existingDocument.DateOfValidity =
+                            document.DateOfValidity;
+
+                        existingDocument.DocUrl =
+                            fileName;
+
+                        existingDocument.SubmitDate =
+                            DateTime.Now;
+                    }
+
+
+                    // =====================================================
+                    // INSERT
+                    // =====================================================
+
+                    else
+                    {
+                        applicantSl++;
+
+                        string fileExtension = string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                        {
+                            fileExtension =
+                                Path.GetExtension(document.DocUrl);
+                        }
+
+                        string fileName =
+                            $"{applicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
+
+
+                        var entity =
+                            new LicenseApplicationUploadedDocument
+                            {
+                                ApplicationIdNo = applicationIdNo,
+
+                                MobileNo =
+                                    dto.MobileNo,
+
+                                ApplicantSl =
+                                    applicantSl.ToString(),
+
+                                DocId =
+                                    document.DocId,
+
+                                DocSl =
+                                    document.DocSl,
+
+                                DocStatus =
+                                    "Y",
+
+                                IsValid =
+                                    document.IsValid ?? "N",
+
+                                DateOfValidity =
+                                    document.DateOfValidity,
+
+                                DocUrl =
+                                    fileName,
+
+                                SubmitDate =
+                                    DateTime.Now
+                            };
+
+
+                        await _context
+                            .LicenseApplicationUploadedDocument
+                            .AddAsync(entity);
+
+
+                        // Important:
+                        // Add newly inserted record to local list
+                        // so duplicate DocId in same request
+                        // can be detected.
+                        existingDocuments.Add(entity);
+                    }
+                }
+
+
+                // Save all changes together
+                await _context.SaveChangesAsync();
+
+                return "Documents saved/updated successfully.";
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

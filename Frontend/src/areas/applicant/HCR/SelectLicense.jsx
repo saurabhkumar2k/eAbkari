@@ -16,13 +16,8 @@ import {
 
 export default function SelectLicenseType({ applicant, onChange, ownerTypes = [], licenseGroups = [], selectedType, onSelectType, onBack, onContinue,setSelectedLicense=[],
   constitutionTypes=[], }) {
-
-
-
-
   console.log(applicant);
   console.log(ownerTypes);
-
 
   return (
     <div className="license-selection-container text-left animate-fade">
@@ -60,13 +55,9 @@ export default function SelectLicenseType({ applicant, onChange, ownerTypes = []
             </option>
           ))}
         </select>
-
-
-
       </div>
 
       {/* License Cards */}
-
       {applicant?.ownerType && (
         <div className="license-grid">
           {licenseGroups.map((item) => (
@@ -82,9 +73,7 @@ export default function SelectLicenseType({ applicant, onChange, ownerTypes = []
 
                 onSelectType(item.licenseeCatCode);
               }}
-
-
-              className={`license-card ${selectedType === item.licenseeCatCode ? "selected" : ""
+               className={`license-card ${selectedType === item.licenseeCatCode ? "selected" : ""
                 }`}
             >
               {/* <div className="card-code">
@@ -128,6 +117,7 @@ export default function SelectLicenseType({ applicant, onChange, ownerTypes = []
       color: "emerald"
     },
     {
+
       id: "L-17",
       code: "L-17 / L-17F",
       title: "Independent Restaurant License",
