@@ -225,165 +225,143 @@ namespace backend.Infrastructure.Repositories.License
             return result;
         }
 
-        public async Task<string?> SaveAndUpdateApplicantDocumentsRepository(SaveAndUpdateApplicantDocumentsDto dto)
+        public async Task<string> SaveAndUpdateApplicantDocumentsRepository(SaveAndUpdateApplicantDocumentsDto dto)
         {
-            try
+            // Get all existing documents of this application
+            var existingDocuments = await _context
+                .LicenseApplicationUploadedDocument
+                .Where(x => x.ApplicationIdNo == dto.ApplicationIdNo)
+                .ToListAsync();
+
+
+            // Find current maximum ApplicantSl
+            int applicantSl = existingDocuments
+                .Select(x =>
+                    int.TryParse(x.ApplicantSl, out var value)
+                        ? value
+                        : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+
+
+            // Process each document
+            foreach (var document in dto.Documents)
             {
-                if (dto == null || dto.Documents.Count == 0)
+                // Check existing document using
+                // ApplicationIdNo + DocId
+                var existingDocument = existingDocuments
+                    .FirstOrDefault(x =>
+                        x.ApplicationIdNo == dto.ApplicationIdNo &&
+                        x.DocId == document.DocId);
+
+
+                // =====================================================
+                // UPDATE
+                // =====================================================
+
+                if (existingDocument != null)
                 {
-                    return null;
-                }
+                    string fileExtension = string.Empty;
 
-
-                var applicationIdNo = dto.ApplicationIdNo;
-
-                if (string.IsNullOrWhiteSpace(applicationIdNo))
-                {
-                    return null;
-                }
-
-                // Get all existing documents of this application
-                var existingDocuments = await _context
-                    .LicenseApplicationUploadedDocument
-                    .Where(x => x.ApplicationIdNo == applicationIdNo)
-                    .ToListAsync();
-
-
-                // Find current maximum ApplicantSl
-                int applicantSl = existingDocuments
-                    .Select(x =>
-                        int.TryParse(x.ApplicantSl, out var value)
-                            ? value
-                            : 0)
-                    .DefaultIfEmpty(0)
-                    .Max();
-
-
-                // Process each document
-                foreach (var document in dto.Documents)
-                {
-                    // Check existing document using
-                    // ApplicationIdNo + DocId
-                    var existingDocument = existingDocuments
-                        .FirstOrDefault(x =>
-                            x.ApplicationIdNo == applicationIdNo &&
-                            x.DocId == document.DocId);
-
-
-                    // =====================================================
-                    // UPDATE
-                    // =====================================================
-
-                    if (existingDocument != null)
+                    if (!string.IsNullOrWhiteSpace(document.DocUrl))
                     {
-                        string fileExtension = string.Empty;
-
-                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
-                        {
-                            fileExtension =
-                                Path.GetExtension(document.DocUrl);
-                        }
-
-                        string fileName =
-                            $"{applicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
-
-
-                        existingDocument.MobileNo =
-                            dto.MobileNo;
-
-                        existingDocument.DocSl =
-                            document.DocSl;
-
-                        existingDocument.IsValid =
-                            document.IsValid;
-
-                        existingDocument.DateOfValidity =
-                            document.DateOfValidity;
-
-                        existingDocument.DocUrl =
-                            fileName;
-
-                        existingDocument.SubmitDate =
-                            DateTime.Now;
+                        fileExtension =
+                            Path.GetExtension(document.DocUrl);
                     }
 
+                    string fileName =
+                        $"{dto.ApplicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
 
-                    // =====================================================
-                    // INSERT
-                    // =====================================================
 
-                    else
+                    existingDocument.MobileNo =
+                        dto.MobileNo;
+
+                    existingDocument.DocSl =
+                        document.DocSl;
+
+                    existingDocument.IsValid =
+                        document.IsValid;
+
+                    existingDocument.DateOfValidity =
+                        document.DateOfValidity;
+
+                    existingDocument.DocUrl =
+                        fileName;
+
+                    existingDocument.SubmitDate =
+                        DateTime.Now;
+                }
+
+
+                // =====================================================
+                // INSERT
+                // =====================================================
+
+                else
+                {
+                    applicantSl++;
+
+                    string fileExtension = string.Empty;
+
+                    if (!string.IsNullOrWhiteSpace(document.DocUrl))
                     {
-                        applicantSl++;
+                        fileExtension =
+                            Path.GetExtension(document.DocUrl);
+                    }
 
-                        string fileExtension = string.Empty;
+                    string fileName =
+                        $"{dto.ApplicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
 
-                        if (!string.IsNullOrWhiteSpace(document.DocUrl))
+
+                    var entity =
+                        new LicenseApplicationUploadedDocument
                         {
-                            fileExtension =
-                                Path.GetExtension(document.DocUrl);
-                        }
+                            ApplicationIdNo = dto.ApplicationIdNo,
 
-                        string fileName =
-                            $"{applicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
+                            MobileNo =
+                                dto.MobileNo,
 
+                            ApplicantSl =
+                                applicantSl.ToString(),
 
-                        var entity =
-                            new LicenseApplicationUploadedDocument
-                            {
-                                ApplicationIdNo = applicationIdNo,
+                            DocId =
+                                document.DocId,
 
-                                MobileNo =
-                                    dto.MobileNo,
+                            DocSl =
+                                document.DocSl,
 
-                                ApplicantSl =
-                                    applicantSl.ToString(),
-
-                                DocId =
-                                    document.DocId,
-
-                                DocSl =
-                                    document.DocSl,
-
-                                DocStatus =
-                                    "Y",
+                            DocStatus =
+                                "Y",
 
                                 IsValid = document.IsValid,
 
-                                DateOfValidity =
-                                    document.DateOfValidity,
+                            DateOfValidity =
+                                document.DateOfValidity,
 
-                                DocUrl =
-                                    fileName,
+                            DocUrl =
+                                fileName,
 
-                                SubmitDate =
-                                    DateTime.Now
-                            };
-
-
-                        await _context
-                            .LicenseApplicationUploadedDocument
-                            .AddAsync(entity);
+                            SubmitDate =
+                                DateTime.Now
+                        };
 
 
-                        // Important:
-                        // Add newly inserted record to local list
-                        // so duplicate DocId in same request
-                        // can be detected.
-                        existingDocuments.Add(entity);
-                    }
+                    await _context
+                        .LicenseApplicationUploadedDocument
+                        .AddAsync(entity);
+
+
+                    // Important:
+                    // Add newly inserted record to local list
+                    // so duplicate DocId in same request
+                    // can be detected.
+                    existingDocuments.Add(entity);
                 }
-
-
-                // Save all changes together
-                await _context.SaveChangesAsync();
-
-                return "Documents saved/updated successfully.";
             }
-            catch
-            {
-                throw;
-            }
+
+            // Save all changes together
+            await _context.SaveChangesAsync();
+            return "Documents saved/updated successfully.";
         }
     }
 }
