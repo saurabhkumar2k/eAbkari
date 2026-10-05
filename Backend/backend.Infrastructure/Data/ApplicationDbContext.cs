@@ -88,6 +88,9 @@ namespace backend.Infrastructure.Data
         public DbSet<MstLicenseeCategoryBranch> MstLicenseeCategoryBranch { get; set;}
 
 
+        public DbSet<ApplicationHierarchyMapping> ApplicationHierarchyMapping { get; set; }
+
+
 
 
 
@@ -351,6 +354,10 @@ namespace backend.Infrastructure.Data
 
                 modelBuilder.Entity<MstFlowUpto>()
                 .HasKey(x => x.Id);
+
+            
+                   modelBuilder.Entity<ApplicationHierarchyMapping>()
+                .HasKey(x => x.AppID);
 
             base.OnModelCreating(modelBuilder);
 

@@ -527,7 +527,7 @@ export default function HcrLicensee({
     debugger;
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`,
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`
       );
 
       if (!response.ok) {

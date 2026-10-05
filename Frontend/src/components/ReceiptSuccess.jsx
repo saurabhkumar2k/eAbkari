@@ -11,221 +11,328 @@ import {
 } from "lucide-react";
 const ReceiptSuccess = ({
   applicant,
+  siteForm,
+  selectedLicenseCatDesc,
   selectedLicense,
   triggerMockPrint,
-  onBackToSelect
+  onBackToSelect,
 }) => {
+
+  const address = [
+    applicant?.addressLine1,
+    applicant?.addressLine2,
+    applicant?.city,
+  ]
+
+
+
   return (
-    <div className="rmain-card">
-      {/* Success Header */}
-      <div className="rmain-card">
-        {/* Success */}
-        <div className="rcontent-section">
-          <div className="rcenter-content">
-            <div className="relative">
-              <div className="rstatus-pulse"></div>
-              <div className="rsuccess-icon">
-                <Check className="rsuccess-icon-svg" />
-              </div>
-            </div>
-          </div>
-          <h2 className="rpage-title">Application Submitted Successfully</h2>
-          <p className="rpage-subtitle"> Thank you. Your application has been submitted successfully. </p>
-        </div>
-      </div>
+    <div className="application-page">
+      <div className="application-card">
 
-      {/* Application No */}
-      <div className="px-10">
-        <div className="receipt-card">
-          <div className="rgrid-row">
-            <div className="rcenter-content">
-              <div className="rsuccess-icon-box">
-                <FileCheck2 className="text-blue-600 w-7 h-7" />
-              </div>
-            </div>
-            <div className="py-5">
-              <p className="rsection-label">
-                Application No.
-              </p>
-              <h3 className="rpage-heading">
-                {localStorage.getItem("applicationId")}
-              </h3>
-            </div>
-            <div className="pr-8">
-              <span className="rstatus-badge">
-                Submitted
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+        {/* =========================
+          SUCCESS HEADER
+      ========================== */}
+        <section className="success-header">
+          <div className="success-decoration success-decoration-left" />
+          <div className="success-decoration success-decoration-right" />
 
-      {/* Applicant Details */}
-      <div className="mt-10 px-10">
-        <div className="rsuccess-icon-box">
-          <div className="divider"></div>
-          <h3 className="rheading-title">
-            Applicant Details
-          </h3>
-          <div className="divider"></div>
-        </div>
-      </div>
+          <div className="success-content">
 
-      {/* Applied Licence */}
-      <div className="app-form-grid-md">
-        {/* Applicant */}
-        <div className="app-card">
-          <div className="reciept-container">
-            <div className="ricon-box">
-              <User className="text-blue-600" />
+            <div className="success-icon">
+              <Check />
             </div>
 
-            <div>
-              <p className="receipt-label">
-                Applicant Name
-              </p>
-              <h4 className="receipt-title">
-                {applicant?.applicantName}
-              </h4>
+            <div className="success-label">
+              APPLICATION RECEIVED
             </div>
-          </div>
-        </div>
 
+            <h1>
+              Application Submitted Successfully
+            </h1>
 
-        {/* Company */}
-        <div className="app-card">
-          <div className="reciept-container">
-            <div className="rsicon-box">
-              <Building2 className="text-indigo-600" />
-            </div>
-            <div>
-              <p className="receipt-label">
-                Company Name
-              </p>
-              <h4 className="receipt-title">
-                {applicant?.companyName}
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        {/* Email */}
-        <div className="app-card">
-          <div className="reciept-container">
-            <div className="rsuccess-icon-box">
-             <Mail className="text-orange-600" />
-            </div>
-            <div>
-              <p className="receipt-label">
-                Email Address
-              </p>
-              <h4 className="font-semibold mt-1 break-all">
-                {applicant?.email}
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile */}
-        <div className="app-card">
-          <div className="reciept-container">
-            <div className="rsuccess-icon-box">
-              <Phone className="text-green-600" />
-            </div>
-            <div>
-              <p className="receipt-label"> Mobile Number </p>
-              <h4 className="font-semibold mt-1"> {applicant?.mobile} </h4>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 app-card">
-        <div className="reciept-container">
-          <div className="reciept-box">
-            <MapPin className="text-red-600" />
-          </div>
-          <div>
-            <p className="receipt-label">
-              Address
+            <p>
+              Your application has been successfully submitted and
+              forwarded for verification.
             </p>
-            <p className="rdescription-text">
-              {applicant?.addressLine1},
-              {applicant?.addressLine2},
-              {applicant?.city}
-            </p>
-          </div>
-        </div>
-      </div>
 
-      {/* Applied Licence */}
-      <div className="mt-10">
-        <div className="rcenter-header">
-          <div className="divider"></div>
-          <h3 className="rheading-title">
-            Applied Licence
-          </h3>
-          <div className="divider"></div>
-        </div>
+          </div>
+        </section>
 
-        <div className="rcenter-content">
-          <div className="receipt-badge">
-            <div className="rsicon-box">
-             <FileCheck2 className="ricon-title" />
+
+        {/* =========================
+          APPLICATION NUMBER
+      ========================== */}
+        <section className="application-number-wrapper">
+
+          <div className="application-number-card">
+
+            <div className="application-number-left">
+
+              <div className="application-document-icon">
+                <FileCheck2 />
+              </div>
+
+              <div>
+                <div className="field-label">
+                  APPLICATION NUMBER
+                </div>
+
+                <div className="application-number">
+                 {localStorage.getItem("applicationId")}
+                </div>
+              </div>
+
             </div>
-            <div>
-              <p className="rlabel-text">
-                Selected Licence
-              </p>
-              <h4 className="rsection-title">
-                {/* {selectedLicense?.licenseeCatCode} -{" "} */}
-                {selectedLicense?.licenseeCatDesc}
-              </h4>
+
+            <div className="submitted-badge">
+              <span />
+              Submitted
             </div>
+
           </div>
-        </div>
-      </div>
- 
-      {/* Current Status */}
-      <div className="mt-10">
-        <div className="rsuccess-box">
-          <div className="rcontent-row">
-            <div className="rsuccess-circle">
-              <Check className="rsuccess-icon" />
+
+        </section>
+
+
+        {/* =========================
+          CONTENT
+      ========================== */}
+        <main className="application-content">
+
+          {/* =========================
+            APPLICANT DETAILS
+        ========================== */}
+          <section className="application-section">
+
+            <div className="section-heading">
+              <span className="section-line" />
+              <h2>Applicant Details</h2>
+              <span className="section-line" />
             </div>
-            <div>
-              <h4 className="rsuccess-title">
-                Application Submitted
-              </h4>
-              <p className="rdescription-text">
-                Your application has been submitted successfully.
-                It has been forwarded for verification.
-                You can track the application status anytime from your dashboard.
-              </p>
+
+
+            <div className="details-grid">
+
+              {/* Applicant */}
+              <div className="detail-card">
+
+                <div className="detail-icon detail-icon-blue">
+                  <User />
+                </div>
+
+                <div className="detail-content">
+                  <div className="field-label">
+                    Applicant Name
+                  </div>
+
+                  <div className="field-value">
+                    {applicant?.applicantName || "—"}
+                  </div>
+                </div>
+
+              </div>
+
+
+              {/* Site */}
+              <div className="detail-card">
+
+                <div className="detail-icon detail-icon-indigo">
+                  <Building2 />
+                </div>
+
+                <div className="detail-content">
+                  <div className="field-label">
+                    Site Name
+                  </div>
+
+                  <div className="field-value">
+                    {siteForm?.SiteName || "—"}
+                  </div>
+                </div>
+
+              </div>
+
+
+              {/* Email */}
+              <div className="detail-card">
+
+                <div className="detail-icon detail-icon-orange">
+                  <Mail />
+                </div>
+
+                <div className="detail-content">
+                  <div className="field-label">
+                    Email Address
+                  </div>
+
+                  <div className="field-value field-email">
+                    {applicant?.email || "—"}
+                  </div>
+                </div>
+
+              </div>
+
+
+              {/* Mobile */}
+              <div className="detail-card">
+
+                <div className="detail-icon detail-icon-green">
+                  <Phone />
+                </div>
+
+                <div className="detail-content">
+                  <div className="field-label">
+                    Mobile Number
+                  </div>
+
+                  <div className="field-value">
+                    {applicant?.mobile || "—"}
+                  </div>
+                </div>
+
+              </div>
+
+
+              {/* Address */}
+              <div className="detail-card detail-card-full">
+
+                <div className="detail-icon detail-icon-red">
+                  <MapPin />
+                </div>
+
+                <div className="detail-content">
+                  <div className="field-label">
+                    Address
+                  </div>
+
+                  <div className="field-value address-value">
+                    {address || "—"}
+                  </div>
+                </div>
+
+              </div>
+
             </div>
+
+          </section>
+
+
+          {/* =========================
+            APPLIED LICENCE
+        ========================== */}
+          <section className="application-section">
+
+            <div className="section-heading">
+              <span className="section-line" />
+              <h2>Applied Licence</h2>
+              <span className="section-line" />
+            </div>
+
+
+            <div className="licence-card">
+
+              <div className="licence-icon">
+                <FileCheck2 />
+              </div>
+
+              <div className="licence-content">
+
+                <div className="field-label licence-label">
+                  Selected Licence
+                </div>
+
+                <div className="licence-name">
+                  {selectedLicense?.licenseeCatDesc}
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          {/* =========================
+            APPLICATION STATUS
+        ========================== */}
+          <section className="application-section">
+
+            <div className="section-heading">
+              <span className="section-line" />
+              <h2>Application Status</h2>
+              <span className="section-line" />
+            </div>
+
+
+            <div className="status-card">
+
+              <div className="status-icon">
+                <Check />
+              </div>
+
+              <div className="status-content">
+
+                <div className="status-title-row">
+
+                  <h3>
+                    Application Submitted
+                  </h3>
+
+                  <span className="completed-badge">
+                    Completed
+                  </span>
+
+                </div>
+
+                <p>
+                  Your application has been submitted successfully
+                  and forwarded for verification. You can track the
+                  application status anytime from your dashboard.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </main>
+
+
+        {/* =========================
+          FOOTER
+      ========================== */}
+        <footer className="application-footer">
+
+          <div className="footer-buttons">
+
+            <button
+              type="button"
+              onClick={triggerMockPrint}
+              className="btn btn-print"
+            >
+              <Printer />
+              Print Receipt
+            </button>
+
+            <button
+              type="button"
+              onClick={onBackToSelect}
+              className="btn btn-dashboard"
+            >
+              <Home />
+              Back to Dashboard
+            </button>
+
           </div>
-        </div>
-      </div>
-      {/* Footer */}
-      <div className="rfooter-section">
-        <div className="rbutton-container">
-          <button
-            type="button"
-            onClick={triggerMockPrint}
-            className="rprimary-btn "
-          >
-            <Printer className="ricon" />
-            Print Receipt
-          </button>
-          <button
-            type="button"
-            onClick={onBackToSelect}
-            className="rprimary-btn"
-          >
-            <Home className="ricon" />
-            Back to Dashboard
-          </button>
-        </div>
+
+          <p className="footer-note">
+            Please keep your application number for future reference.
+          </p>
+
+        </footer>
+
       </div>
     </div>
   );

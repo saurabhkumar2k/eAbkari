@@ -467,7 +467,7 @@ useEffect(() => {
 const loadApplicantData = async (regId) => {
   try {
     const response = await fetch(
-      `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`
+      `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${regId}`
     );
 
     if (!response.ok) {
@@ -1005,7 +1005,7 @@ console.log("FSSAI API No:", data.fssaiLicenceNo);
 
 //   try {
 //     const response = await fetch(
-//       `http://localhost:5214/api/LicenseeCategories/GetWarehouseByApplicationId/${applicationIdNo}`
+//       `http://localhost:5214/api/LicenseApplication/GetWarehouseByApplicationId/${applicationIdNo}`
 //     );
 
 //     console.log(
@@ -1240,7 +1240,7 @@ const payload = {
 
 
       const response = await fetch(
-        "http://localhost:5214/api/LicenseeCategories/ApplyLicense",
+        "http://localhost:5214/api/LicenseApplication/ApplyLicense",
         {
           method: "POST",
           headers: {
@@ -1257,7 +1257,7 @@ debugger;
       console.log("Generated Id:", data.applicationId);
       localStorage.setItem("applicationId", data.applicationId);
       localStorage.setItem("catCode", data.catCode);
-      alert(`Your Application Reference No. is ${data.applicationId}`);
+      ///alert(`Your Application Reference No. is ${data.applicationId}`);
       
 
     }
@@ -1308,7 +1308,7 @@ debugger;
 
 //   try {
 //     const response = await fetch(
-//       "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+//       "http://localhost:5214/api/LicenseApplication/ApplyWarehouseLicense",
 //       {
 //         method: "POST",
 //         headers: {
@@ -1434,7 +1434,7 @@ if (currentStep === 2) {
   );
 
   const response = await fetch(
-    "http://localhost:5214/api/LicenseeCategories/ApplyWarehouseLicense",
+    "http://localhost:5214/api/LicenseApplication/ApplyWarehouseLicense",
     {
       method: "POST",
       headers: {
@@ -1616,7 +1616,7 @@ if (currentStep === 2) {
 // });
 
 //   const response = await fetch(
-//     "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+//     "http://localhost:5214/api/LicenseApplication/ApplyCompanydetails",
 //     {
 //       method: "POST",
 //       body: formData
@@ -1843,7 +1843,7 @@ console.log(
   // ---------------------------------------
 
   const response = await fetch(
-    "http://localhost:5214/api/LicenseeCategories/ApplyCompanydetails",
+    "http://localhost:5214/api/LicenseApplication/ApplyCompanydetails",
     {
       method: "POST",
       body: formData
@@ -1932,7 +1932,7 @@ if (currentStep === 4) {
 
   
   const response = await fetch(
-    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    "http://localhost:5214/api/LicenseApplication/UploadApplicationDocuments",
     {
       method: "POST",
       body: formData,
@@ -1999,7 +1999,7 @@ if (currentStep === 5) {
 
   
   const response = await fetch(
-    "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+    "http://localhost:5214/api/LicenseApplication/UploadApplicationDocuments",
     {
       method: "POST",
       body: formData,
@@ -3120,9 +3120,15 @@ const handleFinalSubmission = async () => {
                 onClick={handleNextStep}
                 className={currentStep === 4 || currentStep === 5 ? "btn-next" : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"}
               >
-                <span>{currentStep === 6 ? "File Joint Application" : "Next Step"}</span>
+                <span>{currentStep === 6 ? "Submit Application" : "Next Step"}</span>
                 {currentStep !== 4 && currentStep !== 5 && <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />}
               </button>
+
+
+
+
+
+
             </div>
 
           </div>

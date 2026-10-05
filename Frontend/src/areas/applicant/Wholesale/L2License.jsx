@@ -2078,7 +2078,7 @@ const handleFinalSubmission = async () => {
         },
         body: JSON.stringify({
           applicationIdNo: applicationId,
-          applicationStatus: "S",
+          applicationStatus: "02",
         }),
       }
     );
@@ -3120,7 +3120,7 @@ const handleFinalSubmission = async () => {
                 onClick={handleNextStep}
                 className={currentStep === 4 || currentStep === 5 ? "btn-next" : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"}
               >
-                <span>{currentStep === 6 ? "File Joint Application" : "Next Step"}</span>
+                <span>{currentStep === 6 ? "Submit Application" : "Next Step"}</span>
                 {currentStep !== 4 && currentStep !== 5 && <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />}
               </button>
             </div>

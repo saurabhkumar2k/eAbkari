@@ -67,10 +67,12 @@ namespace backend.Core.Entities.Department
         [ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public long BranchCode { get; set; }
 
+
         //[ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public string UserTypeCode { get; set; }
 
         public long PermissionId { get; set; } 
+
 
 
         //[StringLength(1)]

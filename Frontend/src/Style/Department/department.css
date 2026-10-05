@@ -2963,3 +2963,16 @@
     display: block;
   }
 }
+
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  padding: 12px 20px;
+  background: #198754;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+}
