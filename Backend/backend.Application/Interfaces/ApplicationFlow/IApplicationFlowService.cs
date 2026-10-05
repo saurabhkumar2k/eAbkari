@@ -8,5 +8,7 @@ namespace backend.Application.Interfaces.ApplicationFlow
         Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistoryDto dto);
 
         Task<List<PlaAccessPermissionHistoryDto>> GetAccessPermissionHistory(string applicationIdNo);
+
+
     }
 }

@@ -624,7 +624,7 @@ export default function HcrLicenseWizard({
     try {
       debugger;
       const response = await fetch(
-        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`,
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${regId}`,
       );
 
       if (!response.ok) {
@@ -1025,7 +1025,7 @@ export default function HcrLicenseWizard({
         });
 
         const response = await fetch(
-          "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+          "http://localhost:5214/api/LicenseApplication/UploadApplicationDocuments",
           {
             method: "POST",
             body: formData,

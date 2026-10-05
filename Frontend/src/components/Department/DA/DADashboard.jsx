@@ -52,11 +52,29 @@ export default function DADashbord({ onLogout, onNavigateHome }) {
   const [applications] = useState(INITIAL_DA_APPLICATIONS);
   const [activeMenu, setActiveMenu] = useState("home");
   const [activeSubMenu, setActiveSubMenu] = useState("da_dashboard");
-
+const [userId, setUserId] = useState(
+  localStorage.getItem("userId") || ""
+);
   const handleMenuSelect = (menuId, subItemId) => {
     setActiveMenu(menuId);
     setActiveSubMenu(subItemId);
   };
+
+const [toast, setToast] = useState({
+  show: false,
+  type: "",
+  message: ""
+});
+
+const handleToast = (type, message) => {
+  console.log("HANDLE TOAST:", type, message);
+
+  setToast({
+    show: true,
+    type: type,
+    message: message
+  });
+};
 
   const pendingCount = applications.filter(
     (a) => a.status === "Pending Scrutiny",
@@ -71,6 +89,27 @@ export default function DADashbord({ onLogout, onNavigateHome }) {
   return (
     <div className="dept-dashboard">
       {/* Header Navigation matching Department Portal Header */}
+
+{/* {toast.show && (
+  <div
+style={{
+  position: "fixed",
+  top: "85px",
+  right: "30px",
+  zIndex: 999999,
+  backgroundColor: "green",
+  color: "white",
+  padding: "12px 20px",
+  borderRadius: "8px",
+  fontSize: "14px",
+  fontWeight: "600",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+}}
+  >
+    {toast.message}
+  </div>
+)} */}
+
       <DAHeader
         activeMenu={activeMenu}
         onSelectMenu={handleMenuSelect}
@@ -81,7 +120,12 @@ export default function DADashbord({ onLogout, onNavigateHome }) {
       {activeSubMenu === "pull_application" ||
       activeMenu === "pull_application" ? (
         <div className="dept-dash-main bg-slate-100 min-h-screen">
-          <PullApplication />
+          {/* <PullApplication /> */}
+           <PullApplication userId={userId} /> 
+          {/* <PullApplication
+  userId={userId}
+  onToast={handleToast}
+/> */}
         </div>
       ) : activeSubMenu === "act_on_new_license_application" ||
         activeMenu === "act_on_new_license_application" ? (

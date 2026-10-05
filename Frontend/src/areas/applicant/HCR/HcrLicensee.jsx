@@ -532,7 +532,7 @@ export default function HcrLicensee({
   const loadApplicantData = async (registrationId) => {
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`
       );
 
       if (!response.ok) {
@@ -1229,7 +1229,7 @@ export default function HcrLicensee({
       });
 
       const response = await fetch(
-        "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+        "http://localhost:5214/api/LicenseApplication/UploadApplicationDocuments",
         {
           method: "POST",
           body: formData,

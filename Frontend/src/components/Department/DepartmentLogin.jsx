@@ -27,6 +27,7 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e) => {
+    debugger;
     e.preventDefault();
     setError('');
 
@@ -55,7 +56,8 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
       }
 
       console.log("API Response:", data);
-
+    localStorage.setItem("userId", data.userId);
+console.log("LOGIN RESPONSE:", data);
       // // Check Password
       // if (password !== 'Test@1234') {
       //   setError('Invalid password. Please enter the correct password (Test@1234).');

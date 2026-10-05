@@ -91,6 +91,23 @@ builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
 
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IPLAPullApplicationService, PLAPullApplicationService>();
+
+builder.Services.AddScoped<IPLAPullApplicationRepository, PLAPullApplicationRepository>();
+
+
+
+builder.Services.AddScoped<ILicenseApplicationRepository, LicenseApplicationRepository>();
+
+builder.Services.AddScoped< ILicenseApplicationServices, LicenseApplicationServices>();
+
+builder.Services.AddScoped< IPLAPullApplicationRepository, PLAPullApplicationRepository>();
+
+builder.Services.AddScoped< IPLAPullApplicationService, PLAPullApplicationService>();
+
+
+
+
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

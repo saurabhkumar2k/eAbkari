@@ -19,6 +19,7 @@ const Login = ({ onNavigateToRegister, onLoginSuccess, onNavigateHome }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     debugger;
@@ -59,7 +60,8 @@ const Login = ({ onNavigateToRegister, onLoginSuccess, onNavigateHome }) => {
 
       //  alert("Login Successful");
       localStorage.setItem("regId", data.regId);
-
+      localStorage.setItem("userId", data.userId);
+console.log("LOGIN RESPONSE:", data);
       if (onLoginSuccess) {
 
         onLoginSuccess(data);

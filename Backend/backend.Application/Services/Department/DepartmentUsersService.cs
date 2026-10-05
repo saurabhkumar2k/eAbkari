@@ -150,7 +150,7 @@ namespace backend.Application.Services.Department
                 UserId = user.UserId.Trim(),
                 RoleId = user.RoleId,
                 BranchCode = user.BranchCode,
-                IsActive = "Y"
+                //IsActive = "Y"
             };
 
             return await _departmentUsersRepository.CreateAsync(DepartmentUser, DeptUserRoles);

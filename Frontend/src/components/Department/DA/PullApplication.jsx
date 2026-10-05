@@ -119,39 +119,155 @@ const MOCK_POOL_DATA = {
   ]
 };
 
-export default function PullApplication({ onToast }) {
+export default function PullApplication({ onToast , userId  }) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [fetchedData, setFetchedData] = useState(null);
   const [hasFetched, setHasFetched] = useState(false);
   const [pulledIds, setPulledIds] = useState([]);
+const [gridData, setGridData] = useState([]);
+const [selectedIds, setSelectedIds] = useState([]);
+  // const handleFetchForm = (e) => {
+  //   e.preventDefault();
+  //   if (!selectedCategory) {
+  //     if (onToast) onToast("info", "Please select an application category from the dropdown.");
+  //     setFetchedData(null);
+  //     setHasFetched(false);
+  //     return;
+  //   }
 
-  const handleFetchForm = (e) => {
-    e.preventDefault();
-    if (!selectedCategory) {
-      if (onToast) onToast("info", "Please select an application category from the dropdown.");
-      setFetchedData(null);
-      setHasFetched(false);
-      return;
+  //   const data = MOCK_POOL_DATA[selectedCategory] || [
+  //     {
+  //       id: `APP-EX-2026-${selectedCategory.slice(0, 3).toUpperCase()}-001`,
+  //       licenseName: selectedCategory,
+  //       applicantName: "Registered Excise Licensee",
+  //       district: "Central Delhi",
+  //       submissionDate: "05/08/2026",
+  //       status: "Unassigned Pool",
+  //       liquorType: "General Liquor Application"
+  //     }
+  //   ];
+  //   setFetchedData(data);
+  //   setHasFetched(true);
+  //   if (onToast) {
+  //     onToast("success", `Fetched ${data.length} pool records for ${selectedCategory}.`);
+  //   }
+  // };
+
+
+const handleSelectApplication = (id) => {
+  setSelectedIds((prev) => {
+    if (prev.includes(id)) {
+      return prev.filter((x) => x !== id);
     }
 
-    const data = MOCK_POOL_DATA[selectedCategory] || [
-      {
-        id: `APP-EX-2026-${selectedCategory.slice(0, 3).toUpperCase()}-001`,
-        licenseName: selectedCategory,
-        applicantName: "Registered Excise Licensee",
-        district: "Central Delhi",
-        submissionDate: "05/08/2026",
-        status: "Unassigned Pool",
-        liquorType: "General Liquor Application"
-      }
-    ];
-    setFetchedData(data);
-    setHasFetched(true);
-    if (onToast) {
-      onToast("success", `Fetched ${data.length} pool records for ${selectedCategory}.`);
-    }
+    return [...prev, id];
+  });
+};
+
+
+const handleSelectAll = () => {
+  const availableIds = fetchedData
+    .filter((item) => !pulledIds.includes(item.id))
+    .map((item) => item.id);
+
+  if (selectedIds.length === availableIds.length) {
+    setSelectedIds([]);
+  } else {
+    setSelectedIds(availableIds);
+  }
+};
+
+
+
+
+
+
+const handlePullSelected = async () => {
+  debugger;
+
+  if (selectedIds.length === 0) {
+    return;
+  }
+
+  const selectedApplications = fetchedData
+    .filter(item => selectedIds.includes(item.id))
+    .map(item => ({
+      applicationIdNo: item.id,
+      hierarchyID: item.hierarchyID,
+      flowUpto: item.flowUpto
+    }));
+
+  const payload = {
+    userId: localStorage.getItem("userId"),
+    category: selectedCategory,
+    permitType: "0",
+    applications: selectedApplications
   };
 
+  try {
+    const response = await fetch(
+      "http://localhost:5214/api/PLAPullApplication/PullApplications",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+const responseText = await response.text();
+debugger;
+console.log("RESPONSE:", responseText);
+
+if (!response.ok) {
+  const errorResult = JSON.parse(responseText);
+
+  if (onToast) {
+    onToast(
+      "error",
+      errorResult.message || "Unable to pull application."
+    );
+  }
+
+  return;
+}
+
+const result = JSON.parse(responseText);
+
+if (!response.ok) {
+  alert(result.message || "Unable to pull application.");
+  return;
+}
+
+if (result.success) {
+  alert(result.message || "Application(s) pulled successfully.");
+
+  setSelectedIds([]);
+
+  await handleFetchForm(null, false);
+}
+
+    setSelectedIds([]);
+
+    // ✅ Refresh pool after successful pull
+    await handleFetchForm();
+
+  } catch (error) {
+    console.error("Pull application error:", error);
+
+    if (onToast) {
+      onToast(
+        "error",
+        "Something went wrong while pulling application."
+      );
+    }
+  }
+};
+
+
+
+  
   const handlePull = (app) => {
     if (pulledIds.includes(app.id)) return;
 
@@ -163,6 +279,109 @@ export default function PullApplication({ onToast }) {
       );
     }
   };
+
+
+
+
+const handleFetchForm = async (e, showToast = true) => {
+  debugger;
+
+  e?.preventDefault();
+
+  if (!selectedCategory) {
+    if (onToast) {
+      onToast(
+        "info",
+        "Please select an application category from the dropdown."
+      );
+    }
+
+    setFetchedData(null);
+    setHasFetched(false);
+    return;
+  }
+
+  const userId = localStorage.getItem("userId");
+
+  console.log("USER ID FROM LOCAL STORAGE:", userId);
+
+  try {
+    const response = await fetch(
+      "http://localhost:5214/api/PLAPullApplication/GetApplications",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: selectedCategory,
+          userId: userId
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Error:", errorText);
+      throw new Error("Failed to fetch applications.");
+    }
+
+    const data = await response.json();
+
+    console.log("GET APPLICATIONS RESPONSE:", data);
+
+    const mappedData = data.map((item) => ({
+      id: item.applicationIdNo,
+      licenseName: item.licenseeCatDesc,
+      applicantName: item.siteName,
+
+      hierarchyID: item.hierarchyID,
+      flowUpto: item.flowUptoCode,
+
+      userId: userId,
+
+      submissionDate: item.applicationDate
+        ? new Date(item.applicationDate).toLocaleDateString("en-GB")
+        : "",
+
+      status: "Unassigned Pool"
+    }));
+
+    setFetchedData(mappedData);
+    setHasFetched(true);
+
+ if (onToast && showToast) {
+    onToast(
+      "success",
+      `Fetched ${mappedData.length} pool records for ${selectedCategory}.`
+    );
+  }
+
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+
+    setFetchedData(null);
+    setHasFetched(false);
+
+    if (onToast) {
+      onToast("error", "Unable to fetch applications.");
+    }
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="pa-container">
@@ -221,115 +440,453 @@ export default function PullApplication({ onToast }) {
       </div>
 
       {/* Fetched Results Display */}
-      {hasFetched && (
-        <div className="pa-results-panel">
-          <div className="pa-results-header">
-            <h3 className="pa-results-title">
-              <Layers style={{ width: "1.25rem", height: "1.25rem", color: "#0284c7" }} />
-              <span>Liquor Pool Applications ({selectedCategory})</span>
-              <span className="pa-badge">{fetchedData ? fetchedData.length : 0} Available</span>
-            </h3>
-            <button
-              onClick={handleFetchForm}
+      
+
+
+
+
+
+
+
+{hasFetched && (
+  <div className="pa-results-panel">
+
+    {/* ================= HEADER ================= */}
+    <div className="pa-results-header">
+
+      <h3 className="pa-results-title">
+        <Layers
+          style={{
+            width: "1.25rem",
+            height: "1.25rem",
+            color: "#0284c7"
+          }}
+        />
+
+        <span>
+          Liquor Pool Applications ({selectedCategory})
+        </span>
+
+        <span className="pa-badge">
+          {fetchedData ? fetchedData.length : 0} Available
+        </span>
+      </h3>
+
+      <button
+        onClick={handleFetchForm}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#0284c7",
+          cursor: "pointer",
+          fontSize: "0.8rem",
+          fontWeight: 700,
+          display: "flex",
+          alignItems: "center",
+          gap: "0.35rem"
+        }}
+      >
+        <RefreshCw
+          style={{
+            width: "0.9rem",
+            height: "0.9rem"
+          }}
+        />
+
+        Refresh Pool
+      </button>
+
+    </div>
+
+
+    {/* ================= DATA AVAILABLE ================= */}
+    {fetchedData && fetchedData.length > 0 ? (
+
+      <>
+
+        {/* ================= BULK ACTION ================= */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "0.75rem",
+            padding: "0.75rem 0",
+            borderBottom: "1px solid #e2e8f0"
+          }}
+        >
+
+          {selectedIds.length > 0 && (
+            <span
               style={{
-                background: "none",
-                border: "none",
-                color: "#0284c7",
-                cursor: "pointer",
                 fontSize: "0.8rem",
                 fontWeight: 700,
-                display: "flex",
-                alignItems: "center",
-                gap: "0.35rem"
+                color: "#475569"
               }}
             >
-              <RefreshCw style={{ width: "0.9rem", height: "0.9rem" }} /> Refresh Pool
-            </button>
-          </div>
-
-          {fetchedData && fetchedData.length > 0 ? (
-            <div className="pa-table-wrapper">
-              <table className="pa-table">
-                <thead>
-                  <tr>
-                    <th>Ref Application ID</th>
-                    <th>Liquor / License Category</th>
-                    <th>Applicant / Premises</th>
-                    <th>District / Depot Zone</th>
-                    <th>Date Filed</th>
-                    <th>Status</th>
-                    <th style={{ textAlign: "right" }}>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fetchedData.map((item) => {
-                    const isPulled = pulledIds.includes(item.id);
-
-                    return (
-                      <tr key={item.id}>
-                        <td>
-                          <span className="pa-app-id">{item.id}</span>
-                        </td>
-                        <td>
-                          <div style={{ fontWeight: 700, color: "#0f172a" }}>{item.licenseName}</div>
-                          <div style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 500, marginTop: "0.15rem" }}>
-                            {item.liquorType}
-                          </div>
-                        </td>
-                        <td style={{ fontWeight: 600 }}>{item.applicantName}</td>
-                        <td>{item.district}</td>
-                        <td style={{ fontSize: "0.8rem", color: "#475569" }}>{item.submissionDate}</td>
-                        <td>
-                          <span
-                            style={{
-                              backgroundColor: isPulled ? "#dcfce7" : "#fff7ed",
-                              color: isPulled ? "#15803d" : "#c2410c",
-                              padding: "0.25rem 0.6rem",
-                              borderRadius: "4px",
-                              fontSize: "0.725rem",
-                              fontWeight: 800,
-                              border: isPulled ? "1px solid #86efac" : "1px solid #ffedd5"
-                            }}
-                          >
-                            {isPulled ? "Pulled to Desk" : "Pool - Unassigned"}
-                          </span>
-                        </td>
-                        <td style={{ textAlign: "right" }}>
-                          {isPulled ? (
-                            <span className="pa-pulled-badge">
-                              <CheckCircle2 style={{ width: "0.9rem", height: "0.9rem" }} />
-                              Assigned to DA
-                            </span>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => handlePull(item)}
-                              className="pa-pull-action-btn"
-                            >
-                              <Download style={{ width: "0.9rem", height: "0.9rem" }} />
-                              Pull Application
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="pa-empty-state">
-              <FileText className="pa-empty-icon" />
-              <p style={{ fontWeight: 700, margin: 0, color: "#1e293b", fontSize: "0.95rem" }}>
-                No pending unassigned applications in this category.
-              </p>
-              <p style={{ fontSize: "0.825rem", color: "#64748b", marginTop: "0.25rem" }}>
-                All applications for this category are either currently assigned or cleared.
-              </p>
-            </div>
+              {selectedIds.length} application
+              {selectedIds.length > 1 ? "s" : ""} selected
+            </span>
           )}
+
+          <button
+            type="button"
+            onClick={handlePullSelected}
+            disabled={selectedIds.length === 0}
+            className="pa-pull-action-btn"
+            style={{
+              opacity: selectedIds.length === 0 ? 0.5 : 1,
+              cursor:
+                selectedIds.length === 0
+                  ? "not-allowed"
+                  : "pointer"
+            }}
+          >
+            <Download
+              style={{
+                width: "0.9rem",
+                height: "0.9rem"
+              }}
+            />
+
+            Pull Selected ({selectedIds.length})
+          </button>
+
         </div>
-      )}
+
+
+        {/* ================= TABLE ================= */}
+        <div className="pa-table-wrapper">
+
+          <table className="pa-table">
+
+            <thead>
+              <tr>
+
+                {/* SELECT ALL */}
+                <th style={{ textAlign: "center" }}>
+                  <input
+                    type="checkbox"
+                    checked={
+                      fetchedData.filter(
+                        (item) =>
+                          !pulledIds.includes(item.id)
+                      ).length > 0 &&
+                      selectedIds.length ===
+                        fetchedData.filter(
+                          (item) =>
+                            !pulledIds.includes(item.id)
+                        ).length
+                    }
+                    onChange={handleSelectAll}
+                    style={{
+                      width: "17px",
+                      height: "17px",
+                      cursor: "pointer"
+                    }}
+                    title="Select All"
+                  />
+                </th>
+
+                <th>S.No.</th>
+
+                <th>
+                  Ref Application ID
+                </th>
+
+                <th>
+                  License Desc
+                </th>
+
+                <th>
+                  Applicant Name/Site Name
+                </th>
+
+                <th>
+                  Date Filed
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                {/* <th style={{ textAlign: "center" }}>
+                  Select
+                </th> */}
+
+              </tr>
+            </thead>
+
+
+            <tbody>
+
+              {fetchedData.map((item, index) => {
+
+                const isPulled =
+                  pulledIds.includes(item.id);
+
+                const isSelected =
+                  selectedIds.includes(item.id);
+
+
+                return (
+                  <tr key={item.id}>
+
+                    {/* ================= CHECKBOX ================= */}
+                    <td
+                      style={{
+                        textAlign: "center"
+                      }}
+                    >
+                      {!isPulled ? (
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() =>
+                            handleSelectApplication(
+                              item.id
+                            )
+                          }
+                          style={{
+                            width: "17px",
+                            height: "17px",
+                            cursor: "pointer"
+                          }}
+                        />
+                      ) : (
+                        <CheckCircle2
+                          style={{
+                            width: "1rem",
+                            height: "1rem",
+                            color: "#16a34a"
+                          }}
+                        />
+                      )}
+                    </td>
+
+
+                    {/* ================= S.NO ================= */}
+                    <td>
+                      {index + 1}
+                    </td>
+
+
+                    {/* ================= APPLICATION ID ================= */}
+                    <td>
+                      <span className="pa-app-id">
+                        {item.id}
+                      </span>
+                    </td>
+
+
+                    {/* ================= LICENSE ================= */}
+                    <td>
+
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          color: "#0f172a"
+                        }}
+                      >
+                        {item.licenseName}
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "#64748b",
+                          fontWeight: 500,
+                          marginTop: "0.15rem"
+                        }}
+                      >
+                      </div>
+
+                    </td>
+
+
+                    {/* ================= APPLICANT ================= */}
+                    <td
+                      style={{
+                        fontWeight: 600
+                      }}
+                    >
+                      {item.applicantName}
+                    </td>
+
+
+                    {/* ================= DATE ================= */}
+                    <td
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "#475569"
+                      }}
+                    >
+                      {item.submissionDate}
+                    </td>
+
+
+                    {/* ================= STATUS ================= */}
+                    <td>
+
+                      <span
+                        style={{
+                          backgroundColor: isPulled
+                            ? "#dcfce7"
+                            : "#fff7ed",
+
+                          color: isPulled
+                            ? "#15803d"
+                            : "#c2410c",
+
+                          padding: "0.25rem 0.6rem",
+
+                          borderRadius: "4px",
+
+                          fontSize: "0.725rem",
+
+                          fontWeight: 800,
+
+                          border: isPulled
+                            ? "1px solid #86efac"
+                            : "1px solid #ffedd5"
+                        }}
+                      >
+                        {isPulled
+                          ? "Pulled to Desk"
+                          : "Pool - Unassigned"}
+                      </span>
+
+                    </td>
+
+
+                    {/* ================= SELECT ================= */}
+                    {/* <td
+                      style={{
+                        textAlign: "center"
+                      }}
+                    >
+
+                      {!isPulled ? (
+
+                        <label
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "0.4rem",
+                            cursor: "pointer",
+                            fontSize: "0.8rem",
+                            fontWeight: 700,
+                            color: isSelected
+                              ? "#0284c7"
+                              : "#64748b"
+                          }}
+                        >
+
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() =>
+                              handleSelectApplication(
+                                item.id
+                              )
+                            }
+                            style={{
+                              width: "17px",
+                              height: "17px",
+                              cursor: "pointer"
+                            }}
+                          />
+
+                          {isSelected
+                            ? "Selected"
+                            : "Select"}
+
+                        </label>
+
+                      ) : (
+
+                        <span
+                          style={{
+                            color: "#15803d",
+                            fontSize: "0.75rem",
+                            fontWeight: 700
+                          }}
+                        >
+                          Assigned
+                        </span>
+
+                      )}
+
+                    </td> */}
+
+                  </tr>
+                );
+              })}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </>
+
+    ) : (
+
+      /* ================= EMPTY STATE ================= */
+      <div className="pa-empty-state">
+
+        <FileText className="pa-empty-icon" />
+
+        <p
+          style={{
+            fontWeight: 700,
+            margin: 0,
+            color: "#1e293b",
+            fontSize: "0.95rem"
+          }}
+        >
+          No pending unassigned applications in this category.
+        </p>
+
+        <p
+          style={{
+            fontSize: "0.825rem",
+            color: "#64748b",
+            marginTop: "0.25rem"
+          }}
+        >
+          All applications for this category are either
+          currently assigned or cleared.
+        </p>
+
+      </div>
+
+    )}
+
+  </div>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   );
 }

@@ -67,8 +67,8 @@ namespace backend.Core.Entities.Department
         [ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public long BranchCode { get; set; }
 
-        [StringLength(1)]
-        public string IsActive { get; set; } = "Y";
+        //[StringLength(1)]
+        //public string IsActive { get; set; } = "Y";
 
         public virtual  DepartmentUsers? DepartmentUsers { get; set; }
 
