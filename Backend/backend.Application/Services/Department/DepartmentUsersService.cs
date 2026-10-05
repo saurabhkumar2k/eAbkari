@@ -202,11 +202,11 @@ namespace backend.Application.Services.Department
                 UserId = user.UserId.Trim(),
                 RoleId = user.RoleId,
                 BranchCode = user.BranchCode,
-<<<<<<< HEAD
-=======
+
+
                 UserTypeCode = UserTypeCode,
                 PermissionId = user.PermissionId  
->>>>>>> origin/master
+
                 //IsActive = "Y"
             };
 

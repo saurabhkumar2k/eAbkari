@@ -67,15 +67,14 @@ namespace backend.Core.Entities.Department
         [ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public long BranchCode { get; set; }
 
-<<<<<<< HEAD
-=======
+
         //[ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public string UserTypeCode { get; set; }
 
         public long PermissionId { get; set; } 
 
 
->>>>>>> origin/master
+
         //[StringLength(1)]
         //public string IsActive { get; set; } = "Y";
 
