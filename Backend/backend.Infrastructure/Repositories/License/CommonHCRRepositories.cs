@@ -55,7 +55,7 @@ namespace backend.Infrastructure.Repositories.License
                 }
                 await _context.SaveChangesAsync();
 
-                return dto.ApplicationIdNo;           
+                return dto.ApplicationIdNo;
             }
             catch (DbUpdateException ex)
             {
@@ -139,7 +139,7 @@ namespace backend.Infrastructure.Repositories.License
                 );
             }
 
-            
+
         }
         public async Task<List<CatCodeWiseQuestionDto>?> GetCategoryWiseQuestions(string catCode)
         {
@@ -232,7 +232,7 @@ namespace backend.Infrastructure.Repositories.License
                         CompanyFirmPANNo = dto.AdditionalDetails.CompanyFirmPANNo,
                         ConstitutionType = dto.AdditionalDetails.ConstitutionType,
                         CINNo = dto.AdditionalDetails.CINNo
-                        
+
                     };
 
                     _context.AdditionalHCRDetails.Add(details);
@@ -304,10 +304,10 @@ namespace backend.Infrastructure.Repositories.License
 
                     _context.ApplicantLicensePartnersDetails.Add(partner);
                 }
-                 //==========================
+                //==========================
                 // STEP 3 : L16AdditionalResturentDetails
                 //==========================
-                
+
                 var oldResturentDetails = _context.HCRAdditionalRestaurantMaster
                     .Where(x => x.ApplicationIdNo == appId);
 
@@ -325,7 +325,7 @@ namespace backend.Infrastructure.Repositories.License
                             NumberOfCounter = item.NumberOfCounter,
                             AddtionalArea = item.AddtionalArea,
                             HoursofSale = item.HoursofSale,
-                            HoursofSaleAddtionalArea = item.HoursofSaleAddtionalArea, 
+                            HoursofSaleAddtionalArea = item.HoursofSaleAddtionalArea,
                             ForeignLiquor = item.ForeignLiquor,
                             AreaSqMtr = item.AreaSqMtr,
                             slNo = slNoL16++
@@ -368,10 +368,10 @@ namespace backend.Infrastructure.Repositories.License
 
                     }
                 }
-                    await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                    return "Saved Successfully";
-                
+                return "Saved Successfully";
+
             }
             catch (Exception ex)
             {
@@ -450,19 +450,19 @@ namespace backend.Infrastructure.Repositories.License
                 // ==========
                 //Step 3 : Additional Resturant Details l16
 
-                var AdditionalDetailsL16 = await _context.HCRAdditionalRestaurantMaster 
+                var AdditionalDetailsL16 = await _context.HCRAdditionalRestaurantMaster
                 .Where(x => x.ApplicationIdNo == applicationIdNo)
                 .OrderBy(x => x.slNo)
-                .Select( x => new HCRAdditionalRestaurantMasterDto
+                .Select(x => new HCRAdditionalRestaurantMasterDto
                 {
-                     
-                    ApplicationIdNo = x.ApplicationIdNo,                     
+
+                    ApplicationIdNo = x.ApplicationIdNo,
                     NameOfAdditionalRestaurant = x.NameOfAdditionalRestaurant,
                     NumberOfSeatCovers = x.NumberOfSeatCovers,
                     NumberOfCounter = x.NumberOfCounter,
                     AddtionalArea = x.AddtionalArea,
                     HoursofSale = x.HoursofSale,
-                    HoursofSaleAddtionalArea = x.HoursofSaleAddtionalArea, 
+                    HoursofSaleAddtionalArea = x.HoursofSaleAddtionalArea,
                     ForeignLiquor = x.ForeignLiquor,
                     AreaSqMtr = x.AreaSqMtr,
                     slNo = x.slNo
@@ -517,5 +517,122 @@ namespace backend.Infrastructure.Repositories.License
 
             return "Deleted Successfully";
         }
+
+        public async Task<string> SaveAndUpdateL20TrainDetailsRepository(SaveTrainDetailsRequestDto dto)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                // ============================================
+                // 1. Check TrainDetails
+                // ============================================
+
+                var train = await _context.TrainDetails
+                    .FirstOrDefaultAsync(x =>
+                        x.ApplicationIdNo == dto.ApplicationIdNo);
+
+                if (train == null)
+                {
+                    // INSERT
+                    train = new TrainDetails
+                    {
+                        ApplicationIdNo = dto.ApplicationIdNo,
+                        TrainName = dto.TrainName,
+                        TrainNumber = dto.TrainNumber,
+                        OriginateFrom = dto.OriginateFrom,
+                        TempAddress = dto.TempAddress,
+                        CompanyName = dto.CompanyName,
+                        NumberOfSeatCovers = dto.NumberOfSeatCovers,
+                        NumberOfDispensingCounter =  dto.NumberOfDispensingCounter,
+                        NumberOfManagers = dto.NumberOfManagers,
+                        NumberOfKitchenStaff = dto.NumberOfKitchenStaff,
+                        NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees,
+                        NumberOfBarAttendent =  dto.NumberOfBarAttendent,
+                        NumberOfcompartments = dto.NumberOfcompartments
+                    };
+
+                    await _context.TrainDetails.AddAsync(train);
+                }
+                else
+                {
+                    // UPDATE
+                    train.TrainName = dto.TrainName;
+                    train.TrainNumber = dto.TrainNumber;
+                    train.OriginateFrom = dto.OriginateFrom;
+                    train.TempAddress = dto.TempAddress;
+                    train.CompanyName = dto.CompanyName;
+
+                    train.NumberOfSeatCovers =dto.NumberOfSeatCovers;
+
+                    train.NumberOfDispensingCounter =dto.NumberOfDispensingCounter;
+
+                    train.NumberOfManagers = dto.NumberOfManagers;
+
+                    train.NumberOfKitchenStaff = dto.NumberOfKitchenStaff;
+
+                    train.NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees;
+
+                    train.NumberOfBarAttendent = dto.NumberOfBarAttendent;
+
+                    train.NumberOfcompartments = dto.NumberOfcompartments;
+                }
+
+                // ============================================
+                // 2. Existing Routes
+                // ============================================
+
+                var existingRoutes = await _context.AddtionalTrainRouteDetails
+                    .Where(x =>
+                        x.ApplicationIdNo == dto.ApplicationIdNo)
+                    .ToListAsync();
+
+                // Delete existing routes
+                if (existingRoutes.Any())
+                {
+                    _context.AddtionalTrainRouteDetails
+                        .RemoveRange(existingRoutes);
+                }
+
+                // ============================================
+                // 3. Insert New Routes
+                // ============================================
+
+                if (dto.Routes != null && dto.Routes.Any())
+                {
+                    var routes = dto.Routes
+                        .Select((route, index) => new AddtionalTrainRouteDetails
+                        {
+                            ApplicationIdNo = dto.ApplicationIdNo,
+                            RouteDescription = route.RouteDescription,
+                            SLNo = (index + 1).ToString()
+                        })
+                        .ToList();
+
+                    await _context.AddtionalTrainRouteDetails
+                        .AddRangeAsync(routes);
+                }
+
+                // ============================================
+                // 4. Save
+                // ============================================
+
+                await _context.SaveChangesAsync();
+
+                // ============================================
+                // 5. Commit
+                // ============================================
+
+                await transaction.CommitAsync();
+
+                return dto.ApplicationIdNo;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
     }
 }

@@ -65,7 +65,7 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
-
+        
 
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
@@ -139,7 +139,34 @@ namespace backend.API.Licence.Controllers
             var result = await _HCRservice.DeletePartner(dto.ID, dto.ApplicationIdNo);
 
             return Ok(result);
-        }  
+        }
 
+        [HttpPost]
+        [Route("SaveAndUpdateL20TrainDetails")]
+        public async Task<IActionResult>SaveAndUpdateL20TrainDetails([FromBody] SaveTrainDetailsRequestDto dto)
+        {
+            if (dto == null )
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+            Console.WriteLine(
+                JsonSerializer.Serialize(dto, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                })
+            );
+             var result = await _HCRservice.SaveAndUpdateL20TrainDetailsService(dto);
+
+            // return Ok(result);
+            return Ok(new
+            {
+                message = result
+            });
+        }
     }
 }

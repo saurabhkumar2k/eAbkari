@@ -56,6 +56,5 @@ namespace backend.Core.DTOs
 
         public string? DocUrl { get; set; }
         public IFormFile? DocumentFile { get; set; } // ✅ POST upload
-        
     }
 }

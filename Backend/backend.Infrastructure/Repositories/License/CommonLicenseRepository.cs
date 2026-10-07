@@ -263,12 +263,15 @@ namespace backend.Infrastructure.Repositories.License
                 {
                     string fileExtension = string.Empty;
 
-                    if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                    //if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                    //{
+                    //    fileExtension =
+                    //        Path.GetExtension(document.DocUrl);
+                    //}
+                    if (document.DocumentFile != null)
                     {
-                        fileExtension =
-                            Path.GetExtension(document.DocUrl);
+                        fileExtension = Path.GetExtension(document.DocumentFile.FileName);
                     }
-
                     string fileName =
                         $"{dto.ApplicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
 
@@ -303,15 +306,20 @@ namespace backend.Infrastructure.Repositories.License
 
                     string fileExtension = string.Empty;
 
-                    if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                    //if (!string.IsNullOrWhiteSpace(document.DocUrl))
+                    //{
+                    //    fileExtension =
+                    //        Path.GetExtension(document.DocUrl);
+                    //}
+                    if (document.DocumentFile != null)
                     {
-                        fileExtension =
-                            Path.GetExtension(document.DocUrl);
+                        fileExtension = Path.GetExtension(document.DocumentFile.FileName);
                     }
+
 
                     string fileName =
                         $"{dto.ApplicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
-
+                    
 
                     var entity =
                         new LicenseApplicationUploadedDocument

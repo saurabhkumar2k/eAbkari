@@ -198,7 +198,7 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<AddtionalTrainRouteDetails>().ToTable("AddtionalTrainRouteDetails");
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
-                    .HasKey(ar => ar.ApplicationIdNo);
+                    .HasKey(ar => ar.Id);
 
             modelBuilder.Entity<AddtionalTrainRouteDetails>()
                     .Property(x => x.RouteDescription)

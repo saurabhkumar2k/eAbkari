@@ -19,6 +19,7 @@ namespace backend.Application.Interfaces.License
         Task<string> DeletePartner(int id, string applicationIdNo);
 
         //--Ending(RM)
+        Task<string> SaveAndUpdateL20TrainDetailsService(SaveTrainDetailsRequestDto dto);
 
     }
 }
