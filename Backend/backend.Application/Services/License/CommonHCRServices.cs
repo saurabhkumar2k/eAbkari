@@ -132,6 +132,17 @@ namespace backend.Application.Services.License
             }
         }
         //--ending
+        public async Task<string> SaveAndUpdateL20TrainDetailsService(SaveTrainDetailsRequestDto dto)
+        {
+             try
+            {
+                return await _HcrRepositry.SaveAndUpdateL20TrainDetailsRepository(dto);
+            }
+            catch
+            {
+                return "Operation Failed";
+            }
+        }
 
     }
 }
