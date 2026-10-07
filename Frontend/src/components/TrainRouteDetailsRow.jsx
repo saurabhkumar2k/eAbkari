@@ -44,7 +44,7 @@ export default function TrainRouteDetailsRow({
           </div>
 
           {/* 3 × 3 Grid */}
-          <div className="club-grid">
+          <div className="train-grid">
             {/* 1. Restaurant Name */}
             <div className="restaurant-field">
               <label>

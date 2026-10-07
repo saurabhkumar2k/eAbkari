@@ -19,10 +19,17 @@ import HcrDeclarationStep from "./HcrDeclarationStep";
 import {
   validateAdditionalSiteData,
   validateSiteData,
+  validateTrainData,
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import { validateDirectors, validateRestaurantDetails, validateClubDetails, validateTrainDetails, Cat_Label } from "./validation";
+import {
+  validateDirectors,
+  validateRestaurantDetails,
+  validateClubDetails,
+  validateTrainDetails,
+  Cat_Label,
+} from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -300,6 +307,24 @@ export default function HcrLicensee({
     return true;
   };
 
+    const validateTrain = () => {
+    debugger;
+
+    // Check required text & code dropdown fields using your generic check
+    const errors = validateTrainData(trainFrom);
+
+    // Set the error state
+    setTrainFromErrors(errors);
+
+    // Trigger Toast alerts if fields fail validation
+    if (Object.keys(errors).length > 0) {
+      triggerToast("Please verify Train details.", "error");
+      return false;
+    }
+
+    return true;
+  };
+
   // =========================================================
   // Additional
   // =========================================================
@@ -531,7 +556,7 @@ export default function HcrLicensee({
     debugger;
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`,
       );
 
       if (!response.ok) {
@@ -953,8 +978,7 @@ export default function HcrLicensee({
     }));
   };
 
-
-   const handleTrainDetailChange = (index, field, value) => {
+  const handleTrainDetailChange = (index, field, value) => {
     setTrainFrom((prev) => {
       const routes = [...(prev.routes || [])];
 
@@ -976,15 +1000,11 @@ export default function HcrLicensee({
     let additionalUpdateErrors = { ...trainFromErrors };
 
     // 1. Run the evaluation using your custom function
-    const trainErr = validateTrainDetails(
-      trainFrom.routes,
-    );
+    const trainErr = validateTrainDetails(trainFrom.routes);
     if (trainErr) errors.routes = trainErr;
 
     // 2. Check if the data structure contains items before proceeding
-    const hasClubs =
-      additionalFrom.routes &&
-      additionalFrom.routes.length > 0;
+    const hasClubs = additionalFrom.routes && additionalFrom.routes.length > 0;
 
     if (hasClubs) {
       additionalUpdateErrors.routes = errors.routes;
@@ -997,8 +1017,7 @@ export default function HcrLicensee({
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
-    const isInvalidWithData =
-      trainErr?.isValid === false && hasClubs;
+    const isInvalidWithData = trainErr?.isValid === false && hasClubs;
 
     // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
     const hasRowErrors =
@@ -1021,7 +1040,7 @@ export default function HcrLicensee({
       routes: [
         ...(prev.routes || []),
         {
-         RouteDescription: "",                         
+          RouteDescription: "",
         },
       ],
     }));
@@ -1030,9 +1049,7 @@ export default function HcrLicensee({
   const deleteTrainDetail = (index) => {
     setTrainFrom((prev) => ({
       ...prev,
-      routes: (prev.routes || []).filter(
-        (_, i) => i !== index,
-      ),
+      routes: (prev.routes || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -1330,6 +1347,54 @@ export default function HcrLicensee({
 
   const saveRestaurant = async () => {
     if (!validateRestaurant()) {
+      return false;
+    }
+
+    const payload = {
+      ...siteForm,
+
+      Regnumber: regId,
+
+      ApplicationIdNo: localStorage.getItem("applicationIdNo"),
+
+      FinYear: "2026-2027",
+
+      CatCode: selectedLicenseCode,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      console.log("SaveSiteDetails", response);
+
+      return true;
+    } catch (error) {
+      console.error("Restaurant Save Error:", error);
+
+      triggerToast("Unable to save restaurant details.", "error");
+
+      return false;
+    }
+  };
+
+  // =========================================================
+  // STEP 5 - Save Train Details For L20 License
+  // =========================================================
+
+  const saveTrain = async () => {
+    if (!validateTrain()) {
       return false;
     }
 
@@ -1721,6 +1786,39 @@ export default function HcrLicensee({
       return;
     }
 
+    // if (currentStep === 2) && (selectedLicenseCode === "52" || selectedLicenseCode === "43"){
+    //   const success = await saveRestaurant();
+
+    //   if (success) {
+    //     setCurrentStep(4);
+    //   }
+
+    //   return;
+    // }
+
+    // if (currentStep === 2) {
+    //   const success = await saveRestaurant();
+
+    //   if (success) {
+    //     setCurrentStep(3);
+    //   }
+
+    //   return;
+    // }
+
+    if (
+      currentStep === 2 &&
+      (selectedLicenseCode === "52" || selectedLicenseCode === "43")
+    ) {
+      const success = await saveTrain();
+
+      if (success) {
+        setCurrentStep(4);
+      }
+
+      return;
+    }
+
     if (currentStep === 2) {
       const success = await saveRestaurant();
 
@@ -1895,7 +1993,7 @@ export default function HcrLicensee({
             onBack={() => setCurrentStep(1)}
             CatCode={selectedLicenseCode}
             onContinue={handleNext}
-            trainFrom = {trainFrom}
+            trainFrom={trainFrom}
             onTrainDetailChange={handleTrainDetailChange}
             onAddTrainDetail={addTrainDetail}
             ondeleteTrainDetail={deleteTrainDetail}

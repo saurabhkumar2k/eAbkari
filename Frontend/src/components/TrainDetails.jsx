@@ -63,12 +63,8 @@ const TrainDetails = ({
             </label>
 
             <div className="reg-input-group">
-              <div className="reg-input-icon">
-                <Store className="w-4 h-4 text-blue-600" />
-              </div>
-
               <input
-                className="reg-input"
+                className="input-box"
                 type="text"
                 placeholder="Enter Company/Corporation/Board name"
                 value={trainFrom.CompanyName}
@@ -87,14 +83,11 @@ const TrainDetails = ({
             </label>
 
             <div className="reg-input-group">
-              <div className="reg-input-icon">
-                <Store className="w-4 h-4 text-blue-600" />
-              </div>
-
               <input
-                className="reg-input"
+                className="input-box"
                 type="text"
                 placeholder="Enter train name"
+                maxLength={50}
                 value={trainFrom.TrainName}
                 onChange={(e) => onChange("TrainName", e.target.value)}
               />
@@ -113,7 +106,9 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Train Number "
+              maxLength={7}
               value={trainFrom.TrainNumber}
               onChange={(e) => {
                 const value = e.target.value;
@@ -122,7 +117,6 @@ const TrainDetails = ({
                   onChange("TrainNumber", value);
                 }
               }}
-              maxLength={10}
               className="input-box"
             />
             {errors.TrainNumber && (
@@ -149,7 +143,7 @@ const TrainDetails = ({
                   onChange("TempAddress", value);
                 }
               }}
-              maxLength={10}
+              maxLength={100}
               className="input-box"
             />
             {errors.TempAddress && (
@@ -175,7 +169,7 @@ const TrainDetails = ({
                   onChange("OriginateFrom", value);
                 }
               }}
-              maxLength={10}
+              maxLength={50}
               className="input-box"
             />
             {errors.OriginateFrom && (
@@ -192,6 +186,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of compartments"
               value={trainFrom.NumberOfcompartments}
               onChange={(e) => {
@@ -201,7 +196,7 @@ const TrainDetails = ({
                   onChange("NumberOfcompartments", value);
                 }
               }}
-              maxLength={10}
+              maxLength={2}
               className="input-box"
             />
             {errors.NumberOfcompartments && (
@@ -218,6 +213,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of Seat Covers in dinning car"
               value={trainFrom.NumberOfSeatCovers}
               onChange={(e) => {
@@ -227,7 +223,7 @@ const TrainDetails = ({
                   onChange("NumberOfSeatCovers", value);
                 }
               }}
-              maxLength={10}
+              maxLength={3}
               className="input-box"
             />
             {errors.NumberOfSeatCovers && (
@@ -244,6 +240,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of Dispensing Counter"
               value={trainFrom.NumberOfDispensingCounter}
               onChange={(e) => {
@@ -253,7 +250,7 @@ const TrainDetails = ({
                   onChange("NumberOfDispensingCounter", value);
                 }
               }}
-              maxLength={10}
+              maxLength={1}
               className="input-box"
             />
             {errors.NumberOfDispensingCounter && (
@@ -270,6 +267,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of Managers"
               value={trainFrom.NumberOfManagers}
               onChange={(e) => {
@@ -279,7 +277,7 @@ const TrainDetails = ({
                   onChange("NumberOfManagers", value);
                 }
               }}
-              maxLength={10}
+              maxLength={2}
               className="input-box"
             />
             {errors.NumberOfManagers && (
@@ -296,6 +294,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of Kitchen Staff "
               value={trainFrom.NumberOfKitchenStaff}
               onChange={(e) => {
@@ -305,7 +304,7 @@ const TrainDetails = ({
                   onChange("NumberOfKitchenStaff", value);
                 }
               }}
-              maxLength={10}
+              maxLength={2}
               className="input-box"
             />
             {errors.NumberOfKitchenStaff && (
@@ -322,6 +321,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Utility Employees"
               value={trainFrom.NumberOfUtlityEmployees}
               onChange={(e) => {
@@ -331,7 +331,7 @@ const TrainDetails = ({
                   onChange("NumberOfUtlityEmployees", value);
                 }
               }}
-              maxLength={10}
+              maxLength={2}
               className="input-box"
             />
             {errors.NumberOfUtlityEmployees && (
@@ -348,6 +348,7 @@ const TrainDetails = ({
 
             <input
               type="text"
+              inputMode="numeric"
               placeholder="Number of Train Attendant"
               value={trainFrom.NumberOfBarAttendent}
               onChange={(e) => {
@@ -357,7 +358,7 @@ const TrainDetails = ({
                   onChange("NumberOfBarAttendent", value);
                 }
               }}
-              maxLength={10}
+              maxLength={2}
               className="input-box"
             />
             {errors.NumberOfBarAttendent && (
@@ -372,7 +373,7 @@ const TrainDetails = ({
                 ConstitutionType={ConstitutionType}
                 onChange={onTrainDetailChange}
                 onAdd={onAddTrainDetail}
-                onDelete={onTrainDetailChange}
+                onDelete={ondeleteTrainDetail}
                 errors={errors?.trainError}
               />
             )}
