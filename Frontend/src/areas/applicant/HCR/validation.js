@@ -4,19 +4,22 @@ const mobileRegex = /^[6-9][0-9]{9}$/;
 
 export const Cat_Label = Object.freeze({
   "03": "Hotel",
-  33: "Hotel",
+  "33": "Hotel",
   "04": "Restaurant",
-  30: "Restaurant",
+  "30": "Restaurant",
   "05": "Restaurant",
-  31: "Restaurant",
+  "31": "Restaurant",
   "06": "Restaurant",
-  32: "Restaurant",
+  "32": "Restaurant",
   "07": "Restaurant",
-  34: "Restaurant",
+  "34": "Restaurant",
   "08": "Club",
-  35: "Club",
+  "35": "Club",
   "01": "Club",
-  36: "Club",
+  "36": "Club",
+  "14": "Microbrewery",
+  "52": "Train",
+  "43": "Train",
 });
 
 // Allows ONLY whole numbers (0-9)
@@ -256,10 +259,7 @@ export const validateDirectors = (directors) => {
     if (!d?.panFile) {
       rowErrors.panFileErr = "PAN card document is required";
     } else {
-      // const typeError = validatePdfFileType(d.panFile, "PAN card document");
-      // if (typeError) {
-      //   rowErrors.panFileErr = typeError;
-      // }
+
       const typeError = validateFileObject(d?.panFile, 2, [".pdf"]);
       if (typeError) {
         rowErrors.panFileErr = typeError;
@@ -270,13 +270,7 @@ export const validateDirectors = (directors) => {
     if (!d?.addressFile) {
       rowErrors.addressFileErr = "Address proof document is required";
     } else {
-      // const typeError = validatePdfFileType(
-      //   d.addressFile,
-      //   "Address proof document",
-      // );
-      // if (typeError) {
-      //   rowErrors.addressFileErr = typeError;
-      // }
+  
       const typeError = validateFileObject(d?.addressFile, 2, [".pdf"]);
       if (typeError) {
         rowErrors.addressFileErr = typeError;
@@ -440,20 +434,7 @@ export const validateClubDetails = (clubDetails) => {
     );
     if (nameErr) rowErrors.NameOfAdditionalRestaurantErr = nameErr;
 
-    // Validate HoursofSale
-    // const hourSaleErr = requiredCheck(restaurant.HoursofSale, "Hours of Sale");
-    // if (hourSaleErr) rowErrors.HoursofSaleErr = hourSaleErr;
-
-    // Validate ForeignLiquor
-    // if (!restaurant.ForeignLiquor) {
-    //   rowErrors.ForeignLiquorErr = "Foreign Liquor is Required";
-    // } else {
-    //   const foreignLiquorErr = requiredCheck(
-    //     restaurant.ForeignLiquor,
-    //     "Foreign Liquor",
-    //   );
-    //   if (foreignLiquorErr) rowErrors.ForeignLiquorErr = foreignLiquorErr;
-    // }
+    
 
     // Validate AddtionalArea
     if (!club.AddtionalArea) {
@@ -466,24 +447,7 @@ export const validateClubDetails = (clubDetails) => {
       if (addAreaErr) rowErrors.AddtionalAreaErr = addAreaErr;
     }
 
-    // ⚡ Conditional Constraint Rule: If AddtionalArea is "1", then HoursofSaleAddtionalArea is required
-    // if (restaurant.AddtionalArea === "1" || restaurant.AddtionalArea === 1) {
-    //   if (!restaurant.HoursofSaleAddtionalArea) {
-    //     rowErrors.HoursofSaleAddtionalAreaErr =
-    //       "Hours of Sale for Additional Area is Required";
-    //   } else {
-    //     const condHourErr = requiredCheck(
-    //       restaurant.HoursofSaleAddtionalArea,
-    //       "Hours of Sale for Additional Area",
-    //     );
-    //     if (condHourErr) rowErrors.HoursofSaleAddtionalAreaErr = condHourErr;
-    //   }
-    // }
-
-    // Validate AreaSqMtr (Number Validation)
-    // const areaErr = validateSiteNum(restaurant.AreaSqMtr, "Area (Sq Mtr)");
-    // if (areaErr) rowErrors.AreaSqMtrErr = areaErr;
-
+    
     // Validate NumberOfCounter (Number Validation)
     const counterErr = validateSiteNum(
       club.NumberOfCounter,
@@ -491,13 +455,54 @@ export const validateClubDetails = (clubDetails) => {
     );
     if (counterErr) rowErrors.NumberOfCounterErr = counterErr;
 
-    // Validate NumberOfSeatCovers (Number Validation)
-    // const seatErr = validateSiteNum(
-    //   restaurant.NumberOfSeatCovers,
-    //   "Number of Seat Covers",
-    // );
-    // if (seatErr) rowErrors.NumberOfSeatCoversErr = seatErr;
+   
+    // If this specific index has errors, collect them
+    if (Object.keys(rowErrors).length > 0) {
+      result.isValid = false;
+      result.errors[index] = rowErrors;
+    } else {
+      result.errors[index] = null; // Clean state for this row
+    }
+  }
 
+  return result;
+};
+
+export const validateTrainDetails = (routes) => {
+  const result = {
+    isValid: true,
+    globalError: "",
+    errors: [],
+  };
+
+  // 1. Guard check if it doesn't exist or length is 0
+  if (
+    !routes ||
+    !routes.length ||
+    routes.length === 0
+  ) {
+    result.isValid = false;
+    result.globalError = "At least one Train Route detail must be added";
+    return result;
+  }
+
+  // 2. Safe numeric loop that bypasses all array prototype/proxy limitations
+  for (let index = 0; index < routes.length; index++) {
+    const train = routes[index];
+
+    // Safety check in case the index item is empty or undefined
+    if (!train) continue;
+
+    const rowErrors = {};
+
+    // Validate RouteDescription
+    const nameErr = requiredCheck(
+      train.RouteDescription,
+      "Name of Additional Club",
+    );
+    if (nameErr) rowErrors.RouteDescriptionErr = nameErr;
+
+   
     // If this specific index has errors, collect them
     if (Object.keys(rowErrors).length > 0) {
       result.isValid = false;

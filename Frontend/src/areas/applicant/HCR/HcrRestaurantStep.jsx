@@ -1,8 +1,9 @@
 import React from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import RestaurantDetails from "../../../components/RestaurantDetails";
+import TrainDetails from "../../../components/TrainDetails";
 import "./HcrRestaurantStep.css";
-import {Cat_Label} from "./validation"
+import { Cat_Label } from "./validation";
 
 export default function HcrRestaurantStep({
   siteForm,
@@ -16,8 +17,12 @@ export default function HcrRestaurantStep({
   onContinue,
   CatCode,
   onClose,
+  trainFrom,
+  onTrainDetailChange,
+  onAddTrainDetail,
+  ondeleteTrainDetail,
+  ConstitutionType,
 }) {
-
   const handleBackClick = () => {
     if (typeof onBack === "function") {
       onBack();
@@ -30,11 +35,15 @@ export default function HcrRestaurantStep({
     }
   };
 
+  const HCRTrainFieldsCategories = ["52", "43"];
+
   return (
     <div className="hcr-form-section animate-fade">
       <div className="hcr-step-header">
         <div>
-          <h2 className="hcr-step-title">Step 2: {Cat_Label[CatCode]} / Site Details</h2>
+          <h2 className="hcr-step-title">
+            Step 2: {Cat_Label[CatCode]} / Site Details
+          </h2>
           <p className="hcr-step-description">
             Enter the {Cat_Label[CatCode]} premises and location details.
           </p>
@@ -52,18 +61,35 @@ export default function HcrRestaurantStep({
         )}
       </div>
       <div className="hcr-license-card">
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
-          <RestaurantDetails
-            siteForm={siteForm}
-            states={states}
-            districts={districts}
-            subDivisions={subDivisions}
-            policeStations={policeStations}
-            CatCode={CatCode}
-            errors={errors}
-            onChange={onChange}
-          />
-        </div>
+        {HCRTrainFieldsCategories.includes(CatCode) && (
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
+            <TrainDetails
+              trainFrom={trainFrom}
+              CatCode={CatCode}
+              errors={errors}
+              onChange={onChange}
+              onTrainDetailChange={onTrainDetailChange}
+              onAddTrainDetail={onAddTrainDetail}
+              ondeleteTrainDetail={ondeleteTrainDetail}
+              ConstitutionType={ConstitutionType}
+            />
+          </div>
+        )}
+
+        {!HCRTrainFieldsCategories.includes(CatCode) && (
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
+            <RestaurantDetails
+              siteForm={siteForm}
+              states={states}
+              districts={districts}
+              subDivisions={subDivisions}
+              policeStations={policeStations}
+              CatCode={CatCode}
+              errors={errors}
+              onChange={onChange}
+            />
+          </div>
+        )}
 
         <div className="hcr-wizard">
           <button

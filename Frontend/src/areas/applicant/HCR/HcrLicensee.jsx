@@ -4,6 +4,7 @@ import { Check, ChevronLeft, ChevronRight, ShieldAlert } from "lucide-react";
 import { createApplicant } from "../../../Model/Applicant";
 import { createHCRApplicant } from "../../../Model/HCRApplicant";
 import { createHCRAdditional } from "../../../Model/HCRAdditional";
+import { createTrain } from "../../../Model/HCRTrainDetails";
 
 // import HcrApplicantDetails from "./HcrApplicantDetail";
 
@@ -21,12 +22,7 @@ import {
   validateApplicantData,
 } from "./HcrApplicationValidation";
 
-import {
-  validateDirectors,
-  validateRestaurantDetails,
-  validateClubDetails,
-  Cat_Label,
-} from "./validation";
+import { validateDirectors, validateRestaurantDetails, validateClubDetails, validateTrainDetails, Cat_Label } from "./validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -56,6 +52,7 @@ export default function HcrLicensee({
   const [siteForm, setSiteForm] = useState(createHCRApplicant());
 
   const [additionalFrom, setAdditionalFrom] = useState(createHCRAdditional());
+  const [trainFrom, setTrainFrom] = useState(createTrain());
 
   // =========================================================
   // Master Data
@@ -111,6 +108,8 @@ export default function HcrLicensee({
   const [siteFormErrors, setSiteFormErrors] = useState({});
 
   const [additionalFormErrors, setAdditionalFormErrors] = useState({});
+
+  const [trainFromErrors, setTrainFromErrors] = useState({});
 
   const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
 
@@ -951,6 +950,89 @@ export default function HcrLicensee({
     setAdditionalFrom((prev) => ({
       ...prev,
       clubDetails: (prev.clubDetails || []).filter((_, i) => i !== index),
+    }));
+  };
+
+
+   const handleTrainDetailChange = (index, field, value) => {
+    setTrainFrom((prev) => {
+      const routes = [...(prev.routes || [])];
+
+      routes[index] = {
+        ...routes[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        routes,
+      };
+    });
+  };
+
+  const addTrainDetail = () => {
+    debugger;
+    const errors = {};
+    let additionalUpdateErrors = { ...trainFromErrors };
+
+    // 1. Run the evaluation using your custom function
+    const trainErr = validateTrainDetails(
+      trainFrom.routes,
+    );
+    if (trainErr) errors.routes = trainErr;
+
+    // 2. Check if the data structure contains items before proceeding
+    const hasClubs =
+      additionalFrom.routes &&
+      additionalFrom.routes.length > 0;
+
+    if (hasClubs) {
+      additionalUpdateErrors.routes = errors.routes;
+      setTrainFromErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addTrainDetail trainFromErrors ",
+        trainFromErrors,
+        additionalUpdateErrors,
+      );
+    }
+
+    // Condition 1: Function evaluation fails AND the array is populated
+    const isInvalidWithData =
+      trainErr?.isValid === false && hasClubs;
+
+    // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+    const hasRowErrors =
+      Array.isArray(trainErr?.errors) &&
+      hasClubs?.errors?.some((err) => err !== null);
+
+    // 3. Prevent structural addition if the active items contain errors
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Halt structural changes
+    } else {
+      if (additionalUpdateErrors.routes) {
+        additionalUpdateErrors.routes.errors = []; // Flush existing error tracking array safely
+        setTrainFromErrors(additionalUpdateErrors);
+      }
+    }
+
+    // 4. Safely push the fresh entry layout block forward into the state container
+    setTrainFrom((prev) => ({
+      ...prev,
+      routes: [
+        ...(prev.routes || []),
+        {
+         RouteDescription: "",                         
+        },
+      ],
+    }));
+  };
+
+  const deleteTrainDetail = (index) => {
+    setTrainFrom((prev) => ({
+      ...prev,
+      routes: (prev.routes || []).filter(
+        (_, i) => i !== index,
+      ),
     }));
   };
 
@@ -1813,6 +1895,11 @@ export default function HcrLicensee({
             onBack={() => setCurrentStep(1)}
             CatCode={selectedLicenseCode}
             onContinue={handleNext}
+            trainFrom = {trainFrom}
+            onTrainDetailChange={handleTrainDetailChange}
+            onAddTrainDetail={addTrainDetail}
+            ondeleteTrainDetail={deleteTrainDetail}
+            ConstitutionType={constitutionType}
           />
         )}
 

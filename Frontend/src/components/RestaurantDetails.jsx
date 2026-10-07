@@ -18,6 +18,8 @@ import {
   Calendar,
   Clock3,
   Store,
+  Train ,
+  Utensils ,
 } from "lucide-react";
 
 import {Cat_Label} from "../areas/applicant/HCR/validation"
