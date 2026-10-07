@@ -1,16 +1,18 @@
 import {
-  nameCheck,
-  panCheck,
-  mobileCheck,
-  emailCheck,
-  pinCheck,
-  delhiPinCheck,
-  requiredCheck,
-  selectCheck,
-  validateSiteNum,
-  checkAnswersRequired,
-  validateDirectors,
-  validateRestaurantDetails,
+    nameCheck,
+    panCheck,
+    mobileCheck,
+    emailCheck,
+    pinCheck,
+    delhiPinCheck,
+    requiredCheck,
+    selectCheck,
+    validateSiteNum,
+    checkAnswersRequired,
+    validateDirectors,
+    validateRestaurantDetails,
+    validateFileObject,
+    validateDateOnly
 } from "./validation";
 
 export const validateApplicantData = (applicantForm) => {
@@ -283,12 +285,10 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     }
   }
 
-  if (CatCode === "03" || CatCode === "33") {
-    const totalRoomErr = validateSiteNum(
-      additionalFrom.totalRoom,
-      "Total No. Rooms",
-    );
-    if (totalRoomErr) errors.totalRoom = totalRoomErr;
+    if ((CatCode === "03" || CatCode === "33")) {
+
+        const totalRoomErr = validateSiteNum(additionalFrom.totalRoom, "Total No. Rooms");
+        if (totalRoomErr) errors.totalRoom = totalRoomErr;
 
     const staffStrengthErr = validateSiteNum(
       additionalFrom.staffStrength,
@@ -296,20 +296,13 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     );
     if (staffStrengthErr) errors.staffStrength = staffStrengthErr;
 
-    const starCategoryErr = selectCheck(
-      additionalFrom.starCategory,
-      "Star category approval by Department",
-    );
-    if (starCategoryErr) errors.starCategory = starCategoryErr;
+        const starCategoryErr = selectCheck(additionalFrom.starCategory, "Star category approval by Department");
+        if (starCategoryErr) errors.starCategory = starCategoryErr;
 
-    if (additionalFrom.starCategory === "Y") {
-      const starCategoryRatingErr = selectCheck(
-        additionalFrom.starCategoryRating,
-        "Star category",
-      );
-      if (starCategoryRatingErr)
-        errors.starCategoryRating = starCategoryRatingErr;
-    }
+        if (additionalFrom.starCategory === "Y") {
+            const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category");
+            if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
+        }
 
     const HasStoreProvisionYNErr = selectCheck(
       additionalFrom.HasStoreProvisionYN,
@@ -318,21 +311,13 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     if (HasStoreProvisionYNErr)
       errors.HasStoreProvisionYN = HasStoreProvisionYNErr;
 
-    if (additionalFrom.HasStoreProvisionYN === "Y") {
-      const StoreLocationInHotelErr = selectCheck(
-        additionalFrom.StoreLocationInHotel,
-        "Location of store in Hotel",
-      );
-      if (StoreLocationInHotelErr)
-        errors.StoreLocationInHotel = StoreLocationInHotelErr;
-    }
+        if (additionalFrom.HasStoreProvisionYN === "Y") {
+            const StoreLocationInHotelErr = selectCheck(additionalFrom.StoreLocationInHotel, "Location of store in Hotel");
+            if (StoreLocationInHotelErr) errors.StoreLocationInHotel = StoreLocationInHotelErr;
+        }
 
-    const educationalInsDistErr = selectCheck(
-      additionalFrom.educationalInsDist,
-      "Educational Institution Distance",
-    );
-    if (educationalInsDistErr)
-      errors.educationalInsDist = educationalInsDistErr;
+        const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+        if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
     const religiousPlaceDistErr = selectCheck(
       additionalFrom.religiousPlaceDist,
@@ -345,18 +330,9 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     if (directorsErr) errors.directors = directorsErr;
   }
 
-  if (
-    CatCode === "04" ||
-    CatCode === "30" ||
-    CatCode === "05" ||
-    CatCode === "31"
-  ) {
-    const educationalInsDistErr = selectCheck(
-      additionalFrom.educationalInsDist,
-      "Educational Institution Distance",
-    );
-    if (educationalInsDistErr)
-      errors.educationalInsDist = educationalInsDistErr;
+    if ((CatCode === "04" || CatCode === "30") || (CatCode === '05' || CatCode === '31')) {
+        const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+        if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
     const religiousPlaceDistErr = selectCheck(
       additionalFrom.religiousPlaceDist,
@@ -412,3 +388,87 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
 
   // return true;
 };
+
+
+
+/**
+ * Validates a list of documents and returns a structured validation result state.
+ * 
+ * @param {Array} filesToUpload - Array of document configurations.
+ * @param {Object} uploadedFiles - Object mapping docID to their uploaded file properties.
+ * @returns {Object} - Object containing isValid, globalError, and an errors map.
+ */
+export const validateUploadedDocuments = (filesToUpload, uploadedFiles) => {
+    const result = {
+        isValid: true,
+        globalError: "",
+        errors: {}, // Structured as an object key-value map for lightning-fast docID lookups
+    };
+
+    // 1. Guard check: If there are no documents configured to upload, no validation needed
+    if (!Array.isArray(filesToUpload) || filesToUpload.length === 0) {
+        return result;
+    }
+
+    // 2. Guard check: If there are documents required but no uploads tracker exists
+    if (!uploadedFiles || (typeof uploadedFiles !== "object") || (Object.keys(uploadedFiles).length === 0)) {
+
+        result.isValid = false;
+        result.globalError = "Please upload all required files";
+
+        // Populate individual field errors for mandatory records
+        filesToUpload.forEach((doc) => {
+            if (doc.isMandatory === "Y") {
+                result.errors[doc.docID] = "Document file is required";
+            }
+        });
+        return result;
+    }
+
+    // 3. Iterate through each document configuration to run checks
+    for (let i = 0; i < filesToUpload.length; i++) {
+        const doc = filesToUpload[i];
+        const docId = doc.docID;
+        const uploaded = uploadedFiles[docId];
+        const hasFile = !!uploaded?.file;
+
+        // Fallback cleanly to docID if docDesc is missing
+        const documentName = doc.docDesc || `Document ID ${docId}`;
+        let docError = "";
+
+        // Mandatory document validation
+        if (doc.isMandatory === "Y" && !hasFile) {
+            // docError = `${documentName} is required`;
+            docError = `Document is required`;
+        }
+        // File structure and format check (runs if a file is present)
+        else if (hasFile) {
+            const fileTypeError = validateFileObject(uploaded.file, "Document", 2, [".pdf"]);
+            if (fileTypeError) {
+                docError = fileTypeError;
+            }
+        }
+
+        // Conditional validity date validation (if no file errors were found yet)
+        if (!docError && (doc.isValid === true || doc.isValid === "Y")) {
+            const dateError = validateDateOnly(uploaded.validityDate, "Date of Validity");
+            if (dateError) {
+                docError = dateError;
+            }
+        }
+
+        // Assign the error message directly to the docID key if a check fails
+        if (docError) {
+            result.isValid = false;
+            result.errors[docId] = docError;
+        }
+    }
+
+    // Set a global error notification message if any inner elements failed
+    // if (!result.isValid) {
+    //     result.globalError = "Please fix the document errors before submitting";
+    // }
+
+    return result;
+};
+

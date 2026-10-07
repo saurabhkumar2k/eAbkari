@@ -10,6 +10,7 @@ export default function HcrSiteDocumentsStep({
   handleDocumentFileChange,
   handleValidityDateChange,
   handleDeleteFile,
+  errors,
   onBack,
   onContinue,
 }) {
@@ -30,7 +31,11 @@ export default function HcrSiteDocumentsStep({
           handleDocumentFileChange={handleDocumentFileChange}
           handleValidityDateChange={handleValidityDateChange}
           handleDeleteFile={handleDeleteFile}
+          error={errors.errors}
         />
+        <div className="error-text-container">
+          {errors.isValid === false && <span className="error-text-all">{errors.globalError}</span>}
+        </div>
 
         <div className="hcr-step-navigation">
           <button type="button" onClick={onBack} className="btn btn-secondary">

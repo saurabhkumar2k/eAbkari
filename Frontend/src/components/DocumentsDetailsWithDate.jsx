@@ -9,10 +9,12 @@ const DocumentUploadWithDate = ({
   handleDocumentFileChange,
   handleValidityDateChange,
   handleDeleteFile,
+  error,
 }) => {
   // const [date, setDate] = useState("");
-  console.log(documents)
-  console.log("uploadedFiles",uploadedFiles)
+  // console.log(documents)
+  // console.log("uploadedFiles",uploadedFiles)
+  console.log("error ----------------------222", error);
 
   // const handleChange = (e) => {
   //   debugger;
@@ -269,7 +271,13 @@ const DocumentUploadWithDate = ({
                       </>
                     )}
                   </div>
+                  
                 </div>
+                {error && error[doc.docID] && (
+                    <div className="error-text-container">
+                      <span className="error-text-all">{error[doc.docID]}</span>
+                    </div>
+                  )}
               </div>
             </div>
           );
