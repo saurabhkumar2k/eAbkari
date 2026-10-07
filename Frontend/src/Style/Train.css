@@ -111,7 +111,7 @@
 
 
 /* 3 x 3 Grid Table Layout */
-.club-grid { 
+.train-grid { 
   display: grid; 
   grid-template-columns: repeat(1, 1fr); 
   
