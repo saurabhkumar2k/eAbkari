@@ -1,6 +1,5 @@
 import React, { useState,useEffect } from "react";
 import {
-  ChevronLeft,
   UserPlus,
   Users,
   CheckCircle2,
@@ -8,38 +7,9 @@ import {
   X,
   Search,
   UserCheck,
-  ShieldCheck,
-  Building2,
-  Mail,
-  Phone,
-  Save,
-  RotateCcw
+  Save
 } from "lucide-react";
 
-// const DEFAULT_USERS = [
-//   {
-//     userId: "EXCISE_ADMIN_01",
-//     userName: "Rajesh Kumar",
-//     userType: "Department User",
-//     userTitle: "Assistant Commissioner",
-//     district: "NCT of Delhi",
-//     userAccess: "Full Access",
-//     mobileNo: "9876543210",
-//     email: "rajesh.excise@delhi.gov.in",
-//     userStatus: "Active"
-//   },
-//   {
-//     userId: "INSPECT_ND_04",
-//     userName: "Suresh Sharma",
-//     userType: "Inspection Officer",
-//     userTitle: "Excise Inspector",
-//     district: "NEW DELHI",
-//     userAccess: "Inspection Access",
-//     mobileNo: "9812345678",
-//     email: "suresh.inspector@delhi.gov.in",
-//     userStatus: "Active"
-//   }
-// ];
 
 const Role_API_URL = 'http://localhost:5214/api/Role/getRole'; 
 //const District_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDistrict'; 
@@ -65,7 +35,7 @@ export default function UserCreation({ onBack }) {
   const [activeTab, setActiveTab] = useState("create"); // 'create' | 'list'
   const [searchTerm, setSearchTerm] = useState("");
   const [userRoles, setUserRoles] = useState([]);
-  const [Branch, setBranch] = useState([]);
+  const [branch, setBranch] = useState([]);
 
   const [usersList, setUsersList] = useState([]);
 
@@ -120,15 +90,26 @@ export default function UserCreation({ onBack }) {
 
     if (!formData.isActive) newErrors.isActive = "User Status is required";
 
-    if (!formData.roleId) newErrors.userType = "User Role is required";
+    if (!formData.roleId) newErrors.roleId = "User Role is required";
 
-    if (!formData.branchCode) newErrors.branch = "User branch is required";
+    const selectedRole = userRoles.find(
+      (role) => Number(role.roleId) === Number(formData.roleId)
+    );
+
+    const isAdmin = selectedRole?.roleId === 1;
+
+    if (!isAdmin && !formData.branchCode) {
+      newErrors.branchCode = "User branch is required";
+    }
+
+    if (!formData.permissionId) newErrors.permissionId = "User Access is required";
+
    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
       showToast("error", "Please fill in all mandatory fields marked with *");
@@ -145,19 +126,6 @@ export default function UserCreation({ onBack }) {
       return;
     }
 
-    // const newUser = {
-    //   ...formData,
-    //   userId: formData.userId.trim(),
-    //   userName: formData.userName.trim(),
-    //   userTitle: formData.userTitle.trim(),
-    //   mobileNo: formData.mobileNo.trim(),
-    //   email: formData.email.trim()
-    // };
-
-    // const updatedList = [newUser, ...usersList];
-    // setUsersList(updatedList);
-    // localStorage.setItem("dept_created_users", JSON.stringify(updatedList));
-
     const newUser = {
       userId: formData.userId.trim(),
       userName: formData.userName.trim(),
@@ -171,7 +139,7 @@ export default function UserCreation({ onBack }) {
     };
 
     // Call API
-    const result = createDeptUser(newUser);
+    const result = await createDeptUser(newUser);
 
     if (!result.success) {
       showToast("error", result.message);
@@ -200,20 +168,20 @@ export default function UserCreation({ onBack }) {
       permissionId: 0
     });
     setErrors({});
-    fetchDeptUser();
+    await fetchDeptUser();
   };
 
   const handleCancel = () => {
     setFormData({
-      userType: "",
-      district: "NCT of Delhi",
-      userId: "",
-      userAccess: "",
+       userId: "",
       userName: "",
-      userTitle: "",
-      mobileNo: "",
+      userDesignation: "",
       email: "",
-      isActive: ""
+      mobileNo: "",
+      isActive: "",
+      roleId: 0,
+      branchCode: 0,
+      permissionId: 0
     });
     setErrors({});
     if (onBack) {
@@ -229,6 +197,12 @@ export default function UserCreation({ onBack }) {
       u.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.userTypeDesc.toLowerCase().includes(searchTerm.toLowerCase())      
   );
+
+
+  const selectedRole = userRoles.find((role) => Number(role.roleId) === Number(formData.roleId));
+
+  const isAdmin = selectedRole?.roleId === 1;
+
 
   const fetchUserTypes = async () => {
     try {
@@ -444,16 +418,31 @@ export default function UserCreation({ onBack }) {
                   <div className="user-creation-input-wrap">
                     <select
                       value={formData.roleId}
-                      onChange={(e) => handleInputChange("roleId", e.target.value)}
+                      onChange={(e) => {
+                        const roleId = Number(e.target.value);
+
+                        const selectedRole = userRoles.find(
+                          (role) => Number(role.roleId) === roleId
+                        );
+
+                        const isAdmin =
+                          selectedRole?.roleId === 1;
+
+                        handleInputChange("roleId", roleId);
+
+                        if (isAdmin) {
+                          handleInputChange("branchCode", 0);
+                        }
+                      }}
                       className="user-creation-input"
                     >
-                       <option value="0">--Select--</option>
+                      <option value="0">--Select--</option>
 
-                        {userRoles.map((userRoles) => (
-                          <option key={userRoles.roleId} value={userRoles.roleId}>
-                            {userRoles.roleDescription}
-                          </option>
-                        ))}
+                      {userRoles.map((role) => (
+                        <option key={role.roleId} value={role.roleId}>
+                          {role.roleDescription}
+                        </option>
+                      ))}
                     </select>
                     {errors.roleId && (
                       <span className="user-creation-subtext">{errors.roleId}</span>
@@ -461,20 +450,25 @@ export default function UserCreation({ onBack }) {
                   </div>
                 </div>
 
-                {/* District */}
+                {/* Branch */}
                 <div className="user-creation-form-group">
                   <label className="user-creation-label">Branch</label>
                   <div className="user-creation-input-wrap">
                     <select
-                      value={formData.branchCode}
-                      onChange={(e) => handleInputChange("branchCode", e.target.value)}
-                      className="user-creation-input"
+                      value={isAdmin ? 0 : formData.branchCode}
+                      onChange={(e) =>
+                        handleInputChange("branchCode", Number(e.target.value))
+                      }
+                      disabled={isAdmin}
+                      className={`user-creation-input ${
+                        isAdmin ? "bg-slate-100 cursor-not-allowed" : ""
+                      }`}
                     >
-                      <option value="">--Select--</option>
+                      <option value="0">--Select--</option>
 
-                        {Branch.map((Branch) => (
-                          <option key={Branch.branchCode} value={Branch.branchCode}>
-                            {Branch.branchName}
+                        {branch.map((branch) => (
+                          <option key={branch.branchCode} value={branch.branchCode}>
+                            {branch.branchName}
                           </option>
                         ))}
                     </select>
@@ -513,7 +507,7 @@ export default function UserCreation({ onBack }) {
                   <div className="user-creation-input-wrap">
                     <select
                       value={formData.permissionId}
-                      onChange={(e) => handleInputChange("permissionId", e.target.value)}
+                      onChange={(e) => handleInputChange("permissionId", Number(e.target.value))}
                       className="user-creation-input"
                     >
                       <option value="0">--Select--</option>
@@ -650,7 +644,7 @@ export default function UserCreation({ onBack }) {
                   <Search className="w-4 h-4 absolute left-2.5 top-2.5 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Search users by name, ID, district..."
+                    placeholder="Search users by name, ID..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded focus:outline-none focus:border-sky-600"
