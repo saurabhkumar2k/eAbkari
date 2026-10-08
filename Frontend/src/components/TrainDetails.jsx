@@ -107,9 +107,9 @@ const TrainDetails = ({
             <input
               type="text"
               inputMode="numeric"
-              placeholder="Train Number "
+              placeholder="Train Number"
               maxLength={7}
-              value={trainFrom.TrainNumber}
+              value={trainFrom.TrainNumber || ""}
               onChange={(e) => {
                 const value = e.target.value;
 
@@ -139,9 +139,7 @@ const TrainDetails = ({
               onChange={(e) => {
                 const value = e.target.value;
 
-                if (/^\d*$/.test(value)) {
-                  onChange("TempAddress", value);
-                }
+                onChange("TempAddress", value);
               }}
               maxLength={100}
               className="input-box"
@@ -165,9 +163,7 @@ const TrainDetails = ({
               onChange={(e) => {
                 const value = e.target.value;
 
-                if (/^\d*$/.test(value)) {
-                  onChange("OriginateFrom", value);
-                }
+                onChange("OriginateFrom", value);
               }}
               maxLength={50}
               className="input-box"

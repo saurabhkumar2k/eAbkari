@@ -16,7 +16,7 @@ NumberOfcompartments: "",
 routes: [
     {
       RouteDescription: "",
-      SlNo: "",    
+         
     },
   ],
 

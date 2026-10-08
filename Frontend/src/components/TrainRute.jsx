@@ -20,7 +20,7 @@ const TrainRute = ({ routes, onChange, onAdd, onDelete, ConstitutionType, errors
         </div>
       </div>
 
-      {/* restaurants List */}
+      {/* TrainRoute List */}
       <div className="restaurants-wrapper">
         {routes.length === 0 ? (
           <div className="restaurants-empty-state">
@@ -37,6 +37,7 @@ const TrainRute = ({ routes, onChange, onAdd, onDelete, ConstitutionType, errors
               ConstitutionType={ConstitutionType}
               disableDelete={false}            
               errors={errors?.[index]}
+              count={index+1}
             />
           ))
         )}
