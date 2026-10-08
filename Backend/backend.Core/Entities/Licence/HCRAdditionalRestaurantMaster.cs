@@ -30,4 +30,26 @@ namespace backend.Core.Entities.Licence
 
         public int? slNo {get; set;}
     }
+
+    [Table("ApplicantLicenseAdditionalBarMaster")]
+    public class ApplicantLicenseAdditionalBarMaster
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string ApplicationIdNo { get; set; }
+
+        [StringLength(250)]
+        public string? NameOfAdditionalBar { get; set; }
+
+        [StringLength(1)]
+        public string? AddtionalArea { get; set; }
+
+        public int? NumberOfCounter { get; set; }
+
+        public int? SlNo { get; set; }
+    }
 }

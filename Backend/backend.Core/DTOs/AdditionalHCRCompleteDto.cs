@@ -13,5 +13,7 @@ namespace backend.Core.DTOs
         public List <CategoryWiseAnswersDto> ApplicantAnswers {get; set;} = new();
 
         public List<HCRAdditionalRestaurantMasterDto> AdditionalRestaurentDetails {get; set;} = new();
+
+        public List<ApplicantLicenseAdditionalBarMasterDto> ApplicantLicenseAdditionalBarMaster {get;set;} = new();
     }
 }
