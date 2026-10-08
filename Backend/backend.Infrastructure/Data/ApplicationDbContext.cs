@@ -84,11 +84,12 @@ namespace backend.Infrastructure.Data
         public DbSet<FlowHierarchyMapping> FlowHierarchyMapping { get; set; }
         public DbSet<PlaAccessPermissionHistory> PlaAccessPermissionHistory { get; set; }
         public DbSet<MstForwardingHierarchy> MstForwardingHierarchy { get; set; }
-        public DbSet<HCRAdditionalRestaurantMaster> HCRAdditionalRestaurantMaster {get; set;}
-        public DbSet<MstLicenseeCategoryBranch> MstLicenseeCategoryBranch { get; set;}
+        public DbSet<HCRAdditionalRestaurantMaster> HCRAdditionalRestaurantMaster { get; set; }
+        public DbSet<MstLicenseeCategoryBranch> MstLicenseeCategoryBranch { get; set; }
 
 
         public DbSet<ApplicationHierarchyMapping> ApplicationHierarchyMapping { get; set; }
+        public DbSet<ApplicantLicenseAdditionalBarMaster> ApplicantLicenseAdditionalBarMaster { get; set; }
 
 
 
@@ -341,23 +342,24 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<HCRAdditionalRestaurantMaster>()
                 .HasKey(x => new
-                    {
-                        x.ApplicationIdNo,
-                        x.NameOfAdditionalRestaurant
-                    });
+                {
+                    x.ApplicationIdNo,
+                    x.NameOfAdditionalRestaurant
+                });
 
             modelBuilder.Entity<AdditionalHCRDetails>()
                 .HasKey(x => x.ApplicationIdNo);
 
-                modelBuilder.Entity<MstFlowApplicable>()
-                .HasKey(x => x.Id);
+            modelBuilder.Entity<MstFlowApplicable>()
+            .HasKey(x => x.Id);
+            modelBuilder.Entity<ApplicantLicenseAdditionalBarMaster>().HasKey(x => x.Id);
 
-                modelBuilder.Entity<MstFlowUpto>()
-                .HasKey(x => x.Id);
+            modelBuilder.Entity<MstFlowUpto>()
+            .HasKey(x => x.Id);
 
-            
-                   modelBuilder.Entity<ApplicationHierarchyMapping>()
-                .HasKey(x => x.AppID);
+
+            modelBuilder.Entity<ApplicationHierarchyMapping>()
+         .HasKey(x => x.AppID);
 
             base.OnModelCreating(modelBuilder);
 
@@ -409,23 +411,23 @@ namespace backend.Infrastructure.Data
 
             modelBuilder.Entity<MstForwardingHierarchy>(entity =>
             {
-                entity.ToTable("MstForwardingHierarchy");   
+                entity.ToTable("MstForwardingHierarchy");
 
                 entity.HasKey(x => new
-                    {
-                        x.ImplementingStateCode,
-                        x.FlowUpto,
-                        x.SLNo
-                    });               
-             
+                {
+                    x.ImplementingStateCode,
+                    x.FlowUpto,
+                    x.SLNo
+                });
+
             });
 
 
             modelBuilder.Entity<PlaAccessPermissionHistory>(entity =>
             {
-                entity.ToTable("PlaAccessPermissionHistory");     
+                entity.ToTable("PlaAccessPermissionHistory");
 
-                entity.HasKey(e => e.Id);     
+                entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.ApplicationIdNo)
                       .IsRequired()
@@ -434,27 +436,27 @@ namespace backend.Infrastructure.Data
                 entity.Property(e => e.FlowUpto)
                       .IsRequired()
                       .HasMaxLength(2);
-                
+
                 entity.Property(e => e.SenderUserTypeCode)
                       .IsRequired()
                       .HasMaxLength(2);
-     
-     
-             
+
+
+
             });
 
 
             modelBuilder.Entity<FlowHierarchyMapping>(entity =>
             {
-                entity.ToTable("FlowHierarchyMapping"); 
+                entity.ToTable("FlowHierarchyMapping");
 
                 entity.HasKey(x => new
-                    {
-                        x.SlNo,
-                        x.FlowUpto,
-                        x.HierarchyID
-                    });           
-             
+                {
+                    x.SlNo,
+                    x.FlowUpto,
+                    x.HierarchyID
+                });
+
             });
 
 

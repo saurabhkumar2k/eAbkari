@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using backend.Core.DTOs;
 using backend.Core.DTOs.Licence;
 using backend.Core.Entities.Licence;
@@ -334,7 +335,26 @@ namespace backend.Infrastructure.Repositories.License
                     _context.HCRAdditionalRestaurantMaster.Add(ObjAdditionalRestaurentDetails);
                 }
                 //==========================
-                // STEP 4 : ApplicantAnswers
+                // STEP 4 : ApplicantLicenseAdditionalBarMaster(for Club)
+                //==========================
+                var oldAdditionalBarDetails = _context.ApplicantLicenseAdditionalBarMaster.Where(x => x.ApplicationIdNo == appId);
+                _context.ApplicantLicenseAdditionalBarMaster.RemoveRange(oldAdditionalBarDetails);
+                int SlNoClub = 1;
+                foreach (var BarDetails in dto.ApplicantLicenseAdditionalBarMaster)
+                {
+                    ApplicantLicenseAdditionalBarMaster ObjBarDetails = new ApplicantLicenseAdditionalBarMaster
+                    {
+                        ApplicationIdNo = appId,
+                        NameOfAdditionalBar = BarDetails.NameOfAdditionalBar,
+                        AddtionalArea = BarDetails.AddtionalArea,
+                        NumberOfCounter = BarDetails.NumberOfCounter,
+                        SlNo = SlNoClub++
+                    };
+                    _context.ApplicantLicenseAdditionalBarMaster.Add(ObjBarDetails);
+                }
+
+                //==========================
+                // STEP 5 : ApplicantAnswers
                 //==========================
 
                 if (dto.ApplicantAnswers != null && dto.ApplicantAnswers.Count > 0)
@@ -447,6 +467,8 @@ namespace backend.Infrastructure.Repositories.License
                         SlNo = x.SlNo
                     })
                     .ToListAsync();
+
+
                 // ==========
                 //Step 3 : Additional Resturant Details l16
 
@@ -468,9 +490,24 @@ namespace backend.Infrastructure.Repositories.License
                     slNo = x.slNo
                 })
                 .ToListAsync();
+                // ==========
+                //Step 4 : Additional Club Details L20                 
+
+                var AdditionalclubDetails = await _context.ApplicantLicenseAdditionalBarMaster
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .OrderBy(x => x.SlNo)
+                .Select(x => new ApplicantLicenseAdditionalBarMasterDto
+                {
+                    ApplicationIdNo = x.ApplicationIdNo,
+                    NameOfAdditionalBar = x.NameOfAdditionalBar,
+                    AddtionalArea = x.AddtionalArea,
+                    NumberOfCounter = x.NumberOfCounter,
+                    SlNo = x.SlNo
+                })
+                .ToListAsync();
 
                 //==========================
-                // STEP 3 : Applicant Answers
+                // STEP 5 : Applicant Answers
                 //==========================
 
                 var applicantAnswers = await _context.LicenseApplicationCategoryWiseAnswers
@@ -544,11 +581,11 @@ namespace backend.Infrastructure.Repositories.License
                         TempAddress = dto.TempAddress,
                         CompanyName = dto.CompanyName,
                         NumberOfSeatCovers = dto.NumberOfSeatCovers,
-                        NumberOfDispensingCounter =  dto.NumberOfDispensingCounter,
+                        NumberOfDispensingCounter = dto.NumberOfDispensingCounter,
                         NumberOfManagers = dto.NumberOfManagers,
                         NumberOfKitchenStaff = dto.NumberOfKitchenStaff,
                         NumberOfUtlityEmployees = dto.NumberOfUtlityEmployees,
-                        NumberOfBarAttendent =  dto.NumberOfBarAttendent,
+                        NumberOfBarAttendent = dto.NumberOfBarAttendent,
                         NumberOfcompartments = dto.NumberOfcompartments
                     };
 
@@ -563,9 +600,9 @@ namespace backend.Infrastructure.Repositories.License
                     train.TempAddress = dto.TempAddress;
                     train.CompanyName = dto.CompanyName;
 
-                    train.NumberOfSeatCovers =dto.NumberOfSeatCovers;
+                    train.NumberOfSeatCovers = dto.NumberOfSeatCovers;
 
-                    train.NumberOfDispensingCounter =dto.NumberOfDispensingCounter;
+                    train.NumberOfDispensingCounter = dto.NumberOfDispensingCounter;
 
                     train.NumberOfManagers = dto.NumberOfManagers;
 

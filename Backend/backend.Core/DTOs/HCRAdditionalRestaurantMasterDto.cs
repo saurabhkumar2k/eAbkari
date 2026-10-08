@@ -21,4 +21,20 @@ namespace backend.Core.DTOs.Licence
         public string? AreaSqMtr { get; set; }
         public int? slNo { get; set; }
     }
+
+    public class ApplicantLicenseAdditionalBarMasterDto
+    {
+
+        public string ApplicationIdNo { get; set; }
+
+
+        public string? NameOfAdditionalBar { get; set; }
+
+
+        public string? AddtionalArea { get; set; }
+
+        public int? NumberOfCounter { get; set; }
+
+        public int? SlNo { get; set; }
+    }
 }
