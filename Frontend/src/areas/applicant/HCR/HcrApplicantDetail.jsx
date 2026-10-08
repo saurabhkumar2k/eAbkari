@@ -31,11 +31,11 @@ export default function HcrApplicantDetails({
         </div>
         <div>
           <h4 className="info-banner-title">
-            Pre-filed HCR Registered Profile Information
+            Registered Applicant's Profile Information (Pre-filled)
           </h4>
           <p className="info-banner-text">
             These applicant details are loaded automatically from your online
-            HCR registry records. You can review and verify the demographic,
+            registry records. You can review and verify the demographic,
             residential, and verification fields.
           </p>
         </div>

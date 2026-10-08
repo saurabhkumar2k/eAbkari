@@ -1,10 +1,9 @@
-using backend.Core.DTOs;
-using backend.Core.Entities.Licence;
+using backend.Core.Entities;
 
 namespace backend.Core.Interfaces.License
 {
     public interface ICommonRetailRepository
     {
-        
+        Task<List<MstLicenseeCategory>> GetRetailLicenseeCategoryRepository(string[] RetailCatCodes);
     }
 }

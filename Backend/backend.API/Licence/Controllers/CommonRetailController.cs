@@ -7,12 +7,19 @@ namespace backend.API.Licence.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-     public class CommonRetailController : ControllerBase
+    public class CommonRetailController : ControllerBase
     {
-        private readonly ICommonRetailServices _RetailService;    
+        private readonly ICommonRetailServices _RetailService;
         public CommonRetailController(ICommonRetailServices services)
         {
             _RetailService = services;
+        }
+        [HttpGet("GetRetailLicenseeCategory")]
+        public async Task<IActionResult> GetRetailLicenseeCategory()
+        {
+            var data = await _RetailService.GetRetailLicenseeCategoryService();
+
+            return Ok(data);
         }
     }
 }
