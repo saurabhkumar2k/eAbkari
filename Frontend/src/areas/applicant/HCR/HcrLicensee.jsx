@@ -118,6 +118,8 @@ export default function HcrLicensee({
 
   const [trainFromErrors, setTrainFromErrors] = useState({});
 
+  const HCRTrainFieldsCategories = ["52", "43"];
+
   const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
 
   const [formErrors, setFormErrors] = useState({});
@@ -190,6 +192,8 @@ export default function HcrLicensee({
 
   const currentLicenseSteps = useMemo(() => {
     return (CatCode) => {
+      const isTrainCategory = HCRTrainFieldsCategories.includes(CatCode);
+
       return [
         {
           num: 1,
@@ -203,12 +207,22 @@ export default function HcrLicensee({
           label: `${Cat_Label[CatCode]} Details`,
           sub: "Site Address",
         },
-        {
-          num: 3,
-          id: "additional",
-          label: "Additional Details",
-          sub: "Additional Information",
-        },
+        // {
+        //   num: 3,
+        //   id: "additional",
+        //   label: "Additional Details",
+        //   sub: "Additional Information",
+        // },
+        ...(!isTrainCategory
+          ? [
+              {
+                num: 3,
+                id: "additional",
+                label: "Additional Details",
+                sub: "Additional Information",
+              },
+            ]
+          : []),
         {
           num: 4,
           id: "personalDocuments",
@@ -307,7 +321,7 @@ export default function HcrLicensee({
     return true;
   };
 
-    const validateTrain = () => {
+  const validateTrain = () => {
     debugger;
 
     // Check required text & code dropdown fields using your generic check
@@ -337,6 +351,19 @@ export default function HcrLicensee({
     }));
 
     setAdditionalFormErrors((prev) => ({
+      ...prev,
+      [field]: null,
+    }));
+  };
+
+  const handleTrainChange = (field, value) => {
+    // console.log("Test 3333333333333")
+    setTrainFrom((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setTrainFromErrors((prev) => ({
       ...prev,
       [field]: null,
     }));
@@ -1004,9 +1031,9 @@ export default function HcrLicensee({
     if (trainErr) errors.routes = trainErr;
 
     // 2. Check if the data structure contains items before proceeding
-    const hasClubs = additionalFrom.routes && additionalFrom.routes.length > 0;
+    const hastrainroute = trainFrom.routes && trainFrom.routes.length > 0;
 
-    if (hasClubs) {
+    if (hastrainroute) {
       additionalUpdateErrors.routes = errors.routes;
       setTrainFromErrors(additionalUpdateErrors);
       console.log(
@@ -1017,12 +1044,12 @@ export default function HcrLicensee({
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
-    const isInvalidWithData = trainErr?.isValid === false && hasClubs;
+    const isInvalidWithData = trainErr?.isValid === false && hastrainroute;
 
     // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
     const hasRowErrors =
       Array.isArray(trainErr?.errors) &&
-      hasClubs?.errors?.some((err) => err !== null);
+      hastrainroute?.errors?.some((err) => err !== null);
 
     // 3. Prevent structural addition if the active items contain errors
     if (isInvalidWithData || hasRowErrors) {
@@ -1041,6 +1068,7 @@ export default function HcrLicensee({
         ...(prev.routes || []),
         {
           RouteDescription: "",
+          SlNo: "", 
         },
       ],
     }));
@@ -1394,25 +1422,25 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveTrain = async () => {
-    if (!validateTrain()) {
-      return false;
-    }
+    // if (!validateTrain()) {
+    //   return false;
+    // }
 
     const payload = {
-      ...siteForm,
+      ...trainFrom,
 
-      Regnumber: regId,
+      // Regnumber: regId,
 
-      ApplicationIdNo: localStorage.getItem("applicationIdNo"),
+      applicationIdNo: localStorage.getItem("applicationIdNo"),
 
-      FinYear: "2026-2027",
+      // FinYear: "2026-2027",
 
-      CatCode: selectedLicenseCode,
+      // CatCode: selectedLicenseCode,
     };
 
     try {
       const response = await fetch(
-        "http://localhost:5214/api/CommonHCR/SaveSiteDetails",
+        "http://localhost:5214/api/CommonHCR/SaveAndUpdateL20TrainDetails",
         {
           method: "POST",
           headers: {
@@ -1425,13 +1453,13 @@ export default function HcrLicensee({
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      console.log("SaveSiteDetails", response);
+      console.log("SaveTrainDetails", response);
 
       return true;
     } catch (error) {
-      console.error("Restaurant Save Error:", error);
+      console.error("Train Save Error:", error);
 
-      triggerToast("Unable to save restaurant details.", "error");
+      triggerToast("Unable to save Train details.", "error");
 
       return false;
     }
@@ -1989,7 +2017,7 @@ export default function HcrLicensee({
             subDivisions={restaurantSubDivisions}
             policeStations={restaurantPoliceStations}
             errors={siteFormErrors}
-            onChange={handleRestaurantChange}
+            onChange={handleTrainChange}
             onBack={() => setCurrentStep(1)}
             CatCode={selectedLicenseCode}
             onContinue={handleNext}
@@ -2030,7 +2058,7 @@ export default function HcrLicensee({
         )}
 
         {/* STEP 7 */}
-        {currentStep === 4 && (
+        {/* {currentStep === 4 && (
           <HcrPersonalDocumentsStep
             documents={documents}
             uploadedFiles={uploadedFiles}
@@ -2038,6 +2066,24 @@ export default function HcrLicensee({
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
             onBack={() => setCurrentStep(3)}
+            onContinue={goToSiteDocuments}
+          />
+        )} */}
+
+        {currentStep === 4 && (
+          <HcrPersonalDocumentsStep
+            documents={documents}
+            uploadedFiles={uploadedFiles}
+            handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => {
+              if (HCRTrainFieldsCategories.includes(selectedLicenseCode)) {
+                setCurrentStep(2);
+              } else {
+                setCurrentStep(3);
+              }
+            }}
             onContinue={goToSiteDocuments}
           />
         )}

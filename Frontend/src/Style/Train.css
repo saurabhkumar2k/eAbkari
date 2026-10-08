@@ -51,8 +51,6 @@
   color: #6c757d;
 }
 
-
-
 /* restaurant Section */
 
 .restaurant-list {
@@ -67,7 +65,6 @@
   margin-bottom: 12px;
   overflow: hidden;
 }
-
 
 /* restaurant Header */
 
@@ -87,7 +84,6 @@
   color: #343a40;
 }
 
-
 /* Delete */
 
 .bt-dir-del {
@@ -105,16 +101,24 @@
 }
 
 .bt-dir-del:disabled {
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-
 /* 3 x 3 Grid Table Layout */
-.train-grid { 
+/* .train-grid { 
   display: grid; 
-  grid-template-columns: repeat(1, 1fr); 
+  grid-template-columns: repeat(2, 1fr); 
   
+} */
+
+.train-grid {
+  display: grid;
+
+  /* Small SlNo + remaining space for route */
+  grid-template-columns: 80px 1fr;
+
+  width: 100%;
 }
 
 /* Each Cell */
@@ -135,10 +139,9 @@
   border-bottom: none;
 }
 
-
 /* Label */
 
-.restaurant-field>label:first-child {
+.restaurant-field > label:first-child {
   display: block;
   margin-bottom: 6px;
   color: #495057;
@@ -146,10 +149,9 @@
   font-weight: 500;
 }
 
-.restaurant-field>label:first-child span {
+.restaurant-field > label:first-child span {
   color: #dc3545;
 }
-
 
 /* Input */
 
@@ -181,9 +183,8 @@
 
 .input-wrapper:focus-within {
   border-color: #86b7fe;
-  box-shadow: 0 0 0 2px rgba(13, 110, 253, .1);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
 }
-
 
 /* Radio */
 
@@ -206,7 +207,6 @@
 .radio-group input {
   accent-color: #0d6efd;
 }
-
 
 /* Upload */
 
@@ -232,7 +232,6 @@
   border-color: #0d6efd;
 }
 
-
 /* Uploaded File */
 
 .uploaded-file {
@@ -248,7 +247,7 @@
   background: #f8f9fa;
 }
 
-.uploaded-file>span {
+.uploaded-file > span {
   flex: 1;
   min-width: 0;
 
@@ -292,7 +291,8 @@
   gap: 3px;
 }
 
-.file-actions button,.file-replace label {
+.file-actions button,
+.file-replace label {
   padding: 3px 8px;
   border: none;
   background: #1976d2;
@@ -302,27 +302,28 @@
 }
 
 /* Treat buttons and the label exactly the same */
-.file-view, 
-.file-replace, 
+.file-view,
+.file-replace,
 .file-remove {
-  width: 32px;         
+  width: 32px;
   height: 32px;
   display: inline-flex;
-  align-items: center; 
-  justify-content: center; 
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 0;             /* Removes default button padding differences */
+  padding: 0; /* Removes default button padding differences */
   margin: 0;
 }
 
 /* Prevent the SVG from shrinking inside the container */
-.file-view svg,.file-replace svg,.file-remove svg {
+.file-view svg,
+.file-replace svg,
+.file-remove svg {
   flex-shrink: 0;
   color: #ffffff;
 }
-
 
 .file-view:hover,
 .file-replace:hover,
@@ -331,8 +332,6 @@
   background: #115293;
   border-radius: 4px;
 }
-
-
 
 .file-remove {
   display: inline-flex;
@@ -352,11 +351,6 @@
   flex-shrink: 0;
   /* Prevents parent CSS layout boxes from squishing it */
 }
-
-
-
-
-
 
 /* DIN */
 
@@ -421,13 +415,9 @@
   font-weight: 500;
 }
 
-
-
-
 /* Mobile */
 
 @media (max-width: 767px) {
-
   .restaurant-grid {
     grid-template-columns: 1fr;
   }
@@ -453,8 +443,5 @@
   .restaurant-header {
     padding: 9px 11px;
   }
+
 }
-
-
-
-
