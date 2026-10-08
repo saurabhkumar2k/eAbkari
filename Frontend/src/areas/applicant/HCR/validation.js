@@ -19,7 +19,18 @@ export const Cat_Label = Object.freeze({
   "36": "Club",
   "14": "Microbrewery",
   "52": "Train",
-  "43": "Train",
+    "43": "Train",
+    "02": "Vend",
+    "11": "Vend",
+    "25": "Vend",
+    "26": "Vend",
+    "38": "Vend",
+    "39": "Vend",
+    "40": "Vend",
+    "41": "Vend",
+    "46": "Vend",
+    "83": "Vend",
+    "88": "Vend",
 });
 
 // Allows ONLY whole numbers (0-9)

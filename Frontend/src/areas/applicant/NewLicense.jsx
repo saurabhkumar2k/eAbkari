@@ -27,6 +27,7 @@ import HcrLicenseWizard from "./HCR/HcrLicenseWizard";
 import L30SelectLicense from "./L30/L30SelectLicense";
 import WholesaleLicenseWizard from "./Wholesale/WholesaleLicense";
 import MtpLicenseWizard from "./MNTP/MtpLicenseWizard";
+import RetailLicenseWizard from "./Retail/RetailLicenseWizard";
 
 export default function NewLicense({ setActiveTab, showToast }) {
   // Wizard States
@@ -50,7 +51,7 @@ export default function NewLicense({ setActiveTab, showToast }) {
   const [isWholesaleFlowActive, setIsWholesaleFlowActive] = useState(false);
   const [isL30FlowActive, setIsL30FlowActive] = useState(false);
   const [isMtpFlowActive, setIsMtpFlowActive] = useState(false);
-
+  const [isRetailFlowActive, setIsRetailFlowActive] = useState(false);
 
   const calculateTotalFeeObj = () => {
     let base = 200000;
@@ -251,6 +252,15 @@ export default function NewLicense({ setActiveTab, showToast }) {
               setNewLicStep(2);
             }}
             showToast={showToast}
+            rootData={newLicData}
+          />
+        ) : isRetailFlowActive ? (
+          <RetailLicenseWizard 
+            onBackToDashboard={() => {
+              setIsRetailFlowActive(false);
+              setNewLicStep(2);
+            }} 
+            showToast={showToast} 
             rootData={newLicData}
           />
         ) : appSubmissionCompleted ? (
@@ -496,6 +506,8 @@ export default function NewLicense({ setActiveTab, showToast }) {
                       setIsWholesaleFlowActive(true);
                     } else if (catId === "L-30") {
                       setIsL30FlowActive(true);
+                    } else if (catId === "Retail") {
+                      setIsRetailFlowActive(true);
                     }
                   }}
                 />
@@ -560,6 +572,10 @@ export default function NewLicense({ setActiveTab, showToast }) {
                       }
                       if (activeCat === "Wholesale") {
                         setIsWholesaleFlowActive(true);
+                        return;
+                      }
+                      if (activeCat === "Retail") {
+                        setIsRetailFlowActive(true);
                         return;
                       }
                       // Fire submit Success

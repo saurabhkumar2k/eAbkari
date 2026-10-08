@@ -1,26 +1,32 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  ShieldAlert,
-} from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ShieldAlert } from "lucide-react";
 
 import { createApplicant } from "../../../Model/Applicant";
 import { createHCRApplicant } from "../../../Model/HCRApplicant";
 import { createHCRAdditional } from "../../../Model/HCRAdditional";
 
-import HcrApplicantDetails from "./HcrApplicantDetail";
+// import HcrApplicantDetails from "./HcrApplicantDetail";
 
-import HcrApplicantStep from "./HcrApplicantStep";
-import HcrRestaurantStep from "./HcrRestaurantStep";
-import HcrAdditionalStep from "./HcrAdditionalStep";
-import HcrPersonalDocumentsStep from "./HcrPersonalDocumentsStep";
-import HcrSiteDocumentsStep from "./HcrSiteDocumentsStep";
-import HcrDeclarationStep from "./HcrDeclarationStep";
-import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
+import HcrApplicantStep from "../HCR/HcrApplicantStep";
+import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
+import HcrAdditionalStep from "../HCR/HcrAdditionalStep";
+import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
+import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
+import HcrDeclarationStep from "../HCR/HcrDeclarationStep";
+// import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 
+import {
+  validateAdditionalSiteData,
+  validateSiteData,
+  validateApplicantData,
+} from "../HCR/HcrApplicationValidation";
 
+import {
+  validateDirectors,
+  validateRestaurantDetails,
+  validateClubDetails,
+  Cat_Label,
+} from "../HCR/validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -37,10 +43,9 @@ export default function RetailLicensee({
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [applicationId, setApplicationId] = useState(
-    localStorage.getItem("applicationId")
+  const [applicationIdNo, setApplicationId] = useState(
+    localStorage.getItem("applicationIdNo"),
   );
-
 
   // =========================================================
   // Forms
@@ -56,23 +61,21 @@ export default function RetailLicensee({
   // Master Data
   // =========================================================
 
-
   const [states, setStates] = useState([]);
 
   const [applicantDistricts, setApplicantDistricts] = useState([]);
+
+  const [applicantSubDivisions, setApplicantSubDivisions] = useState([]);
 
   const [restaurantDistricts, setRestaurantDistricts] = useState([]);
 
   const [restaurantSubDivisions, setRestaurantSubDivisions] = useState([]);
 
-  const [restaurantPoliceStations, setRestaurantPoliceStations] =
-    useState([]);
+  const [restaurantPoliceStations, setRestaurantPoliceStations] = useState([]);
 
   const [constitutionTypes, setConstitutionTypes] = useState([]);
 
   const [licenseGroups, setLicenseGroups] = useState([]);
-
-
 
   // =========================================================
   // Questions
@@ -95,6 +98,9 @@ export default function RetailLicensee({
   // =========================================================
 
   const [hoursOfSaleList, setHoursOfSaleList] = useState([]);
+  const [starCategory, setStarCategory] = useState([]);
+  const [starCategoryRating, setStarCategoryRating] = useState([]);
+  const [constitutionType, setConstitutionType] = useState([]);
 
   // =========================================================
   // Errors
@@ -105,6 +111,8 @@ export default function RetailLicensee({
   const [siteFormErrors, setSiteFormErrors] = useState({});
 
   const [additionalFormErrors, setAdditionalFormErrors] = useState({});
+
+  const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -131,7 +139,7 @@ export default function RetailLicensee({
   // Toast
   // =========================================================
 
-  console.log("HcrLicensee additionalFrom:", additionalFrom);
+  // console.log("HcrLicensee additionalFrom:", additionalFrom);
 
   const [toast, setToast] = useState(null);
 
@@ -175,44 +183,46 @@ export default function RetailLicensee({
   // =========================================================
 
   const currentLicenseSteps = useMemo(() => {
-    return [
-      {
-        num: 1,
-        id: "applicant",
-        label: "Applicant Details",
-        sub: "Demographics",
-      },
-      {
-        num: 2,
-        id: "restaurant",
-        label: "Restaurant Details",
-        sub: "Site Address",
-      },
-      {
-        num: 3,
-        id: "additional",
-        label: "Additional Details",
-        sub: "Additional Information",
-      },
-      {
-        num: 4,
-        id: "personalDocuments",
-        label: "Documents",
-        sub: "Personal Documents",
-      },
-      {
-        num: 5,
-        id: "siteDocuments",
-        label: "Documents",
-        sub: "Site Documents",
-      },
-      {
-        num: 6,
-        id: "declaration",
-        label: "Declaration",
-        sub: "Submit",
-      },
-    ];
+    return (CatCode) => {
+      return [
+        {
+          num: 1,
+          id: "applicant",
+          label: "Applicant Details",
+          sub: "Demographics",
+        },
+        {
+          num: 2,
+          id: `${Cat_Label[CatCode]}`,
+          label: `${Cat_Label[CatCode]} Details`,
+          sub: "Site Address",
+        },
+        {
+          num: 3,
+          id: "additional",
+          label: "Additional Details",
+          sub: "Additional Information",
+        },
+        {
+          num: 4,
+          id: "personalDocuments",
+          label: "Documents",
+          sub: "Personal Documents",
+        },
+        {
+          num: 5,
+          id: "siteDocuments",
+          label: "Documents",
+          sub: "Site Documents",
+        },
+        {
+          num: 6,
+          id: "declaration",
+          label: "Declaration",
+          sub: "Submit",
+        },
+      ];
+    };
   }, []);
 
   // =========================================================
@@ -232,60 +242,17 @@ export default function RetailLicensee({
   };
 
   const validateApplicant = () => {
-    const errors = {};
+    debugger;
+    const errors = validateApplicantData(applicantForm);
 
-    if (!applicantForm.applicantName?.trim()) {
-      errors.applicantName = "Applicant Name is required";
-    }
-
-    if (!applicantForm.dateOfBirth) {
-      errors.dateOfBirth = "Date of birth is required";
-    }
-
-    if (!applicantForm.occupation?.trim()) {
-      errors.occupation = "Occupation is required";
-    }
-
-    if (
-      !applicantForm.panNo?.trim() ||
-      applicantForm.panNo.length !== 10
-    ) {
-      errors.panNo = "Valid 10-digit PAN number is required";
-    }
-
-    if (!applicantForm.addressLine1?.trim()) {
-      errors.addressLine1 = "Address Line 1 is required";
-    }
-
-    if (
-      !applicantForm.pin?.trim() ||
-      applicantForm.pin.length !== 6
-    ) {
-      errors.pin = "Valid 6-digit pin code is required";
-    }
-
-    if (
-      !applicantForm.mobile?.trim() ||
-      applicantForm.mobile.length !== 10
-    ) {
-      errors.mobile = "Valid 10-digit mobile number is required";
-    }
-
-    if (
-      !applicantForm.email?.trim() ||
-      !applicantForm.email.includes("@")
-    ) {
-      errors.email = "Valid email address is required";
-    }
-
+    // Update state and trigger toast notifications
     setApplicantErrors(errors);
 
     if (Object.keys(errors).length > 0) {
       triggerToast(
         "Please verify required fields in applicant profile.",
-        "error"
+        "error",
       );
-
       return false;
     }
 
@@ -295,7 +262,6 @@ export default function RetailLicensee({
   // =========================================================
   // Restaurant
   // =========================================================
-
   const handleRestaurantChange = (field, value) => {
     setSiteForm((prev) => ({
       ...prev,
@@ -312,59 +278,23 @@ export default function RetailLicensee({
     }
 
     if (field === "DistrictCode") {
-      fetchSubDivisions(value);
-      fetchPoliceStations(value);
+      fetchSubDivisions(value, "siteForm");
+      fetchPoliceStations(value, "siteForm");
     }
   };
 
   const validateRestaurant = () => {
-    const errors = {};
+    debugger;
 
-    if (!siteForm.SiteName?.trim()) {
-      errors.SiteName = "Restaurant Name is required";
-    }
+    // Check required text & code dropdown fields using your generic check
+    const errors = validateSiteData(siteForm);
 
-    if (!siteForm.SiteAddress?.trim()) {
-      errors.SiteAddress = "Restaurant Address is required";
-    }
-
-    if (!siteForm.State?.trim()) {
-      errors.State = "Restaurant state is required";
-    }
-
-    if (!siteForm.DistrictCode?.trim()) {
-      errors.DistrictCode = "Restaurant district is required";
-    }
-
-    if (!siteForm.SubDivisionCode?.trim()) {
-      errors.SubDivisionCode = "Restaurant subdivision is required";
-    }
-
-    if (!siteForm.PoliceStationCode?.trim()) {
-      errors.PoliceStationCode =
-        "Restaurant police station is required";
-    }
-
-    if (!siteForm.SitePin?.trim()) {
-      errors.SitePin = "Restaurant pin is required";
-    }
-
-    if (!siteForm.SiteEmail?.trim()) {
-      errors.SiteEmail = "Restaurant email is required";
-    }
-
-    if (!siteForm.SiteMobile?.trim()) {
-      errors.SiteMobile = "Restaurant mobile is required";
-    }
-
+    // Set the error state
     setSiteFormErrors(errors);
 
+    // Trigger Toast alerts if fields fail validation
     if (Object.keys(errors).length > 0) {
-      triggerToast(
-        "Please verify restaurant/site details.",
-        "error"
-      );
-
+      triggerToast("Please verify restaurant/site details.", "error");
       return false;
     }
 
@@ -376,6 +306,7 @@ export default function RetailLicensee({
   // =========================================================
 
   const handleAdditionalChange = (field, value) => {
+    // console.log("Test 3333333333333")
     setAdditionalFrom((prev) => ({
       ...prev,
       [field]: value,
@@ -385,6 +316,54 @@ export default function RetailLicensee({
       ...prev,
       [field]: null,
     }));
+  };
+
+  const validateAdditionalSiteDetails = () => {
+    debugger;
+
+    console.log(additionalFrom);
+    const AdditionalRestaurantFrom = additionalFrom;
+    AdditionalRestaurantFrom.questions = questions;
+    AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
+    const errors = validateAdditionalSiteData(
+      AdditionalRestaurantFrom,
+      selectedLicenseCode,
+    );
+    console.log(errors);
+
+    // console.log("Test 111111111111")
+    // Set the error state
+    setAdditionalFormErrors(errors);
+
+    // Trigger Toast alerts if fields fail validation
+    // if (
+    //   Object.keys(errors).length > 0 &&
+    //   Array.isArray(errors.directors?.errors) &&
+    //   errors.directors.errors.some(err => err !== null)
+    // )
+
+    const hasStringErrors = Object.keys(errors).some((key) => {
+      if (key === "directors") return false; // Skip the nested object here
+      return errors[key] !== ""; // Returns true if an error string is not empty
+    });
+
+    // 2. Check if the nested directors array contains any real error objects
+    const hasDirectorErrors =
+      Array.isArray(errors.directors?.errors) &&
+      errors.directors.errors.some(
+        (err) => err !== null && Object.keys(err || {}).length > 0,
+      );
+
+    // 3. Stop submission if either condition is true
+    if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
+      triggerToast(
+        "Please verify restaurant/site additional details.",
+        "error",
+      );
+      return false;
+    }
+
+    return true;
   };
 
   // =========================================================
@@ -407,9 +386,7 @@ export default function RetailLicensee({
   // =========================================================
 
   useEffect(() => {
-    fetch(
-      "http://localhost:5214/api/LGDiretory/ConstitutionType"
-    )
+    fetch("http://localhost:5214/api/LGDiretory/ConstitutionType")
       .then((res) => res.json())
       .then((data) => {
         setConstitutionTypes(data || []);
@@ -424,11 +401,12 @@ export default function RetailLicensee({
   // =========================================================
 
   const fetchDistricts = async (stateCode, type) => {
+    debugger;
     if (!stateCode) return;
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`
+        `http://localhost:5214/api/LGDiretory/GetDistrict?Statecode=${stateCode}`,
       );
 
       const data = await response.json();
@@ -449,17 +427,23 @@ export default function RetailLicensee({
   // Subdivision
   // =========================================================
 
-  const fetchSubDivisions = async (districtCode) => {
+  const fetchSubDivisions = async (districtCode, type) => {
     if (!districtCode) return;
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`
+        `http://localhost:5214/api/LGDiretory/GetSubDivision?DistrictCode=${districtCode}`,
       );
 
       const data = await response.json();
 
-      setRestaurantSubDivisions(data || []);
+      if (type === "applicantForm") {
+        setApplicantSubDivisions(data || []);
+      }
+
+      if (type === "siteForm") {
+        setRestaurantSubDivisions(data || []);
+      }
     } catch (error) {
       console.error("Subdivision API Error:", error);
     }
@@ -474,7 +458,7 @@ export default function RetailLicensee({
 
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`
+        `http://localhost:5214/api/LGDiretory/PoliceStations/${districtCode}`,
       );
 
       if (!response.ok) {
@@ -494,13 +478,16 @@ export default function RetailLicensee({
   // =========================================================
 
   useEffect(() => {
-    if (applicantForm.stateUT) {
-      fetchDistricts(
-        applicantForm.stateUT,
-        "applicantForm"
-      );
+    if (applicantForm.StateUT) {
+      fetchDistricts(applicantForm.StateUT, "applicantForm");
     }
-  }, [applicantForm.stateUT]);
+  }, [applicantForm.StateUT]);
+
+  useEffect(() => {
+    if (applicantForm.district) {
+      fetchSubDivisions(applicantForm.district, "applicantForm");
+    }
+  }, [applicantForm.district]);
 
   // =========================================================
   // Site State / District
@@ -515,7 +502,7 @@ export default function RetailLicensee({
   useEffect(() => {
     if (siteForm.DistrictCode) {
       fetchPoliceStations(siteForm.DistrictCode);
-      fetchSubDivisions(siteForm.DistrictCode);
+      fetchSubDivisions(siteForm.DistrictCode, "siteForm");
     }
   }, [siteForm.DistrictCode]);
 
@@ -524,15 +511,28 @@ export default function RetailLicensee({
   // =========================================================
 
   useEffect(() => {
+    debugger;
+    console.log("Previous application check");
     if (!regId) return;
 
-    loadApplicantData(regId);
+    // Create an async helper function inside useEffect
+    const checkApplicationData = async () => {
+      // Await the actual true/false result of the promise
+      const hasPreviousData = await loadPreviousAppData(regId);
+
+      if (!hasPreviousData) {
+        loadApplicantData(regId);
+      }
+    };
+
+    checkApplicationData();
   }, [regId]);
 
   const loadApplicantData = async (registrationId) => {
+    debugger;
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${registrationId}`
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`
       );
 
       if (!response.ok) {
@@ -541,63 +541,44 @@ export default function RetailLicensee({
 
       const data = await response.json();
 
-      if (data.stateUT) {
-        await fetchDistricts(
-          data.stateUT,
-          "applicantForm"
-        );
+      if (data.tateUT) {
+        await fetchDistricts(data.StateUT, "applicantForm");
       }
 
       setApplicantForm((prev) => ({
         ...prev,
 
-        applicantName:
-          `${data.firstName || ""} ${data.lastName || ""
-            }`.trim(),
+        applicantName: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
 
-        fatherHusbandName:
-          data.fatherHusbandName || "",
+        fatherHusbandName: data.fatherHusbandName || "",
 
-        dateOfBirth: data.dateOfBirth
-          ? data.dateOfBirth.split("T")[0]
-          : "",
+        dateOfBirth: data.dateOfBirth ? data.dateOfBirth.split("T")[0] : "",
 
         panNo: data.panNo || "",
 
-        ConstitutionType:
-          data.ConstitutionType || "",
+        ConstitutionType: data.ConstitutionType || "",
 
-        occupation:
-          data.occupation || "",
+        occupation: data.occupation || "",
 
-        addressLine1:
-          data.addressLine1 || "",
+        addressLine1: data.addressLine1 || "",
 
-        addressLine2:
-          data.addressLine2 || "",
+        addressLine2: data.addressLine2 || "",
 
-        stateUT:
-          data.stateUT || "",
+        StateUT: data.stateUT.trim() || "",
 
-        district:
-          data.district || "",
+        district: data.district.trim() || "",
 
-        subDivision:
-          data.subDivision
-            ? String(data.subDivision).trim()
-            : "",
+        subDivision: data.subDivision.trim()
+          ? String(data.subDivision).trim()
+          : "",
 
-        pin:
-          data.pin || "",
+        pin: data.pin || "",
 
-        email:
-          data.email || "",
+        email: data.email || "",
 
-        mobile:
-          data.mobile || "",
+        mobile: data.mobile || "",
 
-        landline:
-          data.landline || "",
+        landline: data.landline || "",
 
         ownerType,
         catCode: selectedLicenseCode,
@@ -605,6 +586,111 @@ export default function RetailLicensee({
     } catch (error) {
       console.error("Applicant Load Error:", error);
     }
+  };
+
+  // =========================================================
+  // Load Previous Application Data if exist
+  // =========================================================
+
+  const loadPreviousAppData = async (regId) => {
+    // const payload = {
+    //   catCode: selectedLicenseCode,
+    //   regID: regId,
+    // };
+    try {
+      debugger;
+      const getAppId = await fetch(
+        `http://localhost:5214/api/CommonLicense/GetPendingApplicationIds?catCode=${selectedLicenseCode}&regID=${regId}`,
+        {
+          method: "GET",
+        },
+      );
+      if (getAppId.status === 404) {
+        return false;
+      }
+
+      if (!getAppId.ok) {
+        return false;
+      }
+
+      const data = await getAppId.json();
+
+      console.log("getAppId response:", data);
+
+      const applicationIdNo = data?.data?.applicationIdNo;
+
+      if (!data?.success || !applicationIdNo) {
+        return false;
+      }
+
+      setApplicationId(applicationIdNo);
+
+      localStorage.setItem("applicationIdNo", applicationIdNo);
+
+      BindPendingAppData(applicationIdNo);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const BindPendingAppData = async (applicationIdNo) => {
+    debugger;
+    try {
+      /*  Set Applicant Data using Application Id */
+      const response = await fetch(
+        `http://localhost:5214/api/CommonLicense/GetApplicantDetails/${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const data = await response.json();
+
+      if (data.StateUT) {
+        await fetchDistricts(data.StateUT, "applicantForm");
+      }
+
+      setApplicantForm((prev) => ({
+        ...prev,
+        applicationIdNo: applicationIdNo,
+        applicantName: `${data.applicantName || ""}`.trim(),
+
+        fatherHusbandName: data.fatherHusbandName || "",
+
+        dateOfBirth: data.dob ? data.dob.split("T")[0] : "",
+
+        panNo: data.panNo || "",
+
+        ConstitutionType: data.ConstitutionType || "",
+
+        occupation: data.occupation || "",
+
+        addressLine1: data.permanentAddress || "",
+
+        addressLine2: data.presentAddress || "",
+
+        StateUT: data.stateUT.trim() || "",
+
+        district: data.district.trim() || "",
+
+        subDivision: data.subDivision.trim()
+          ? String(data.subDivision).trim()
+          : "",
+
+        pin: data.pin || "",
+
+        email: data.email || "",
+
+        mobile: data.mobile || "",
+
+        landline: data.landline || "",
+
+        ownerType,
+        catCode: selectedLicenseCode,
+      }));
+    } catch (error) {}
   };
 
   // =========================================================
@@ -621,7 +707,7 @@ export default function RetailLicensee({
   const fetchQuestions = async (catCode) => {
     try {
       const response = await fetch(
-        `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`
+        `http://localhost:5214/api/CommonHCR/GetCategoryWiseQuestions?catCode=${catCode}`,
       );
 
       if (!response.ok) {
@@ -639,16 +725,17 @@ export default function RetailLicensee({
         normalizedQuestions.map((question) => {
           const savedAnswer = questionsAnswers.find(
             (answer) =>
-              answer.questionId === (question.questionId ?? question.QuestionId)
+              answer.questionId ===
+              (question.questionId ?? question.QuestionId),
           );
 
           return savedAnswer
             ? {
-              ...question,
-              answer: savedAnswer.answerGiven,
-            }
+                ...question,
+                answer: savedAnswer.answerGiven,
+              }
             : question;
-        })
+        }),
       );
     } catch (error) {
       console.error("Question API Error:", error);
@@ -661,42 +748,37 @@ export default function RetailLicensee({
       prev.map((question) =>
         question.questionId === questionId
           ? {
-            ...question,
-            answer,
-          }
-          : question
-      )
+              ...question,
+              answer,
+            }
+          : question,
+      ),
     );
 
     setQuestionsAnswers((prev) => {
       const index = questions.findIndex(
-        (question) =>
-          question.questionId === questionId
+        (question) => question.questionId === questionId,
       );
 
-      const existing = prev.find(
-        (item) => item.questionId === questionId
-      );
+      const existing = prev.find((item) => item.questionId === questionId);
 
       if (existing) {
         return prev.map((item) =>
           item.questionId === questionId
             ? {
-              ...item,
-              applicationIdNo:
-                applicationId || "",
-              answerGiven: answer,
-              slNo: index + 1,
-            }
-            : item
+                ...item,
+                applicationIdNo: applicationIdNo || "",
+                answerGiven: answer,
+                slNo: index + 1,
+              }
+            : item,
         );
       }
 
       return [
         ...prev,
         {
-          applicationIdNo:
-            applicationId || "",
+          applicationIdNo: applicationIdNo || "",
           questionId,
           answerGiven: answer,
           slNo: index + 1,
@@ -705,15 +787,220 @@ export default function RetailLicensee({
     });
   };
 
+  const handleRestaurantDetailChange = (index, field, value) => {
+    setAdditionalFrom((prev) => {
+      const restaurantDetails = [...(prev.restaurantDetails || [])];
+
+      restaurantDetails[index] = {
+        ...restaurantDetails[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        restaurantDetails,
+      };
+    });
+  };
+
+  const addRestaurantDetail = () => {
+    debugger;
+    const errors = {};
+    let additionalUpdateErrors = { ...additionalFormErrors };
+
+    // 1. Run the evaluation using your custom function
+    const restaurantErr = validateRestaurantDetails(
+      additionalFrom.restaurantDetails,
+    );
+    if (restaurantErr) errors.restaurantDetails = restaurantErr;
+
+    // 2. Check if the data structure contains items before proceeding
+    const hasRestaurants =
+      additionalFrom.restaurantDetails &&
+      additionalFrom.restaurantDetails.length > 0;
+
+    if (hasRestaurants) {
+      additionalUpdateErrors.restaurantDetails = errors.restaurantDetails;
+      setAdditionalFormErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addRestaurantDetail additionalFormErrors ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
+    }
+
+    // Condition 1: Function evaluation fails AND the array is populated
+    const isInvalidWithData =
+      restaurantErr?.isValid === false && hasRestaurants;
+
+    // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+    const hasRowErrors =
+      Array.isArray(restaurantErr?.errors) &&
+      restaurantErr.errors.some((err) => err !== null);
+
+    // 3. Prevent structural addition if the active items contain errors
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Halt structural changes
+    } else {
+      if (additionalUpdateErrors.restaurantDetails) {
+        additionalUpdateErrors.restaurantDetails.errors = []; // Flush existing error tracking array safely
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
+    }
+
+    // 4. Safely push the fresh entry layout block forward into the state container
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      restaurantDetails: [
+        ...(prev.restaurantDetails || []),
+        {
+          NameOfAdditionalRestaurant: "",
+          NumberOfSeatCovers: "",
+          NumberOfCounter: "",
+          AddtionalArea: "",
+          AreaSqMtr: "",
+          ForeignLiquor: "",
+          HoursofSale: "",
+          HoursofSaleAddtionalArea: "",
+        },
+      ],
+    }));
+  };
+
+  const deleteRestaurantDetail = (index) => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      restaurantDetails: (prev.restaurantDetails || []).filter(
+        (_, i) => i !== index,
+      ),
+    }));
+  };
+
+  const handleClubDetailChange = (index, field, value) => {
+    setAdditionalFrom((prev) => {
+      const clubDetails = [...(prev.clubDetails || [])];
+
+      clubDetails[index] = {
+        ...clubDetails[index],
+        [field]: value,
+      };
+
+      return {
+        ...prev,
+        clubDetails,
+      };
+    });
+  };
+
+  const addClubDetail = () => {
+    debugger;
+    const errors = {};
+    let additionalUpdateErrors = { ...additionalFormErrors };
+
+    // 1. Run the evaluation using your custom function
+    const clubErr = validateClubDetails(additionalFrom.clubDetails);
+    if (clubErr) errors.clubDetails = clubErr;
+
+    // 2. Check if the data structure contains items before proceeding
+    const hasClubs =
+      additionalFrom.clubDetails && additionalFrom.clubDetails.length > 0;
+
+    if (hasClubs) {
+      additionalUpdateErrors.clubDetails = errors.clubDetails;
+      setAdditionalFormErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addClubDetail additionalFormErrors ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
+    }
+
+    // Condition 1: Function evaluation fails AND the array is populated
+    const isInvalidWithData = clubErr?.isValid === false && hasClubs;
+
+    // Condition 2: Check if errors array contains any active validation objects (ignores null markers)
+    const hasRowErrors =
+      Array.isArray(clubErr?.errors) &&
+      hasClubs?.errors?.some((err) => err !== null);
+
+    // 3. Prevent structural addition if the active items contain errors
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Halt structural changes
+    } else {
+      if (additionalUpdateErrors.clubDetails) {
+        additionalUpdateErrors.clubDetails.errors = []; // Flush existing error tracking array safely
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
+    }
+
+    // 4. Safely push the fresh entry layout block forward into the state container
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      clubDetails: [
+        ...(prev.clubDetails || []),
+        {
+          NameOfAdditionalRestaurant: "",
+          NumberOfCounter: "",
+          AddtionalArea: "",
+        },
+      ],
+    }));
+  };
+
+  const deleteClubDetail = (index) => {
+    setAdditionalFrom((prev) => ({
+      ...prev,
+      clubDetails: (prev.clubDetails || []).filter((_, i) => i !== index),
+    }));
+  };
+
+  // =========================================================
+  // Documents
+  // =========================================================
+
+  useEffect(() => {
+    if (currentStep !== 4 && currentStep !== 5) {
+      return;
+    }
+
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
+
+    if (!applicationIdNo || !selectedLicenseCode) {
+      return;
+    }
+
+    const docStatus = currentStep === 4 ? "A" : "S";
+
+    fetch(
+      // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&CatCode=${selectedLicenseCode}&DocType=${docStatus}`,
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setDocuments(data.data || []);
+      })
+      .catch((error) => {
+        console.error("Document API Error:", error);
+        setDocuments([]);
+        return [
+          ...prev,
+          {
+            applicationIdNo: applicationIdNo || "",
+            questionId,
+            answerGiven: answer,
+            slNo: index + 1,
+          },
+        ];
+      });
+  }, [currentStep, selectedLicensee]);
+
   // =========================================================
   // Directors
   // =========================================================
 
   const handleDirectorChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
-      const directors = [
-        ...(prev.directors || []),
-      ];
+      const directors = [...(prev.directors || [])];
 
       directors[index] = {
         ...directors[index],
@@ -728,6 +1015,57 @@ export default function RetailLicensee({
   };
 
   const addDirector = () => {
+    debugger;
+    const errors = {};
+    // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
+    let additionalUpdateErrors = { ...additionalFormErrors };
+    // console.log("HcrLicensee - addDirector additionalFrom  ", additionalFrom.directors)
+
+    // const directorsErr = validateDirectors(additionalFrom.directors);
+    // if (directorsErr) errors.directors = directorsErr;
+
+    // setAdditionalFormErrors(errors);
+
+    // // Safely checks if the validation failed and if we have row errors populated
+    // if ((additionalFormErrors.directors?.isValid === false && (additionalFrom.directors && additionalFrom.directors.length > 0)) || (directorsErr?.errors && directorsErr.errors.length > 0)) {
+    //   return; // Stop form submission
+    // }
+    const directorsErr = validateDirectors(additionalFrom.directors);
+    if (directorsErr) errors.directors = directorsErr;
+
+    // Check if the array exists and has at least one object
+    const hasDirectors =
+      Array.isArray(additionalFrom.directors) &&
+      additionalFrom.directors.length > 0;
+
+    if (hasDirectors) {
+      additionalUpdateErrors.directors = errors.directors; // Clear the errors array if no errors are found
+      setAdditionalFormErrors(additionalUpdateErrors);
+      console.log(
+        "HcrLicensee - addDirector additionalFormErrors  ",
+        additionalFormErrors,
+        additionalUpdateErrors,
+      );
+    }
+
+    // Condition 1: Local error object says invalid AND director list is not empty
+    const isInvalidWithData = directorsErr?.isValid === false && hasDirectors;
+
+    // Condition 2: Checks if the errors array exists AND contains at least one actual error object (filters out null)
+    const hasRowErrors =
+      Array.isArray(directorsErr?.errors) &&
+      directorsErr.errors.some((err) => err !== null);
+
+    // Safely halts form submission using the fresh local evaluation
+    if (isInvalidWithData || hasRowErrors) {
+      return; // Stop form submission
+    } else {
+      if (additionalUpdateErrors.directors) {
+        additionalUpdateErrors.directors.errors = []; // Clear the errors array if no errors are found
+        setAdditionalFormErrors(additionalUpdateErrors);
+      }
+    }
+
     setAdditionalFrom((prev) => ({
       ...prev,
       directors: [
@@ -743,9 +1081,7 @@ export default function RetailLicensee({
   const deleteDirector = (index) => {
     setAdditionalFrom((prev) => ({
       ...prev,
-      directors: (prev.directors || []).filter(
-        (_, i) => i !== index
-      ),
+      directors: (prev.directors || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -758,22 +1094,21 @@ export default function RetailLicensee({
       return;
     }
 
-    const applicationIdNo =
-      localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
 
     if (!applicationIdNo || !selectedLicenseCode) {
       return;
     }
 
-    const docStatus =
-      currentStep === 4 ? "A" : "S";
+    const docStatus = currentStep === 4 ? "A" : "S";
 
     fetch(
-      `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`
+      // `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&docStatus=${docStatus}`,
+      `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&catCode=${selectedLicenseCode}&DocType=${docStatus}`,
     )
       .then((response) => response.json())
       .then((data) => {
-        setDocuments(data || []);
+        setDocuments(data.data || []);
       })
       .catch((error) => {
         console.error("Document API Error:", error);
@@ -782,6 +1117,7 @@ export default function RetailLicensee({
   }, [currentStep, selectedLicensee]);
 
   const handleFileChange = (key, file) => {
+    console.log("handleDocumentFileChange", key, file);
     if (!file) return;
 
     setUploadedFiles((prev) => ({
@@ -789,6 +1125,16 @@ export default function RetailLicensee({
       [key]: {
         file,
         previewUrl: URL.createObjectURL(file),
+      },
+    }));
+  };
+
+  const handleValidityDateChange = (docId, validityDate) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [docId]: {
+        ...prev[docId],
+        validityDate,
       },
     }));
   };
@@ -820,63 +1166,44 @@ export default function RetailLicensee({
 
     const payload = {
       regId: Number(regId),
+      applicantName: applicantForm.applicantName,
 
-      applicantName:
-        applicantForm.applicantName,
+      dob: applicantForm.dateOfBirth,
 
-      dob:
-        applicantForm.dateOfBirth,
+      applicationIdNo: applicantForm.applicationIdNo || null,
 
-      applicationIdNo:
-        applicantForm.applicationId || null,
+      fatherHusbandName: applicantForm.fatherHusbandName,
 
-      fatherHusbandName:
-        applicantForm.fatherHusbandName,
+      occupation: applicantForm.occupation,
 
-      occupation:
-        applicantForm.occupation,
+      panNo: applicantForm.panNo,
 
-      panNo:
-        applicantForm.panNo,
+      presentAddress: applicantForm.addressLine1,
 
-      presentAddress:
-        applicantForm.addressLine1,
+      permanentAddress: applicantForm.addressLine2,
 
-      permanentAddress:
-        applicantForm.addressLine2,
+      StateUT: applicantForm.StateUT,
 
-      stateUT:
-        applicantForm.stateUT,
+      district: applicantForm.district,
 
-      district:
-        applicantForm.district,
+      subDivision: applicantForm.subDivision,
 
-      subDivision:
-        applicantForm.subDivision,
+      pin: applicantForm.pin,
 
-      pin:
-        applicantForm.pin,
+      email: applicantForm.email,
 
-      email:
-        applicantForm.email,
+      mobile: applicantForm.mobile,
 
-      mobile:
-        applicantForm.mobile,
+      landLine: applicantForm.landline || "",
 
-      landLine:
-        applicantForm.landline || "",
+      ownerType: ownerType.code,
 
-      ownerType:
-        ownerType.code,
+      catCode: selectedLicenseCode,
 
-      catCode:
-        selectedLicenseCode,
-
-      activityId:
-        "F",
+      activityId: "F",
     };
 
-    console.log(payload)
+    // console.log(payload)
 
     try {
       const response = await fetch(
@@ -884,47 +1211,32 @@ export default function RetailLicensee({
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       const data = await response.json();
 
-      setApplicationId(
-        data.applicationId
-      );
-      applicantForm.applicationId = data.applicationId;
+      const applicationIdNo = data?.data?.applicationIdNo;
 
-      localStorage.setItem(
-        "applicationId",
-        data.applicationId
-      );
+      setApplicationId(applicationIdNo);
+      applicantForm.applicationIdNo = applicationIdNo;
 
-      localStorage.setItem(
-        "catCode",
-        data.catCode || selectedLicenseCode
-      );
+      localStorage.setItem("applicationIdNo", applicationIdNo);
+
+      // localStorage.setItem("catCode", data.catCode || selectedLicenseCode);
 
       return true;
     } catch (error) {
-      console.error(
-        "Applicant Save Error:",
-        error
-      );
+      console.error("Applicant Save Error:", error);
 
-      triggerToast(
-        "Unable to save applicant data.",
-        "error"
-      );
+      triggerToast("Unable to save applicant data.", "error");
 
       return false;
     }
@@ -944,10 +1256,7 @@ export default function RetailLicensee({
 
       Regnumber: regId,
 
-      ApplicationIdNo:
-        localStorage.getItem(
-          "applicationId"
-        ),
+      ApplicationIdNo: localStorage.getItem("applicationIdNo"),
 
       FinYear: "2026-2027",
 
@@ -960,30 +1269,22 @@ export default function RetailLicensee({
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
+      console.log("SaveSiteDetails", response);
 
       return true;
     } catch (error) {
-      console.error(
-        "Restaurant Save Error:",
-        error
-      );
+      console.error("Restaurant Save Error:", error);
 
-      triggerToast(
-        "Unable to save restaurant details.",
-        "error"
-      );
+      triggerToast("Unable to save restaurant details.", "error");
 
       return false;
     }
@@ -994,178 +1295,189 @@ export default function RetailLicensee({
   // =========================================================
 
   const saveAdditional = async () => {
-    const applicationIdNo =
-      localStorage.getItem("applicationId");
+    const applicationIdNo = localStorage.getItem("applicationIdNo");
+
+    if (!validateAdditionalSiteDetails()) {
+      return false;
+    }
 
     try {
       const formData = new FormData();
 
       // Additional Details
-      Object.entries(additionalFrom).forEach(
-        ([key, value]) => {
-          if (key === "directors") return;
+      Object.entries(additionalFrom).forEach(([key, value]) => {
+        if (key === "directors") return;
 
-          const propertyName =
-            key.charAt(0).toUpperCase() +
-            key.slice(1);
+        const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
 
-          const booleanFields = [
-            "additionalArea",
-            "isSuitableGagdget",
-            "isLocalAuthorityApproved",
-            "isIndicatingLiquor",
-          ];
+        const booleanFields = [
+          "additionalArea",
+          "isSuitableGagdget",
+          "isLocalAuthorityApproved",
+          "isIndicatingLiquor",
+        ];
 
-          const normalizedValue =
-            booleanFields.includes(key)
-              ? value === true ||
-                value === "true" ||
-                value === "True" ||
-                value === "1" ||
-                value === 1
-                ? "true"
-                : value === false ||
-                  value === "false" ||
-                  value === "False" ||
-                  value === "0" ||
-                  value === 0
-                  ? "false"
-                  : String(value ?? "")
-              : value ?? "";
+        const normalizedValue = booleanFields.includes(key)
+          ? value === true ||
+            value === "true" ||
+            value === "True" ||
+            value === "1" ||
+            value === 1
+            ? "true"
+            : value === false ||
+                value === "false" ||
+                value === "False" ||
+                value === "0" ||
+                value === 0
+              ? "false"
+              : String(value ?? "")
+          : (value ?? "");
 
-          formData.append(
-            `AdditionalDetails.${propertyName}`,
-            normalizedValue
-          );
-        }
-      );
+        formData.append(`AdditionalDetails.${propertyName}`, normalizedValue);
+      });
 
-      formData.set(
-        "AdditionalDetails.ApplicationIdNo",
-        applicationIdNo || ""
-      );
+      formData.set("AdditionalDetails.ApplicationIdNo", applicationIdNo || "");
 
       // Partners
-      (
-        additionalFrom.directors || []
-      ).forEach((partner, index) => {
-        formData.append(
-          `Partners[${index}].Id`,
-          "0"
-        );
+      (additionalFrom.directors || []).forEach((partner, index) => {
+        formData.append(`Partners[${index}].Id`, "0");
 
         formData.append(
           `Partners[${index}].ApplicationIdNo`,
-          applicationIdNo || ""
+          applicationIdNo || "",
         );
 
-        formData.append(
-          `Partners[${index}].PName`,
-          partner.PName || ""
-        );
+        formData.append(`Partners[${index}].PName`, partner.PName || "");
 
         formData.append(
           `Partners[${index}].PPerShare`,
-          partner.PPerShare || ""
+          partner.PPerShare || "",
         );
 
-        formData.append(
-          `Partners[${index}].PPanNo`,
-          partner.PPanNo || ""
-        );
+        formData.append(`Partners[${index}].PPanNo`, partner.PPanNo || "");
 
         formData.append(
           `Partners[${index}].PExciseNominee`,
-          partner.PExciseNominee || ""
+          partner.PExciseNominee || "",
         );
 
-        formData.append(
-          `Partners[${index}].DINNo`,
-          partner.DINNo || ""
-        );
+        formData.append(`Partners[${index}].DINNo`, partner.DINNo || "");
 
         if (partner.panFile instanceof File) {
-          formData.append(
-            `Partners[${index}].PanFile`,
-            partner.panFile
-          );
+          formData.append(`Partners[${index}].PanFile`, partner.panFile);
 
           formData.append(
             `Partners[${index}].PanFileUploaded`,
-            partner.panFile.name
+            partner.panFile.name,
           );
         }
 
-        if (
-          partner.addressFile instanceof File
-        ) {
+        if (partner.addressFile instanceof File) {
           formData.append(
             `Partners[${index}].AddressFile`,
-            partner.addressFile
+            partner.addressFile,
           );
 
           formData.append(
             `Partners[${index}].AddressFileUploaded`,
-            partner.addressFile.name
+            partner.addressFile.name,
           );
         }
 
-        formData.append(
-          `Partners[${index}].SlNo`,
-          String(index + 1)
-        );
+        formData.append(`Partners[${index}].SlNo`, String(index + 1));
       });
 
       // Answers
-      questionsAnswers.forEach(
-        (item, index) => {
-          formData.append(
-            `ApplicantAnswers[${index}].ApplicationIdNo`,
-            applicationIdNo || ""
-          );
+      questionsAnswers?.forEach((item, index) => {
+        formData.append(
+          `ApplicantAnswers[${index}].ApplicationIdNo`,
+          applicationIdNo || "",
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].QuestionId`,
-            item.questionId
-          );
+        formData.append(
+          `ApplicantAnswers[${index}].QuestionId`,
+          item.questionId,
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].AnswerGiven`,
-            item.answerGiven || ""
-          );
+        formData.append(
+          `ApplicantAnswers[${index}].AnswerGiven`,
+          item.answerGiven || "",
+        );
 
-          formData.append(
-            `ApplicantAnswers[${index}].SlNo`,
-            String(index + 1)
-          );
-        }
-      );
+        formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
+      });
+
+      additionalFrom?.restaurantDetails?.forEach((item, index) => {
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].ApplicationIdNo`,
+          item.ApplicationIdNo ?? applicationIdNo ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NameOfAdditionalRestaurant`,
+          item.NameOfAdditionalRestaurant ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NumberOfSeatCovers`,
+          item.NumberOfSeatCovers ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].NumberOfCounter`,
+          item.NumberOfCounter ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].AddtionalArea`,
+          item.AddtionalArea ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].HoursofSale`,
+          item.HoursofSale ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].HoursofSaleAddtionalArea`,
+          item.HoursofSaleAddtionalArea ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].ForeignLiquor`,
+          item.ForeignLiquor ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].AreaSqMtr`,
+          item.AreaSqMtr ?? "",
+        );
+
+        formData.append(
+          `AdditionalRestaurentDetails[${index}].slNo`,
+          item.slNo ?? index + 1,
+        );
+      });
+
+      console.log(formData);
 
       const response = await fetch(
         "http://localhost:5214/api/CommonHCR/SaveAdditionalHCRCompleteDetails",
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Additional Save Error:",
-        error
-      );
+      console.error("Additional Save Error:", error);
 
-      triggerToast(
-        "Unable to save additional details.",
-        "error"
-      );
+      triggerToast("Unable to save additional details.", "error");
 
       return false;
     }
@@ -1177,8 +1489,10 @@ export default function RetailLicensee({
 
   const uploadDocuments = async () => {
     try {
+      debugger;
+      console.log("uploadDocuments", uploadDocuments);
       const filesToUpload = documents.filter(
-        (doc) => uploadedFiles[doc.docId]?.file
+        (doc) => uploadedFiles[doc.docID]?.file,
       );
 
       if (filesToUpload.length === 0) {
@@ -1189,69 +1503,53 @@ export default function RetailLicensee({
 
       formData.append(
         "ApplicationIdNo",
-        localStorage.getItem(
-          "applicationId"
-        ) || ""
+        localStorage.getItem("applicationIdNo") || "",
       );
 
-      formData.append(
-        "MobileNo",
-        applicantForm.mobile || ""
-      );
+      formData.append("MobileNo", applicantForm.mobile || "");
 
       let index = 0;
 
       filesToUpload.forEach((doc) => {
-        const uploaded =
-          uploadedFiles[doc.docId];
+        const uploaded = uploadedFiles[doc.docID];
+
+        if (!uploaded?.file) return;
+
+        formData.append(`Documents[${index}].DocId`, doc.docID);
+        formData.append(`Documents[${index}].DocSl`, String(doc.docSl || 1));
+        formData.append(`Documents[${index}].IsValid`, doc.isValid ? "Y" : "N");
 
         formData.append(
-          `Documents[${index}].ApplicantSl`,
-          doc.applicantSl || 1
+          `Documents[${index}].DateOfValidity`,
+          uploaded.validityDate || "",
         );
 
-        formData.append(
-          `Documents[${index}].DocId`,
-          doc.docId
-        );
-
-        formData.append(
-          `Documents[${index}].DocSl`,
-          doc.docSl || 1
-        );
-
-        formData.append(
-          `Documents[${index}].DocumentFile`,
-          uploaded.file
-        );
+        formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
 
         index++;
       });
 
       const response = await fetch(
-        "http://localhost:5214/api/LicenseeCategories/UploadApplicationDocuments",
+        "http://localhost:5214/api/CommonLicense/SaveAndUpdateApplicantDocuments",
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
+      console.log("response", response);
+
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Document Upload Error:",
-        error
-      );
+      console.error("Document Upload Error:", error);
 
       triggerToast(
         "Unable to upload documents. Continuing to next step.",
-        "error"
+        "error",
       );
 
       return false;
@@ -1266,10 +1564,7 @@ export default function RetailLicensee({
     try {
       const finalSubmission = {
         ApplicationIdNo:
-          applicationId ||
-          localStorage.getItem(
-            "applicationId"
-          ),
+          applicationIdNo || localStorage.getItem("applicationIdNo"),
 
         ApplicationStatus: "02",
       };
@@ -1279,64 +1574,39 @@ export default function RetailLicensee({
         {
           method: "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(
-            finalSubmission
-          ),
-        }
+          body: JSON.stringify(finalSubmission),
+        },
       );
 
       if (!response.ok) {
-        throw new Error(
-          await response.text()
-        );
+        throw new Error(await response.text());
       }
 
-      const appNo =
-        applicationId ||
-        localStorage.getItem(
-          "applicationId"
-        );
+      const appNo = applicationIdNo || localStorage.getItem("applicationIdNo");
 
       setReceiptData({
         applicationNo: appNo,
-        applicantName:
-          applicantForm.applicantName,
-        SiteName:
-          siteForm.SiteName,
-        SiteEmail:
-          siteForm.SiteEmail,
-        SiteMobile:
-          siteForm.SiteMobile,
-        dateFiled:
-          new Date().toLocaleDateString(
-            "en-IN"
-          ),
-        status:
-          "Filing Registered",
+        applicantName: applicantForm.applicantName,
+        SiteName: siteForm.SiteName,
+        SiteEmail: siteForm.SiteEmail,
+        SiteMobile: siteForm.SiteMobile,
+        dateFiled: new Date().toLocaleDateString("en-IN"),
+        status: "Filing Registered",
       });
 
       setSubmitSuccess(true);
 
       if (showToast) {
-        showToast(
-          "HCR Excise application submitted successfully!"
-        );
+        showToast("HCR Excise application submitted successfully!");
       }
 
       return true;
     } catch (error) {
-      console.error(
-        "Final Submission Error:",
-        error
-      );
+      console.error("Final Submission Error:", error);
 
-      triggerToast(
-        "Unable to submit application.",
-        "error"
-      );
+      triggerToast("Unable to submit application.", "error");
 
       return false;
     }
@@ -1359,8 +1629,7 @@ export default function RetailLicensee({
   const handleNext = async () => {
     debugger;
     if (currentStep === 1) {
-      const success =
-        await saveApplicant();
+      const success = await saveApplicant();
 
       if (success) {
         setCurrentStep(2);
@@ -1371,10 +1640,9 @@ export default function RetailLicensee({
     }
 
     if (currentStep === 2) {
-      const success =
-        await saveRestaurant();
+      const success = await saveRestaurant();
 
-      if (success || true) {
+      if (success) {
         setCurrentStep(3);
       }
 
@@ -1382,8 +1650,7 @@ export default function RetailLicensee({
     }
 
     if (currentStep === 3) {
-      const success =
-        await saveAdditional();
+      const success = await saveAdditional();
 
       if (success) {
         setCurrentStep(4);
@@ -1415,14 +1682,13 @@ export default function RetailLicensee({
     window.print();
   };
 
-  const testAdditionalFrom = additionalFrom;
+  // const testAdditionalFrom = additionalFrom;
 
-  console.log("HcrLicensee:", testAdditionalFrom);
+  // console.log("HcrLicensee:", testAdditionalFrom);
 
-  console.log("HCR TEST DATA:", testAdditionalFrom);
-  console.log("COMPONENT:", RestaurantAdditionalDetails);
-  console.log("HcrApplicantStep - currentStep  ", currentStep)
-
+  // console.log("HCR TEST DATA:", testAdditionalFrom);
+  // console.log("COMPONENT:", RestaurantAdditionalDetails);
+  // console.log("HcrApplicantStep - currentStep  ", currentStep)
 
   // =========================================================
   // RENDER
@@ -1442,80 +1708,71 @@ export default function RetailLicensee({
 
   return (
     <div className="brand-registration-page select-none text-slate-800">
-
       {/* =====================================================
           HEADER / STEPPER
       ====================================================== */}
 
       <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 sm:p-5 mb-6 overflow-x-auto step-div-p">
         <div className="flex items-center justify-between min-w-[768px] relative px-2 sm:px-4">
-
           <div className="absolute top-[22px] left-8 right-8 h-[3px] bg-slate-100">
             <div
               className="h-full bg-blue-600 transition-all"
               style={{
-                width: `${((currentStep - 1) /
-                  (currentLicenseSteps.length - 1)) *
-                  100
-                  }%`,
+                width: `${
+                  ((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
+                }%`,
               }}
             />
           </div>
 
-          {currentLicenseSteps.map(
-            (step) => {
-              const isActive =
-                currentStep === step.num;
+          {currentLicenseSteps(selectedLicenseCode).map((step) => {
+            const isActive = currentStep === step.num;
 
-              const isCompleted =
-                currentStep > step.num;
+            const isCompleted = currentStep > step.num;
 
-              return (
+            return (
+              <div
+                key={step.id}
+                className="flex flex-col items-center flex-1 relative z-10"
+              >
                 <div
-                  key={step.id}
-                  className="flex flex-col items-center flex-1 relative z-10"
-                >
-                  <div
-                    className={`
+                  className={`
                       w-11 h-11 rounded-full
                       flex items-center justify-center
                       font-black text-sm border-2
-                      ${isCompleted
-                        ? "bg-emerald-600 border-emerald-600 text-white"
-                        : isActive
-                          ? "bg-blue-600 border-blue-600 text-white scale-110"
-                          : "bg-white border-slate-200 text-slate-400"
+                      ${
+                        isCompleted
+                          ? "bg-emerald-600 border-emerald-600 text-white"
+                          : isActive
+                            ? "bg-blue-600 border-blue-600 text-white scale-110"
+                            : "bg-white border-slate-200 text-slate-400"
                       }
                     `}
-                  >
-                    {isCompleted ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      step.num
-                    )}
-                  </div>
-
-                  <span
-                    className={`
-                      text-[11px] font-extrabold mt-2
-                      ${isActive
-                        ? "text-blue-600"
-                        : isCompleted
-                          ? "text-emerald-700"
-                          : "text-slate-500"
-                      }
-                    `}
-                  >
-                    {step.label}
-                  </span>
-
-                  <span className="text-[10px] text-slate-400 font-semibold">
-                    {step.sub}
-                  </span>
+                >
+                  {isCompleted ? <Check className="w-4 h-4" /> : step.num}
                 </div>
-              );
-            }
-          )}
+
+                <span
+                  className={`
+                      text-[11px] font-extrabold mt-2
+                      ${
+                        isActive
+                          ? "text-blue-600"
+                          : isCompleted
+                            ? "text-emerald-700"
+                            : "text-slate-500"
+                      }
+                    `}
+                >
+                  {step.label}
+                </span>
+
+                <span className="text-[10px] text-slate-400 font-semibold">
+                  {step.sub}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1524,11 +1781,13 @@ export default function RetailLicensee({
       ====================================================== */}
 
       <div className="hcr-content-area">
-
         {/* STEP 4 */}
         {currentStep === 1 && (
           <HcrApplicantStep
             applicantForm={applicantForm}
+            states={states}
+            districts={applicantDistricts}
+            subDivisions={applicantSubDivisions}
             onChange={handleApplicantChange}
             errors={applicantErrors}
             ownerType={ownerType}
@@ -1548,35 +1807,19 @@ export default function RetailLicensee({
             states={states}
             districts={restaurantDistricts}
             subDivisions={restaurantSubDivisions}
-            policeStations={
-              restaurantPoliceStations
-            }
+            policeStations={restaurantPoliceStations}
             errors={siteFormErrors}
             onChange={handleRestaurantChange}
             onBack={() => setCurrentStep(1)}
+            CatCode={selectedLicenseCode}
             onContinue={handleNext}
           />
-
-          
         )}
 
         {/* STEP 6 */}
         {currentStep === 3 && (
-          // <RestaurantAdditionalDetails
-          //   additionalFrom={testAdditionalFrom}
-          //   hoursOfSaleList={hoursOfSaleList}
-          //   constitutionType={applicantForm?.ConstitutionType}
-          //   questions={questions}
-          //   onChange={handleAdditionalChange}
-          //   onQuestionsChange={handleQuestions}
-          //   onDirectorChange={handleDirectorChange}
-          //   onAddDirector={addDirector}
-          //   onDeleteDirector={deleteDirector}
-          //   onBack={() => setCurrentStep(2)}
-          //   onContinue={handleNext}
-          // /> 
           <HcrAdditionalStep
-            additionalFrom={testAdditionalFrom}
+            additionalFrom={additionalFrom}
             hoursOfSaleList={hoursOfSaleList}
             constitutionType={applicantForm?.ConstitutionType}
             questions={questions}
@@ -1585,10 +1828,20 @@ export default function RetailLicensee({
             onDirectorChange={handleDirectorChange}
             onAddDirector={addDirector}
             onDeleteDirector={deleteDirector}
+            errors={additionalFormErrors}
             onBack={() => setCurrentStep(2)}
             onContinue={handleNext}
+            CatCode={selectedLicenseCode}
+            starCategory={starCategory}
+            starCategoryRating={starCategoryRating}
+            ConstitutionType={constitutionType}
+            onRestaurantDetailChange={handleRestaurantDetailChange}
+            onAddRestaurantDetail={addRestaurantDetail}
+            ondeleteRestaurantDetail={deleteRestaurantDetail}
+            onClubDetailChange={handleClubDetailChange}
+            onAddClubDetail={addClubDetail}
+            ondeleteClubDetail={deleteClubDetail}
           />
-
         )}
 
         {/* STEP 7 */}
@@ -1596,15 +1849,10 @@ export default function RetailLicensee({
           <HcrPersonalDocumentsStep
             documents={documents}
             uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={
-              handleFileChange
-            }
-            handleDeleteFile={
-              handleDeleteFile
-            }
-            onBack={() =>
-              setCurrentStep(3)
-            }
+            handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => setCurrentStep(3)}
             onContinue={goToSiteDocuments}
           />
         )}
@@ -1614,15 +1862,10 @@ export default function RetailLicensee({
           <HcrSiteDocumentsStep
             documents={documents}
             uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={
-              handleFileChange
-            }
-            handleDeleteFile={
-              handleDeleteFile
-            }
-            onBack={() =>
-              setCurrentStep(4)
-            }
+            handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => setCurrentStep(4)}
             onContinue={goToDeclaration}
           />
         )}
@@ -1633,9 +1876,7 @@ export default function RetailLicensee({
             formData={applicantForm}
             formErrors={formErrors}
             onChange={handleApplicantChange}
-            onBack={() =>
-              setCurrentStep(5)
-            }
+            onBack={() => setCurrentStep(5)}
             onSubmit={handleNext}
           />
         )}
