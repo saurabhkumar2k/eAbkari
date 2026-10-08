@@ -273,7 +273,7 @@ namespace backend.Infrastructure.Repositories.License
                         fileExtension = Path.GetExtension(document.DocumentFile.FileName);
                     }
                     string fileName =
-                        $"{dto.ApplicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}{fileExtension}";
+                        $"{dto.ApplicationIdNo}_{existingDocument.ApplicantSl}_{document.DocId}_{document.DocSl}{fileExtension}";
 
 
                     existingDocument.MobileNo =
@@ -318,7 +318,7 @@ namespace backend.Infrastructure.Repositories.License
 
 
                     string fileName =
-                        $"{dto.ApplicationIdNo}_{applicantSl}_{document.DocId}{fileExtension}";
+                        $"{dto.ApplicationIdNo}_{applicantSl}_{document.DocId}_{document.DocSl}{fileExtension}";
                     
 
                     var entity =
