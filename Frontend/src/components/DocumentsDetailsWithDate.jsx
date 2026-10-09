@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import "../Style/Applicant/DocumentsWithDate.css";
 import { Eye, RefreshCcw, Trash2, Upload, FileText } from "lucide-react";
+import { validateUploadedDocuments } from "../areas/applicant/HCR/HcrApplicationValidation";
 
 const DocumentUploadWithDate = ({
   documents = [],
@@ -10,11 +11,12 @@ const DocumentUploadWithDate = ({
   handleValidityDateChange,
   handleDeleteFile,
   error,
+  setError
 }) => {
   // const [date, setDate] = useState("");
   // console.log(documents)
   // console.log("uploadedFiles",uploadedFiles)
-  console.log("error ----------------------222", error);
+  // console.log("error ----------------------222", error);
 
   // const handleChange = (e) => {
   //   debugger;
@@ -27,6 +29,7 @@ const DocumentUploadWithDate = ({
   //     [name]: fieldValue,
   //   }));
   // };
+
 
   return (
     <div className="form-section">
@@ -100,12 +103,10 @@ const DocumentUploadWithDate = ({
                           type="date"
                           className="form-date-input"
                           value={uploaded?.validityDate || ""}
-                          onChange={(e) =>
-                            handleValidityDateChange?.(
-                              doc.docID,
-                              e.target.value,
-                            )
-                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleValidityDateChange?.(doc.docID, value);
+                          }}
                         />
                       </div>
                     )}
@@ -172,7 +173,9 @@ const DocumentUploadWithDate = ({
                           <button
                             type="button"
                             className="portal-btn btn-danger"
-                            onClick={() => handleDeleteFile(doc.docID)}
+                            onClick={() => {
+                              handleDeleteFile(doc.docID);
+                            }}
                           >
                             <Trash2 size={15} /> Delete
                           </button>
@@ -235,7 +238,9 @@ const DocumentUploadWithDate = ({
                           <button
                             type="button"
                             className="portal-btn btn-danger"
-                            onClick={() => handleDeleteFile(doc.docID)}
+                            onClick={() => {
+                              handleDeleteFile(doc.docID);
+                            }}
                           >
                             <Trash2 size={15} /> Delete
                           </button>
@@ -271,13 +276,13 @@ const DocumentUploadWithDate = ({
                       </>
                     )}
                   </div>
-                  
+
                 </div>
                 {error && error[doc.docID] && (
-                    <div className="error-text-container">
-                      <span className="error-text-all">{error[doc.docID]}</span>
-                    </div>
-                  )}
+                  <div className="error-text-container">
+                    <span className="error-text-all">{error[doc.docID]}</span>
+                  </div>
+                )}
               </div>
             </div>
           );

@@ -185,7 +185,7 @@ const RestaurantDetails = ({
                 <option value="">Select District</option>
 
                 {(districts || []).map((d) => (
-                  <option key={d.did} value={d.districtCode}>
+                  <option key={d.did} value={d.districtCode.trim()}>
                     {d.districtName}
                   </option>
                 ))}
@@ -219,7 +219,7 @@ const RestaurantDetails = ({
                 <option value="">Select Sub Division</option>
 
                 {(subDivisions || []).map((s) => (
-                  <option key={s.subDivisionCode} value={s.subDivisionCode}>
+                  <option key={s.subDivisionCode} value={s.subDivisionCode.trim()}>
                     {s.subDivisionName}
                   </option>
                 ))}
@@ -253,7 +253,7 @@ const RestaurantDetails = ({
                 <option value="">Select Police Station</option>
 
                 {(policeStations || []).map((p) => (
-                  <option key={p.psCode} value={p.psCode}>
+                  <option key={p.psCode} value={p.psCode.trim()}>
                     {p.psName}
                   </option>
                 ))}

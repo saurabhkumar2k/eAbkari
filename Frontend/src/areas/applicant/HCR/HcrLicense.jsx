@@ -802,7 +802,7 @@ export default function HcrLicenseWizard({
         setApplicationId(data.applicationId);
 
         console.log("Generated Id:", data.applicationId);
-        localStorage.setItem("applicationId", data.applicationId);
+        localStorage.setItem("applicationIdNo", data.applicationId);
         localStorage.setItem("catCode", data.catCode);
         alert(`Your Application Reference No. is ${data.applicationId}`);
       }
@@ -813,7 +813,7 @@ export default function HcrLicenseWizard({
         const payload = {
           ...siteForm,
           Regnumber: localStorage.getItem("regId"),
-          ApplicationIdNo: localStorage.getItem("applicationId"),
+          ApplicationIdNo: localStorage.getItem("applicationIdNo"),
           FinYear: "2026-2027",
           CatCode: selectedLicenseId,
         };

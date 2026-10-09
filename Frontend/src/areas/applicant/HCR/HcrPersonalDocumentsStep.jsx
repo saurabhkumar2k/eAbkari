@@ -14,6 +14,7 @@ export default function HcrPersonalDocumentsStep({
   handleValidityDateChange,
   handleDeleteFile,
   errors,
+  setError,
   onBack,
   onContinue,
 }) {
@@ -40,6 +41,7 @@ export default function HcrPersonalDocumentsStep({
           handleValidityDateChange={handleValidityDateChange}
           handleDeleteFile={handleDeleteFile}
           error={errors.errors}
+          setError={setError}
         />
         <div className="error-text-container">
           {errors.isValid === false && <span className="error-text-all">{errors.globalError}</span>}

@@ -275,7 +275,7 @@ export const validateDirectors = (directors) => {
       // if (typeError) {
       //   rowErrors.panFileErr = typeError;
       // }
-      const typeError = validateFileObject(d?.panFile, 2, [".pdf"]);
+      const typeError = validateFileObject(d?.panFile,d?.panFile.name, 2, [".pdf"]);
       if (typeError) {
         rowErrors.panFileErr = typeError;
       }
@@ -292,7 +292,7 @@ export const validateDirectors = (directors) => {
       // if (typeError) {
       //   rowErrors.addressFileErr = typeError;
       // }
-      const typeError = validateFileObject(d?.addressFile, 2, [".pdf"]);
+      const typeError = validateFileObject(d?.addressFile, d?.addressFile.name, 2, [".pdf"]);
       if (typeError) {
         rowErrors.addressFileErr = typeError;
       }

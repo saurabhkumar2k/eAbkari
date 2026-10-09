@@ -262,21 +262,15 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     );
     if (starCategoryErr) errors.starCategory = starCategoryErr;
 
-    if (additionalFrom.starCategory) {
-      const starCategoryRatingErr = selectCheck(
-        additionalFrom.starCategoryRating,
-        "Star category rating",
-      );
-      if (starCategoryRatingErr)
-        errors.starCategoryRating = starCategoryRatingErr;
-    }
-    const restaurantError = validateRestaurantDetails(
-      additionalFrom.restaurantDetails,
-    );
-    // if(restaurantError) errors.restaurantError = restaurantError.errors
-    if (restaurantError && !restaurantError.isValid) {
-      // 1. Assign the row-by-row input field errors array
-      errors.restaurantError = restaurantError.errors;
+        if (additionalFrom.starCategory ==="Y") {
+            const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category rating");
+            if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
+        }
+        const restaurantError = validateRestaurantDetails(additionalFrom.restaurantDetails)
+        // if(restaurantError) errors.restaurantError = restaurantError.errors
+        if (restaurantError && !restaurantError.isValid) {
+            // 1. Assign the row-by-row input field errors array
+            errors.restaurantError = restaurantError.errors;
 
       // 2. 🔥 Assign the missing global text banner string here:
       if (restaurantError.globalError) {

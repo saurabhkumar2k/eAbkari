@@ -2,8 +2,8 @@ import React from "react";
 import { ChevronLeft, ShieldAlert } from "lucide-react";
 
 export default function HcrDeclarationStep({
-  formData,
-  formErrors,
+  declarationFrom,
+  declarationErrors,
   onChange,
   onBack,
   onSubmit,
@@ -36,7 +36,7 @@ export default function HcrDeclarationStep({
           <input
             type="checkbox"
             id="acceptCheck"
-            checked={formData.undertakingAccept || false}
+            checked={declarationFrom?.undertakingAccept || false}
             onChange={(e) =>
               onChange("undertakingAccept", e.target.checked)
             }
@@ -51,9 +51,9 @@ export default function HcrDeclarationStep({
           </label>
         </div>
 
-        {formErrors?.undertakingAccept && (
+        {declarationErrors?.undertakingAccept && (
           <p className="hcr-declaration-error">
-            {formErrors.undertakingAccept}
+            {declarationErrors.undertakingAccept}
           </p>
         )}
       </div>
