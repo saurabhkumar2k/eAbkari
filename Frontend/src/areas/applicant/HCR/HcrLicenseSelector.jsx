@@ -83,20 +83,31 @@ export default function HcrLicenseSelector({
   // =====================================================
   // Continue
   // =====================================================
+  const checkSelected = (ownerTypecode, selectedLicenseeCatCode) => {
+    const error = [];
+
+    if (!ownerTypecode) {
+      error.push({
+        selectedOwnerTypeErr: "Please select Owner Type",
+      });
+    }
+
+    if (!selectedLicenseeCatCode) {
+      error.push({
+        selectedLicenseeErr: "Please select a License Category",
+      });
+    }
+
+    console.log("License Groups Error:", error);
+
+    setLicenseGroupsError(error);
+
+    return error.length === 0;
+  };
+
+
   const handleContinue = () => {
-    const error=[]
-    if (!selectedOwnerType.code) {
-      // alert("Please select Owner Type");
-      error.push({selectedOwnerTypeErr :"Please select Owner Type"});
-    }
-
-    if (!selectedLicensee.licenseeCatCode) {
-      // alert("Please select a Licensee");
-      error.push({selectedLicenseeErr :"Please select a License Category"});
-    }
-
-    if (error.length > 0) {
-      setLicenseGroupsError(error);
+    if (!checkSelected(selectedOwnerType.code, selectedLicensee.licenseeCatCode)) {
       return;
     }
 
@@ -159,10 +170,13 @@ export default function HcrLicenseSelector({
                 const desc =
                   e.target.options[e.target.selectedIndex].text;
 
-                setSelectedOwnerType({
-                  code: code,
+                const selected = {
+                  code,
                   desc: code ? desc : "",
-                });
+                };
+
+                setSelectedOwnerType(selected);
+                checkSelected(e.target.value, selectedLicensee.licenseeCatCode);
               }}
             >
               <option value="">
@@ -227,25 +241,23 @@ export default function HcrLicenseSelector({
                   <button
                     type="button"
                     key={license.licenseeCatCode}
-                    className={`hcr-license-item ${
-                      isSelected
-                        ? "hcr-license-item-selected"
-                        : ""
-                    }`}
-                    onClick={() =>
+                    className={`hcr-license-item ${isSelected ? "hcr-license-item-selected" : ""
+                      }`}
+                    onClick={() => {
                       setSelectedLicensee({
                         licenseeCatCode: license.licenseeCatCode,
                         licenseeCatDesc: license.licenseeCatDesc,
-                      })
-                    }
+                      });
+                      checkSelected(selectedOwnerType.code, license.licenseeCatCode);
+
+                    }}
                   >
                     {/* Radio circle */}
                     <div
-                      className={`hcr-license-radio ${
-                        isSelected
-                          ? "hcr-license-radio-selected"
-                          : ""
-                      }`}
+                      className={`hcr-license-radio ${isSelected
+                        ? "hcr-license-radio-selected"
+                        : ""
+                        }`}
                     >
                       {isSelected && (
                         <span>✓</span>
@@ -272,10 +284,10 @@ export default function HcrLicenseSelector({
 
             </div>
             {licenseGroupsError.some((err) => err.selectedLicenseeErr) && (
-                <span className="error-text">
-                  {licenseGroupsError.find((err) => err.selectedLicenseeErr).selectedLicenseeErr}
-                </span>
-              )}
+              <span className="error-text">
+                {licenseGroupsError.find((err) => err.selectedLicenseeErr).selectedLicenseeErr}
+              </span>
+            )}
           </div>
 
           {/* ================================================= */}
@@ -290,7 +302,9 @@ export default function HcrLicenseSelector({
               <div>
                 <span>Owner Type</span>
 
-                <strong>
+                <strong style={{
+                  color: selectedOwnerType.code ? "inherit" : "red",
+                }}>
                   {selectedOwnerType.code
                     ? selectedOwnerType.desc
                     : "Not selected"}
@@ -301,7 +315,9 @@ export default function HcrLicenseSelector({
               <div>
                 <span>Licensee</span>
 
-                <strong>
+                <strong style={{
+                  color: selectedLicensee.licenseeCatCode ? "inherit" : "red",
+                }} >
                   {selectedLicensee.licenseeCatCode
                     ? selectedLicensee.licenseeCatDesc
                     : "Not selected"}

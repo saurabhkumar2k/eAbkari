@@ -13,13 +13,15 @@ export default function HcrPersonalDocumentsStep({
   handleDocumentFileChange,
   handleValidityDateChange,
   handleDeleteFile,
+  errors,
+  setError,
   onBack,
   onContinue,
 }) {
 
+  // console.log("HcrPersonalDocumentsStep - errors  ", errors);
 
 
-  
   return (
     <div className="form-group full-width ">
       <div className="hcr-step-header">
@@ -38,7 +40,12 @@ export default function HcrPersonalDocumentsStep({
           handleDocumentFileChange={handleDocumentFileChange}
           handleValidityDateChange={handleValidityDateChange}
           handleDeleteFile={handleDeleteFile}
+          error={errors.errors}
+          setError={setError}
         />
+        <div className="error-text-container">
+          {errors.isValid === false && <span className="error-text-all">{errors.globalError}</span>}
+        </div>
 
         <div className="hcr-step-navigation">
 

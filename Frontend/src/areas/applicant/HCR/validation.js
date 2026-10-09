@@ -1,6 +1,7 @@
 const panRegx = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const mobileRegex = /^[6-9][0-9]{9}$/;
+const DateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
 export const Cat_Label = Object.freeze({
   "03": "Hotel",
@@ -148,15 +149,15 @@ export const validatePdfFileType = (
  * @param {string[]} allowedTypes - Array of permitted mime-types (e.g., ['application/pdf']).
  * @returns {string|null} - Error message string if invalid, or null if perfectly valid.
  */
-export const validateFileObject = (file, maxMb, allowedExtensions) => {
+export const validateFileObject = (file, fileName, maxMb, allowedExtensions) => {
   // 1. Check existence
   if (!file) {
     return "File is required";
   }
 
-  const fileName = file.name || "";
+  // const fileName = file.name || "";
   const maxBytes = maxMb * 1024 * 1024;
-  const nameParts = fileName.split(".");
+  const nameParts = file.name.split(".");
 
   // Automatically generate a clean field name from the file name (e.g., "pan_card_doc.pdf" -> "Pan Card Doc")
   const baseName = nameParts.slice(0, -1).join(".");
@@ -270,8 +271,11 @@ export const validateDirectors = (directors) => {
     if (!d?.panFile) {
       rowErrors.panFileErr = "PAN card document is required";
     } else {
-
-      const typeError = validateFileObject(d?.panFile, 2, [".pdf"]);
+      // const typeError = validatePdfFileType(d.panFile, "PAN card document");
+      // if (typeError) {
+      //   rowErrors.panFileErr = typeError;
+      // }
+      const typeError = validateFileObject(d?.panFile,d?.panFile.name, 2, [".pdf"]);
       if (typeError) {
         rowErrors.panFileErr = typeError;
       }
@@ -281,8 +285,14 @@ export const validateDirectors = (directors) => {
     if (!d?.addressFile) {
       rowErrors.addressFileErr = "Address proof document is required";
     } else {
-  
-      const typeError = validateFileObject(d?.addressFile, 2, [".pdf"]);
+      // const typeError = validatePdfFileType(
+      //   d.addressFile,
+      //   "Address proof document",
+      // );
+      // if (typeError) {
+      //   rowErrors.addressFileErr = typeError;
+      // }
+      const typeError = validateFileObject(d?.addressFile, d?.addressFile.name, 2, [".pdf"]);
       if (typeError) {
         rowErrors.addressFileErr = typeError;
       }
@@ -525,3 +535,38 @@ export const validateTrainDetails = (routes) => {
 
   return result;
 };
+
+export const validateDateOnly = (value, fieldName) => {
+  console.log("validateDateOnly - value:", value, "fieldName:", fieldName);
+
+  if (!value || value.toString().trim() === "") {
+    return `${fieldName} is required`;
+  }
+
+  const dateStr = value.toString().trim();
+
+  // Strict YYYY-MM-DD format
+  if (!DateRegex.test(dateStr)) {
+    return `${fieldName} must be a valid date in YYYY-MM-DD format without time`;
+  }
+
+  const [year, month, day] = dateStr.split("-").map(Number);
+
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  const isValidCalendarDate =
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() + 1 === month &&
+    date.getUTCDate() === day;
+
+  if (!isValidCalendarDate) {
+    return `${fieldName} is not a valid calendar date`;
+  }
+
+  return "";
+};
+
+
+
+
+

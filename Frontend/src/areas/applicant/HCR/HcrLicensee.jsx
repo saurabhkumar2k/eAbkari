@@ -21,6 +21,7 @@ import {
   validateSiteData,
   validateTrainData,
   validateApplicantData,
+  validateUploadedDocuments,
 } from "./HcrApplicationValidation";
 
 import {
@@ -53,8 +54,9 @@ export default function HcrLicensee({
   // =========================================================
   // Forms
   // =========================================================
-
   const [applicantForm, setApplicantForm] = useState(createApplicant());
+
+  const [declarationFrom, setDeclarationFrom] = useState({ undertakingAccept: false });
 
   const [siteForm, setSiteForm] = useState(createHCRApplicant());
 
@@ -119,8 +121,9 @@ export default function HcrLicensee({
   const [trainFromErrors, setTrainFromErrors] = useState({});
 
   const HCRTrainFieldsCategories = ["52", "43"];
-
+  const [personalDocumentsErrors, setPersonalDocumentsErrors] = useState({});
   const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
+  const [declarationErrors, setDeclarationErrors] = useState({});
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -261,6 +264,19 @@ export default function HcrLicensee({
     }));
   };
 
+  const handleDeclarationChange = (field, value) => {
+    console.log("handleDeclarationChange field:", field, "value:", value, declarationFrom);
+    setDeclarationFrom((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setDeclarationErrors((prev) => ({
+      ...prev,
+      [field]: null,
+    }));
+  };
+
   const validateApplicant = () => {
     debugger;
     const errors = validateApplicantData(applicantForm);
@@ -344,7 +360,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const handleAdditionalChange = (field, value) => {
-    // console.log("Test 3333333333333")
+    // console.log("Test 3333333333333",additionalFrom)
     setAdditionalFrom((prev) => ({
       ...prev,
       [field]: value,
@@ -414,6 +430,21 @@ export default function HcrLicensee({
       return false;
     }
 
+    return true;
+  };
+
+  const validateApplicationDocuments = (documents, uploadedFiles, type) => {
+    const errors = validateUploadedDocuments(documents, uploadedFiles);
+    console.log("validateApplicationDocuments errors:", errors);
+
+    if (type === "P" && ((errors && errors.isValid === false) || (errors && errors.errors && Object.keys(errors.errors).length > 0))) {
+      setPersonalDocumentsErrors(errors);
+      return false;
+    }
+    if (type === "S" && ((errors && errors.isValid === false) || (errors && errors.errors && Object.keys(errors.errors).length > 0))) {
+      setSiteDocumentsErrors(errors);
+      return false;
+    }
     return true;
   };
 
@@ -650,6 +681,8 @@ export default function HcrLicensee({
     // };
     try {
       debugger;
+
+      /* Get ongoing Application ID */
       const getAppId = await fetch(
         `http://localhost:5214/api/CommonLicense/GetPendingApplicationIds?catCode=${selectedLicenseCode}&regID=${regId}`,
         {
@@ -678,13 +711,25 @@ export default function HcrLicensee({
 
       localStorage.setItem("applicationIdNo", applicationIdNo);
 
+      /* Bind Applicant Data using Application Id */
       BindPendingAppData(applicationIdNo);
+
+      /* Bind Site Data using Application Id */
+      BindPendingSiteData(applicationIdNo);
+
+      /* /api/CommonHCR/GetAdditionalHCRCompleteDetails */
+
+
       return true;
     } catch (error) {
       return false;
     }
   };
 
+  /**
+   * Binds pending application data to the applicant form
+   * @param {string} applicationIdNo - The application ID number
+   */
   const BindPendingAppData = async (applicationIdNo) => {
     debugger;
     try {
@@ -741,8 +786,67 @@ export default function HcrLicensee({
         ownerType,
         catCode: selectedLicenseCode,
       }));
-    } catch (error) {}
+    } catch (error) { }
   };
+
+  /**
+    * Binds pending site data to the site form 
+   * @param {string} applicationIdNo - The application ID number
+    * 
+   */
+  const BindPendingSiteData = async (applicationIdNo) => {
+    try {
+
+      const response = await fetch(
+        `http://localhost:5214/api/CommonHCR/GetSiteDetails/${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load site details");
+      }
+
+      const data = await response.json();
+
+      if (data.state) {
+        await fetchDistricts(data.state, "siteForm");
+      }
+
+      // Map the lowercase API keys to your uppercase state keys
+      setSiteForm((prev) => ({
+        ...prev,
+        SiteName: data.siteName || "",
+        SiteAddress: data.siteAddress || "",
+        SiteAddress2: data.siteAddress2 || "",
+
+        State: data.state ? String(data.state).trim() : "",
+
+        DistrictCode: data.districtCode ? String(data.districtCode).trim() : "",
+
+        SubDivisionCode: data.subDivisionCode ? String(data.subDivisionCode).trim() : "",
+
+        PoliceStationCode: data.policeStationCode ? String(data.policeStationCode).trim() : "",
+
+        SitePin: data.sitePin || "",
+
+        SiteAssembly: data.siteAssembly || "",
+
+        SiteWard: data.siteWard || "",
+
+        SiteEmail: data.siteEmail || "",
+
+        SiteMobile: data.siteMobile || "",
+
+        SiteLandline: data.siteLandline || "",
+
+        SiteFax: data.siteFax || "",
+
+        SitePan: data.sitePan || "",
+      }));
+    } catch (error) {
+
+    }
+
+  }
 
   // =========================================================
   // Questions
@@ -782,9 +886,9 @@ export default function HcrLicensee({
 
           return savedAnswer
             ? {
-                ...question,
-                answer: savedAnswer.answerGiven,
-              }
+              ...question,
+              answer: savedAnswer.answerGiven,
+            }
             : question;
         }),
       );
@@ -799,9 +903,9 @@ export default function HcrLicensee({
       prev.map((question) =>
         question.questionId === questionId
           ? {
-              ...question,
-              answer,
-            }
+            ...question,
+            answer,
+          }
           : question,
       ),
     );
@@ -817,11 +921,11 @@ export default function HcrLicensee({
         return prev.map((item) =>
           item.questionId === questionId
             ? {
-                ...item,
-                applicationIdNo: applicationIdNo || "",
-                answerGiven: answer,
-                slNo: index + 1,
-              }
+              ...item,
+              applicationIdNo: applicationIdNo || "",
+              answerGiven: answer,
+              slNo: index + 1,
+            }
             : item,
         );
       }
@@ -1243,6 +1347,37 @@ export default function HcrLicensee({
       });
   }, [currentStep, selectedLicensee]);
 
+  const handleValidityDateChange = (docId, validityDate) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [docId]: {
+        ...prev[docId],
+        validityDate,
+      },
+    }));
+
+    // Clear errors for this specific docId inside the nested errors object
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
+  };
+
   const handleFileChange = (key, file) => {
     console.log("handleDocumentFileChange", key, file);
     if (!file) return;
@@ -1254,16 +1389,27 @@ export default function HcrLicensee({
         previewUrl: URL.createObjectURL(file),
       },
     }));
-  };
 
-  const handleValidityDateChange = (docId, validityDate) => {
-    setUploadedFiles((prev) => ({
-      ...prev,
-      [docId]: {
-        ...prev[docId],
-        validityDate,
-      },
-    }));
+    // Clear errors for this specific key inside the nested errors object
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
+    }
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
+    }
   };
 
   const handleDeleteFile = (key) => {
@@ -1500,10 +1646,10 @@ export default function HcrLicensee({
             value === 1
             ? "true"
             : value === false ||
-                value === "false" ||
-                value === "False" ||
-                value === "0" ||
-                value === 0
+              value === "false" ||
+              value === "False" ||
+              value === "0" ||
+              value === 0
               ? "false"
               : String(value ?? "")
           : (value ?? "");
@@ -1665,7 +1811,7 @@ export default function HcrLicensee({
   const uploadDocuments = async () => {
     try {
       debugger;
-      console.log("uploadDocuments", uploadDocuments);
+      // console.log("uploadDocuments", uploadDocuments);
       const filesToUpload = documents.filter(
         (doc) => uploadedFiles[doc.docID]?.file,
       );
@@ -1715,7 +1861,8 @@ export default function HcrLicensee({
       console.log("response", response);
 
       if (!response.ok) {
-        throw new Error(await response.text());
+        return false;
+        // throw new Error(await response.text());
       }
 
       return true;
@@ -1737,6 +1884,10 @@ export default function HcrLicensee({
 
   const submitApplication = async () => {
     try {
+      if (applicantForm.applicationIdNo !== applicationIdNo) {
+        return false;
+      }
+
       const finalSubmission = {
         ApplicationIdNo:
           applicationIdNo || localStorage.getItem("applicationIdNo"),
@@ -1771,7 +1922,6 @@ export default function HcrLicensee({
         status: "Filing Registered",
       });
 
-      setSubmitSuccess(true);
 
       if (showToast) {
         showToast("HCR Excise application submitted successfully!");
@@ -1792,13 +1942,19 @@ export default function HcrLicensee({
   // =========================================================
 
   const goToSiteDocuments = async () => {
-    await uploadDocuments();
-    setCurrentStep(5);
+    if (!validateApplicationDocuments(documents, uploadedFiles, "P")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
   };
 
   const goToDeclaration = async () => {
-    await uploadDocuments();
-    setCurrentStep(6);
+    if (!validateApplicationDocuments(documents, uploadedFiles, "S")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
   };
 
   const handleNext = async () => {
@@ -1868,17 +2024,37 @@ export default function HcrLicensee({
     }
 
     if (currentStep === 4) {
-      await goToSiteDocuments();
+      const success = await goToSiteDocuments();
+      // console.log("goToSiteDocuments success", success);
+
+      if (success) {
+        setCurrentStep(5);
+      }
       return;
     }
 
     if (currentStep === 5) {
-      await goToDeclaration();
+      const success = await goToDeclaration();
+
+      if (success) {
+        setCurrentStep(6);
+      }
       return;
     }
 
     if (currentStep === 6) {
-      await submitApplication();
+      console.log("Submitting application...", declarationFrom);
+      if (!declarationFrom.undertakingAccept) {
+        setDeclarationErrors({
+          undertakingAccept: "You must accept the undertaking to proceed.",
+        });
+        return;
+      }
+      const success = await submitApplication();
+      if (success) {
+        setSubmitSuccess(true);
+      }
+      return;
     }
   };
 
@@ -1926,9 +2102,8 @@ export default function HcrLicensee({
             <div
               className="h-full bg-blue-600 transition-all"
               style={{
-                width: `${
-                  ((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
-                }%`,
+                width: `${((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
+                  }%`,
               }}
             />
           </div>
@@ -1948,13 +2123,12 @@ export default function HcrLicensee({
                       w-11 h-11 rounded-full
                       flex items-center justify-center
                       font-black text-sm border-2
-                      ${
-                        isCompleted
-                          ? "bg-emerald-600 border-emerald-600 text-white"
-                          : isActive
-                            ? "bg-blue-600 border-blue-600 text-white scale-110"
-                            : "bg-white border-slate-200 text-slate-400"
-                      }
+                      ${isCompleted
+                      ? "bg-emerald-600 border-emerald-600 text-white"
+                      : isActive
+                        ? "bg-blue-600 border-blue-600 text-white scale-110"
+                        : "bg-white border-slate-200 text-slate-400"
+                    }
                     `}
                 >
                   {isCompleted ? <Check className="w-4 h-4" /> : step.num}
@@ -1963,13 +2137,12 @@ export default function HcrLicensee({
                 <span
                   className={`
                       text-[11px] font-extrabold mt-2
-                      ${
-                        isActive
-                          ? "text-blue-600"
-                          : isCompleted
-                            ? "text-emerald-700"
-                            : "text-slate-500"
-                      }
+                      ${isActive
+                      ? "text-blue-600"
+                      : isCompleted
+                        ? "text-emerald-700"
+                        : "text-slate-500"
+                    }
                     `}
                 >
                   {step.label}
@@ -2065,10 +2238,30 @@ export default function HcrLicensee({
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
+            errors={personalDocumentsErrors}
+            setError={setPersonalDocumentsErrors}
             onBack={() => setCurrentStep(3)}
-            onContinue={goToSiteDocuments}
+            onContinue={handleNext}
           />
         )} */}
+
+        {currentStep === 4 && (
+          <HcrPersonalDocumentsStep
+            documents={documents}
+            uploadedFiles={uploadedFiles}
+            handleDocumentFileChange={handleFileChange}
+            handleValidityDateChange={handleValidityDateChange}
+            handleDeleteFile={handleDeleteFile}
+            onBack={() => {
+              if (HCRTrainFieldsCategories.includes(selectedLicenseCode)) {
+                setCurrentStep(2);
+              } else {
+                setCurrentStep(3);
+              }
+            }}
+            onContinue={goToSiteDocuments}
+          />
+        )} 
 
         {currentStep === 4 && (
           <HcrPersonalDocumentsStep
@@ -2096,17 +2289,18 @@ export default function HcrLicensee({
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
+            errors={siteDocumentsErrors}
             onBack={() => setCurrentStep(4)}
-            onContinue={goToDeclaration}
+            onContinue={handleNext}
           />
         )}
 
         {/* STEP 9 */}
         {currentStep === 6 && (
           <HcrDeclarationStep
-            formData={applicantForm}
-            formErrors={formErrors}
-            onChange={handleApplicantChange}
+            declarationFrom={declarationFrom}
+            declarationErrors={declarationErrors}
+            onChange={handleDeclarationChange}
             onBack={() => setCurrentStep(5)}
             onSubmit={handleNext}
           />
