@@ -65,7 +65,7 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
-        
+
 
         [HttpPost]
         [Route("SaveAdditionalHCRCompleteDetails")]
@@ -143,9 +143,9 @@ namespace backend.API.Licence.Controllers
 
         [HttpPost]
         [Route("SaveAndUpdateL20TrainDetails")]
-        public async Task<IActionResult>SaveAndUpdateL20TrainDetails([FromBody] SaveTrainDetailsRequestDto dto)
+        public async Task<IActionResult> SaveAndUpdateL20TrainDetails([FromBody] SaveTrainDetailsRequestDto dto)
         {
-            if (dto == null )
+            if (dto == null)
             {
                 return BadRequest("Invalid Request");
             }
@@ -160,7 +160,7 @@ namespace backend.API.Licence.Controllers
                     WriteIndented = true
                 })
             );
-             var result = await _HCRservice.SaveAndUpdateL20TrainDetailsService(dto);
+            var result = await _HCRservice.SaveAndUpdateL20TrainDetailsService(dto);
 
             // return Ok(result);
             return Ok(new
@@ -168,5 +168,21 @@ namespace backend.API.Licence.Controllers
                 message = result
             });
         }
+        [HttpGet]
+        [Route("GetL20DetailsApplicationIDWise")]
+        public async Task<IActionResult> GetL20DetailsApplicationIDWise([FromQuery] string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("Required ApplicationId is missing.");
+            }
+            var result = await _HCRservice.GetL20DetailsApplicationIDWiseService(applicationIdNo);
+            if (result == null)
+            {
+                return BadRequest("Record not Found");
+            }
+            return Ok(result);
+        }
+
     }
 }

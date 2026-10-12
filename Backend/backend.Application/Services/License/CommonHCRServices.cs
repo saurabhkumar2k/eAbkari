@@ -82,7 +82,7 @@ namespace backend.Application.Services.License
             }
 
         }
-       
+
         public async Task<List<GetApplicationAnswerResponseDto>?> GetAppIdWiseAnswers(string applicationIdNo)
         {
             try
@@ -134,7 +134,7 @@ namespace backend.Application.Services.License
         //--ending
         public async Task<string> SaveAndUpdateL20TrainDetailsService(SaveTrainDetailsRequestDto dto)
         {
-             try
+            try
             {
                 return await _HcrRepositry.SaveAndUpdateL20TrainDetailsRepository(dto);
             }
@@ -143,6 +143,19 @@ namespace backend.Application.Services.License
                 return "Operation Failed";
             }
         }
+        public async Task<SaveTrainDetailsRequestDto?> GetL20DetailsApplicationIDWiseService(string applicationIdNo)
+        {
+            try
+            {
+                return await _HcrRepositry.GetL20DetailsApplicationIDWiseRepository(applicationIdNo);
+            }
+            catch
+            {
+
+                return null;
+            }
+        }
+
 
     }
 }
