@@ -670,6 +670,54 @@ namespace backend.Infrastructure.Repositories.License
                 throw;
             }
         }
+        public async Task<SaveTrainDetailsRequestDto?> GetL20DetailsApplicationIDWiseRepository(string applicationIdNo)
+        {
+            try
+            {
+                var TrainDetails = await _context.TrainDetails
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .Select(x => new SaveTrainDetailsRequestDto
+                {
+                    ApplicationIdNo = x.ApplicationIdNo,
+                    TrainName = x.TrainName,
+                    TrainNumber = x.TrainNumber,
+                    OriginateFrom = x.OriginateFrom,
+                    TempAddress = x.TempAddress,
+                    CompanyName = x.CompanyName,
+                    NumberOfSeatCovers = x.NumberOfSeatCovers,
+                    NumberOfDispensingCounter = x.NumberOfDispensingCounter,
+                    NumberOfManagers = x.NumberOfManagers,
+                    NumberOfKitchenStaff = x.NumberOfKitchenStaff,
+                    NumberOfUtlityEmployees = x.NumberOfUtlityEmployees,
+                    NumberOfBarAttendent = x.NumberOfBarAttendent,
+                    NumberOfcompartments = x.NumberOfcompartments,
+                })
+                    .FirstOrDefaultAsync();
+
+                if (TrainDetails == null)
+                {
+                    return null;
+                }
+
+                var trainRoutes = await _context.AddtionalTrainRouteDetails
+                                 .Where(x => x.ApplicationIdNo == applicationIdNo)
+                                 .Select(x => new TrainRouteDetailsDto
+                                 {
+                                     RouteDescription = x.RouteDescription
+                                 })
+                                 .ToListAsync();
+
+                TrainDetails.Routes = trainRoutes;
+
+                return TrainDetails;
+
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                return null;
+            }
+        }
 
     }
 }

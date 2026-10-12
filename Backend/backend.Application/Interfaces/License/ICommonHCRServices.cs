@@ -20,6 +20,6 @@ namespace backend.Application.Interfaces.License
 
         //--Ending(RM)
         Task<string> SaveAndUpdateL20TrainDetailsService(SaveTrainDetailsRequestDto dto);
-
+        Task<SaveTrainDetailsRequestDto?> GetL20DetailsApplicationIDWiseService(string applicationIdNo);
     }
 }
