@@ -370,19 +370,21 @@ const TrainDetails = ({
                 onChange={onTrainDetailChange}
                 onAdd={onAddTrainDetail}
                 onDelete={ondeleteTrainDetail}
-                errors={errors?.trainError}
+                errors={errors?.routes?.errors}
               />
             )}
             <div className="error-text-container">
-              {errors?.TrainRuteGlobalError && (
+              {errors?.routes?.globalError && (
                 <span className="error-text-all">
-                  {errors?.TrainRuteGlobalError}
+                  {errors?.routes?.globalError}
                 </span>
               )}
             </div>
           </div>
         </div>
+
       </div>
+
     </div>
   );
 };

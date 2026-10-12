@@ -1,18 +1,20 @@
 import {
-    nameCheck,
-    panCheck,
-    mobileCheck,
-    emailCheck,
-    pinCheck,
-    delhiPinCheck,
-    requiredCheck,
-    selectCheck,
-    validateSiteNum,
-    checkAnswersRequired,
-    validateDirectors,
-    validateRestaurantDetails,
-    validateFileObject,
-    validateDateOnly
+  nameCheck,
+  panCheck,
+  mobileCheck,
+  emailCheck,
+  pinCheck,
+  delhiPinCheck,
+  requiredCheck,
+  selectCheck,
+  validateSiteNum,
+  checkAnswersRequired,
+  validateDirectors,
+  validateRestaurantDetails,
+  validateFileObject,
+  validateDateOnly,
+  validateClubDetails,
+  validateTrainRoutes
 } from "./validation";
 
 export const validateApplicantData = (applicantForm) => {
@@ -125,7 +127,7 @@ export const validateTrainData = (trainFrom, CatCode) => {
     if (TempAddressErr) errors.TempAddress = TempAddressErr;
 
     const OriginateFromErrErr = requiredCheck(trainFrom.OriginateFromErr, "Train Originate from");
-    if (OriginateFromErrErr) errors.OriginateFromErr = OriginateFromErrErr;
+    if (OriginateFromErrErr) errors.OriginateFrom = OriginateFromErrErr;
 
     const NumberOfcompartmentsErr = validateSiteNum(
       trainFrom.NumberOfcompartments,
@@ -174,6 +176,9 @@ export const validateTrainData = (trainFrom, CatCode) => {
     );
     if (numberOfUtlityEmployeesErr)
       errors.NumberOfUtlityEmployees = numberOfUtlityEmployeesErr;
+
+    const routesErr = validateTrainRoutes(trainFrom.routes);
+    if (routesErr) errors.routes = routesErr;
   }
 
   return errors;
@@ -183,7 +188,7 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
   debugger;
   const errors = {};
 
-  // console.log("HcrLicensee - validateAdditionalRestaurant additionalFrom  ", additionalFrom)
+  console.log("HcrLicensee - validateAdditionalRestaurant additionalFrom  ", additionalFrom)
   // console.log("HcrLicensee - validateAdditionalRestaurant questionsAnswers  ", questions)
 
   //additionalFrom
@@ -262,15 +267,15 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     );
     if (starCategoryErr) errors.starCategory = starCategoryErr;
 
-        if (additionalFrom.starCategory ==="Y") {
-            const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category rating");
-            if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
-        }
-        const restaurantError = validateRestaurantDetails(additionalFrom.restaurantDetails)
-        // if(restaurantError) errors.restaurantError = restaurantError.errors
-        if (restaurantError && !restaurantError.isValid) {
-            // 1. Assign the row-by-row input field errors array
-            errors.restaurantError = restaurantError.errors;
+    if (additionalFrom.starCategory === "Y") {
+      const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category rating");
+      if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
+    }
+    const restaurantError = validateRestaurantDetails(additionalFrom.restaurantDetails)
+    // if(restaurantError) errors.restaurantError = restaurantError.errors
+    if (restaurantError && !restaurantError.isValid) {
+      // 1. Assign the row-by-row input field errors array
+      errors.restaurantError = restaurantError.errors;
 
       // 2. 🔥 Assign the missing global text banner string here:
       if (restaurantError.globalError) {
@@ -279,10 +284,10 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     }
   }
 
-    if ((CatCode === "03" || CatCode === "33")) {
+  if (CatCode === "03" || CatCode === "33") {
 
-        const totalRoomErr = validateSiteNum(additionalFrom.totalRoom, "Total No. Rooms");
-        if (totalRoomErr) errors.totalRoom = totalRoomErr;
+    const totalRoomErr = validateSiteNum(additionalFrom.totalRoom, "Total No. Rooms");
+    if (totalRoomErr) errors.totalRoom = totalRoomErr;
 
     const staffStrengthErr = validateSiteNum(
       additionalFrom.staffStrength,
@@ -290,13 +295,13 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     );
     if (staffStrengthErr) errors.staffStrength = staffStrengthErr;
 
-        const starCategoryErr = selectCheck(additionalFrom.starCategory, "Star category approval by Department");
-        if (starCategoryErr) errors.starCategory = starCategoryErr;
+    const starCategoryErr = selectCheck(additionalFrom.starCategory, "Star category approval by Department");
+    if (starCategoryErr) errors.starCategory = starCategoryErr;
 
-        if (additionalFrom.starCategory === "Y") {
-            const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category");
-            if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
-        }
+    if (additionalFrom.starCategory === "Y") {
+      const starCategoryRatingErr = selectCheck(additionalFrom.starCategoryRating, "Star category");
+      if (starCategoryRatingErr) errors.starCategoryRating = starCategoryRatingErr;
+    }
 
     const HasStoreProvisionYNErr = selectCheck(
       additionalFrom.HasStoreProvisionYN,
@@ -305,13 +310,13 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     if (HasStoreProvisionYNErr)
       errors.HasStoreProvisionYN = HasStoreProvisionYNErr;
 
-        if (additionalFrom.HasStoreProvisionYN === "Y") {
-            const StoreLocationInHotelErr = selectCheck(additionalFrom.StoreLocationInHotel, "Location of store in Hotel");
-            if (StoreLocationInHotelErr) errors.StoreLocationInHotel = StoreLocationInHotelErr;
-        }
+    if (additionalFrom.HasStoreProvisionYN === "Y") {
+      const StoreLocationInHotelErr = selectCheck(additionalFrom.StoreLocationInHotel, "Location of store in Hotel");
+      if (StoreLocationInHotelErr) errors.StoreLocationInHotel = StoreLocationInHotelErr;
+    }
 
-        const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
-        if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
+    const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+    if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
     const religiousPlaceDistErr = selectCheck(
       additionalFrom.religiousPlaceDist,
@@ -324,9 +329,9 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     if (directorsErr) errors.directors = directorsErr;
   }
 
-    if ((CatCode === "04" || CatCode === "30") || (CatCode === '05' || CatCode === '31')) {
-        const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
-        if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
+  if (CatCode === "04" || CatCode === "30" || CatCode === '05' || CatCode === '31') {
+    const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+    if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
     const religiousPlaceDistErr = selectCheck(
       additionalFrom.religiousPlaceDist,
@@ -343,6 +348,60 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
 
     const directorsErr = validateDirectors(additionalFrom.directors);
     if (directorsErr) errors.directors = directorsErr;
+  }
+
+  if (CatCode === "01" || CatCode === "35" || CatCode === "08" || CatCode === "36") {
+    const numberOfClubMemberErr = validateSiteNum(
+      additionalFrom.numberOfClubMember,
+      "Number Of Club Member",
+    );
+    if (numberOfClubMemberErr) errors.numberOfClubMember = numberOfClubMemberErr;
+
+    const hourOfSaleErr = selectCheck(
+      additionalFrom.hourOfSale,
+      "Hour of Sale",
+    );
+    if (hourOfSaleErr) errors.hourOfSale = hourOfSaleErr;
+
+    const totalAreaErr = validateSiteNum(
+      additionalFrom.totalArea,
+      "Total Area",
+    );
+    if (totalAreaErr) errors.totalArea = totalAreaErr;
+
+    const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
+    if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
+
+    const religiousPlaceDistErr = selectCheck(
+      additionalFrom.religiousPlaceDist,
+      "Religious Place Distance",
+    );
+    if (religiousPlaceDistErr)
+      errors.religiousPlaceDist = religiousPlaceDistErr;
+
+    const ConstitutionTypeErr = selectCheck(
+      additionalFrom.ConstitutionType,
+      "Constitution Type",
+    );
+    if (ConstitutionTypeErr) errors.ConstitutionType = ConstitutionTypeErr;
+
+    if (additionalFrom.ConstitutionType == "1") {
+      const CINNoErr = validateSiteNum(
+        additionalFrom.CINNo,
+        "CIN No",
+      );
+      if (CINNoErr) errors.CINNo = CINNoErr;
+    }
+
+    const CompanyFirmPANNoErr = panCheck(additionalFrom.CompanyFirmPANNo);
+    if (CompanyFirmPANNoErr) errors.CompanyFirmPANNo = CompanyFirmPANNoErr;
+
+    const directorsErr = validateDirectors(additionalFrom.directors);
+    if (directorsErr) errors.directors = directorsErr;
+
+    const clubDetailsErr = validateClubDetails(additionalFrom.clubDetails);
+    if (clubDetailsErr) errors.clubDetails = clubDetailsErr;
+
   }
 
   const TINNumberErr = requiredCheck(additionalFrom.TINNumber, "Tin Number");
@@ -393,76 +452,76 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
  * @returns {Object} - Object containing isValid, globalError, and an errors map.
  */
 export const validateUploadedDocuments = (filesToUpload, uploadedFiles) => {
-    const result = {
-        isValid: true,
-        globalError: "",
-        errors: {}, // Structured as an object key-value map for lightning-fast docID lookups
-    };
+  const result = {
+    isValid: true,
+    globalError: "",
+    errors: {}, // Structured as an object key-value map for lightning-fast docID lookups
+  };
 
-    // 1. Guard check: If there are no documents configured to upload, no validation needed
-    if (!Array.isArray(filesToUpload) || filesToUpload.length === 0) {
-        return result;
-    }
-
-    // 2. Guard check: If there are documents required but no uploads tracker exists
-    if (!uploadedFiles || (typeof uploadedFiles !== "object") || (Object.keys(uploadedFiles).length === 0)) {
-
-        result.isValid = false;
-        result.globalError = "Please upload all required files";
-
-        // Populate individual field errors for mandatory records
-        filesToUpload.forEach((doc) => {
-            if (doc.isMandatory === "Y") {
-                result.errors[doc.docID] = "Document file is required";
-            }
-        });
-        return result;
-    }
-
-    // 3. Iterate through each document configuration to run checks
-    for (let i = 0; i < filesToUpload.length; i++) {
-        const doc = filesToUpload[i];
-        const docId = doc.docID;
-        const uploaded = uploadedFiles[docId];
-        const hasFile = !!uploaded?.file;
-
-        // Fallback cleanly to docID if docDesc is missing
-        const documentName = doc.docDesc || `Document ID ${docId}`;
-        let docError = "";
-
-        // Mandatory document validation
-        if (doc.isMandatory === "Y" && !hasFile) {
-            // docError = `${documentName} is required`;
-            docError = `Document is required`;
-        }
-        // File structure and format check (runs if a file is present)
-        else if (hasFile) {
-            const fileTypeError = validateFileObject(uploaded.file, "Document", 2, [".pdf"]);
-            if (fileTypeError) {
-                docError = fileTypeError;
-            }
-        }
-
-        // Conditional validity date validation (if no file errors were found yet)
-        if (!docError && (doc.isValid === true || doc.isValid === "Y")) {
-            const dateError = validateDateOnly(uploaded.validityDate, "Date of Validity");
-            if (dateError) {
-                docError = dateError;
-            }
-        }
-
-        // Assign the error message directly to the docID key if a check fails
-        if (docError) {
-            result.isValid = false;
-            result.errors[docId] = docError;
-        }
-    }
-
-    // Set a global error notification message if any inner elements failed
-    // if (!result.isValid) {
-    //     result.globalError = "Please fix the document errors before submitting";
-    // }
-
+  // 1. Guard check: If there are no documents configured to upload, no validation needed
+  if (!Array.isArray(filesToUpload) || filesToUpload.length === 0) {
     return result;
+  }
+
+  // 2. Guard check: If there are documents required but no uploads tracker exists
+  if (!uploadedFiles || (typeof uploadedFiles !== "object") || (Object.keys(uploadedFiles).length === 0)) {
+
+    result.isValid = false;
+    result.globalError = "Please upload all required files";
+
+    // Populate individual field errors for mandatory records
+    filesToUpload.forEach((doc) => {
+      if (doc.isMandatory === "Y") {
+        result.errors[doc.docID] = "Document file is required";
+      }
+    });
+    return result;
+  }
+
+  // 3. Iterate through each document configuration to run checks
+  for (let i = 0; i < filesToUpload.length; i++) {
+    const doc = filesToUpload[i];
+    const docId = doc.docID;
+    const uploaded = uploadedFiles[docId];
+    const hasFile = !!uploaded?.file;
+
+    // Fallback cleanly to docID if docDesc is missing
+    const documentName = doc.docDesc || `Document ID ${docId}`;
+    let docError = "";
+
+    // Mandatory document validation
+    if (doc.isMandatory === "Y" && !hasFile) {
+      // docError = `${documentName} is required`;
+      docError = `Document is required`;
+    }
+    // File structure and format check (runs if a file is present)
+    else if (hasFile) {
+      const fileTypeError = validateFileObject(uploaded.file, "Document", 2, [".pdf"]);
+      if (fileTypeError) {
+        docError = fileTypeError;
+      }
+    }
+
+    // Conditional validity date validation (if no file errors were found yet)
+    if (!docError && (doc.isValid === true || doc.isValid === "Y")) {
+      const dateError = validateDateOnly(uploaded.validityDate, "Date of Validity");
+      if (dateError) {
+        docError = dateError;
+      }
+    }
+
+    // Assign the error message directly to the docID key if a check fails
+    if (docError) {
+      result.isValid = false;
+      result.errors[docId] = docError;
+    }
+  }
+
+  // Set a global error notification message if any inner elements failed
+  // if (!result.isValid) {
+  //     result.globalError = "Please fix the document errors before submitting";
+  // }
+
+  return result;
 };
 

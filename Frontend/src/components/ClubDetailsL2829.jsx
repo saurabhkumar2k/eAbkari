@@ -6,6 +6,8 @@ import "../Style/ApplyLicense.css";
 import "../Style/Club.css"
 
 const ClubDetailsL2829 = ({ ClubDetails, onChange, onAdd, onDelete, ConstitutionType, errors }) => {
+
+  console.log("ClubDetailsL2829 errors:", errors); 
   return (
     <div className="restaurants-section">
       {/* Section Title */}
@@ -56,6 +58,7 @@ const ClubDetailsL2829 = ({ ClubDetails, onChange, onAdd, onDelete, Constitution
           </span>
         )}
       </div>
+      
     </div>
   );
 };

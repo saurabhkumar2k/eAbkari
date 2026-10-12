@@ -12,7 +12,9 @@ export default function HcrRestaurantStep({
   subDivisions,
   policeStations,
   errors,
+  trainErrors,
   onChange,
+  onTrainChange,
   onBack,
   onContinue,
   CatCode,
@@ -66,13 +68,14 @@ export default function HcrRestaurantStep({
             <TrainDetails
               trainFrom={trainFrom}
               CatCode={CatCode}
-              errors={errors}
-              onChange={onChange}
+              errors={trainErrors}
+              onChange={onTrainChange}
               onTrainDetailChange={onTrainDetailChange}
               onAddTrainDetail={onAddTrainDetail}
               ondeleteTrainDetail={ondeleteTrainDetail}
               ConstitutionType={ConstitutionType}
             />
+            
           </div>
         )}
 

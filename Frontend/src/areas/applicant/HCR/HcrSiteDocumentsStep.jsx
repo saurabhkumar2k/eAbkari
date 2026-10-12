@@ -31,7 +31,7 @@ export default function HcrSiteDocumentsStep({
           handleDocumentFileChange={handleDocumentFileChange}
           handleValidityDateChange={handleValidityDateChange}
           handleDeleteFile={handleDeleteFile}
-          error={errors.errors}
+          error={errors?.errors}
         />
         <div className="error-text-container">
           {errors.isValid === false && <span className="error-text-all">{errors.globalError}</span>}
