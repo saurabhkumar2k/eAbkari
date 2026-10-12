@@ -489,7 +489,7 @@ export const validateClubDetails = (clubDetails) => {
   return result;
 };
 
-export const validateTrainDetails = (routes) => {
+export const validateTrainRoutes = (routes) => {
   const result = {
     isValid: true,
     globalError: "",
@@ -519,7 +519,7 @@ export const validateTrainDetails = (routes) => {
     // Validate RouteDescription
     const nameErr = requiredCheck(
       train.RouteDescription,
-      "Name of Additional Club",
+      "Route Description",
     );
     if (nameErr) rowErrors.RouteDescriptionErr = nameErr;
 

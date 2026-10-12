@@ -195,13 +195,13 @@ export default function RestaurantAdditionalDetails({
                   onChange={onClubDetailChange}
                   onAdd={onAddClubDetail}
                   onDelete={ondeleteClubDetail}                  
-                  errors={errors?.restaurantError}
+                  errors={errors?.clubDetails?.errors}
                 />
               )}
               <div className="error-text-container">
-                {errors?.clubGlobalError && (
+                {errors?.clubDetails?.globalError && (
                   <span className="error-text-all">
-                    {errors?.clubGlobalError}
+                    {errors?.clubDetails?.globalError}
                   </span>
                 )}
               </div> 

@@ -268,9 +268,10 @@ const HCRHCRBasicFieldsL28 = ({
                 type="text"
                 maxLength={10}
                 placeholder="ABCDE1234F"
-                className={`reg-input uppercase font-mono font-bold text-slate-800 ${
-                  errors.CompanyFirmPANNo ? "error" : ""
-                }`}
+                // className={`reg-input uppercase font-mono font-bold text-slate-800 
+                //   ${errors.CompanyFirmPANNo ? "error" : ""}
+                //   `}
+                className={`reg-input uppercase font-mono font-bold text-slate-800 `}
                 value={additionalFrom.CompanyFirmPANNo || ""}
                 onChange={(e) =>
                   onChange("CompanyFirmPANNo", e.target.value.toUpperCase())

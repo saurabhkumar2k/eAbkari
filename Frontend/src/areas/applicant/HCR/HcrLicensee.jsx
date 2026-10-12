@@ -28,7 +28,7 @@ import {
   validateDirectors,
   validateRestaurantDetails,
   validateClubDetails,
-  validateTrainDetails,
+  validateTrainRoutes,
   Cat_Label,
 } from "./validation";
 
@@ -218,13 +218,13 @@ export default function HcrLicensee({
         // },
         ...(!isTrainCategory
           ? [
-              {
-                num: 3,
-                id: "additional",
-                label: "Additional Details",
-                sub: "Additional Information",
-              },
-            ]
+            {
+              num: 3,
+              id: "additional",
+              label: "Additional Details",
+              sub: "Additional Information",
+            },
+          ]
           : []),
         {
           num: 4,
@@ -278,7 +278,7 @@ export default function HcrLicensee({
   };
 
   const validateApplicant = () => {
-    debugger;
+    //debugger;
     const errors = validateApplicantData(applicantForm);
 
     // Update state and trigger toast notifications
@@ -320,7 +320,7 @@ export default function HcrLicensee({
   };
 
   const validateRestaurant = () => {
-    debugger;
+    //debugger;
 
     // Check required text & code dropdown fields using your generic check
     const errors = validateSiteData(siteForm);
@@ -337,11 +337,11 @@ export default function HcrLicensee({
     return true;
   };
 
-  const validateTrain = () => {
-    debugger;
+  const validateTrain = (licenseCode) => {
+    //debugger;
 
     // Check required text & code dropdown fields using your generic check
-    const errors = validateTrainData(trainFrom);
+    const errors = validateTrainData(trainFrom, licenseCode);
 
     // Set the error state
     setTrainFromErrors(errors);
@@ -386,7 +386,7 @@ export default function HcrLicensee({
   };
 
   const validateAdditionalSiteDetails = () => {
-    debugger;
+    //debugger;
 
     console.log(additionalFrom);
     const AdditionalRestaurantFrom = additionalFrom;
@@ -421,8 +421,14 @@ export default function HcrLicensee({
         (err) => err !== null && Object.keys(err || {}).length > 0,
       );
 
+    const hasClubDetailsErrors =
+      Array.isArray(errors.clubDetails?.errors) &&
+      errors.clubDetails.errors.some(
+        (err) => err !== null && Object.keys(err || {}).length > 0,
+      );
+
     // 3. Stop submission if either condition is true
-    if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
+    if (hasStringErrors || hasDirectorErrors || hasClubDetailsErrors || errors.directors?.globalError) {
       triggerToast(
         "Please verify restaurant/site additional details.",
         "error",
@@ -483,7 +489,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const fetchDistricts = async (stateCode, type) => {
-    debugger;
+    //debugger;
     if (!stateCode) return;
 
     try {
@@ -593,7 +599,7 @@ export default function HcrLicensee({
   // =========================================================
 
   useEffect(() => {
-    debugger;
+    //debugger;
     console.log("Previous application check");
     if (!regId) return;
 
@@ -611,7 +617,7 @@ export default function HcrLicensee({
   }, [regId]);
 
   const loadApplicantData = async (registrationId) => {
-    debugger;
+    //debugger;
     try {
       const response = await fetch(
         `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`,
@@ -680,7 +686,7 @@ export default function HcrLicensee({
     //   regID: regId,
     // };
     try {
-      debugger;
+      //debugger;
 
       /* Get ongoing Application ID */
       const getAppId = await fetch(
@@ -731,7 +737,7 @@ export default function HcrLicensee({
    * @param {string} applicationIdNo - The application ID number
    */
   const BindPendingAppData = async (applicationIdNo) => {
-    debugger;
+    //debugger;
     try {
       /*  Set Applicant Data using Application Id */
       const response = await fetch(
@@ -959,7 +965,7 @@ export default function HcrLicensee({
   };
 
   const addRestaurantDetail = () => {
-    debugger;
+    //debugger;
     const errors = {};
     let additionalUpdateErrors = { ...additionalFormErrors };
 
@@ -1031,24 +1037,84 @@ export default function HcrLicensee({
     }));
   };
 
+  // const handleClubDetailChange = (index, field, value) => {
+  //   setAdditionalFrom((prev) => {
+  //     const clubDetails = [...(prev.clubDetails || [])];
+
+  //     clubDetails[index] = {
+  //       ...clubDetails[index],
+  //       [field]: value,
+  //     };
+
+  //     return {
+  //       ...prev,
+  //       clubDetails,
+  //     };
+  //   });
+  // };
+
+
   const handleClubDetailChange = (index, field, value) => {
+    // 1. Update the form value
     setAdditionalFrom((prev) => {
       const clubDetails = [...(prev.clubDetails || [])];
-
       clubDetails[index] = {
         ...clubDetails[index],
         [field]: value,
       };
-
       return {
         ...prev,
         clubDetails,
       };
     });
+
+    // 2. Clear the field error and global error dynamically
+    setAdditionalFormErrors((prev) => {
+      // Safely copy the existing clubDetails error object
+      const currentClubErr = prev?.clubDetails || {};
+      const currentErrorsArray = [...(currentClubErr.errors || [])];
+
+      // Clear the specific row field error if it exists
+      if (currentErrorsArray[index]) {
+        // Map form fields to their corresponding error keys in validateClubDetails
+        const fieldToErrorKeyMap = {
+          NameOfAdditionalRestaurant: "NameOfAdditionalRestaurantErr",
+          AddtionalArea: "AddtionalAreaErr",
+          NumberOfCounter: "NumberOfCounterErr",
+        };
+
+        const errorKey = fieldToErrorKeyMap[field];
+
+        if (errorKey && currentErrorsArray[index][errorKey]) {
+          const updatedRowErrors = { ...currentErrorsArray[index] };
+          delete updatedRowErrors[errorKey];
+
+          // If no more errors exist on this row, set to null matching validateClubDetails behavior
+          currentErrorsArray[index] = Object.keys(updatedRowErrors).length > 0 ? updatedRowErrors : null;
+        }
+      }
+
+      // Check if any other row still has errors
+      const hasRowErrors = currentErrorsArray.some((row) => row !== null && row !== undefined);
+
+      // Clear globalError since the user is now interacting with the club details section
+      const updatedGlobalError = "";
+
+      return {
+        ...prev,
+        clubDetails: {
+          ...currentClubErr,
+          globalError: updatedGlobalError,
+          errors: currentErrorsArray,
+          isValid: !hasRowErrors && !updatedGlobalError, // true if no row errors remain
+        },
+      };
+    });
   };
 
+
   const addClubDetail = () => {
-    debugger;
+    //debugger;
     const errors = {};
     let additionalUpdateErrors = { ...additionalFormErrors };
 
@@ -1109,29 +1175,87 @@ export default function HcrLicensee({
     }));
   };
 
+  // const handleTrainDetailChange = (index, field, value) => {
+  //   setTrainFrom((prev) => {
+  //     const routes = [...(prev.routes || [])];
+
+  //     routes[index] = {
+  //       ...routes[index],
+  //       [field]: value,
+  //     };
+
+  //     return {
+  //       ...prev,
+  //       routes,
+  //     };
+  //   });
+
+  // };
+
   const handleTrainDetailChange = (index, field, value) => {
+    // 1. Update the form value
     setTrainFrom((prev) => {
       const routes = [...(prev.routes || [])];
-
       routes[index] = {
         ...routes[index],
         [field]: value,
       };
-
       return {
         ...prev,
         routes,
       };
     });
+
+    // 2. Clear the field error and global error dynamically
+    setTrainFromErrors((prev) => {
+      // Safely copy the existing routes error object
+      const currentRoutesErr = prev?.routes || {};
+      const currentErrorsArray = [...(currentRoutesErr.errors || [])];
+
+      // Clear the specific row field error if it exists
+      if (currentErrorsArray[index]) {
+        // Map form fields to their corresponding error keys in validateTrainRoutes
+        const fieldToErrorKeyMap = {
+          RouteDescription: "RouteDescriptionErr",
+        };
+
+        const errorKey = fieldToErrorKeyMap[field];
+
+        if (errorKey && currentErrorsArray[index][errorKey]) {
+          const updatedRowErrors = { ...currentErrorsArray[index] };
+          delete updatedRowErrors[errorKey];
+
+          // If no more errors exist on this row, set to null matching validateTrainRoutes behavior
+          currentErrorsArray[index] = Object.keys(updatedRowErrors).length > 0 ? updatedRowErrors : null;
+        }
+      }
+
+      // Check if any other row still has errors
+      const hasRowErrors = currentErrorsArray.some((row) => row !== null && row !== undefined);
+
+      // Clear globalError since the user is now interacting with the routes section
+      const updatedGlobalError = "";
+
+      return {
+        ...prev,
+        routes: {
+          ...currentRoutesErr,
+          globalError: updatedGlobalError,
+          errors: currentErrorsArray,
+          isValid: !hasRowErrors && !updatedGlobalError, // true if no row errors remain
+        },
+      };
+    });
   };
 
+
   const addTrainDetail = () => {
-    debugger;
+    //debugger;
     const errors = {};
     let additionalUpdateErrors = { ...trainFromErrors };
 
     // 1. Run the evaluation using your custom function
-    const trainErr = validateTrainDetails(trainFrom.routes);
+    const trainErr = validateTrainRoutes(trainFrom.routes);
     if (trainErr) errors.routes = trainErr;
 
     // 2. Check if the data structure contains items before proceeding
@@ -1172,7 +1296,7 @@ export default function HcrLicensee({
         ...(prev.routes || []),
         {
           RouteDescription: "",
-          SlNo: "", 
+          SlNo: "",
         },
       ],
     }));
@@ -1229,24 +1353,85 @@ export default function HcrLicensee({
   // Directors
   // =========================================================
 
+  // const handleDirectorChange = (index, field, value) => {
+  //   setAdditionalFrom((prev) => {
+  //     const directors = [...(prev.directors || [])];
+
+  //     directors[index] = {
+  //       ...directors[index],
+  //       [field]: value,
+  //     };
+
+  //     return {
+  //       ...prev,
+  //       directors,
+  //     };
+  //   });
+  //   setAdditionalFormErrors((prev) => ({
+  //     ...prev,
+  //     directors: {  }
+  //   }))
+  // };
+
   const handleDirectorChange = (index, field, value) => {
+    // 1. Update the form value
     setAdditionalFrom((prev) => {
       const directors = [...(prev.directors || [])];
-
       directors[index] = {
         ...directors[index],
         [field]: value,
       };
+      return { ...prev, directors };
+    });
+
+    // 2. Clear the field error and the global error dynamically
+    setAdditionalFormErrors((prev) => {
+      const currentDirectorsErr = prev?.directors || {};
+      const currentErrorsArray = [...(currentDirectorsErr.errors || [])];
+
+      // Clear the specific row field error if it exists
+      if (currentErrorsArray[index]) {
+        const fieldToErrorKeyMap = {
+          PName: "PNameErr",
+          PPanNo: "PPanNoErr",
+          PPerShare: "PPerShareErr",
+          PExciseNominee: "PExciseNomineeErr",
+          panFile: "panFileErr",
+          addressFile: "addressFileErr",
+        };
+
+        const errorKey = fieldToErrorKeyMap[field];
+
+        if (errorKey && currentErrorsArray[index][errorKey]) {
+          const updatedRowErrors = { ...currentErrorsArray[index] };
+          delete updatedRowErrors[errorKey];
+
+          // If no more errors exist on this row, set to null matching validateDirectors behavior
+          currentErrorsArray[index] = Object.keys(updatedRowErrors).length > 0 ? updatedRowErrors : null;
+        }
+      }
+
+      // Check if any other row still has errors
+      const hasRowErrors = currentErrorsArray.some(row => row !== null && row !== undefined);
+
+      // Clear globalError since the user is now interacting with the directors section
+      const updatedGlobalError = "";
 
       return {
         ...prev,
-        directors,
+        directors: {
+          ...currentDirectorsErr,
+          globalError: updatedGlobalError,
+          errors: currentErrorsArray,
+          isValid: !hasRowErrors && !updatedGlobalError, // Becomes true if no individual row errors remain
+        },
       };
     });
   };
 
+
   const addDirector = () => {
-    debugger;
+    //debugger;
     const errors = {};
     // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
     let additionalUpdateErrors = { ...additionalFormErrors };
@@ -1568,9 +1753,10 @@ export default function HcrLicensee({
   // =========================================================
 
   const saveTrain = async () => {
-    // if (!validateTrain()) {
-    //   return false;
-    // }
+    debugger;
+    if (!validateTrain(selectedLicenseCode)) {
+      return false;
+    }
 
     const payload = {
       ...trainFrom,
@@ -1810,7 +1996,7 @@ export default function HcrLicensee({
 
   const uploadDocuments = async () => {
     try {
-      debugger;
+      //debugger;
       // console.log("uploadDocuments", uploadDocuments);
       const filesToUpload = documents.filter(
         (doc) => uploadedFiles[doc.docID]?.file,
@@ -1958,7 +2144,7 @@ export default function HcrLicensee({
   };
 
   const handleNext = async () => {
-    debugger;
+    //debugger;
     if (currentStep === 1) {
       const success = await saveApplicant();
 
@@ -2190,7 +2376,9 @@ export default function HcrLicensee({
             subDivisions={restaurantSubDivisions}
             policeStations={restaurantPoliceStations}
             errors={siteFormErrors}
-            onChange={handleTrainChange}
+            trainErrors={trainFromErrors}
+            onChange={handleRestaurantChange}
+            onTrainChange={handleTrainChange}
             onBack={() => setCurrentStep(1)}
             CatCode={selectedLicenseCode}
             onContinue={handleNext}
@@ -2244,24 +2432,6 @@ export default function HcrLicensee({
             onContinue={handleNext}
           />
         )} */}
-
-        {currentStep === 4 && (
-          <HcrPersonalDocumentsStep
-            documents={documents}
-            uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={handleFileChange}
-            handleValidityDateChange={handleValidityDateChange}
-            handleDeleteFile={handleDeleteFile}
-            onBack={() => {
-              if (HCRTrainFieldsCategories.includes(selectedLicenseCode)) {
-                setCurrentStep(2);
-              } else {
-                setCurrentStep(3);
-              }
-            }}
-            onContinue={goToSiteDocuments}
-          />
-        )} 
 
         {currentStep === 4 && (
           <HcrPersonalDocumentsStep
