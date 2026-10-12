@@ -20,18 +20,18 @@ export const Cat_Label = Object.freeze({
   "36": "Club",
   "14": "Microbrewery",
   "52": "Train",
-    "43": "Train",
-    "02": "Vend",
-    "11": "Vend",
-    "25": "Vend",
-    "26": "Vend",
-    "38": "Vend",
-    "39": "Vend",
-    "40": "Vend",
-    "41": "Vend",
-    "46": "Vend",
-    "83": "Vend",
-    "88": "Vend",
+  "43": "Train",
+  "02": "Vend",
+  "11": "Vend",
+  "25": "Vend",
+  "26": "Vend",
+  "38": "Vend",
+  "39": "Vend",
+  "40": "Vend",
+  "41": "Vend",
+  "46": "Vend",
+  "83": "Vend",
+  "88": "Vend",
 });
 
 // Allows ONLY whole numbers (0-9)
@@ -275,7 +275,7 @@ export const validateDirectors = (directors) => {
       // if (typeError) {
       //   rowErrors.panFileErr = typeError;
       // }
-      const typeError = validateFileObject(d?.panFile,d?.panFile.name, 2, [".pdf"]);
+      const typeError = validateFileObject(d?.panFile, d?.panFile.name, 2, [".pdf"]);
       if (typeError) {
         rowErrors.panFileErr = typeError;
       }
@@ -455,7 +455,7 @@ export const validateClubDetails = (clubDetails) => {
     );
     if (nameErr) rowErrors.NameOfAdditionalRestaurantErr = nameErr;
 
-    
+
 
     // Validate AddtionalArea
     if (!club.AddtionalArea) {
@@ -468,7 +468,7 @@ export const validateClubDetails = (clubDetails) => {
       if (addAreaErr) rowErrors.AddtionalAreaErr = addAreaErr;
     }
 
-    
+
     // Validate NumberOfCounter (Number Validation)
     const counterErr = validateSiteNum(
       club.NumberOfCounter,
@@ -476,7 +476,7 @@ export const validateClubDetails = (clubDetails) => {
     );
     if (counterErr) rowErrors.NumberOfCounterErr = counterErr;
 
-   
+
     // If this specific index has errors, collect them
     if (Object.keys(rowErrors).length > 0) {
       result.isValid = false;
@@ -496,45 +496,36 @@ export const validateTrainRoutes = (routes) => {
     errors: [],
   };
 
-  // 1. Guard check if it doesn't exist or length is 0
-  if (
-    !routes ||
-    !routes.length ||
-    routes.length === 0
-  ) {
+  // 1. Check if at least one route is added
+  if (!Array.isArray(routes) || routes.length === 0) {
     result.isValid = false;
     result.globalError = "At least one Train Route detail must be added";
     return result;
   }
 
-  // 2. Safe numeric loop that bypasses all array prototype/proxy limitations
-  for (let index = 0; index < routes.length; index++) {
-    const train = routes[index];
-
-    // Safety check in case the index item is empty or undefined
-    if (!train) continue;
-
+  // 2. Validate each route item using forEach
+  routes.forEach((train, index) => {
     const rowErrors = {};
 
     // Validate RouteDescription
     const nameErr = requiredCheck(
-      train.RouteDescription,
+      train?.RouteDescription,
       "Route Description",
     );
     if (nameErr) rowErrors.RouteDescriptionErr = nameErr;
 
-   
-    // If this specific index has errors, collect them
+    // If this specific row has errors, collect them and flag the complete validation as false
     if (Object.keys(rowErrors).length > 0) {
       result.isValid = false;
       result.errors[index] = rowErrors;
     } else {
-      result.errors[index] = null; // Clean state for this row
+      result.errors[index] = null; // No errors for this row
     }
-  }
+  });
 
   return result;
 };
+
 
 export const validateDateOnly = (value, fieldName) => {
   console.log("validateDateOnly - value:", value, "fieldName:", fieldName);

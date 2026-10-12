@@ -126,7 +126,7 @@ export const validateTrainData = (trainFrom, CatCode) => {
     const TempAddressErr = requiredCheck(trainFrom.TempAddress, "Address of temporary store in case of Train goes under maintainance");
     if (TempAddressErr) errors.TempAddress = TempAddressErr;
 
-    const OriginateFromErrErr = requiredCheck(trainFrom.OriginateFromErr, "Train Originate from");
+    const OriginateFromErrErr = requiredCheck(trainFrom.OriginateFrom, "Train Originate from");
     if (OriginateFromErrErr) errors.OriginateFrom = OriginateFromErrErr;
 
     const NumberOfcompartmentsErr = validateSiteNum(
