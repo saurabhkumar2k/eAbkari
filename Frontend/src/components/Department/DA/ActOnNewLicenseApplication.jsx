@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 //import ActOnNewLicense from ""
 
 const ActOnNewLicenseApplication = () => {
-  const [fromDate, setFromDate] = useState("2024-08-05");
-  const [toDate, setToDate] = useState("2026-08-12");
+  const today = new Date();
+  const currentDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState(currentDate);
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,8 +21,14 @@ const ActOnNewLicenseApplication = () => {
       setLoading(true);
       setError("");
 
+      const applicationIdNo = localStorage.getItem("applicationIdNo");
+
+      if (!applicationIdNo) {
+        throw new Error("No application ID is set.");
+      }
+
       const response = await fetch(
-        `/api/License/GetPendingNewLicenseApplications?fromDate=${fromDate}&toDate=${toDate}`
+        `http://localhost:5214/api/ApplicationFlow/GetAccessPermissionHistory/${encodeURIComponent(applicationIdNo)}`,
       );
 
       if (!response.ok) {
@@ -34,7 +43,6 @@ const ActOnNewLicenseApplication = () => {
       // If your API returns { data: [...] }
       // use:
       // setApplications(data.data);
-
     } catch (error) {
       console.error("Error fetching applications:", error);
       setError("Unable to load applications.");
@@ -73,7 +81,6 @@ const ActOnNewLicenseApplication = () => {
 
   return (
     <div className="act-new-license-page">
-
       {/* ======================================
           PAGE HEADER
       ====================================== */}
@@ -82,13 +89,11 @@ const ActOnNewLicenseApplication = () => {
         <span>Act on Pending New License Application</span>
       </div>
 
-
       {/* ======================================
           SEARCH
       ====================================== */}
 
       <div className="act-search-section">
-
         <div className="act-date-field">
           <label>From</label>
           <span>:</span>
@@ -98,7 +103,7 @@ const ActOnNewLicenseApplication = () => {
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
-        {/* </div>
+          {/* </div>
 
 
         <div className="act-date-field"> */}
@@ -112,7 +117,6 @@ const ActOnNewLicenseApplication = () => {
           />
         </div>
 
-
         <button
           type="button"
           className="act-search-button"
@@ -120,9 +124,7 @@ const ActOnNewLicenseApplication = () => {
         >
           Search
         </button>
-
       </div>
-
 
       {/* ======================================
           COUNT
@@ -132,278 +134,218 @@ const ActOnNewLicenseApplication = () => {
         Count(s) : <strong>{applications.length}</strong>
       </div>
 
-
       {/* ======================================
           ERROR
       ====================================== */}
 
-      {error && (
-        <div className="act-error">
-          {error}
-        </div>
-      )}
-
+      {error && <div className="act-error">{error}</div>}
 
       {/* ======================================
           GRID
       ====================================== */}
 
       <div className="act-table-wrapper">
-
         <table className="act-license-table">
-
           <thead>
             <tr>
-
-              <th className="sl-column">
-                Sl.
-              </th>
+              <th className="sl-column">Sl.</th>
 
               <th className="application-column">
                 Application ID No. &amp; Date
               </th>
 
-              <th className="view-column">
-                Click To View
-              </th>
+              <th className="view-column">Click To View</th>
 
-              <th className="action-column">
-                Click To
-              </th>
-
+              <th className="action-column">Click To</th>
             </tr>
           </thead>
 
-
           <tbody>
-
             {/* LOADING */}
 
             {loading && (
               <tr>
-                <td
-                  colSpan="4"
-                  className="no-record"
-                >
+                <td colSpan="4" className="no-record">
                   Loading...
                 </td>
               </tr>
             )}
 
-
             {/* NO DATA */}
 
             {!loading && applications.length === 0 && (
               <tr>
-                <td
-                  colSpan="4"
-                  className="no-record"
-                >
+                <td colSpan="4" className="no-record">
                   No application found
                 </td>
               </tr>
             )}
 
-
             {/* DYNAMIC DATA */}
 
             {!loading &&
               applications.map((application, index) => (
-
                 <tr key={application.applicationIdNo || index}>
-
                   {/* ==============================
                       SERIAL NUMBER
                   ============================== */}
 
-                  <td className="sl-cell">
-                    {index + 1}
-                  </td>
-
+                  <td className="sl-cell">{index + 1}</td>
 
                   {/* ==============================
                       APPLICATION DETAILS
                   ============================== */}
 
                   <td className="application-details">
-
                     <div className="detail-row">
+                      <span className="detail-label">App. ID</span>
 
-                      <span className="detail-label">
-                        App. ID
-                      </span>
+                      <span className="colon">:</span>
 
-                      <span className="colon">
-                        :
-                      </span>
-
-                      <strong>
-                        {application.applicationIdNo}
-                      </strong>
-
+                      <strong>{application.applicationIdNo}</strong>
                     </div>
 
-
                     <div className="detail-row">
+                      <span className="detail-label">License Description</span>
 
-                      <span className="detail-label">
-                        License Description
-                      </span>
-
-                      <span className="colon">
-                        :
-                      </span>
+                      <span className="colon">:</span>
 
                       <strong className="license-description">
                         {application.licenseDescription}
                       </strong>
-
                     </div>
 
-
                     <div className="detail-row">
+                      <span className="detail-label">Appl. Dt.</span>
 
-                      <span className="detail-label">
-                        Appl. Dt.
-                      </span>
+                      <span className="colon">:</span>
 
-                      <span className="colon">
-                        :
-                      </span>
-
-                      <span>
-                        {application.applicationDate}
-                      </span>
-
+                      <span>{application.applicationDate}</span>
                     </div>
 
-
                     <div className="detail-row">
-
                       <span className="detail-label">
                         Applicant Name/Site Name
                       </span>
 
-                      <span className="colon">
-                        :
-                      </span>
+                      <span className="colon">:</span>
 
-                      <span>
-                        {application.applicantName}
-                      </span>
-
+                      <span>{application.applicantName}</span>
                     </div>
-
                   </td>
-
 
                   {/* ==============================
                       VIEW ACTIONS
                   ============================== */}
 
                   <td className="view-actions">
-
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleAction(
-                          "Application",
-                          application
-                        )
-                      }
+                      onClick={() => handleAction("Application", application)}
                     >
                       Application
                     </button>
 
-
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleAction(
-                          "Attached Doc",
-                          application
-                        )
-                      }
+                      onClick={() => handleAction("Attached Doc", application)}
                     >
                       Attached Doc
                     </button>
 
-
                     <button
                       type="button"
                       className="table-link"
                       onClick={() =>
-                        handleAction(
-                          "Payment Breakup",
-                          application
-                        )
+                        handleAction("Payment Breakup", application)
                       }
                     >
                       Payment Breakup
                     </button>
 
+                    <button
+                      type="button"
+                      className="table-link"
+                      onClick={() => handleAction("Life Cycle", application)}
+                    >
+                      Life Cycle
+                    </button>
+                  </td>
+
+                  {/* ==============================
+                      VIEW ACTIONS
+                  ============================== */}
+
+                  <td className="view-actions">
+                    <button
+                      type="button"
+                      className="table-link"
+                      onClick={() => handleAction("Scrutiny Application", application)}
+                    >
+                      Scrutiny Application
+                    </button>
+
+                    <button
+                      type="button"
+                      className="table-link"
+                      onClick={() => handleAction("Forward Application", application)}
+                    >
+                      Forward Application
+                    </button>
 
                     <button
                       type="button"
                       className="table-link"
                       onClick={() =>
-                        handleAction(
-                          "Life Cycle",
-                          application
-                        )
+                        handleAction("Send Back Application", application)
                       }
                     >
-                      Life Cycle
+                      Send Back Application
                     </button>
 
-                  </td>
+                    <button
+                      type="button"
+                      className="table-link"
+                      onClick={() => handleAction("Reject Application", application)}
+                    >
+                      Reject Application
+                    </button>
 
+                    <button
+                      type="button"
+                      className="table-link"
+                      onClick={() => handleAction("Generate Offer Letter", application)}
+                    >
+                      Generate Offer Letter
+                    </button>
+                  </td>
 
                   {/* ==============================
                       ACTIONS
                   ============================== */}
 
                   <td className="main-actions">
-
-                    {application.actionLinks?.map(
-                      (action, actionIndex) => (
-
-                        <button
-                          key={actionIndex}
-                          type="button"
-                          className={`table-link ${
-                            action.disabled
-                              ? "disabled-action"
-                              : ""
-                          }`}
-                          disabled={action.disabled}
-                          onClick={() =>
-                            handleAction(
-                              action.name,
-                              application
-                            )
-                          }
-                        >
-                          {action.name}
-                        </button>
-
-                      )
-                    )}
-
+                    {application.actionLinks?.map((action, actionIndex) => (
+                      <button
+                        key={actionIndex}
+                        type="button"
+                        className={`table-link ${
+                          action.disabled ? "disabled-action" : ""
+                        }`}
+                        disabled={action.disabled}
+                        onClick={() => handleAction(action.name, application)}
+                      >
+                        {action.name}
+                      </button>
+                    ))}
                   </td>
-
                 </tr>
-
               ))}
-
           </tbody>
-
         </table>
-
       </div>
-
     </div>
   );
 };
