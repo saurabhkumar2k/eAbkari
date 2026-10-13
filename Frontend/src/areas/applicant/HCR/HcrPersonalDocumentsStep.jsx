@@ -40,7 +40,7 @@ export default function HcrPersonalDocumentsStep({
           handleDocumentFileChange={handleDocumentFileChange}
           handleValidityDateChange={handleValidityDateChange}
           handleDeleteFile={handleDeleteFile}
-          error={errors.errors}
+          error={errors?.errors}
           setError={setError}
         />
         <div className="error-text-container">
