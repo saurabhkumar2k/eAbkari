@@ -14,6 +14,7 @@ namespace backend.Application.Interfaces.Department
 
         Task<bool> UpdateAsync(DepartmentUserDto model);
         Task<IEnumerable<MstDistrict>> GetDistrict();
+        Task<IEnumerable<UpdateRolesPermissionDto>> GetRolesPermissionAsync();
 
 
     }

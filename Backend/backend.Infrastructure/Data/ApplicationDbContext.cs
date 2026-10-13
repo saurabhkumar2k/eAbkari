@@ -90,7 +90,7 @@ namespace backend.Infrastructure.Data
 
         public DbSet<ApplicationHierarchyMapping> ApplicationHierarchyMapping { get; set; }
         public DbSet<ApplicantLicenseAdditionalBarMaster> ApplicantLicenseAdditionalBarMaster { get; set; }
-
+        public DbSet<DeptUserPermissions> DeptUserPermissions { get; set; }
 
 
 
@@ -324,6 +324,8 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstRoles>()
                 .HasIndex(x => x.RoleName)
                 .IsUnique();
+            
+            
 
             modelBuilder.Entity<LicenseSiteDetails>()
                .HasKey(x => x.ApplicationIdNo);
@@ -456,7 +458,7 @@ namespace backend.Infrastructure.Data
 
             });
 
-
+            modelBuilder.Entity<DeptUserPermissions>().ToTable("DeptUserPermissions");
 
 
         }
