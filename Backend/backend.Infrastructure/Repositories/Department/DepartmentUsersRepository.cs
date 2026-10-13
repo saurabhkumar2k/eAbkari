@@ -76,7 +76,7 @@ namespace backend.Infrastructure.Repositories.Department
 
             return maxId + 1;
         }
-        public async Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId, long BranchCode)
+        public async Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId, long BranchCode, int newPermissionId)
         {
             var existingUser = await _context.DepartmentUsers
                 .FirstAsync(x => x.UserId == user.UserId);
@@ -88,8 +88,12 @@ namespace backend.Infrastructure.Repositories.Department
             existingUser.IsActive = user.IsActive;
             existingUser.UpdatedDate = DateTime.Now;
 
-            //var activeRole = await _context.DeptUserRoles
-            //    .FirstOrDefaultAsync(x => x.UserId == user.UserId );
+            var activeRole = await _context.DeptUserRoles
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId);
+
+
+
+            activeRole.PermissionId = newPermissionId;
 
             //if (activeRole != null && activeRole.RoleId != newRoleId)
             //{
@@ -102,6 +106,7 @@ namespace backend.Infrastructure.Repositories.Department
             //        UserId = user.UserId,
             //        RoleId = newRoleId,
             //        BranchCode = BranchCode,
+            //        PermissionId = newPermissionId
             //        //IsActive = "Y"
             //    });
             //}
