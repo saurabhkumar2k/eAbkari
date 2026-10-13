@@ -276,7 +276,7 @@ namespace backend.Application.Services.Department
                 IsActive = string.IsNullOrWhiteSpace(user.IsActive) ? "Y" : user.IsActive,
             };
 
-            return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId, user.BranchCode);
+            return await _departmentUsersRepository.UpdateAsync(DepartmentUser, user.RoleId, user.BranchCode,user.PermissionId);
         }
 
     }

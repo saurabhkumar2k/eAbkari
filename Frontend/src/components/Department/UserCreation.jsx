@@ -12,7 +12,7 @@ import {
 
 
 const Role_API_URL = 'http://localhost:5214/api/Role/getRole'; 
-//const District_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDistrict'; 
+const Permission_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllRolesPermission'; 
 const Branch_API_URL = 'http://localhost:5214/api/LicenseeBranch/getBranch'; 
 const DeptUser_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDeptUser'; 
 const DeptUser_Save_API_URL = 'http://localhost:5214/api/DepartmentUsers/CreateDeptUser'; 
@@ -45,6 +45,7 @@ export default function UserCreation({ onBack }) {
   const [userRoles, setUserRoles] = useState([]);
   const [branch, setBranch] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [permissionlist, setPermissionlist] = useState([]);
 
 
 
@@ -308,6 +309,29 @@ export default function UserCreation({ onBack }) {
     }
   };
 
+  const fetchRolePermission = async () => {
+    try {
+    const response = await fetch(Permission_API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch User");
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+    console.log("Is array:", Array.isArray(data));
+    setPermissionlist(data);
+
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   const createDeptUser = async (userData) => {
     try {
       const response = await fetch(DeptUser_Save_API_URL,{
@@ -379,6 +403,7 @@ export default function UserCreation({ onBack }) {
     fetchUserTypes();
     fetchBranch();
     fetchDeptUser();
+    fetchRolePermission();
   }, []);
 
   return (
@@ -425,7 +450,7 @@ export default function UserCreation({ onBack }) {
           <div className="user-creation-tab-group">
             <button
               type="button"
-              onClick={() => setActiveTab("create")}
+              onClick={() => {setActiveTab("create"); setFormData(emptyForm); setEditingUserId(null);}}
               className={`user-creation-tab-btn ${activeTab === "create" ? "active" : ""}`}
             >
               <UserPlus className="w-3.5 h-3.5" />
@@ -597,10 +622,13 @@ export default function UserCreation({ onBack }) {
                       className="user-creation-input"
                     >
                       <option value="0">--Select--</option>
-                      <option value="1">Full Access</option>
-                      <option value="2">Read Only</option>
-                      <option value="3">Approval Access</option>
-                      <option value="4">Inspection Access</option>
+
+                       {permissionlist.map((b) => (
+                        <option key={b.permissionId} value={b.permissionId}>
+                          {b.permissionName}
+                        </option>
+
+                      ))}
                     </select>
                     {errors.permissionId && (
                       <span className="user-creation-subtext">{errors.permissionId}</span>

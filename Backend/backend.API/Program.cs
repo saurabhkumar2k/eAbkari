@@ -118,6 +118,7 @@ builder.Services.AddScoped<IUserTypeService, UserTypeService>();
 
 builder.Services.AddScoped<ICommonRetailRepository, CommonRetailRepository>();
 builder.Services.AddScoped<ICommonRetailServices, CommonRetailServices>();
+builder.Services.AddScoped<IRolesPermissionRepository, RolesPermissionRepository>();
 
 
 // Swagger

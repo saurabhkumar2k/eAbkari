@@ -14,7 +14,7 @@ namespace backend.Core.Interfaces.Department
         Task<IEnumerable<DepartmentUsers>> GetAllAsync();
         Task<DepartmentUsers?> GetByIdAsync(string userId);
         Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles);
-         Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId,long newBranchId);
+        Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId,long newBranchId,int newPermissionId);
         Task<int> GetNextDeptUserRoleIdAsync();
         Task<List<MstDistrict>> GetDistrict();
         Task<DeptUserRoles?> GetByDeptRoleIdAsync(string userId);
