@@ -31,29 +31,34 @@ namespace backend.Infrastructure.Repositories.Department
         public async Task<IEnumerable<DepartmentUsers>> GetAllAsync()
         {
             return await _context.DepartmentUsers
-          .Include(x => x.DeptUserRoles)
-              .ThenInclude(x => x.MstLicenseeCategoryBranch)
-          .Include(x => x.DeptUserRoles)
-              .ThenInclude(x => x.MstRoles)
-          .ToListAsync();
+                .Where(x => x.IsActive == "Y")
+                .ToListAsync();
         }
 
         public async Task<DepartmentUsers?> GetByIdAsync(string userId)
         {
             return await _context.DepartmentUsers
-    .Include(x => x.DeptUserRoles)
-        .ThenInclude(x => x.MstLicenseeCategoryBranch)
-    .Include(x => x.DeptUserRoles)
-        .ThenInclude(x => x.MstRoles)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
         }
-        public async Task<string> GetRoleNameByRoleId(int roleId)
+
+        public async Task<DeptUserRoles?> GetByDeptRoleIdAsync(string userId)
         {
-            return await _context.MstRoles
-                .Where(r => r.RoleId == roleId)
-                .Select(r => r.RoleName)
-                .FirstOrDefaultAsync() ?? "";
+
+            return await _context.DeptUserRoles
+                    .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            //try
+            //{
+            //    return await _context.DeptUserRoles
+            //        .FirstOrDefaultAsync(x => x.UserId == userId);
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Log the exception
+            //    throw;
+            //}
         }
+
         public async Task<bool> CreateAsync(DepartmentUsers DepartmentUser, DeptUserRoles DeptUserRoles)
         {
 
@@ -79,26 +84,27 @@ namespace backend.Infrastructure.Repositories.Department
             existingUser.UserName = user.UserName;
             existingUser.UserDesignation = user.UserDesignation;
             existingUser.Email = user.Email;
+            existingUser.MobileNo = user.MobileNo;
             existingUser.IsActive = user.IsActive;
             existingUser.UpdatedDate = DateTime.Now;
 
-            var activeRole = await _context.DeptUserRoles
-                .FirstOrDefaultAsync(x => x.UserId == user.UserId );
+            //var activeRole = await _context.DeptUserRoles
+            //    .FirstOrDefaultAsync(x => x.UserId == user.UserId );
 
-            if (activeRole != null && activeRole.RoleId != newRoleId)
-            {
-                // Deactivate old role
-                //activeRole.IsActive = "N";
+            //if (activeRole != null && activeRole.RoleId != newRoleId)
+            //{
+            //    // Deactivate old role
+            //    //activeRole.IsActive = "N";
 
-                // Insert new role
-                _context.DeptUserRoles.Add(new DeptUserRoles
-                {
-                    UserId = user.UserId,
-                    RoleId = newRoleId,
-                    BranchCode = BranchCode,
-                    //IsActive = "Y"
-                });
-            }
+            //    // Insert new role
+            //    _context.DeptUserRoles.Add(new DeptUserRoles
+            //    {
+            //        UserId = user.UserId,
+            //        RoleId = newRoleId,
+            //        BranchCode = BranchCode,
+            //        //IsActive = "Y"
+            //    });
+            //}
 
             return await _context.SaveChangesAsync() > 0;
         }

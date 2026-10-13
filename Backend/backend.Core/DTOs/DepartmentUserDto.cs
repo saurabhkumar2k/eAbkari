@@ -20,7 +20,7 @@ namespace backend.Core.DTOs
         public string? IsActive { get; set; } = "Y";    
         public int RoleId { get; set; }
         public long BranchCode { get; set; }
-        public long PermissionId { get; set; }
+        public int PermissionId { get; set; }
         
         //public string UserTypeCode { get; set; }
 
@@ -36,11 +36,14 @@ namespace backend.Core.DTOs
 
         public string MobileNo { get; set; }
 
-        public string? IsActive { get; set; } = "Y";
+        public string? IsActive { get; set; } 
 
         public string PermissionDesc { get; set; }
 
         public string UserTypeDesc { get; set; }
+        public int RoleId { get; set; }
+        public long BranchCode { get; set; }
+        public int PermissionId { get; set; }
 
     }
     public class DepartmentUserLoginDto

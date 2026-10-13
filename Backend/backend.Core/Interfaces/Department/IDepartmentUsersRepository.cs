@@ -17,6 +17,7 @@ namespace backend.Core.Interfaces.Department
          Task<bool> UpdateAsync(DepartmentUsers user, int newRoleId,long newBranchId);
         Task<int> GetNextDeptUserRoleIdAsync();
         Task<List<MstDistrict>> GetDistrict();
+        Task<DeptUserRoles?> GetByDeptRoleIdAsync(string userId);
 
         //Task<bool> DeleteAsync(string userId);
         //Task<DepartmentUsers?> LoginAsync(string email);

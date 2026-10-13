@@ -28,7 +28,6 @@ export default function DepartmentLogin({ onNavigateHome, onLoginSuccess }) {
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    debugger;
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
