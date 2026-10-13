@@ -346,11 +346,29 @@ export default function HcrLicensee({
     // Set the error state
     setTrainFromErrors(errors);
 
-    // Trigger Toast alerts if fields fail validation
-    if (Object.keys(errors).length > 0) {
+    debugger;
+
+    // 1. Check top-level plain string errors (skips the nested routes object)
+    const hasStringErrors = Object.keys(errors).some((key) => {
+      if (key === "routes") return false; // Skip the nested routes object here
+      return typeof errors[key] === "string" && errors[key].trim() !== "";
+    });
+
+    // 2. Check if the nested routes array contains any real row error objects
+    const hasRouteErrors =
+      Array.isArray(errors.routes?.errors) &&
+      errors.routes.errors.some(
+        (err) => err !== null && Object.keys(err || {}).length > 0,
+      );
+
+    // 3. Stop submission if there are string errors, row errors, or a global route error
+    if (hasStringErrors || hasRouteErrors || errors.routes?.globalError) {
       triggerToast("Please verify Train details.", "error");
       return false;
     }
+
+
+
 
     return true;
   };
@@ -686,7 +704,7 @@ export default function HcrLicensee({
     //   regID: regId,
     // };
     try {
-      //debugger;
+      debugger;
 
       /* Get ongoing Application ID */
       const getAppId = await fetch(
@@ -719,9 +737,14 @@ export default function HcrLicensee({
 
       /* Bind Applicant Data using Application Id */
       BindPendingAppData(applicationIdNo);
+      debugger;
 
       /* Bind Site Data using Application Id */
-      BindPendingSiteData(applicationIdNo);
+      if (selectedLicenseCode === "52" || selectedLicenseCode === "43") {
+        BindPendingTrainData(applicationIdNo);
+      } else {
+        BindPendingSiteData(applicationIdNo);
+      }
 
       /* /api/CommonHCR/GetAdditionalHCRCompleteDetails */
 
@@ -795,6 +818,7 @@ export default function HcrLicensee({
     } catch (error) { }
   };
 
+
   /**
     * Binds pending site data to the site form 
    * @param {string} applicationIdNo - The application ID number
@@ -853,6 +877,50 @@ export default function HcrLicensee({
     }
 
   }
+
+  /**
+  * Bind pending application Train data for the Train form
+  * @param {string} applicationIdNo - The application ID number
+  */
+  const BindPendingTrainData = async (applicationIdNo) => {
+    //debugger;
+    try {
+      /*  Set Applicant Data using Application Id */
+      const response = await fetch(
+        `http://localhost:5214/api/CommonHCR/GetL20DetailsApplicationIDWise?applicationIdNo=${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const data = await response.json();
+
+      setTrainFrom((prev) => ({
+        ...prev,
+        applicationIdNo: data.applicationIdNo || null,
+        TrainName: data.trainName || "",
+        TrainNumber: data.trainNumber || "",
+        OriginateFrom: data.originateFrom || "",
+        TempAddress: data.tempAddress || "",
+        CompanyName: data.companyName || "",
+        NumberOfSeatCovers: data.numberOfSeatCovers || "",
+        NumberOfDispensingCounter: data.numberOfDispensingCounter || "",
+        NumberOfManagers: data.numberOfManagers || "",
+        NumberOfKitchenStaff: data.numberOfKitchenStaff || "",
+        NumberOfUtlityEmployees: data.numberOfUtlityEmployees || "",
+        NumberOfBarAttendent: data.numberOfBarAttendent || "",
+        NumberOfcompartments: data.numberOfcompartments || "",
+        // Map the camelCase payload keys to match your PascalCase blueprint state keys
+        routes: Array.isArray(data.routes)
+          ? data.routes.map((route) => ({
+            RouteDescription: route.routeDescription || ""
+          }))
+          : [],
+      }));
+
+    } catch (error) { }
+  };
 
   // =========================================================
   // Questions
