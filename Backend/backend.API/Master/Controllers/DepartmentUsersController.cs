@@ -28,6 +28,16 @@ namespace backend.API.Master.Controllers
 
             return Ok(users);
         }
+        [HttpGet("GetAllRolesPermission")]
+        public async Task<IActionResult> GetAllRolesPermission()
+        {
+            var permissions = await _service.GetRolesPermissionAsync();
+
+            if (!permissions.Any())
+                return NotFound("No roles permissions are found.");
+
+            return Ok(permissions);
+        }
 
 
         [HttpGet("GetAllDistrict")]

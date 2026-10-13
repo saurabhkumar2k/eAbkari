@@ -15,13 +15,14 @@ namespace backend.Application.Services.Department
         private readonly IDepartmentUserRepository _departmentUsersRepository;
         private readonly IRoleService _roleService;
         private readonly IUserTypeService _userTypeService;
+        private readonly IRolesPermissionRepository _RolesPermissionRepository;
 
-
-        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository, IRoleService roleService, IUserTypeService userTypeService)
+        public DepartmentUsersService(IDepartmentUserRepository departmentUsersRepository, IRoleService roleService, IUserTypeService userTypeService, IRolesPermissionRepository RolesPermissionRepository)
         {
             _departmentUsersRepository = departmentUsersRepository;
             _roleService = roleService;
             _userTypeService = userTypeService;
+            _RolesPermissionRepository = RolesPermissionRepository;
         }
 
         public async Task<IEnumerable<MstDistrict>> GetDistrict()
@@ -33,6 +34,27 @@ namespace backend.Application.Services.Department
                 return Enumerable.Empty<MstDistrict>();
             }
             return districts;
+        }
+        public async Task<IEnumerable<UpdateRolesPermissionDto>> GetRolesPermissionAsync()
+        {
+            var Permission = await _RolesPermissionRepository.GetRolesPermissionAsync();
+
+            if (Permission == null || !Permission.Any())
+            {
+                return Enumerable.Empty<UpdateRolesPermissionDto>();
+            }
+            return Permission.Select(
+
+
+                x => new UpdateRolesPermissionDto
+                {
+                    PermissionId = x.PermissionId,
+                    PermissionName = x.PermissionName,
+                    Description = x.Description
+                }
+
+            );
+
         }
 
         //public async Task<IEnumerable<DepartmentUserViewDto>> GetAllAsync()
