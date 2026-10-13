@@ -49,8 +49,8 @@ namespace backend.Core.Entities.Department
         [StringLength(10)]
         public string MobileNo { get; set; }
 
-        public virtual ICollection<DeptUserRoles> DeptUserRoles { get; set; } = new List<DeptUserRoles>();
     }
+   
 
     [Table("DeptUserRoles")]
     public class DeptUserRoles
@@ -71,7 +71,7 @@ namespace backend.Core.Entities.Department
         //[ForeignKey(nameof(MstLicenseeCategoryBranch))]
         public string UserTypeCode { get; set; }
 
-        public long PermissionId { get; set; } 
+        public int? PermissionId { get; set; } 
 
 
 

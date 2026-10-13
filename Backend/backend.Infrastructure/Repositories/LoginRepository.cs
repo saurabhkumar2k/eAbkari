@@ -82,8 +82,6 @@ namespace backend.Infrastructure.Repositories
             //return (DepartmentUserLoginDto.UserId, DepartmentUserLoginDto.UserName, DepartmentUserLoginDto.rolename, DepartmentUserLoginDto)
 
             var user = await _context.DepartmentUsers
-       .Include(x => x.DeptUserRoles)
-       .ThenInclude(x => x.MstRoles)
        .FirstOrDefaultAsync(x =>
            x.UserId == userId &&
            x.PasswordHash == password);
@@ -92,8 +90,14 @@ namespace backend.Infrastructure.Repositories
             if (user == null)
                 return null;
 
-            var userRole = user.DeptUserRoles.FirstOrDefault();
 
+            
+
+            //var userRole = await _context.DeptUserRoles.FirstOrDefaultAsync(x => x.UserId == userId);
+            var userRole = await _context.DeptUserRoles
+                .Where(x => x.UserId == userId)
+                .Select(x => x.MstRoles.RoleName)
+                .FirstOrDefaultAsync();
 
             return await _context.DepartmentUsers
                 .Where(x => x.UserId == userId && x.PasswordHash == password)
@@ -101,9 +105,7 @@ namespace backend.Infrastructure.Repositories
                 {
                     UserId = x.UserId,
                     UserName = x.UserName,
-                    RoleName = x.DeptUserRoles
-                                .Select(r => r.MstRoles.RoleName)
-                                .FirstOrDefault()
+                    RoleName = userRole
                 })
                 .FirstOrDefaultAsync();
 

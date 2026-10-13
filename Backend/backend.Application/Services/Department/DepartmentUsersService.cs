@@ -77,7 +77,7 @@ namespace backend.Application.Services.Department
 
             foreach (var x in users)
             {
-                var role = x.DeptUserRoles.FirstOrDefault();
+                var role = await _departmentUsersRepository.GetByDeptRoleIdAsync(x.UserId);
 
                 var userTypeDesc = await _userTypeService.GetTypeCodeDescAsync(
                     role?.RoleId ?? 0,
@@ -93,9 +93,12 @@ namespace backend.Application.Services.Department
                     IsActive = x.IsActive,
                     MobileNo = x.MobileNo,
                     PermissionDesc = "",
-                    UserTypeDesc = userTypeDesc
+                    UserTypeDesc = userTypeDesc,
+                    RoleId = role.RoleId,
+                    BranchCode = role.BranchCode,
+                    PermissionId = role.PermissionId ?? 0
                 });
-            }
+            }   
 
             return result;
         }
@@ -110,7 +113,7 @@ namespace backend.Application.Services.Department
             {
                 return null;
             }
-
+            var role = await _departmentUsersRepository.GetByDeptRoleIdAsync(userId);
             return new DepartmentUserDto
             {
                 UserId = user.UserId,
@@ -118,8 +121,8 @@ namespace backend.Application.Services.Department
                 UserDesignation = user.UserDesignation,
                 Email = user.Email,
                 IsActive = user.IsActive,
-                RoleId = user.DeptUserRoles.FirstOrDefault()?.RoleId ?? 0,
-                BranchCode = user.DeptUserRoles.FirstOrDefault()?.BranchCode ?? 0
+                RoleId = role.RoleId,
+                BranchCode = role.BranchCode
             };
         }
 

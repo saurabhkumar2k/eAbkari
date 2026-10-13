@@ -67,7 +67,7 @@ namespace backend.API.Master.Controllers
             return Ok("User created successfully.");
         }
 
-        [HttpPut("{userId}")]
+        [HttpPut("UpdateDeptUser")]
         public async Task<IActionResult> Update(DepartmentUserDto userDto)
         {
 

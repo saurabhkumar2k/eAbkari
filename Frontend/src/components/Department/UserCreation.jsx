@@ -16,9 +16,10 @@ const Role_API_URL = 'http://localhost:5214/api/Role/getRole';
 const Branch_API_URL = 'http://localhost:5214/api/LicenseeBranch/getBranch'; 
 const DeptUser_API_URL = 'http://localhost:5214/api/DepartmentUsers/GetAllDeptUser'; 
 const DeptUser_Save_API_URL = 'http://localhost:5214/api/DepartmentUsers/CreateDeptUser'; 
+const DeptUser_Update_API_URL = 'http://localhost:5214/api/DepartmentUsers/UpdateDeptUser';
 
-export default function UserCreation({ onBack }) {
-  const [formData, setFormData] = useState({
+
+const emptyForm = {
     userId: "",
     userName: "",
     userDesignation: "",
@@ -28,28 +29,25 @@ export default function UserCreation({ onBack }) {
     roleId: 0,
     branchCode: 0,
     permissionId: 0
-  });
+  };
 
+export default function UserCreation({ onBack }) {
+
+ //State Declare
+
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState(emptyForm);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("create"); // 'create' | 'list'
   const [searchTerm, setSearchTerm] = useState("");
   const [userRoles, setUserRoles] = useState([]);
   const [branch, setBranch] = useState([]);
-
   const [usersList, setUsersList] = useState([]);
 
-  // const [usersList, setUsersList] = useState(() => {
-  //   const saved = localStorage.getItem("dept_created_users");
-  //   if (saved) {
-  //     try {
-  //       return JSON.parse(saved);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-  //   return DEFAULT_USERS;
-  // });
+
+
 
   const showToast = (type, message) => {
     setToast({ type, message });
@@ -96,7 +94,7 @@ export default function UserCreation({ onBack }) {
       (role) => Number(role.roleId) === Number(formData.roleId)
     );
 
-    const isAdmin = selectedRole?.roleId === 1;
+    const isAdmin = selectedRole?.roleId ===  1;
 
     if (!isAdmin && !formData.branchCode) {
       newErrors.branchCode = "User branch is required";
@@ -111,85 +109,124 @@ export default function UserCreation({ onBack }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) {
-      showToast("error", "Please fill in all mandatory fields marked with *");
+      showToast(
+        "error",
+        "Please fill in all mandatory fields marked with *"
+      );
       return;
     }
 
-    // Check duplicate User ID
-    const exists = usersList.some(
-      (u) => u.userId.toLowerCase() === formData.userId.trim().toLowerCase()
-    );
-    if (exists) {
-      setErrors({ userId: "User ID already exists" });
-      showToast("error", "User ID already exists. Please enter a unique User ID.");
-      return;
+    setIsSaving(true);
+
+    try {
+      const userData = {
+        userId: formData.userId.trim(),
+        userName: formData.userName.trim(),
+        userDesignation: formData.userDesignation.trim(),
+        email: formData.email.trim(),
+        mobileNo: formData.mobileNo.trim(),
+        isActive: formData.isActive,
+        roleId: Number(formData.roleId),
+        branchCode: Number(formData.branchCode),
+        permissionId: Number(formData.permissionId)
+      };
+
+      if (editingUserId) {
+        // UPDATE
+        const result = await updateDeptUser(userData);
+
+        if (!result.success) {
+          showToast("error", result.message);
+          return;
+        }
+
+        showToast(
+          "success",
+          `User '${userData.userId}' updated successfully!`
+        );
+      } else {
+        // CREATE
+        const exists = usersList.some(
+          (u) =>
+            u.userId?.toLowerCase() ===
+            userData.userId.toLowerCase()
+        );
+
+        if (exists) {
+          setErrors({
+            userId: "User ID already exists"
+          });
+
+          showToast(
+            "error",
+            "User ID already exists. Please enter a unique User ID."
+          );
+
+          return;
+        }
+
+        const result = await createDeptUser(userData);
+
+        if (!result.success) {
+          showToast("error", result.message);
+          return;
+        }
+
+        showToast(
+          "success",
+          `User '${userData.userId}' created successfully!`
+        );
+      }
+
+      // Reset form
+      setFormData(emptyForm);
+      setEditingUserId(null);
+      setErrors({});
+
+      // Refresh grid
+      await fetchDeptUser();
+
+      // Go to directory
+      setActiveTab("list");
+
+    } finally {
+      setIsSaving(false);
     }
-
-    const newUser = {
-      userId: formData.userId.trim(),
-      userName: formData.userName.trim(),
-      userDesignation: formData.userDesignation.trim(),
-      email: formData.email.trim(),
-      mobileNo: formData.mobileNo.trim(),
-      isActive: formData.isActive,
-      roleId: formData.roleId,
-      branchCode: formData.branchCode,
-      permissionId: formData.permissionId,
-    };
-
-    // Call API
-    const result = await createDeptUser(newUser);
-
-    if (!result.success) {
-      showToast("error", result.message);
-      return;
-    }
-
-    // API success
-    showToast(
-      "success",
-      `User '${newUser.userId}' created successfully!`
-    );
-
-    // Update local UI list
-    // setUsersList((prev) => [newUser, ...prev]);
-
-    // Reset form
-    setFormData({
-      userId: "",
-      userName: "",
-      userDesignation: "",
-      email: "",
-      mobileNo: "",
-      isActive: "",
-      roleId: 0,
-      branchCode: 0,
-      permissionId: 0
-    });
-    setErrors({});
-    await fetchDeptUser();
   };
 
   const handleCancel = () => {
-    setFormData({
-       userId: "",
-      userName: "",
-      userDesignation: "",
-      email: "",
-      mobileNo: "",
-      isActive: "",
-      roleId: 0,
-      branchCode: 0,
-      permissionId: 0
-    });
+    setFormData(emptyForm);
+    setEditingUserId(null);
     setErrors({});
-    if (onBack) {
-      onBack();
-    } else {
-      window.location.href = "/departmentdashboard";
-    }
+    // if (onBack) {
+    //     onBack();
+    //   } else {
+    //     window.location.href = "/departmentdashboard";
+    //   }
   };
+  
+
+
+  const handleEdit = (user) => {
+    setFormData({
+      userId: user.userId ?? "",
+      userName: user.userName ?? "",
+      userDesignation: user.userDesignation ?? "",
+      email: user.email ?? "",
+      mobileNo: user.mobileNo ?? "",
+      isActive: user.isActive ?? "",
+      roleId: Number(user.roleId ?? 0),
+      branchCode: Number(user.branchCode ?? 0),
+      permissionId: Number(user.permissionId ?? 0)
+    });
+
+    setEditingUserId(user.userId);
+    setErrors({});
+    setActiveTab("create");
+  };
+
 
   const filteredUsers = usersList.filter(
     (u) =>
@@ -248,7 +285,6 @@ export default function UserCreation({ onBack }) {
     }
   };
 
-  
   const fetchDeptUser = async () => {
     try {
     const response = await fetch(DeptUser_API_URL, {
@@ -302,6 +338,41 @@ export default function UserCreation({ onBack }) {
       };
     }
   };
+
+  const updateDeptUser = async (userData) => {
+    try {
+      const response = await fetch(DeptUser_Update_API_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userData)
+      });
+
+      const result = await response.text();
+
+      if (!response.ok) {
+        throw new Error(result || "Unable to update user.");
+      }
+
+      return {
+        success: true,
+        message: result
+      };
+    } catch (error) {
+      console.error("UpdateDeptUser API Error:", error);
+
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong."
+      };
+    }
+  };
+
+   
 
 
   useEffect(() => {
@@ -402,7 +473,8 @@ export default function UserCreation({ onBack }) {
           {activeTab === "create" ? (
             /* FORM FIELDSET */
             <fieldset className="user-creation-fieldset">
-              <legend className="user-creation-legend">User Details</legend>
+              {/* <legend className="user-creation-legend">User Details</legend> */}
+              <legend className="user-creation-legend">{editingUserId ? "Edit User Details" : "Add User Details"}</legend>
 
               <div className="user-creation-mandatory-notice">
                 * Marked Fields are mandatory
@@ -425,13 +497,14 @@ export default function UserCreation({ onBack }) {
                           (role) => Number(role.roleId) === roleId
                         );
 
-                        const isAdmin =
-                          selectedRole?.roleId === 1;
+                        const isAdmin = Number(selectedRole?.roleId) === 1;
 
                         handleInputChange("roleId", roleId);
 
                         if (isAdmin) {
-                          handleInputChange("branchCode", 0);
+                          handleInputChange("branchCode", 99); // All branches
+                        } else {
+                          handleInputChange("branchCode", 0); // Reset branch selection
                         }
                       }}
                       className="user-creation-input"
@@ -452,10 +525,16 @@ export default function UserCreation({ onBack }) {
 
                 {/* Branch */}
                 <div className="user-creation-form-group">
-                  <label className="user-creation-label">Branch</label>
+                  <label className="user-creation-label">
+                    Branch
+                    {!isAdmin && (
+                      <span className="user-creation-req">*</span>
+                    )}
+                  </label>
+
                   <div className="user-creation-input-wrap">
                     <select
-                      value={isAdmin ? 0 : formData.branchCode}
+                      value={formData.branchCode}
                       onChange={(e) =>
                         handleInputChange("branchCode", Number(e.target.value))
                       }
@@ -464,16 +543,23 @@ export default function UserCreation({ onBack }) {
                         isAdmin ? "bg-slate-100 cursor-not-allowed" : ""
                       }`}
                     >
-                      <option value="0">--Select--</option>
+                      <option value={0}>--Select--</option>
 
-                        {branch.map((branch) => (
-                          <option key={branch.branchCode} value={branch.branchCode}>
-                            {branch.branchName}
-                          </option>
-                        ))}
+                      {isAdmin && (
+                        <option value={99}>All Branches</option>
+                      )}
+
+                      {branch.map((b) => (
+                        <option key={b.branchCode} value={b.branchCode}>
+                          {b.branchName}
+                        </option>
+                      ))}
                     </select>
+
                     {errors.branchCode && (
-                      <span className="user-creation-subtext">{errors.branchCode}</span>
+                      <span className="user-creation-subtext">
+                        {errors.branchCode}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -627,9 +713,16 @@ export default function UserCreation({ onBack }) {
                   >
                     Cancel
                   </button>
-                  <button type="submit" className="user-creation-btn-save">
-                    <Save className="w-3.5 h-3.5 inline" /> Save
+
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="user-creation-btn-save"
+                  >
+                    <Save className="w-3.5 h-3.5 inline" />
+                    {isSaving? "Saving..." : editingUserId? "Update" : "Save"}
                   </button>
+
                 </div>
               </form>
             </fieldset>
@@ -663,7 +756,8 @@ export default function UserCreation({ onBack }) {
                       <th>Email</th>
                       <th>Mobile</th>
                       <th>Status</th>
-                    </tr>       
+                      <th>Action</th>
+                    </tr>         
                   </thead>
                   <tbody>
                     {filteredUsers.length === 0 ? (
@@ -675,13 +769,18 @@ export default function UserCreation({ onBack }) {
                     ) : (
                       filteredUsers.map((u, idx) => (
                         <tr key={idx}>
-                          <td className="font-mono font-bold text-sky-700">{u.userId}</td>
-                          <td className="font-semibold text-slate-900">{u.userName}</td>
+                          <td className="font-mono font-bold text-sky-700"> {u.userId} </td>
+
+                          <td className="font-semibold text-slate-900"> {u.userName} </td>
+
                           <td>{u.userDesignation}</td>
+
                           <td>{u.userTypeDesc}</td>
+
                           <td>{u.email}</td>
+
                           <td>{u.mobileNo}</td>
-                          {/* <td>{u.isActive}</td> */}
+
                           <td>
                             <span
                               className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold ${
@@ -690,8 +789,18 @@ export default function UserCreation({ onBack }) {
                                   : "bg-slate-100 text-slate-700"
                               }`}
                             >
-                              {u.isActive}
+                              {u.isActive === "Y" ? "Active" : "Inactive"}
                             </span>
+                          </td>
+
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => handleEdit(u)}
+                              className="px-3 py-1 text-xs font-semibold text-sky-700 bg-sky-50 border border-sky-200 rounded hover:bg-sky-100"
+                            >
+                              Edit
+                            </button>
                           </td>
                         </tr>
                       ))

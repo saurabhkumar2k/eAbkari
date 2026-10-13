@@ -96,12 +96,12 @@ namespace backend.Infrastructure.Data
 
 
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MstState>().ToTable("MstState");
 
             modelBuilder.Entity<MstFinancialYear>().ToTable("MstFinancialYear");
-
 
 
             modelBuilder.Entity<MstState>()
@@ -306,10 +306,7 @@ namespace backend.Infrastructure.Data
                 .HasIndex(x => new { x.UserId, x.RoleId })
                 .IsUnique();
             modelBuilder.Entity<DeptUserRoles>().ToTable("DeptUserRoles");
-            modelBuilder.Entity<DeptUserRoles>()
-                .HasOne(x => x.DepartmentUsers)
-                .WithMany(x => x.DeptUserRoles)
-                .HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<DeptUserRoles>().HasOne(x => x.DepartmentUsers);
             modelBuilder.Entity<DeptUserRoles>().ToTable("DeptUserRoles");
             modelBuilder.Entity<DeptUserRoles>()
                 .HasOne(x => x.MstRoles)
