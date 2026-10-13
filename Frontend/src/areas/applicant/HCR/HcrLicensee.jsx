@@ -429,6 +429,7 @@ export default function HcrLicensee({
 
     const hasStringErrors = Object.keys(errors).some((key) => {
       if (key === "directors") return false; // Skip the nested object here
+      if (key === "clubDetails") return false; // Skip the nested object here
       return errors[key] !== ""; // Returns true if an error string is not empty
     });
 
@@ -1982,6 +1983,7 @@ export default function HcrLicensee({
         formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
       });
 
+      // Restaurant
       additionalFrom?.restaurantDetails?.forEach((item, index) => {
         formData.append(
           `AdditionalRestaurentDetails[${index}].ApplicationIdNo`,
@@ -2030,6 +2032,34 @@ export default function HcrLicensee({
 
         formData.append(
           `AdditionalRestaurentDetails[${index}].slNo`,
+          item.slNo ?? index + 1,
+        );
+      });
+
+      // Bar
+         additionalFrom?.clubDetails?.forEach((item, index) => {
+        formData.append(
+          `ApplicantLicenseAdditionalBarMaster[${index}].ApplicationIdNo`,
+          item.ApplicationIdNo ?? applicationIdNo ?? "",
+        );
+
+        formData.append(
+          `ApplicantLicenseAdditionalBarMaster[${index}].nameOfAdditionalBar`,
+          item.NameOfAdditionalRestaurant ?? "",
+        );
+
+        formData.append(
+          `ApplicantLicenseAdditionalBarMaster[${index}].addtionalArea`,
+          item.AddtionalArea ?? "",
+        );
+
+        formData.append(
+          `ApplicantLicenseAdditionalBarMaster[${index}].NumberOfCounter`,
+          item.NumberOfCounter ?? "",
+        );
+
+        formData.append(
+          `ApplicantLicenseAdditionalBarMaster[${index}].slNo`,
           item.slNo ?? index + 1,
         );
       });
@@ -2278,6 +2308,7 @@ export default function HcrLicensee({
     }
 
     if (currentStep === 4) {
+      debugger;
       const success = await goToSiteDocuments();
       // console.log("goToSiteDocuments success", success);
 
@@ -2486,20 +2517,6 @@ export default function HcrLicensee({
           />
         )}
 
-        {/* STEP 7 */}
-        {/* {currentStep === 4 && (
-          <HcrPersonalDocumentsStep
-            documents={documents}
-            uploadedFiles={uploadedFiles}
-            handleDocumentFileChange={handleFileChange}
-            handleValidityDateChange={handleValidityDateChange}
-            handleDeleteFile={handleDeleteFile}
-            errors={personalDocumentsErrors}
-            setError={setPersonalDocumentsErrors}
-            onBack={() => setCurrentStep(3)}
-            onContinue={handleNext}
-          />
-        )} */}
 
         {currentStep === 4 && (
           <HcrPersonalDocumentsStep
@@ -2508,6 +2525,7 @@ export default function HcrLicensee({
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
+            errors={personalDocumentsErrors}
             onBack={() => {
               if (HCRTrainFieldsCategories.includes(selectedLicenseCode)) {
                 setCurrentStep(2);
@@ -2515,7 +2533,7 @@ export default function HcrLicensee({
                 setCurrentStep(3);
               }
             }}
-            onContinue={goToSiteDocuments}
+            onContinue={handleNext}
           />
         )}
 

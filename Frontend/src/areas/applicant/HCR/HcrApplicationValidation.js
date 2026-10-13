@@ -407,39 +407,8 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
   const TINNumberErr = requiredCheck(additionalFrom.TINNumber, "Tin Number");
   if (TINNumberErr) errors.TINNumber = TINNumberErr;
 
-  // console.log("Test 111111111111")
-  // Set the error state
-  // setAdditionalFormErrors(errors);
-
-  // Trigger Toast alerts if fields fail validation
-  // if (
-  //   Object.keys(errors).length > 0 &&
-  //   Array.isArray(errors.directors?.errors) &&
-  //   errors.directors.errors.some(err => err !== null)
-  // )
-
   return errors;
 
-  // debugger;
-  // const hasStringErrors = Object.keys(errors).some(key => {
-  //   if (key === 'directors') return false; // Skip the nested object here
-  //   return errors[key] !== ""; // Returns true if an error string is not empty
-  // });
-
-  // // 2. Check if the nested directors array contains any real error objects
-  // const hasDirectorErrors = Array.isArray(errors.directors?.errors) &&
-  //   errors.directors.errors.some(err => err !== null && Object.keys(err || {}).length > 0);
-
-  // // 3. Stop submission if either condition is true
-  // if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
-  //   triggerToast(
-  //     "Please verify restaurant/site additional details.",
-  //     "error"
-  //   );
-  //   return false;
-  // }
-
-  // return true;
 };
 
 
