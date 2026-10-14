@@ -3,31 +3,33 @@ import P10Page from "./P10/P10Page";
 import {
   Calendar,
   Building2,
-  CalendarDays,
-  Search,
-  ArrowLeft,
-  ArrowRight,
   Check,
   Info,
   FileText,
   Upload,
   User,
-  MapPin,
-  Clock,
   Sparkles,
-  CheckCircle2,
-  Bookmark,
   ShieldAlert,
   Printer,
   QrCode,
-  Tag,
   Building,
-  Briefcase,
   AlertTriangle,
-  Award,
   RefreshCw
 } from "lucide-react";
 import { getOwnerTypes } from "../../../api/permitApi";
+
+// Helper to extract an array from various .NET API response structures
+const extractList = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === "object") {
+    for (const key of ["data", "Data", "result", "Result", "items", "Items", "list", "List", "ownerTypes", "types"]) {
+      if (Array.isArray(payload[key])) return payload[key];
+    }
+    const firstArray = Object.values(payload).find((v) => Array.isArray(v));
+    if (firstArray) return firstArray;
+  }
+  return [];
+};
 
 export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmitPermit }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -36,7 +38,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
   const [ownerType, setOwnerType] = useState("");
   const [ownerTypes, setOwnerTypes] = useState([]);
   const [isLoadingOwnerTypes, setIsLoadingOwnerTypes] = useState(false);
-  
+
   // State for Step 3 details
   const [permitDetails, setPermitDetails] = useState({
     // Shared / Default
@@ -82,7 +84,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [permitReceipt, setPermitReceipt] = useState(null);
 
-  // Define steps matching exactly the 5 steps shown in the screenshot
+  // 5 Step Wizard Flow
   const steps = [
     { num: 1, label: "Basic Details" },
     { num: 2, label: "Permit Selection" },
@@ -91,7 +93,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     { num: 5, label: "Review & Submit" }
   ];
 
-  // Default owner types as fallback
+  // Default fallback owner types
   const getDefaultOwnerTypes = () => [
     { id: "Proprietorship", name: "Proprietorship Firm" },
     { id: "Partnership", name: "Partnership / LLP" },
@@ -107,42 +109,61 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     setIsLoadingOwnerTypes(true);
     try {
       const response = await getOwnerTypes();
-      console.log("Owner types API response:", response.data);
-      
-      let types = [];
-      
-      // Handle different response structures
-      if (Array.isArray(response.data)) {
-        types = response.data;
-      } else if (response.data && typeof response.data === 'object') {
-        // Try to find the array in the response
-        const possibleArrays = ['data', 'items', 'result', 'ownerTypes', 'types', 'list'];
-        for (const key of possibleArrays) {
-          if (response.data[key] && Array.isArray(response.data[key])) {
-            types = response.data[key];
-            break;
+      console.log("Raw OwnerTypes API Response:", response.data);
+
+      const rawList = extractList(response.data);
+
+      if (rawList.length > 0) {
+        const formattedTypes = rawList.map((type, index) => {
+          if (typeof type !== "object" || type === null) {
+            return { id: String(type), name: String(type) };
           }
-        }
-      }
-      
-      // If we have types, format them consistently
-      if (types.length > 0) {
-        const formattedTypes = types.map((type) => ({
-          id: type.id || type.code || type.value || type.ownerTypeId || type.ownerTypeCode || type,
-          name: type.name || type.label || type.text || type.displayName || type.ownerTypeName || type.typeName || type
-        }));
+
+          // Case-insensitive resolution for both ID and display name
+          const id =
+            type.ID ??
+            type.OTID ??
+            type.OwnerTypeId ??
+            type.OwnerTypeCode ??
+            type.Id ??
+            type.Code ??
+            type.Value ??
+            type.id ??
+            type.code ??
+            type.value ??
+            type.ownerTypeId ??
+            type.ownerTypeCode ??
+            String(index + 1);
+
+          const name =
+            type.OwnerTypeName ??
+            type.OTName ??
+            type.Name ??
+            type.Label ??
+            type.Description ??
+            type.ownerTypeName ??
+            type.name ??
+            type.label ??
+            type.text ??
+            type.displayName ??
+            String(id);
+
+          return {
+            id: String(id).trim(),
+            name: String(name).trim()
+          };
+        });
+
+        console.log("Formatted Owner Types:", formattedTypes);
         setOwnerTypes(formattedTypes);
       } else {
-        // Fallback to default
+        console.warn("API returned no records, falling back to default list.");
         setOwnerTypes(getDefaultOwnerTypes());
-        if (showToast) {
-          showToast("Using default owner types", "info");
-        }
       }
     } catch (error) {
       console.error("Error fetching owner types:", error);
       if (showToast) {
-        showToast("Failed to load owner types. Using default options.", "error");
+        showToast("Failed to load owner types from server. Using defaults.", "info");
       }
       setOwnerTypes(getDefaultOwnerTypes());
     } finally {
@@ -150,12 +171,10 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     }
   };
 
-  // Fetch owner types when component mounts
   useEffect(() => {
     fetchOwnerTypes();
   }, []);
 
-  // Permits available as per screen specification
   const permits = [
     {
       id: "P-10",
@@ -186,19 +205,20 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     }
   ];
 
-  // Filter permits based on search query
   const filteredPermits = useMemo(() => {
-    return permits.filter(p => 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const q = searchQuery.toLowerCase();
+    return permits.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.code.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
     );
   }, [searchQuery]);
 
   const handleInputChange = (field, value) => {
-    setPermitDetails(prev => ({ ...prev, [field]: value }));
+    setPermitDetails((prev) => ({ ...prev, [field]: value }));
     if (formErrors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: null }));
+      setFormErrors((prev) => ({ ...prev, [field]: null }));
     }
   };
 
@@ -262,7 +282,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     if (currentStep === 1) {
       onBackToDashboard();
     } else {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep((prev) => prev - 1);
     }
   };
 
@@ -270,20 +290,18 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     const referenceNum = `${selectedPermitId}-TRN-${Math.floor(100000 + Math.random() * 900000)}`;
     const feesMap = { "P-10": "₹ 15,000", "P-10A": "₹ 50,050", "P-11": "₹ 25,000" };
     const dateStamp = new Date().toLocaleDateString("en-IN");
-    
-    // Choose dynamic permit display title
-    const chosenPermit = permits.find(p => p.id === selectedPermitId);
-    
+    const chosenPermit = permits.find((p) => p.id === selectedPermitId);
+
     const receipt = {
       permitNo: referenceNum,
       permitCode: selectedPermitId,
-      permitTitle: chosenPermit.title,
-      subbadge: chosenPermit.subbadge,
+      permitTitle: chosenPermit?.title || "Excise Permit",
+      subbadge: chosenPermit?.subbadge || "Permit",
       applicantName: permitDetails.signatureName,
-      permitStartDate: selectedPermitId === "P-10" ? permitDetails.eventDate : (selectedPermitId === "P-10A" ? permitDetails.eventStartDate : dateStamp),
-      permitEndDate: selectedPermitId === "P-10" ? permitDetails.eventDate : (selectedPermitId === "P-10A" ? permitDetails.eventEndDate : dateStamp),
-      venue: selectedPermitId === "P-10" ? permitDetails.venueAddress : (selectedPermitId === "P-10A" ? permitDetails.exhibitionVenue : permitDetails.tradeshowTitle),
-      feePaid: feesMap[selectedPermitId],
+      permitStartDate: selectedPermitId === "P-10" ? permitDetails.eventDate : selectedPermitId === "P-10A" ? permitDetails.eventStartDate : dateStamp,
+      permitEndDate: selectedPermitId === "P-10" ? permitDetails.eventDate : selectedPermitId === "P-10A" ? permitDetails.eventEndDate : dateStamp,
+      venue: selectedPermitId === "P-10" ? permitDetails.venueAddress : selectedPermitId === "P-10A" ? permitDetails.exhibitionVenue : permitDetails.tradeshowTitle,
+      feePaid: feesMap[selectedPermitId] || "₹ 0",
       generatedAt: dateStamp,
       status: "APPROVED - ACTIVE"
     };
@@ -293,9 +311,9 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     if (onSubmitPermit) {
       onSubmitPermit({
         id: referenceNum,
-        permitType: chosenPermit.title + ` (${selectedPermitId})`,
+        permitType: (chosenPermit?.title || "") + ` (${selectedPermitId})`,
         sourcePremise: "Authorized Central Excise Warehousing",
-        destPremise: selectedPermitId === "P-10" || selectedPermitId === "61" ? permitDetails.venueAddress : (selectedPermitId === "P-10A" || selectedPermitId === "51" ? permitDetails.exhibitionVenue : "Trade Complex"),
+        destPremise: selectedPermitId === "P-10" || selectedPermitId === "61" ? permitDetails.venueAddress : selectedPermitId === "P-10A" || selectedPermitId === "51" ? permitDetails.exhibitionVenue : "Trade Complex",
         consignmentDetails: selectedPermitId === "P-10" || selectedPermitId === "61" ? "Spirits for private catering event" : "Exhibition showcase samples",
         carrierLicense: "DL-1LM-TEMP-PASS",
         status: "Approved",
@@ -311,6 +329,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
     window.print();
   };
 
+  // If user selected P-10 and reaches Step 3, direct to the detailed P10Page
   if (selectedPermitId === "P-10" && currentStep >= 3) {
     return (
       <P10Page 
@@ -323,12 +342,9 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
 
   return (
     <div className="app-registartion-page">
-      
-      {/* Premium Header with Monument Illustration resembling standard portal designs */}
+      {/* Header Banner */}
       <div className="permit-banner relative overflow-hidden mb-6">
-        {/* Subtle background overlay patterns */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-blue-800/10 pointer-events-none" />
-        
         <div className="flex items-center gap-4 relative z-10 text-left">
           <div className="permit-banner-icon shrink-0 border border-white/20">
             <FileText className="w-8 h-8 text-white animate-pulse" />
@@ -343,46 +359,34 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
           </div>
         </div>
 
-        {/* Delhi Skyline Sketch Illustration (Lotus Temple, India Gate, Qutub Minar line art) */}
+        {/* Skyline Sketch */}
         <div className="hidden md:block relative z-10 opacity-70 h-14 w-80 select-none pointer-events-none">
           <svg className="h-full w-full text-white" viewBox="0 0 300 60" fill="currentColor">
-            {/* Lotus temple lines */}
             <path d="M220,55 C215,50 210,40 215,35 C218,32 222,35 225,40 C228,35 232,32 235,35 C240,40 235,50 230,55 Z" fill="none" stroke="currentColor" strokeWidth="1.2" />
             <path d="M217,55 C213,46 215,42 220,44" fill="none" stroke="currentColor" strokeWidth="1" />
             <path d="M233,55 C237,46 235,42 230,44" fill="none" stroke="currentColor" strokeWidth="1" />
-            
-            {/* India Gate lines */}
             <path d="M140,55 L140,25" stroke="currentColor" strokeWidth="1.5" />
             <path d="M180,55 L180,25" stroke="currentColor" strokeWidth="1.5" />
             <path d="M140,25 L180,25 L180,20 L140,20 Z" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="1.5" />
             <path d="M145,20 L175,20 L160,10 Z" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="1.5" />
-            {/* Archway */}
             <path d="M150,55 L150,38 C150,33 170,33 170,38 L170,55" fill="none" stroke="currentColor" strokeWidth="1.5" />
             <circle cx="160" cy="22" r="1.5" fill="currentColor" />
-
-            {/* Qutub Minar lines */}
             <path d="M90,55 L93,10 L97,10 L100,55 Z" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="1.5" />
             <line x1="91.5" y1="45" x2="98.5" y2="45" stroke="currentColor" strokeWidth="1" />
             <line x1="92" y1="35" x2="98" y2="35" stroke="currentColor" strokeWidth="1" />
             <line x1="92.5" y1="25" x2="97.5" y2="25" stroke="currentColor" strokeWidth="1" />
             <line x1="93" y1="18" x2="97" y2="18" stroke="currentColor" strokeWidth="1" />
-            {/* Dome/Spire top */}
             <path d="M94.5,10 L94.5,4 L95.5,4 L95.5,10" stroke="currentColor" strokeWidth="1" />
-
-            {/* Metro line / ground rail pattern */}
             <path d="M10,55 L50,55 L65,40 L130,40 L145,55 L290,55" fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 3" />
-            {/* Ground line */}
             <line x1="0" y1="55" x2="300" y2="55" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </div>
       </div>
 
-      {/* Stepper block replicating the exact screenshot */}
+      {/* Stepper */}
       {!submitSuccess && (
         <div className="wizard-stepper select-none overflow-x-auto">
           <div className="step-row min-w-[750px] relative">
-            
-            {/* Stepper Mapping */}
             {steps.map((st, idx) => {
               const isChecked = st.num < currentStep;
               const isActive = st.num === currentStep;
@@ -413,40 +417,33 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 </div>
               );
             })}
-
           </div>
         </div>
       )}
 
-      {/* Main Flow Content block */}
+      {/* Main Flow Content */}
       {!submitSuccess ? (
         <div className="space-y-6">
 
-          {/* Core Step Views */}
+          {/* STEP 1: Basic Details */}
           {currentStep === 1 && (
             <div className="wizard-card animate-fade">
               <div className="wizard-content space-y-6">
-                
-                {/* Header inside the card */}
                 <div className="section-header">
                   <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100">
                     <User className="w-6 h-6 text-[#1d4ed8]" />
                   </div>
                   <div className="text-left space-y-0.5">
                     <h2>Basic Details</h2>
-                    <p>
-                      Enter the basic information related to the permit application.
-                    </p>
+                    <p>Enter the basic information related to the permit application.</p>
                   </div>
                 </div>
 
-                {/* Fields */}
                 <div className="form-group text-left">
                   <label className="text-xs font-bold text-slate-700 block text-left">
                     Owner Type <span className="text-red-500 font-bold">*</span>
                   </label>
                   
-                  {/* Select Dropdown with API integration */}
                   <div className="relative max-w-full text-left">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                       <Building className="w-5 h-5 text-blue-500" />
@@ -458,11 +455,11 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                       disabled={isLoadingOwnerTypes}
                     >
                       <option value="">
-                        {isLoadingOwnerTypes ? "Loading owner types..." : "Select owner type"}
+                        {isLoadingOwnerTypes ? "Loading owner types from registry..." : "-- Select Owner Type --"}
                       </option>
-                      {ownerTypes.map((type, index) => (
-                        <option key={type.id || type.code || type.value || index} value={type.id || type.code || type.value || type}>
-                          {type.name || type.label || type.text || type.displayName || type.ownerTypeName || type.typeName || type}
+                      {ownerTypes.map((type) => (
+                        <option key={type.id} value={type.id}>
+                          {type.name}
                         </option>
                       ))}
                     </select>
@@ -473,8 +470,8 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                     </div>
                   </div>
                   
-                  {/* Refresh button for owner types */}
                   <button
+                    type="button"
                     onClick={fetchOwnerTypes}
                     className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition"
                     disabled={isLoadingOwnerTypes}
@@ -484,62 +481,47 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                   </button>
                 </div>
 
-                {/* Info Bar Box using specific modern CSS classes */}
                 <div className="info-box select-none text-left">
                   <p className="info-title">Please select the permit category carefully.</p>
                   <p className="info-text">Applicable fees, documents and approval workflow depend on the selected permit type.</p>
                 </div>
 
-                {/* Card-Level footer actions as shown in screenshot */}
                 <div className="wizard-footer pt-6 border-t border-slate-100">
-                  <div></div>
+                  <div />
                   <div className="footer-actions">
                     <button
                       type="button"
-                      onClick={() => {
-                        if (showToast) showToast("Draft saved successfully in background registry!");
-                      }}
+                      onClick={() => showToast && showToast("Draft saved successfully!")}
                       className="btn-draft hover:bg-slate-50 transition"
                     >
                       Save Draft
                     </button>
-
                     <button
                       type="button"
-                      onClick={() => {
-                        if (!ownerType) {
-                          if (showToast) showToast("Please select owner type first.", "error");
-                          return;
-                        }
-                        setCurrentStep(2);
-                      }}
+                      onClick={handleContinue}
                       className="btn-next hover:bg-blue-700 transition"
                     >
                       Next
                     </button>
                   </div>
                 </div>
-
               </div>
             </div>
           )}
 
+          {/* STEP 2: Permit Selection */}
           {currentStep === 2 && (
             <div className="permit-selection-container animate-fade">
-              
-              {/* Screen Headers exactly matching the visual specs */}
               <div className="permit-header">
                 <h1>Select Permit Type</h1>
                 <p>Choose the permit type you want to apply for</p>
               </div>
 
-              {/* Blue Alert Info Bar matching exact screenshot styling */}
               <div className="permit-info-banner select-none text-left">
                 <Info className="w-5 h-5 shrink-0" />
                 <span>Please select the appropriate permit type. Permit conditions, fees and required documents may vary depending on the selected permit.</span>
               </div>
 
-              {/* Search filter panel and matching Available pill count badge */}
               <div className="permit-search-wrapper">
                 <input 
                   type="text" 
@@ -554,7 +536,6 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 {filteredPermits.length} Permit{filteredPermits.length !== 1 ? "s" : ""} Available
               </div>
 
-              {/* Responsive grid of permit cards replicating precise screenshot */}
               <div className="permit-grid">
                 {filteredPermits.map((p) => {
                   const isSelected = selectedPermitId === p.id;
@@ -568,23 +549,11 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                       <div className="permit-icon">
                         <IconComponent className="w-6 h-6" />
                       </div>
-
-                      <div className="permit-code">
-                        {p.code}
-                      </div>
-
-                      <h3 className="permit-title">
-                        {p.title}
-                      </h3>
-
-                      <p className="permit-description">
-                        {p.description}
-                      </p>
-
+                      <div className="permit-code">{p.code}</div>
+                      <h3 className="permit-title">{p.title}</h3>
+                      <p className="permit-description">{p.description}</p>
                       <div className="permit-footer">
-                        <span className="permit-tag">
-                          {p.subbadge}
-                        </span>
+                        <span className="permit-tag">{p.subbadge}</span>
                         <span className="permit-link">View Guidelines</span>
                       </div>
                     </div>
@@ -599,122 +568,27 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                   <p className="text-[11px] text-slate-400 mt-0.5">Refine your search input filter or query.</p>
                 </div>
               )}
-
             </div>
           )}
 
-          {/* Step 3: APPLICATION FORM DETAILS VIEW */}
+          {/* STEP 3: Event Details (For P-10A & P-11) */}
           {currentStep === 3 && (
             <div className="wizard-card animate-fade text-left">
               <div className="wizard-content space-y-6">
-                
                 <div className="section-header pb-4 border-b border-slate-100">
                   <div>
                     <span className="text-[11px] font-mono font-black text-[#1e40af] bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">
                       Active Docket Type: {selectedPermitId}
                     </span>
                     <h2 className="text-lg font-extrabold text-slate-800 mt-2">Excise Permission Record Form</h2>
-                    <p className="text-xs text-slate-450 font-semibold">Please complete the relevant security clearance parameters below:</p>
+                    <p className="text-xs text-slate-500 font-semibold">Please complete the relevant security clearance parameters below:</p>
                   </div>
                 </div>
-
-                {/* DYNAMIC FORMS BASED ON PERMIT TYPE SELECTION */}
-                {selectedPermitId === "P-10" && (
-                  <div className="form-grid">
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Host / Applicant Full Name *</label>
-                      <input 
-                        type="text" 
-                        value={permitDetails.hostName}
-                        onChange={(e) => handleInputChange("hostName", e.target.value)}
-                        className="form-control"
-                        placeholder="Enter legal organizer name"
-                      />
-                      {formErrors.hostName && <span className="text-xs text-red-500 font-bold mt-1">{formErrors.hostName}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Event Title / Purpose *</label>
-                      <input 
-                        type="text" 
-                        value={permitDetails.occasionName}
-                        onChange={(e) => handleInputChange("occasionName", e.target.value)}
-                        className="form-control"
-                        placeholder="e.g. Wedding Event / Birthday Reception"
-                      />
-                      {formErrors.occasionName && <span className="text-xs text-red-500 font-bold mt-1">{formErrors.occasionName}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Event Date *</label>
-                      <input 
-                        type="date" 
-                        value={permitDetails.eventDate}
-                        onChange={(e) => handleInputChange("eventDate", e.target.value)}
-                        className="form-control font-medium"
-                      />
-                      {formErrors.eventDate && <span className="text-xs text-red-500 font-bold mt-1">{formErrors.eventDate}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Expected Guest Count (Strength)</label>
-                      <input 
-                        type="number" 
-                        value={permitDetails.estimatedGuests}
-                        onChange={(e) => handleInputChange("estimatedGuests", e.target.value)}
-                        className="form-control"
-                      />
-                      {formErrors.estimatedGuests && <span className="text-xs text-red-500 font-bold mt-1">{formErrors.estimatedGuests}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Serving Timings (Start - End)</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input 
-                          type="time" 
-                          value={permitDetails.servingStartTime}
-                          onChange={(e) => handleInputChange("servingStartTime", e.target.value)}
-                          className="form-control"
-                        />
-                        <input 
-                          type="time" 
-                          value={permitDetails.servingEndTime}
-                          onChange={(e) => handleInputChange("servingEndTime", e.target.value)}
-                          className="form-control"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Registered Retail Shop (L-2) for Liquor Sourcing</label>
-                      <select 
-                        value={permitDetails.sourcingShed}
-                        onChange={(e) => handleInputChange("sourcingShed", e.target.value)}
-                        className="form-control text-xs"
-                      >
-                        <option value="Vedic Retail Licensed Shop (L-2), Block-E Mayapuri">Vedic Retail Licensed Shop (L-2), Block-E Mayapuri</option>
-                        <option value="Continental Wines Retailer, Rajouri Garden Closeout">Continental Wines Retailer, Rajouri Garden Closeout</option>
-                        <option value="NCT Government Liquor Dispensing Outlet, Okhla Hub">NCT Government Liquor Dispensing Outlet, Okhla Hub</option>
-                      </select>
-                    </div>
-
-                    <div className="form-group md:col-span-2">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Complete Event Venue physical address *</label>
-                      <textarea 
-                        value={permitDetails.venueAddress}
-                        onChange={(e) => handleInputChange("venueAddress", e.target.value)}
-                        className="textarea-box text-xs font-medium"
-                        rows={2}
-                      />
-                      {formErrors.venueAddress && <span className="text-xs text-red-500 font-bold mt-1">{formErrors.venueAddress}</span>}
-                    </div>
-                  </div>
-                )}
 
                 {selectedPermitId === "P-10A" && (
                   <div className="form-grid">
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase font-sans">Exhibition / Gala Corporate Title *</label>
+                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Exhibition / Gala Corporate Title *</label>
                       <input 
                         type="text" 
                         value={permitDetails.corporateTitle}
@@ -736,7 +610,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                     </div>
 
                     <div className="form-group">
-                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Duration (Starts)</label>
+                      <label className="text-xs font-bold text-slate-600 mb-1.5 uppercase">Duration (Starts) *</label>
                       <input 
                         type="date" 
                         value={permitDetails.eventStartDate}
@@ -844,120 +718,113 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                     </div>
                   </div>
                 )}
-
               </div>
             </div>
           )}
 
-          {/* Step 4: SITE & COMPLIANCE DOCUMENTS UPLOAD */}
+          {/* STEP 4: Documents Upload */}
           {currentStep === 4 && (
             <div className="wizard-card animate-fade text-left">
               <div className="wizard-content space-y-6">
-                
                 <div className="section-header pb-4 border-b border-slate-100">
                   <div>
                     <h2>Support compliance documents</h2>
-                    <p className="text-xs text-slate-450 font-semibold">Delhi Excise Law mandates strict certification clearances on public gatherings. Files are pre-validated beneath 10MB.</p>
+                    <p className="text-xs text-slate-500 font-semibold">Delhi Excise Law mandates strict certification clearances on public gatherings. Files are pre-validated beneath 10MB.</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  
-                  {/* Document 1: Landlord / Venue Booking */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:bg-slate-50 transition">
                     <div className="space-y-0.5">
                       <h4 className="text-xs font-bold text-slate-800 uppercase">Venue Booking Letter / Hall NOC *</h4>
                       <p className="text-[10px] text-slate-400 font-medium">Valid venue reservation invoice signed with landlord seal</p>
                     </div>
                     <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-150 flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 stroke-[3]" /> Mapped: venue_booking_invoice.pdf
                       </span>
                       <button 
-                        onClick={() => { if (showToast) showToast("File venue_booking_invoice.pdf uploaded."); }}
-                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-150"
+                        type="button"
+                        onClick={() => showToast && showToast("File venue_booking_invoice.pdf uploaded.")}
+                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-200"
                       >
                         <Upload className="w-3 h-3 text-slate-400" /> Replace
                       </button>
                     </div>
                   </div>
 
-                  {/* Document 2: Area Police Station copy */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:bg-slate-50 transition">
                     <div className="space-y-0.5">
                       <h4 className="text-xs font-bold text-slate-800 uppercase">Local Police Station Intimation Acknowledgment *</h4>
-                      <p className="text-[10px] text-slate-400 font-medium font-sans">Stamp intimation copy notifying territorial sub-division of gathering and vehicle parks</p>
+                      <p className="text-[10px] text-slate-400 font-medium font-sans">Stamp intimation copy notifying territorial sub-division of gathering</p>
                     </div>
                     <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-150 flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 stroke-[3]" /> Mapped: police_station_acknowledgment.pdf
                       </span>
                       <button 
-                        onClick={() => { if (showToast) showToast("File station acknowledgment updated."); }}
-                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-150"
+                        type="button"
+                        onClick={() => showToast && showToast("File station acknowledgment updated.")}
+                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-200"
                       >
                         <Upload className="w-3 h-3 text-slate-400" /> Replace
                       </button>
                     </div>
                   </div>
 
-                  {/* Document 3: Security Layout Plan */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:bg-slate-50 transition">
                     <div className="space-y-0.5">
                       <h4 className="text-xs font-bold text-slate-800 uppercase">Gathering site seating layout & fire-exits blueprint *</h4>
-                      <p className="text-[10px] text-slate-400 font-medium">Simple architectural blueprint mapping out beverage booths, security checkpoints and emergency exit stairs</p>
+                      <p className="text-[10px] text-slate-400 font-medium">Blueprint mapping beverage booths, security checkpoints and emergency exits</p>
                     </div>
                     <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-150 flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 stroke-[3]" /> Mapped: layout_fire_safety_exits.pdf
                       </span>
                       <button 
-                        onClick={() => { if (showToast) showToast("Layout plan refreshed."); }}
-                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-150"
+                        type="button"
+                        onClick={() => showToast && showToast("Layout plan refreshed.")}
+                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-200"
                       >
                         <Upload className="w-3 h-3 text-slate-400" /> Replace
                       </button>
                     </div>
                   </div>
 
-                  {/* Document 4: Excise Duties Stamp */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-slate-200 p-4 rounded-xl hover:bg-slate-50 transition">
                     <div className="space-y-0.5">
                       <h4 className="text-xs font-bold text-slate-800 uppercase">Excise fee payment deposit receipt / Challan</h4>
                       <p className="text-[10px] text-slate-400 font-medium">Bank reference code deposit proving government fee clearance</p>
                     </div>
                     <div className="mt-3 sm:mt-0 flex items-center gap-3">
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-150 flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 stroke-[3]" /> Mapped: excise_challan_15k_cleared.pdf
                       </span>
                       <button 
-                        onClick={() => { if (showToast) showToast("Fee receipt uploaded."); }}
-                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-150"
+                        type="button"
+                        onClick={() => showToast && showToast("Fee receipt uploaded.")}
+                        className="text-[10px] py-1.5 px-3 rounded-lg flex items-center gap-1.5 bg-slate-100 border border-slate-200 font-bold text-slate-600 hover:bg-slate-200"
                       >
                         <Upload className="w-3 h-3 text-slate-400" /> Replace
                       </button>
                     </div>
                   </div>
-
                 </div>
-
               </div>
             </div>
           )}
 
-          {/* Step 5: STATUTORY UNDERTAKING & REVIEW */}
+          {/* STEP 5: Review & Undertaking */}
           {currentStep === 5 && (
             <div className="wizard-card animate-fade text-left">
               <div className="wizard-content space-y-6">
-                
                 <div className="section-header pb-4 border-b border-slate-100">
                   <div>
                     <h2>Statutory review & Signature docket</h2>
-                    <p className="text-xs text-slate-450 font-semibold">Please authenticate and affirm the underlying commitment declarations:</p>
+                    <p className="text-xs text-slate-500 font-semibold">Please authenticate and affirm the underlying commitment declarations:</p>
                   </div>
                 </div>
 
-                {/* Legal Warning Notice Box */}
                 <div className="bg-red-50 text-red-950 p-4 border border-red-100 rounded-xl flex items-start gap-3">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
                   <div className="applicant-alert-text">
@@ -966,8 +833,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                   </div>
                 </div>
 
-                {/* Review Grid of Docket Parameter data */}
-                <div className="p-4 bg-slate-50 border border-slate-150 rounded-xl space-y-3">
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                   <p className="text-[11px] font-black tracking-wider uppercase text-slate-400">File Summary Pre-Review</p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-medium">
                     <div>
@@ -989,7 +855,6 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                   </div>
                 </div>
 
-                {/* Checkbox and input fields */}
                 <div className="p-4 border border-slate-200 rounded-xl space-y-4">
                   <div className="flex items-start gap-3">
                     <input 
@@ -1032,7 +897,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
             </div>
           )}
 
-          {/* Action buttons footer for step Wizard */}
+          {/* Navigation Controls Footer */}
           {currentStep > 1 && (
             <div className="wizard-footer mt-6 bg-transparent border-t border-slate-200/60 pt-6">
               <button 
@@ -1046,9 +911,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
               <div className="footer-actions">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (showToast) showToast("Draft saved successfully in background registry!");
-                  }}
+                  onClick={() => showToast && showToast("Draft saved successfully in background registry!")}
                   className="btn-draft hover:bg-slate-50 transition"
                 >
                   Save Draft
@@ -1066,15 +929,11 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
 
         </div>
       ) : (
-        /* SENSATIONAL GOVERNMENT LICENSED TRANSIT PERMIT SUCCESS OUTLET */
+        /* Permit Success Gate Pass View */
         <div className="space-y-6 animate-fade">
-          
           <div className="bg-white border border-slate-200 rounded-2xl shadow-md p-6 max-w-2xl mx-auto space-y-6 text-left relative overflow-hidden">
-            
-            {/* Top Security Line Banner */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-emerald-500" />
 
-            {/* Print Header */}
             <div className="flex items-start justify-between border-b border-dashed border-slate-200 pb-5">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
@@ -1087,7 +946,6 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 <p className="text-xs text-slate-500 font-bold font-mono">CODE: {permitReceipt?.permitNo}</p>
               </div>
 
-              {/* Circle Stamp */}
               <div className="w-16 h-16 rounded-full border-2 border-dashed border-emerald-600/30 text-emerald-600 flex flex-col items-center justify-center rotate-12 shrink-0 select-none bg-emerald-50/50">
                 <span className="text-[9px] font-black uppercase">APPROVED</span>
                 <span className="text-[7px] font-black tracking-widest font-mono">DELHI</span>
@@ -1096,9 +954,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
               </div>
             </div>
 
-            {/* Permit parameters container block */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              
               <div className="bg-slate-50/70 p-3 rounded-lg border border-slate-100 space-y-2">
                 <div>
                   <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none">Permit Class Authorized</span>
@@ -1138,10 +994,8 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                   <span className="text-slate-800 font-bold font-mono text-[10px] bg-slate-200 px-1 rounded-sm">{permitReceipt?.permitNo}</span>
                 </div>
               </div>
-
             </div>
 
-            {/* QR Scan and Legal Stamps */}
             <div className="flex items-center justify-between gap-6 pt-5 border-t border-slate-200">
               <div className="flex items-center gap-3.5">
                 <div className="p-1 border border-slate-200 rounded-lg shrink-0 bg-white">
@@ -1155,15 +1009,13 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-[10px] text-slate-450 uppercase font-black leading-none">Excise Registrar</p>
-                <div className="h-4 w-12 border-b border-slate-350 mx-auto my-1 inline-block" />
+                <p className="text-[10px] text-slate-500 uppercase font-black leading-none">Excise Registrar</p>
+                <div className="h-4 w-12 border-b border-slate-300 mx-auto my-1 inline-block" />
                 <p className="text-[10px] font-bold text-slate-500 leading-none">NCT of Delhi Gov</p>
               </div>
             </div>
-
           </div>
 
-          {/* Actions Bar Footer */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-2xl mx-auto">
             <button
               onClick={() => {
@@ -1171,7 +1023,7 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
                 setPermitReceipt(null);
                 setCurrentStep(1);
               }}
-              className="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-250 rounded-xl text-xs font-bold shrink-0 cursor-pointer transition"
+              className="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold shrink-0 cursor-pointer transition"
             >
               Register Another Permit
             </button>
@@ -1192,16 +1044,13 @@ export default function NewPermitWizard({ onBackToDashboard, showToast, onSubmit
             </button>
           </div>
 
-          {/* Quick Notice */}
-          <div className="bg-slate-50 border border-slate-250 p-4 rounded-xl text-center max-w-2xl mx-auto">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center max-w-2xl mx-auto">
             <p className="text-[11px] text-slate-500 font-medium">
-              Note: This pass is saved in your active tracking permit lists. Click "Applied Permit" in the Premise dropdown on the top menu to access digital copies persistently.
+              Note: This pass is saved in your active tracking permit lists. Click &quot;Applied Permit&quot; in the Premise dropdown on the top menu to access digital copies persistently.
             </p>
           </div>
-
         </div>
       )}
-
     </div>
   );
 }
