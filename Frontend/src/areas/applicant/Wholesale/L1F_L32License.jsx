@@ -1257,15 +1257,8 @@ debugger;
       console.log("Generated Id:", data.applicationId);
       localStorage.setItem("applicationId", data.applicationId);
       localStorage.setItem("catCode", data.catCode);
-<<<<<<< Updated upstream
-      ///alert(`Your Application Reference No. is ${data.applicationId}`);
-      
-
-    }
-=======
       alert(`Your Application Reference No. is ${data.applicationId}`);
 }
->>>>>>> Stashed changes
 
 
 // if (currentStep === 2) {
