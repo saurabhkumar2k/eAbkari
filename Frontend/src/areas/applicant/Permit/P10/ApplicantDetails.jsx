@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   getApplicantByRegId,
   getStates,
@@ -19,24 +19,46 @@ import {
   Loader2
 } from "lucide-react";
 
-const pickByPattern = (item, patterns) => {
-  const keys = Object.keys(item || {});
-  for (const pattern of patterns) {
-    const found = keys.find((k) => pattern.test(k));
-    if (found && item[found] !== null && item[found] !== undefined) {
-      return item[found];
-    }
-  }
-  return undefined;
-};
-
+// Robust normalizer for MstState, MstDistrict, and MstSubDivision
 const normalizeOption = (item) => {
   if (item === null || typeof item !== "object") {
     return { code: String(item ?? "").trim(), name: String(item ?? "").trim() };
   }
-  const code = pickByPattern(item, [/^code$/i, /^id$/i, /^value$/i, /code$/i, /^.*id$/i]);
-  const name = pickByPattern(item, [/^name$/i, /^label$/i, /name$/i, /label$/i]);
-  return { code: String(code ?? "").trim(), name: String(name ?? "").trim() };
+
+  const code =
+    item.SubDivisionCode ??
+    item.subDivisionCode ??
+    item.SubDivCode ??
+    item.subDivCode ??
+    item.DistrictCode ??
+    item.districtCode ??
+    item.StateCode ??
+    item.stateCode ??
+    item.Code ??
+    item.code ??
+    item.ID ??
+    item.Id ??
+    item.id ??
+    item.Value ??
+    item.value ??
+    "";
+
+  const name =
+    item.SubDivisionName ??
+    item.subDivisionName ??
+    item.SubDivName ??
+    item.subDivName ??
+    item.DistrictName ??
+    item.districtName ??
+    item.StateName ??
+    item.stateName ??
+    item.Name ??
+    item.name ??
+    item.Label ??
+    item.label ??
+    code;
+
+  return { code: String(code).trim(), name: String(name).trim() };
 };
 
 const extractList = (payload) => {
@@ -74,14 +96,16 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
   const [loadingDistricts, setLoadingDistricts] = useState(false);
   const [loadingSubDivisions, setLoadingSubDivisions] = useState(false);
 
- const [pendingLocation, setPendingLocation] = useState({
+  const [pendingLocation, setPendingLocation] = useState({
     state: null,
     district: null,
     subDivision: null
   });
 
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  // Keep initial load true throughout the entire State -> District -> SubDivision cascade
+  const isHydrating = useRef(false);
 
+  // 1. Fetch Applicant Details
   useEffect(() => {
     const regId = formData.regId;
     if (!regId) return;
@@ -91,12 +115,13 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
     const fetchApplicantDetails = async () => {
       setLoadingApplicant(true);
       setFetchError(null);
+      isHydrating.current = true;
 
       try {
         const response = await getApplicantByRegId(regId);
         if (isCancelled) return;
 
-        const data = response.data;
+        const data = response.data?.data ?? response.data?.result ?? response.data;
 
         if (data) {
           if (data.firstName != null || data.lastName != null) {
@@ -117,6 +142,7 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
           if (data.email != null) onChange("email", data.email);
           if (data.landline != null) onChange("landline", data.landline);
 
+          // Queue pending location for cascading resolution
           setPendingLocation({
             state: data.stateUT != null ? String(data.stateUT).trim() : null,
             district: data.district != null ? String(data.district).trim() : null,
@@ -130,20 +156,22 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
         console.error("Failed to fetch applicant details:", error);
         setFetchError("Could not load applicant details from registry");
         if (showToast) showToast("Failed to load applicant details", "error");
+        isHydrating.current = false;
       } finally {
         if (!isCancelled) {
           setLoadingApplicant(false);
-          setIsInitialLoad(false);
+          // Do NOT set isHydrating to false here; let the cascade finish!
         }
       }
     };
 
     fetchApplicantDetails();
-    return () => { isCancelled = true; };
-   
+    return () => {
+      isCancelled = true;
+    };
   }, [formData.regId]);
 
- 
+  // 2. Fetch States on mount
   useEffect(() => {
     let isCancelled = false;
 
@@ -153,9 +181,6 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
         const response = await getStates();
         if (isCancelled) return;
         const list = extractList(response.data);
-        if (list.length === 0) {
-          console.warn("getStates() returned no array — raw response:", response.data);
-        }
         setStates(list.map(normalizeOption));
       } catch (error) {
         console.error("Failed to fetch states:", error);
@@ -166,25 +191,24 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
     };
 
     fetchStates();
-    return () => { isCancelled = true; };
-    
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
-
+  // 3. Match State
   useEffect(() => {
     if (!pendingLocation.state || states.length === 0) return;
     const match = resolveOption(pendingLocation.state, states);
     if (match) {
       onChange("state", match.code);
     } else {
-      console.warn(`Registry state "${pendingLocation.state}" not found in states list`);
+      onChange("state", pendingLocation.state);
     }
-   
     setPendingLocation((prev) => ({ ...prev, state: null }));
-  
   }, [pendingLocation.state, states]);
 
- 
+  // 4. Fetch Districts when state changes
   useEffect(() => {
     const stateCode = formData.state;
     if (!stateCode) {
@@ -200,16 +224,11 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
         const response = await getDistricts(stateCode);
         if (isCancelled) return;
         const list = extractList(response.data);
-        if (list.length === 0) {
-          console.warn(`getDistricts("${stateCode}") returned no array — raw response:`, response.data);
-        }
         const normalized = list.map(normalizeOption);
-        if (list.length > 0 && normalized.every((d) => !d.code)) {
-          console.warn("Districts loaded but every code came back empty — check property names:", list[0]);
-        }
         setDistricts(normalized);
 
-        if (!isInitialLoad) {
+        // DO NOT wipe district/subDivision if hydrating or pending
+        if (!isHydrating.current && !pendingLocation.district && !pendingLocation.subDivision) {
           const stillValid = normalized.some((d) => d.code === formData.district);
           if (!stillValid) {
             onChange("district", "");
@@ -225,22 +244,24 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
     };
 
     fetchDistricts();
-    return () => { isCancelled = true; };
-  
+    return () => {
+      isCancelled = true;
+    };
   }, [formData.state]);
- 
+
+  // 5. Match District
   useEffect(() => {
     if (!pendingLocation.district || districts.length === 0) return;
     const match = resolveOption(pendingLocation.district, districts);
     if (match) {
       onChange("district", match.code);
     } else {
-      console.warn(`Registry district "${pendingLocation.district}" not found in districts list`);
+      onChange("district", pendingLocation.district);
     }
     setPendingLocation((prev) => ({ ...prev, district: null }));
-   
   }, [pendingLocation.district, districts]);
 
+  // 6. Fetch Sub-Divisions when district changes
   useEffect(() => {
     const districtCode = formData.district;
     if (!districtCode) {
@@ -249,22 +270,18 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
     }
 
     let isCancelled = false;
+
     const fetchSubDivisions = async () => {
       setLoadingSubDivisions(true);
       try {
         const response = await getSubDivisions(districtCode);
         if (isCancelled) return;
-        console.log(`getSubDivisions("${districtCode}") raw response:`, response.data);
         const list = extractList(response.data);
-        if (list.length === 0) {
-          console.warn(`getSubDivisions("${districtCode}") returned no array — raw response above.`);
-        }
         const normalized = list.map(normalizeOption);
-        if (list.length > 0 && normalized.every((s) => !s.code)) {
-          console.warn("Sub-divisions loaded but every code came back empty — check property names:", list[0]);
-        }
         setSubDivisions(normalized);
-        if (!isInitialLoad) {
+
+        // DO NOT wipe subDivision if hydrating or pending
+        if (!isHydrating.current && !pendingLocation.subDivision) {
           const stillValid = normalized.some((s) => s.code === formData.subDivision);
           if (!stillValid) {
             onChange("subDivision", "");
@@ -279,37 +296,41 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
     };
 
     fetchSubDivisions();
-    return () => { isCancelled = true; };
-   
+    return () => {
+      isCancelled = true;
+    };
   }, [formData.district]);
 
- 
+  // 7. Match Sub-Division (Final Step of Cascade)
   useEffect(() => {
     if (!pendingLocation.subDivision || subDivisions.length === 0) return;
     const match = resolveOption(pendingLocation.subDivision, subDivisions);
     if (match) {
       onChange("subDivision", match.code);
     } else {
-      console.warn(`Registry sub-division "${pendingLocation.subDivision}" not found in list`);
+      // Fallback: If registry value is already the code or exact name
+      onChange("subDivision", pendingLocation.subDivision);
     }
-    setPendingLocation((prev) => ({ ...prev, subDivision: null }));    
-    setIsInitialLoad(false);   
+    setPendingLocation((prev) => ({ ...prev, subDivision: null }));
+    isHydrating.current = false; // Cascade completed successfully!
   }, [pendingLocation.subDivision, subDivisions]);
 
+  // Manual User Changes
   const handleStateChange = (value) => {
+    isHydrating.current = false;
     onChange("state", value);
     onChange("district", "");
     onChange("subDivision", "");
   };
 
   const handleDistrictChange = (value) => {
+    isHydrating.current = false;
     onChange("district", value);
     onChange("subDivision", "");
   };
 
   return (
     <div className="app-form-section">
-      {/* Informational banner reflecting registered status */}
       <div className="reciept">
         <div className="app-icon-box">
           <User className="w-5 h-5 text-blue-600" />
@@ -639,7 +660,7 @@ export default function ApplicantDetails({ formData, onChange, errors = {}, show
             </span>
             Contact Details
           </h3>
-          <p className="text-[11px] text-slate-440 mt-0.5">
+          <p className="text-[11px] text-slate-400 mt-0.5">
             Active contact information for receiving validation tokens, OTPs, and permit PDF email notifications
           </p>
         </div>

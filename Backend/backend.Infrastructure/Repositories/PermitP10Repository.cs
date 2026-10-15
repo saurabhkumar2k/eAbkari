@@ -218,11 +218,7 @@ public class PermitP10Repository : IPermitP10Repository
 
             if (dto.LicenseApplicationUploadedDocument?.Any() == true)
             {
-                string folder = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "Documents",
-                    "ApplicationDocuments");
+                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Documents","ApplicationDocuments");
 
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
@@ -232,8 +228,7 @@ public class PermitP10Repository : IPermitP10Repository
                     if (doc.DocUrl == null || doc.DocUrl.Length == 0)
                         continue;
 
-                    string fileName = Guid.NewGuid() +
-                                      Path.GetExtension(doc.DocumentFile.FileName);
+                    string fileName = Guid.NewGuid() + Path.GetExtension(doc.DocumentFile.FileName);
 
                     string physicalPath = Path.Combine(folder, fileName);
 

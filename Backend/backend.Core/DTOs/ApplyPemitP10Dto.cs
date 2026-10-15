@@ -23,7 +23,7 @@ namespace backend.Core.DTOs
         public string PIN { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
-        public string LandLine { get; set; }
+        public string? LandLine { get; set; }
         //public string PermitNo { get; set; }
 
         // PermitP10 insert in this table
