@@ -105,7 +105,7 @@ export default function FlowHierarchyMapping({ onBack }) {
       [selectedHierarchy]: newItems
     }));
 
-    showToast("success", `Flow Hierarchy Mapping updated successfully for ${selectedHierarchy}!`);
+    showToast("success", `User Hierarchy updated successfully for ${selectedHierarchy}!`);
   };
 
   const currentHierarchyList = hierarchyData[selectedHierarchy] || [];
@@ -152,7 +152,7 @@ export default function FlowHierarchyMapping({ onBack }) {
           <span>/</span>
           <span>User Maintenance</span>
           <span>/</span>
-          <span className="user-creation-breadcrumb-active">Flow Hierarchy Mapping</span>
+          <span className="user-creation-breadcrumb-active">User Hierarchy</span>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ export default function FlowHierarchyMapping({ onBack }) {
                 <GitFork className="w-6 h-6 text-sky-600" />
               </div>
               <div className="user-creation-title-block">
-                <h1>Flow Hierarchy Mapping</h1>
+                <h1>User Hierarchy</h1>
                 <p>Define approval workflow hierarchies and assign officer levels for excise licenses and permits.</p>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function FlowHierarchyMapping({ onBack }) {
             <div className="user-creation-ribbon-wrapper">
               <div className="user-creation-ribbon-container">
                 <div className="user-creation-ribbon-arrow"></div>
-                <div className="user-creation-ribbon-body">Flow Hierarchy Mapping</div>
+                <div className="user-creation-ribbon-body">User Hierarchy</div>
               </div>
             </div>
           </div>

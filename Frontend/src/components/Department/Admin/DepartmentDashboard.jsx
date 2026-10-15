@@ -20,10 +20,10 @@ import {
   Edit2,
   Trash2
 } from "lucide-react";
-import OwnerTypeMaster from "./OwnerTypeMaster.jsx";
-import LicenseTitleMaster from "./LicenseTitleMaster.jsx";
-import UserCreation from "./UserCreation.jsx";
-import UserHierarchy from "./UserHierarchy.jsx";
+import OwnerTypeMaster from "./ExciseLicense/OwnerTypeMaster.jsx";
+import LicenseTitleMaster from "./ExciseLicense/LicenseTitleMaster.jsx";
+import UserCreation from "./HKeeping/UserCreation.jsx";
+import UserHierarchy from "./HKeeping/UserHierarchy.jsx";
 
 const DepartmentDashboard = ({
   onLogout,
@@ -176,8 +176,7 @@ const DepartmentDashboard = ({
 
       <div className="dept-dash-main">
         <div className="dept-dash-container">
-          
-          {activeDirectory === "owner-type" ? (
+            {activeDirectory === "owner-type" ? (
             <OwnerTypeMaster />
           ) : activeDirectory === "license-title" ? (
             <LicenseTitleMaster />

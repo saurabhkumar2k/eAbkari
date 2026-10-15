@@ -28,6 +28,8 @@
 @import "./Applicant/registration.css";
 @import "./Applicant/mtp.css";
 @import "./Applicant/renewal_dt.css";
+@import "./Applicant/dealer.css"; 
+@import "./Applicant/licensetransfer.css";
 
 @import "./HcrApp.css";
 @import "./ActOnNewLicenseApplication.css";

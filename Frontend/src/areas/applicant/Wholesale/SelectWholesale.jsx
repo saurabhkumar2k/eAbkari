@@ -84,240 +84,88 @@ const SelectWholesaleType = ({
       {/* ============================= */}
       {/* LICENSE CARDS */}
       {/* ============================= */}
-
-      {applicant?.ownerType && (
-        <div className="license-grid">
-
-          {licenseGroups.map((item) => {
-
-            // Find application for this license
-            const application =
-              applications?.find(
-                (app) =>
-                  app.licenseeCatDesc?.trim() ===
-                  item.licenseeCatDesc?.trim()
-              );
-
-
-            // Application status
-            const status =
-              application?.applicationStatus?.trim();
-
-
-            // Draft
-            const isDraft =
-              status === "P";
-
-
-            // Submitted
-            const isSubmitted =
-              status === "S";
-
-
-            return (
-              <div
-                key={item.licenseeCatCode}
-
-                className={`license-card ${
-                  selectedType === item.licenseeCatCode
-                    ? "selected"
-                    : ""
-                }`}
-
-                style={{
-                  position: "relative",
-                  cursor: "pointer",
-                }}
-
-               onClick={() => {
-
-  // =====================================
-  // ALREADY SUBMITTED → NO EDIT
-  // =====================================
-
-  if (isSubmitted) {
-    if (showToast) {
-      showToast(
-        "This application has already been submitted and cannot be edited."
+{applicant?.ownerType && (
+  <div className="license-grid">
+    {licenseGroups.map((item) => {
+      const application = applications?.find(
+        (app) =>
+          app.licenseeCatDesc?.trim() === item.licenseeCatDesc?.trim()
       );
-    } else {
-      alert(
-        "This application has already been submitted and cannot be edited."
-      );
-    }
 
-    return;
-  }
+      const isDraft =
+        application?.applicationStatus?.trim() === "P";
 
-
-  // =====================================
-  // SELECT LICENSE
-  // =====================================
-
+      return (
+        <div
+          key={item.licenseeCatCode}
+          className={`license-card ${
+            selectedType === item.licenseeCatCode ? "selected" : ""
+          }`}
+          style={{ position: "relative", cursor: "pointer" }}
+onClick={() => {
   localStorage.setItem(
     "selectedLicense",
     JSON.stringify(item)
   );
 
 
-  // =====================================
-  // DRAFT → OPEN FOR EDIT
-  // =====================================
-
   if (isDraft) {
-
     localStorage.setItem(
       "applicationId",
       application.applicationIdNo
     );
-
   } else {
-
-    // New application
-    localStorage.removeItem(
-      "applicationId"
-    );
-
+    localStorage.removeItem("applicationId");
   }
 
-
-  onSelectType(
-    item.licenseeCatCode
-  );
-
+ 
+  onSelectType(item.licenseeCatCode);
 }}
-              >
 
+        >
+          {isDraft && (
+            <div className="draft-ribbon">
+              📝 <span>Draft Saved</span>
+            </div>
+          )}
 
-                {/* ============================= */}
-                {/* DRAFT RIBBON */}
-                {/* ============================= */}
+        
+          <h3 className="card-title">
+            {item.licenseeCatDesc}
+          </h3>
 
-                {isDraft && (
-                  <div className="draft-ribbon">
-                    📝 <span>Draft Saved</span>
-                  </div>
-                )}
+       
+    {isDraft && (
+  <div className="draft-details">
+    <div className="draft-item">
+      <span>Application No.</span>
+      <strong>{application.applicationIdNo}</strong>
+    </div>
 
+    <div className="draft-item">
+      <span>Last Updated</span>
+      <strong>
+        {new Date(application.applicationDate).toLocaleDateString("en-GB")}
+      </strong>
+    </div>
 
-                {/* ============================= */}
-                {/* SUBMITTED RIBBON */}
-                {/* ============================= */}
+    <div className="draft-message">
+      Your application is saved as Draft.
+    </div>
+  </div>
+)}
 
-                {isSubmitted && (
-                  <div className="submitted-ribbon">
-                    ✓ <span>Application Submitted</span>
-                  </div>
-                )}
-
-
-                {/* ============================= */}
-                {/* TITLE */}
-                {/* ============================= */}
-
-                <h3 className="card-title">
-                  {item.licenseeCatDesc}
-                </h3>
-
-
-                {/* ============================= */}
-                {/* DRAFT DETAILS */}
-                {/* ============================= */}
-
-                {isDraft && (
-                  <div className="draft-details">
-
-                    <div className="draft-item">
-
-                      <span>
-                        Application No.
-                      </span>
-
-                      <strong>
-                        {application?.applicationIdNo}
-                      </strong>
-
-                    </div>
-
-
-                    <div className="draft-item">
-
-                      <span>
-                        Last Updated
-                      </span>
-
-                      <strong>
-                        {application?.applicationDate
-                          ? new Date(
-                              application.applicationDate
-                            ).toLocaleDateString(
-                              "en-GB"
-                            )
-                          : "-"
-                        }
-                      </strong>
-
-                    </div>
-
-
-                    <div className="draft-message">
-                      Your application is saved as Draft.
-                    </div>
-
-                  </div>
-                )}
-
-
-                {/* ============================= */}
-                {/* SUBMITTED DETAILS */}
-                {/* ============================= */}
-
-                {isSubmitted && (
-                  <div className="submitted-details">
-
-                    <div className="submitted-item">
-
-                      <span>
-                        Application No.
-                      </span>
-
-                      <strong>
-                        {application?.applicationIdNo}
-                      </strong>
-
-                    </div>
-
-
-                    <div className="submitted-message">
-
-                      ✓ Your application has been
-                      submitted successfully.
-
-                    </div>
-
-                  </div>
-                )}
-
-
-                {/* ============================= */}
-                {/* FOOTER */}
-                {/* ============================= */}
-
-                <div className="card-footer">
-
-                  <span className="card-badge">
-                    WHOLESALE
-                  </span>
-
-                </div>
-
-              </div>
-            );
-          })}
-
+          {/* Footer */}
+ <div className="card-footer">
+  <span className="card-badge">
+    WHOLESALE
+  </span>
+</div>
         </div>
-      )}
-
+      );
+    })}
+  </div>
+)}
     </div>
   );
 };

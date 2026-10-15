@@ -796,11 +796,9 @@ export default function HcrLicenseWizard({
             body: JSON.stringify(payload),
           },
         );
-
         const data = await response.json();
         debugger;
         setApplicationId(data.applicationId);
-
         console.log("Generated Id:", data.applicationId);
         localStorage.setItem("applicationIdNo", data.applicationId);
         localStorage.setItem("catCode", data.catCode);

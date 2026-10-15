@@ -622,27 +622,426 @@
   background-color: #e0f2fe;
 }
 
-/* Toast */
+/* ==========================================================================
+   LICENSE MESSAGE / TOAST NOTIFICATION STYLES
+   Exact high-fidelity match for Excise License Portal Toast Messages
+   ========================================================================== */
+
+/* Toast System Container (Central Modal Badge matching License Module) */
+.toast-container,
 .license-title-toast,
 .tbs-toast {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 100;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 26px;
+  border-radius: 16px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 10px 20px -5px rgba(0, 0, 0, 0.1);
+  border: 2px solid;
+  background-color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: licenseToastFadeIn 0.3s ease-in-out;
+  font-family: inherit;
+  min-width: 320px;
+  max-width: 90vw;
+}
+
+@keyframes licenseToastFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Toast Message Typography */
+.toast-message {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Success Variant (Matching License Portal Emerald) */
+.toast-success,
+.tbs-toast.tbs-toast-success {
+  background-color: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+/* Error Variant (Matching License Portal Rose) */
+.toast-error,
+.tbs-toast.tbs-toast-error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+/* Info Variant (Matching License Portal Sky) */
+.toast-info,
+.tbs-toast.tbs-toast-info {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+/* Icons */
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toast-icon.success-icon {
+  color: #059669;
+}
+
+.toast-icon.error-icon {
+  color: #dc2626;
+}
+
+.toast-icon.info-icon {
+  color: #0284c7;
+}
+
+/* Text */
+.toast-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: inherit;
+  flex: 1;
+}
+
+/* Dismiss Close Button */
+.toast-close-btn,
+.tbs-toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: currentColor;
+  opacity: 0.65;
+  padding: 4px;
+  border-radius: 6px;
+  margin-left: 10px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toast-close-btn:hover,
+.tbs-toast-close:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.08);
+  transform: scale(1.08);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .toast-container,
+  .license-title-toast,
+  .tbs-toast {
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    min-width: unset;
+    padding: 14px 20px;
+  }
+}
+
+/* Inline Editing & Information Message Banners */
+.tbs-editing-message-banner {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.25rem;
-  background-color: #0f172a;
-  color: #ffffff;
+  padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-  font-size: 0.875rem;
-  font-weight: 600;
-  animation: slideInUp 0.2s ease-out;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #0284c7;
+  color: #1e40af;
+  font-size: 0.8125rem;
+  margin-bottom: 1.25rem;
+  animation: tbsFadeIn 0.25s ease;
 }
 
-@keyframes slideInUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.tbs-editing-message-banner strong {
+  color: #0f172a;
+}
+
+.tbs-editing-cancel-btn {
+  margin-left: auto;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #ffffff;
+  border: 1px solid #93c5fd;
+  color: #0284c7;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tbs-editing-cancel-btn:hover {
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}
+
+@keyframes tbsFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* ==========================================================================
+   LICENSE CATEGORY MASTER PAGE STYLES
+   Exact high-fidelity match for License Title Master CSS System
+   ========================================================================== */
+/* Sub Category Badge in Category Table */
+.license-cat-badge-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0284c7;
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.license-cat-badge-link:hover {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+}
+
+/* Sub Category Modal Specifics */
+.license-cat-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: tbsFadeIn 0.2s ease-out;
+}
+
+.license-cat-modal-box {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #bae6fd;
+  overflow: hidden;
+}
+
+.license-cat-modal-head {
+  background: linear-gradient(to right, #0284c7, #0369a1);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.license-cat-modal-head h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.license-cat-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  opacity: 0.8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.license-cat-modal-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.license-cat-modal-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.license-cat-modal-callout {
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 4px solid #0284c7;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  color: #0369a1;
+}
+
+.license-cat-modal-foot {
+  padding: 1rem 1.5rem;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   LICENSE SUB-CATEGORY MASTER PAGE STYLES
+   Exact high-fidelity match for License Title Master CSS System
+   ========================================================================== */
+
+/* Business Permission Matrix styled to match License Title theme */
+.tbs-permission-card {
+  margin-top: 1.25rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+}
+
+.tbs-permission-header {
+  margin-bottom: 0.75rem;
+}
+
+.tbs-permission-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tbs-permission-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.125rem;
+}
+
+.tbs-permission-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.375rem;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+}
+
+.tbs-permission-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.8125rem;
+}
+
+.tbs-permission-table th {
+  background-color: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #cbd5e1;
+  white-space: nowrap;
+}
+
+.tbs-permission-table td {
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.tbs-permission-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tbs-permission-row-label {
+  font-weight: 700;
+  color: #0369a1;
+  width: 110px;
+}
+
+.tbs-radio-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tbs-radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tbs-radio-label input[type="radio"] {
+  cursor: pointer;
+  accent-color: #0284c7;
+  width: 15px;
+  height: 15px;
+}
+
+/* Permission badges in directory table */
+.tbs-perm-badge-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.tbs-perm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tbs-perm-badge-yes {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.tbs-perm-badge-no {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
 }
