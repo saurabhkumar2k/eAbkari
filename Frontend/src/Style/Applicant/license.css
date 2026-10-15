@@ -678,345 +678,891 @@
   color: #7f1d1d;
   letter-spacing: 0.1px;
 }
-.rprimary-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #1e4f91, #2563b8);
-  color: #ffffff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(30, 79, 145, 0.18);
-  transition: all 0.2s ease;
-}
-.rprimary-btn:hover {
-  background: linear-gradient(135deg, #173f73, #1e4f91);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(30, 79, 145, 0.25);
-}
-.rprimary-btn:active {transform: translateY(0);}
-.ricon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background-color: #dbeafe;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.whwizard-progress-line {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  height: 2px;
-  background-color: #f1f5f9;
-  z-index: 0;
-  padding-left: 48px;
-  padding-right: 48px;
-  box-sizing: border-box;
-}
-.rcenter-content {
-  display: flex;
-  justify-content: center;
-}
+
+
+
+
+/* ==========================================================================
+   JOINT APPLICATION SUBMITTED
+   Clean / Minimal / e-Abkari Receipt
+   ========================================================================== */
+
 .rmain-card {
   width: 100%;
-  box-sizing: border-box;
+  max-width: 960px;
+  margin: 24px auto;
+
   background: #ffffff;
-  border-radius: 24px;
+  border: 1px solid #d8e3ec;
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 18px rgba(15, 42, 67, 0.07);
+
   overflow: hidden;
-  border: 1px solid #dbeafe;
-  box-shadow:
-    0 10px 25px rgba(30, 64, 175, 0.10),
-    0 4px 10px rgba(37, 99, 235, 0.05);
-  transition:
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
+  box-sizing: border-box;
+
+  color: #172b4d;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  text-align: left;
 }
-.rmain-card:hover {
-  box-shadow:
-    0 15px 35px rgba(30, 64, 175, 0.14),
-    0 5px 12px rgba(37, 99, 235, 0.08);
-}
+
+
+/* ==========================================================================
+   SUCCESS HEADER
+   ========================================================================== */
+
 .rcontent-section {
-  width: 100%;
-  padding: 32px 28px;
-  box-sizing: border-box;
-  text-align: center;
-}
-.rstatus-pulse {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background-color: #86efac;
-  opacity: 0.2;
-  animation: statusPing 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-@keyframes statusPing {
-  75%,
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-.rsuccess-icon {
   position: relative;
-  width: 96px;
-  height: 96px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #eff6ff;
-  border: 4px solid #2563eb;
-  box-sizing: border-box;
-  color: #2563eb;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.15);
-}
-.rsuccess-icon-svg {
-  width: 48px;
-  height: 48px;
-  color: #2563eb;
-  stroke-width: 3px;
-}
-.rpage-title {
-  margin-top: 16px;
-  font-size: 36px;
-  line-height: 1.2;
-  font-weight: 700;
-  color: #1e293b;
-  letter-spacing: -0.5px;
-}
-.rpage-subtitle {
-  margin-top: 12px;
-  color: #64748b;
-  font-size: 18px;
-  line-height: 1.5;
-  font-weight: 500;
-}
-.rprimary-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 11px 22px;
-  background: linear-gradient( 135deg, #2563eb, #1d4ed8 );
-  color: #ffffff;
-  border: none;
-  border-radius: 9px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
-}
-.rprimary-btn:hover {
-  background: linear-gradient( 135deg, #1d4ed8, #1e40af);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
-}
-.rprimary-btn:active {transform: translateY(0); }
-.rprimary-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-.ricon {
-  width: 20px;
-  height: 20px;
-}
-.rbutton-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-.rfooter-section {
-  margin-top: 48px;
-  border-top: 1px solid #dbeafe;
-  background: linear-gradient( 180deg, #f8fbff,#eff6ff );
-  padding: 32px;
-  box-sizing: border-box;
-}
-.rdescription-text {
-  margin-top: 8px;
-  color: #475569;
-  font-size: 15px;
-  line-height: 28px;
-}
-.rsuccess-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #15803d;
-  line-height: 1.4;
-}
-.rsuccess-icon {
-  width: 32px;
-  height: 32px;
-  color: #16a34a;
-}
-.rsuccess-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: #dcfce7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.rcontent-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
+
   width: 100%;
-}
-.rsuccess-box {
-  border-radius: 16px;
-  background: linear-gradient( 135deg,#f0fdf4,#ecfdf5  );
-  border: 1px solid #bbf7d0;
-  padding: 24px;
+  padding: 30px 28px 24px;
+
   box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f5fbff 0%,
+      #ffffff 100%
+    );
+
+  border-bottom: 1px solid #e1eaf1;
 }
-.rsection-title {
-  margin-top: 4px;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #1e293b;
-  letter-spacing: 0.1px;
+
+.rcontent-section::before,
+.rcontent-section::after {
+  content: "";
+  position: absolute;
+
+  width: 300px;
+  height: 110px;
+
+  border-top: 1px solid rgba(2, 132, 199, 0.10);
+  border-radius: 50%;
+
+  pointer-events: none;
 }
-.rlabel-text {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #64748b;
-  line-height: 1.5;
+
+.rcontent-section::before {
+  left: -130px;
+  bottom: -55px;
+  transform: rotate(15deg);
 }
-.ricon-title {
-  width: 28px;
-  height: 28px;
-  color: #ffffff;
-  flex-shrink: 0;
+
+.rcontent-section::after {
+  right: -130px;
+  bottom: -55px;
+  transform: rotate(-15deg);
 }
-.rsicon-box {
-  width: 56px;
-  height: 56px;
+
+.rcenter-content {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: linear-gradient( 135deg, #2563eb, #1d4ed8 );
-  color: #ffffff;
-  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
 }
-.receipt-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 28px;
-  background: linear-gradient( 135deg,#eff6ff 0%,#e0ecff 55%, #eef2ff 100% );
-  border: 1px solid #bfdbfe;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
-  box-sizing: border-box;
-  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+
+
+/* ==========================================================================
+   SUCCESS CHECK
+   ========================================================================== */
+
+.rstatus-pulse {
+  display: none !important;
 }
-.receipt-badge:hover {
-  border-color: #93c5fd;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.14);
-  transform: translateY(-2px);
-}
-.divider {
-  width: 80px;
-  height: 2px;
-  background: linear-gradient( 90deg, #93c5fd, #2563eb, #93c5fd );
-  border-radius: 2px;
-  margin: 8px auto;
-}
-.rheading-title {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.3;
-  color: #174a7c;
-  letter-spacing: -0.3px;
-}
-.rcenter-header {
-  display: flex;
+
+.rsuccess-icon {
+  width: 64px !important;
+  height: 64px !important;
+
+  margin: 0 auto;
+
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 28px;
+
+  position: relative;
+
+  background: #f1faf4 !important;
+
+  border: 3px solid #a9dfbd !important;
+  border-radius: 50% !important;
+
+  color: #16803c;
+
+  box-shadow:
+    0 0 0 9px rgba(22, 128, 60, 0.035) !important;
+
+  box-sizing: border-box;
 }
-.rdescription-text {
-  margin-top: 8px;
-  color: #334155;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.5;
+
+.rsuccess-icon-svg {
+  width: 32px !important;
+  height: 32px !important;
+
+  color: #16803c !important;
+
+  stroke-width: 3 !important;
 }
+
+
+/* ==========================================================================
+   HEADER TEXT
+   ========================================================================== */
+
+.rpage-title {
+  position: relative;
+  z-index: 2;
+
+  margin: 14px 0 5px !important;
+
+  color: #102a43 !important;
+
+  font-size: 22px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.3 !important;
+
+  letter-spacing: -0.02em !important;
+}
+
+.rpage-subtitle {
+  position: relative;
+  z-index: 2;
+
+  margin: 0 !important;
+
+  color: #64748b !important;
+
+  font-size: 12px !important;
+  font-weight: 500 !important;
+
+  line-height: 1.5 !important;
+}
+
+
+/* ==========================================================================
+   APPLICATION NUMBER
+   ========================================================================== */
+
+.receipt-card {
+  width: 100%;
+
+  margin: 0;
+
+  background: #ffffff;
+
+  border: none;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  box-sizing: border-box;
+}
+
+.rgrid-row {
+  width: 100%;
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 10px 28px;
+
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #e3ebf2;
+
+  flex-wrap: nowrap;
+}
+
+
+/* Application icon */
+
 .rsuccess-icon-box {
-  width: 48px;
-  height: 48px;
+  width: 40px !important;
+  height: 40px !important;
+
+  min-width: 40px !important;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   flex-shrink: 0;
-  background: #ecfdf5;
-  border: 1px solid #bbf7d0;
-  border-radius: 12px;
-  color: #0e96f1;
-  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
+
+  background: #f1f7fc !important;
+
+  border: 1px solid #d5e6f2 !important;
+
+  border-radius: 8px !important;
+
+  color: #0b78b5;
 }
+
+
+/* ==========================================================================
+   APPLICATION NUMBER TEXT
+   ========================================================================== */
+
+.rsection-label {
+  margin: 0 0 3px !important;
+
+  color: #71849a !important;
+
+  font-size: 13px !important;
+  font-weight: 700 !important;
+
+  line-height: 1.2 !important;
+
+  letter-spacing: 0.08em !important;
+
+  text-transform: uppercase;
+}
+
+.rpage-heading {
+  margin: 0 !important;
+
+  color: #0b78b5 !important;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace !important;
+
+  font-size: 17px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.3 !important;
+
+  letter-spacing: 0.035em !important;
+}
+
+
+/* ==========================================================================
+   SUBMITTED STATUS
+   ========================================================================== */
+
 .rstatus-badge {
+  margin-left: auto;
+
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
-  padding: 7px 16px;
-  background: #ecfdf5;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
+
+  gap: 6px;
+
+  padding: 6px 13px;
+
+  min-width: 78px;
+
+  background: #f0faf4 !important;
+
+  color: #16803c !important;
+
+  border: 1px solid #a9dfbd !important;
+
+  border-radius: 999px !important;
+
+  font-size: 9px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.2 !important;
+
+  letter-spacing: 0.05em !important;
+
+  text-transform: uppercase;
+
   white-space: nowrap;
 }
-.rpage-heading {
-  margin-top: 4px;
-  font-size: 30px;
-  line-height: 1.2;
-  font-weight: 900;
-  color: #1e293b;
-  letter-spacing: -0.5px;
-}
-.rsection-label {
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  line-height: 1.5;
-  color: #52749b;
-  margin-bottom: 6px;
-}
-.rgrid-row {
-  display: grid;
-  grid-template-columns: 70px 1fr auto;
+
+
+/* ==========================================================================
+   SECTION HEADINGS
+   ========================================================================== */
+
+.rcenter-header,
+div.rsuccess-icon-box:has(.divider) {
+  width: calc(100% - 56px);
+
+  height: auto;
+
+  margin: 18px auto 10px;
+
+  padding: 0;
+
+  display: flex;
+
   align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  border-radius: 0 !important;
+
+  box-sizing: border-box;
 }
-.applhero-title {
-  font-size: 1.125rem;      
-  font-weight: 600;         
-  color: #1e293b;          
-  margin-top: 12px;
+
+.divider {
+  flex: 1;
+
+  height: 1px;
+
+  background: #dce5ed;
+}
+
+.rheading-title {
+  margin: 0 !important;
+
+  color: #16324a !important;
+
+  font-size: 11px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.2 !important;
+
+  letter-spacing: 0.07em !important;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   APPLICANT GRID
+   ========================================================================== */
+
+.app-form-grid-md {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 0;
+
+  margin: 0;
+
+  padding: 0 28px;
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   APPLICANT INFORMATION
+   ========================================================================== */
+
+.app-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 10px 12px;
+
+  box-sizing: border-box;
+
+  background: transparent;
+
+  border: none;
+  border-bottom: 1px solid #edf2f6;
+
+  border-radius: 0;
+
+  box-shadow: none;
+}
+
+
+/* Vertical divider between columns */
+
+.app-form-grid-md > .app-card:nth-child(odd) {
+  border-right: 1px solid #edf2f6;
+}
+
+
+/* Address full width */
+
+.app-form-grid-md > .app-card:last-child {
+  grid-column: 1 / -1;
+
+  border-right: none;
+}
+
+
+/* Remove old margins */
+
+.app-card:has(.reciept-box) {
+  margin-left: 30px !important;
+  margin-right: 0 !important;
+}
+
+
+/* ==========================================================================
+   INFORMATION CONTENT
+   ========================================================================== */
+
+.reciept-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+/*INFORMATION ICONS */
+.ricon-box,.rsicon-box,.reciept-box {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px !important;
+  background: #f2f7fb !important;
+  border: 1px solid #d9e7f0 !important;
+  color: #17658f;
+}
+
+
+/* ==========================================================================
+   INFORMATION TEXT
+   ========================================================================== */
+.receipt-label {
+  margin: 0 0 3px !important;
+  color: #7b8da3 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase;
+}
+
+.receipt-title {
+  margin: 0 !important;
+  color: #172b4d !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  word-break: break-word;
+}
+
+.rdescription-text {
+  margin: 3px 0 0 !important;
+  color: #536b82 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+
+/* ==========================================================================
+   APPLIED LICENCE
+   ========================================================================== */
+.receipt-badge {
+  width: calc(100% - 56px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 0;
+  box-sizing: border-box;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #e2ebf1;
+  border-radius: 0 !important;
+  text-align: left;
+}
+
+.ricon-title {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px;
+  padding: 5px;
+  box-sizing: border-box;
+  background: #f1faf4;
+  border-radius: 7px;
+  color: #16803c !important;
+}
+
+.rlabel-text {
+  margin: 0 0 3px !important;
+  color: #16803c !important;
+  font-size:12px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+
+.rsection-title {
+  margin: 0 !important;
+  color: #174b30 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.5 !important;
+}
+
+
+/* ==========================================================================
+   APPLICATION SUBMITTED MESSAGE
+   ========================================================================== */
+
+.rsuccess-box {
+  width: calc(100% - 56px);
+  margin: 0 auto;
+  padding: 16px 0;
+  box-sizing: border-box;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #e2ebf1;
+  border-radius: 0 !important;
+}
+
+.rcontent-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  text-align: left;
+}
+
+
+/* Success circle */
+
+.rsuccess-circle {
+  width: 36px !important;
+  height: 36px !important;
+
+  min-width: 36px !important;
+
+  margin: 0 !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #16803c !important;
+
+  border-radius: 50% !important;
+
+  color: #ffffff;
+
+  box-shadow: none !important;
+}
+
+
+/* Nested icon */
+
+.rsuccess-circle .rsuccess-icon {
+  width: 20px !important;
+  height: 20px !important;
+
+  margin: 0 !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  box-shadow: none !important;
+}
+
+.rsuccess-circle svg {
+  width: 19px !important;
+  height: 19px !important;
+
+  color: #ffffff !important;
+
+  stroke-width: 3 !important;
+}
+
+.rsuccess-title {
+  margin: 0 0 3px !important;
+
+  color: #14532d !important;
+
+  font-size: 12px !important;
+  font-weight: 800 !important;
+
+  line-height: 1.35 !important;
+}
+
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.rfooter-section {
+  width: 100%;
+
+  margin: 0;
+
+  padding: 18px 28px;
+
+  box-sizing: border-box;
+
+  background: #f7fafc;
+
+  border-top: none;
+
+  border-radius: 0;
+}
+
+.rbutton-container {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+}
+
+
+/* ==========================================================================
+   PRIMARY BUTTON
+   ========================================================================== */
+
+.rprimary-btn {
+  min-width: 145px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: #0b78b5;
+  color: #ffffff;
+  border: 1px solid #0b78b5;
+  border-radius: 7px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.rprimary-btn:hover {
+  background: #075985;
+  border-color: #075985;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
+.rprimary-btn:active {
+  background: #064e73;
+
+  border-color: #064e73;
+
+  transform: none;
+}
+
+.rprimary-btn .ricon {
+  width: 15px;
+  height: 15px;
+}
+
+
+/* ==========================================================================
+   SECONDARY BUTTON
+   ========================================================================== */
+
+.rsecondary-btn {
+  background: #ffffff;
+
+  color: #0b78b5;
+
+  border: 1px solid #0b78b5;
+}
+
+.rsecondary-btn:hover {
+  background: #f1f8fc;
+
+  color: #075985;
+
+  border-color: #075985;
+}
+
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  .rmain-card {
+    width: calc(100% - 20px);
+
+    margin: 12px auto;
+
+    border-radius: 12px;
+  }
+
+  .rcontent-section {
+    padding: 24px 16px 20px;
+  }
+
+  .rpage-title {
+    font-size: 18px !important;
+  }
+
+  .rpage-subtitle {
+    font-size: 10px !important;
+  }
+
+  .rgrid-row {
+    min-height: 62px;
+
+    padding: 9px 16px;
+  }
+
+  .rpage-heading {
+    font-size: 14px !important;
+  }
+
+  .rstatus-badge {
+    padding: 5px 9px;
+
+    font-size: 8px !important;
+  }
+
+  .rcenter-header,
+  div.rsuccess-icon-box:has(.divider) {
+    width: calc(100% - 32px);
+  }
+
+  .app-form-grid-md {
+    grid-template-columns: 1fr;
+
+    padding: 0 16px;
+  }
+
+  .app-form-grid-md > .app-card:nth-child(odd) {
+    border-right: none;
+  }
+
+  .app-form-grid-md > .app-card:last-child {
+    grid-column: auto;
+  }
+
+  .receipt-badge {
+    width: calc(100% - 32px);
+  }
+
+  .rsuccess-box {
+    width: calc(100% - 32px);
+  }
+
+  .rfooter-section {
+    padding: 16px;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  .rpage-title {
+    font-size: 17px !important;
+  }
+
+  .rgrid-row {
+    padding: 9px 12px;
+  }
+
+  .rstatus-badge {
+    margin-left: auto;
+  }
+
+  .rbutton-container {
+    flex-direction: column;
+  }
+
+  .rprimary-btn {
+    width: 100%;
+  }
+
+  .receipt-badge,
+  .rsuccess-box {
+    width: calc(100% - 24px);
+  }
+}
+
+
+/* ==========================================================================
+   PRINT
+   ========================================================================== */
+
+@media print {
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .rmain-card,
+  .rmain-card * {
+    visibility: visible;
+  }
+
+  .rmain-card {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+  }
+
+  .rfooter-section {
+    display: none !important;
+  }
 }
 /* ==========================================================================
    NEW LICENSE APPLICATION MODULE STYLES (newlicense.css)
