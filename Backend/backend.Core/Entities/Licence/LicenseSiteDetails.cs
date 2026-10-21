@@ -90,6 +90,6 @@ namespace backend.Core.Entities.Licence
         public string? IsCommercialActivity { get; set; }
 
         public DateTime CreatedDate { get; set; }
-
+        
     }
 }
