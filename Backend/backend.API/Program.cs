@@ -91,7 +91,9 @@ builder.Services.AddScoped<IPermitP10Repository, PermitP10Repository>();
 builder.Services.AddScoped<IUserTypeRepository, UserTypeRepository>();
 builder.Services.AddScoped<IApplicationFlowService, ApplicationFlowService>();
 builder.Services.AddScoped<IApplicationFlowRepository, ApplicationFlowRepository>();
+builder.Services.AddScoped<IIndividualServices, IndividualServices>();
 
+builder.Services.AddScoped<IIndividualRepository, IndividualRepositories>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IPLAPullApplicationService, PLAPullApplicationService>();

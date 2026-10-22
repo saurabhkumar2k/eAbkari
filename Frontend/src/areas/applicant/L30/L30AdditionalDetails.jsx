@@ -1,107 +1,181 @@
-import React from "react";
+import React, { useMemo } from "react";
+
+const getValidityDate = (financialYear, years) => {
+  const match = /^(\d{4})-(\d{4})$/.exec(financialYear || "");
+
+  if (
+    !match ||
+    Number(match[2]) !== Number(match[1]) + 1 ||
+    !years
+  ) {
+    return "";
+  }
+
+  // Display validity up to 31 March based on the selected period.
+  const date = new Date(
+    Number(match[1]) + Number(years),
+    2,
+    31
+  );
+
+  return `${String(date.getDate()).padStart(2, "0")}-${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}-${date.getFullYear()}`;
+};
 
 export default function L30AdditionalDetails({
   formData = {},
   onChange,
   onNext,
-  onPrevious
+  onPrevious,
+  saving = false,
+  saveError = "",
+  saveSuccess = ""
 }) {
-  const handleFieldChange = (field, val) => {
-    if (onChange) {
-      onChange(field, val);
-    }
+  const validFor = formData.validFor || "5";
+
+  const validityDate = useMemo(
+    () =>
+      getValidityDate(
+        formData.exciseYear || "2026-2027",
+        validFor
+      ),
+    [formData.exciseYear, validFor]
+  );
+
+  const handleFieldChange = (field, value) => {
+    onChange?.(field, value);
   };
 
   return (
     <div className="l30-home-wrapper">
-      {/* Grey Title Header */}
       <div className="l30-grey-header">Additional Details</div>
 
-      {/* Form Card */}
       <div className="l30-form-card">
         <div className="l30-home-grid">
-          {/* L30 Licence last Granted/ Renewed * */}
           <div className="l30-form-group">
-            <label className="l30-form-label">
-              L30 Licence last Granted/ Renewed <span className="l30-req">*</span>
-            </label>
-            <select
-              value={formData.lastGranted || "Fresh"}
-              onChange={(e) => handleFieldChange("lastGranted", e.target.value)}
-              className="l30-input"
+            <label
+              className="l30-form-label"
+              htmlFor="l30-valid-for"
             >
-              <option value="Fresh">Fresh</option>
-              <option value="Granted">Granted</option>
-              <option value="Renewed">Renewed</option>
-            </select>
-          </div>
-
-          {/* Licence Valid For * */}
-          <div className="l30-form-group">
-            <label className="l30-form-label">
               Licence Valid For <span className="l30-req">*</span>
             </label>
+
             <select
-              value={formData.validFor || "5 Years"}
-              onChange={(e) => handleFieldChange("validFor", e.target.value)}
+              id="l30-valid-for"
+              value={validFor}
+              onChange={(e) =>
+                handleFieldChange("validFor", e.target.value)
+              }
               className="l30-input"
             >
-              <option value="5 Years">5 Years</option>
-              <option value="1 Year">1 Year</option>
-              <option value="2 Years">2 Years</option>
-              <option value="3 Years">3 Years</option>
+              <option value="3">3 Years</option>
+              <option value="5">5 Years</option>
             </select>
           </div>
 
-          {/* Commercial Activity Radio */}
+          <div className="l30-form-group">
+            <label
+              className="l30-form-label"
+              htmlFor="l30-valid-up-to"
+            >
+              Licence Valid Up To
+            </label>
+
+            <input
+              id="l30-valid-up-to"
+              type="text"
+              value={validityDate}
+              readOnly
+              className="l30-input"
+              placeholder="Calculated from financial year"
+            />
+          </div>
+
           <div className="l30-form-group l30-col-full">
             <label className="l30-form-label">
-              Whether there is any commercial activity going on the address where L30 applied for
+              Whether there is any commercial activity at the
+              address where L-30 is applied for?
+              <span className="l30-req"> *</span>
             </label>
+
             <div className="l30-radio-group">
               <label className="l30-radio-label">
                 <input
                   type="radio"
                   name="commercialActivity"
-                  value="Yes"
-                  checked={formData.commercialActivity === "Yes"}
-                  onChange={(e) => handleFieldChange("commercialActivity", e.target.value)}
+                  value="N"
+                  checked={
+                    (formData.commercialActivity || "N") === "N"
+                  }
+                  onChange={(e) =>
+                    handleFieldChange(
+                      "commercialActivity",
+                      e.target.value
+                    )
+                  }
                   className="l30-radio-input"
                 />
-                Yes
+                No
               </label>
+
               <label className="l30-radio-label">
                 <input
                   type="radio"
                   name="commercialActivity"
-                  value="No"
-                  checked={formData.commercialActivity === "No" || !formData.commercialActivity}
-                  onChange={(e) => handleFieldChange("commercialActivity", e.target.value)}
+                  value="Y"
+                  checked={formData.commercialActivity === "Y"}
+                  onChange={(e) =>
+                    handleFieldChange(
+                      "commercialActivity",
+                      e.target.value
+                    )
+                  }
                   className="l30-radio-input"
                 />
-                No
+                Yes
               </label>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {saveError && (
+          <div
+            role="alert"
+            className="mt-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700"
+          >
+            {saveError}
+          </div>
+        )}
+
+        {saveSuccess && (
+          <div
+            role="status"
+            className="mt-4 rounded border border-green-300 bg-green-50 p-3 text-sm text-green-700"
+          >
+            {saveSuccess}
+          </div>
+        )}
+
         <div className="l30-action-footer">
           {onPrevious && (
             <button
               type="button"
               onClick={onPrevious}
               className="l30-btn-prev"
+              disabled={saving}
             >
               Previous
             </button>
           )}
+
           <button
             type="button"
             onClick={onNext}
             className="l30-btn-update"
+            disabled={saving}
           >
-            Update
+            {saving ? "Saving..." : "Save and Continue"}
           </button>
         </div>
       </div>
