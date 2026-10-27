@@ -7,9 +7,9 @@ import { createHCRAdditional } from "../../../Model/HCRAdditional";
 
 // import HcrApplicantDetails from "./HcrApplicantDetail";
 
-import HcrApplicantStep from "../HCR/HcrApplicantStep";
-import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
-import HcrAdditionalStep from "../HCR/HcrAdditionalStep";
+//import HcrApplicantStep from "../HCR/HcrApplicantStep";
+//import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
+import RetailAdditionalStep from "../Retail/RetailAdditionalStep"
 import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
 import HcrDeclarationStep from "../HCR/HcrDeclarationStep";
@@ -1818,7 +1818,7 @@ export default function RetailLicensee({
 
         {/* STEP 6 */}
         {currentStep === 3 && (
-          <HcrAdditionalStep
+          <RetailAdditionalStep
             additionalFrom={additionalFrom}
             hoursOfSaleList={hoursOfSaleList}
             constitutionType={applicantForm?.ConstitutionType}
