@@ -7,8 +7,8 @@ import { createHCRAdditional } from "../../../Model/HCRAdditional";
 
 // import HcrApplicantDetails from "./HcrApplicantDetail";
 
-//import HcrApplicantStep from "../HCR/HcrApplicantStep";
-//import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
+import HcrApplicantStep from "../HCR/HcrApplicantStep";
+import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
 import RetailAdditionalStep from "../Retail/RetailAdditionalStep"
 import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
