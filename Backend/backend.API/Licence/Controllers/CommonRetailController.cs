@@ -21,5 +21,57 @@ namespace backend.API.Licence.Controllers
 
             return Ok(data);
         }
+
+
+
+        [HttpPost]
+        [Route("SaveAdditionalRetailCompleteDetails")]
+        [Consumes("multipart/form-data")]
+        //For testing this api please Run the Frontend and fill the records from the From
+        public async Task<IActionResult> SaveAdditionalRetailCompleteDetails([FromForm] RetailCompleteDto dto)
+        {
+            if (dto == null || dto.RetailDetails == null)
+            {
+                return BadRequest("Invalid Request");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.RetailDetails.ApplicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            Console.WriteLine(
+                JsonSerializer.Serialize(dto, new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                })
+            );
+            var result = await _RetailService.SaveAdditionalRetailCompleteDetails(dto);
+
+            // return Ok(result);
+            return Ok(new
+            {
+                message = result
+            });
+        }
+
+        [HttpGet]
+        [Route("GetAdditionalRetailCompleteDetails")]
+        public async Task<IActionResult> GetAdditionalRetailCompleteDetails([FromQuery] string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("ApplicationIdNo is required.");
+            }
+
+            var result = await _RetailService.GetAdditionalRetailCompleteDetails(applicationIdNo);
+
+            if (result == null)
+            {
+                return NotFound("Record Not Found");
+            }
+
+            return Ok(result);
+        }
     }
 }

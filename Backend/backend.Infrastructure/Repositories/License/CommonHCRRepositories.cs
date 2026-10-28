@@ -193,7 +193,7 @@ namespace backend.Infrastructure.Repositories.License
             try
             {
                 string appId = dto.AdditionalDetails.ApplicationIdNo;
-
+ 
                 //==========================
                 // STEP 1 : AdditionalHCRDetails
                 //==========================

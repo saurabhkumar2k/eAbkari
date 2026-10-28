@@ -34,5 +34,29 @@ namespace backend.Application.Services.License
                 return ApiResponse<List<MstLicenseeCategory>>.Fail("Server error, try again later", ex.Message);
             }
         }
+
+        public async Task<RetailCompleteDto?> GetAdditionalRetailCompleteDetails(string applicationIdNo)
+        {
+            try
+            {
+                return await _Licenserepository.GetAdditionalRetailCompleteDetails(applicationIdNo);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCompleteDto dto)
+        {
+            try
+            {
+                return await _Licenserepository.SaveAdditionalRetailCompleteDetails(dto);
+            }
+            catch
+            {
+                return "Operation Failed";
+            }
+        }
     }
 }

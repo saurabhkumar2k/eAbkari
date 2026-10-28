@@ -4,6 +4,7 @@ using backend.Core.Entities;
 using backend.Core.Entities.Licence;
 using backend.Core.Entities.Department;
 using backend.Core.Entities.ApplicationFlow;
+using RetailApplicationCompleteEnities;
 
 namespace backend.Infrastructure.Data
 {
@@ -92,8 +93,10 @@ namespace backend.Infrastructure.Data
         public DbSet<ApplicantLicenseAdditionalBarMaster> ApplicantLicenseAdditionalBarMaster { get; set; }
         public DbSet<DeptUserPermissions> DeptUserPermissions { get; set; }
 
+        public DbSet<RetailDetails> RetailDetails { get; set; }
+        public DbSet<RetailAdditionalPropDetail> RetailAdditionalPropDetail { get; set; }
 
-
+        public DbSet<AdditionalL10L22Details> AdditionalL10L22Details { get; set; }
 
 
 
@@ -324,8 +327,8 @@ namespace backend.Infrastructure.Data
             modelBuilder.Entity<MstRoles>()
                 .HasIndex(x => x.RoleName)
                 .IsUnique();
-            
-            
+
+
 
             modelBuilder.Entity<LicenseSiteDetails>()
                .HasKey(x => x.ApplicationIdNo);
@@ -457,6 +460,17 @@ namespace backend.Infrastructure.Data
                 });
 
             });
+            modelBuilder.Entity<RetailAdditionalPropDetail>()
+            .HasKey(x => new
+            {
+                x.ApplicationIdNo,
+                x.Id
+            });
+            modelBuilder.Entity<RetailDetails>()
+                .HasKey(x => x.ApplicationIdNo);
+
+            modelBuilder.Entity<AdditionalL10L22Details>()
+                .HasKey(x => x.ApplicationIdNo);
 
             modelBuilder.Entity<DeptUserPermissions>().ToTable("DeptUserPermissions");
 
