@@ -295,54 +295,6 @@ const RestaurantDetails = ({
             )}
           </div>
 
-          {/* Constituency Area */}
-          {/* <div className="reg-field">
-                        <label className="reg-label">
-                            <span>Constituency Area</span>
-                            <span className="required">*</span>
-                        </label>
-
-                        <div className="reg-input-group">
-                            <div className="reg-input-icon">
-                                <Shield className="w-4 h-4 text-blue-600" />
-                            </div>
-
-                            <select
-                                className="reg-select"
-                                value={siteForm.SiteAssembly || ""}
-                                onChange={(e) => onChange("RestaurantConstituency", e.target.value)}
-                            >
-                                <option value="">Select Constituency Station</option>
-
-                                {(Constituencys || []).map((p) => (
-                                    <option key={p.psCode} value={p.psCode}>
-                                        {p.psName}
-                                    </option>
-                                ))}
-                            </select>
-
-                            <div className="reg-input-icon-right">
-                                <ChevronDown className="w-4 h-4" />
-                            </div>
-                        </div>
-                    </div> */}
-
-          {/* Ward Name */}
-          {/* <div className="form-group">
-                        <label className="hcr-form-label">
-                            Ward Name
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="Ward Name"
-                            value={siteForm.SiteWard}
-                            onChange={(e) =>
-                                onChange("RestaurantWard", e.target.value)
-                            }
-                            className="input-box"
-                        />
-                    </div> */}
         </div>
       </div>
 

@@ -1,13 +1,13 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 //import DirectorsList from "./DirectorsList";
-//mport HcrQuestionList from "./HCRQuestionList";
+import RetailQuestionList from "./RetailQuestionList";
 //import HCRBasicFieldsL17 from "./HcrBasicFieldsL17";
 //import HCRBasicFieldsL16 from "./HcrBasicFieldsL16";
 //import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
 //import HCRBasicFieldsL28 from "./HCRBasicFieldsL28";
 //import RestaurantDetailsL16 from "./RestaurantDetailsL16";
-//import ClubDetailsL2829 from "./ClubDetailsL2829";
+import RetailDirectorDetails from "./RetailDirectorDetails";
 import RetailBasicFields from "./RetailBasicFields"
 //import { Cat_Label } from "../areas/applicant/HCR/validation";
 
@@ -50,16 +50,17 @@ export default function PremiseAdditionalDetails({
   ];
   /* */
   const HCRBasicFieldsCategories = ["02", "11", "25", "39", "40", "41", "46", "83", "34"];
-  const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
+  //const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
   return (
     <div className="hcr-form-section animate-fade">
       
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
         <form onSubmit={onSubmit} className="hcr-premises-form">
           <div className="hcr-form-grid">
-            
-
-            {(CatCode === "11" || CatCode === "35" || CatCode === "08" || CatCode === "36") && (
+                      
+            {/* Retail Premise Details */}
+            {
+            HCRBasicFieldsCategories.includes(CatCode) && (
               <RetailBasicFields
                 additionalFrom={additionalFrom}
                 onChange={onChange}
@@ -68,6 +69,39 @@ export default function PremiseAdditionalDetails({
                 ConstitutionType={ConstitutionType}
               />
             )}
+
+            {/* Retail Question List */}
+            {
+              HCRBasicFieldsCategories.includes(CatCode) && (
+                <div className="form-group full-width">
+                  <RetailQuestionList
+                    questions={questions}
+                    onChange={onQuestionsChange}
+                    error={errors?.answer}
+                  />
+                </div>
+              )
+            }
+
+            <div className="form-group full-width">
+              {HCRBasicFieldsCategories.includes(CatCode) && (
+                <RetailDirectorDetails
+                  ClubDetails={additionalFrom?.clubDetails || []}
+                  ConstitutionType={constitutionType}
+                  onChange={onClubDetailChange}
+                  onAdd={onAddClubDetail}
+                  onDelete={ondeleteClubDetail}                  
+                  errors={errors?.clubDetails?.errors}
+                />
+              )}
+              <div className="error-text-container">
+                {errors?.clubDetails?.globalError && (
+                  <span className="error-text-all">
+                    {errors?.clubDetails?.globalError}
+                  </span>
+                )}
+              </div> 
+            </div>
 
 
           </div>
