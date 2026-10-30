@@ -329,15 +329,7 @@ function HomeContent() {
                 Read More
                 <ArrowRightSvg className="icon-xs" />
               </button>
-              <button 
-                onClick={() => (window.location.href = '/about')}
-                className="btn-secondary-custom"
-                style={{ fontSize: '0.8125rem', padding: '0.45rem 0.85rem' }}
-                title="Open Dedicated About e-Abkari Dashboard"
-              >
-                e-Abkari Dashboard &rarr;
-              </button>
-            </div>
+              </div>
           </div>
 
           <div className="info-card">
