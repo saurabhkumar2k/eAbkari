@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from './src/components/Header';
 import Footer from './src/components/Footer';
-import StockReports from './src/components/StockReports';
+// import StockReports from './src/components/StockReports';
 import Registration from './src/areas/auth/Registration';
 import Login from './src/areas/auth/Login';
 import ApplicantDashboard from './src/areas/applicant/applicantdashboard.jsx';
@@ -40,6 +40,7 @@ import LicenseTitleMaster from './src/components/Department/Admin/ExciseLicense/
 import LicenseeLogin from './src/Licensee/LicenseeLogin.jsx';
 import LicenseCategoryMaster from './src/components/Department/Admin/ExciseLicense/LicenseCategoryMaster.jsx';
 import LicenseSubCategoryMaster from './src/components/Department/Admin/ExciseLicense/LicenseSubCategory.jsx';
+import LiquorPriceList from './src/EabkariHomepage/LiquorPriceList.jsx';
 
 import { ChevronDownSvg, FileEditSvg, ShieldSvg, TimerSvg, BarChart3Svg, HeadphonesSvg, BellSvg,
   DownloadSvg, ChevronLeftSvg, ChevronRightSvg, LayoutGridSvg, BuildingSvg, HomeSvg, FolderSvg, 
@@ -368,12 +369,12 @@ function HomeContent() {
       </section>
 
       {/* Stock Reports (Vends) Dashboard */}
-      <StockReports />
+      {/* <StockReports /> */}
 
       {/* Price List (Brands) */}
       <section className="container section-mb-large">
         <div className="card-wrapper">
-          <div className="price-brand-banner">
+          {/* <div className="price-brand-banner">
             <h2 className="price-brand-title">Price List (Brands)</h2>
           </div>
           
@@ -443,8 +444,6 @@ function HomeContent() {
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
             <div className="pagination">
               <div className="pagination-item-select">
                 <span>Items per page:</span>
@@ -467,7 +466,8 @@ function HomeContent() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+          <LiquorPriceList/>
         </div>
       </section>
 
