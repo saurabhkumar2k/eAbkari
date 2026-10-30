@@ -1521,6 +1521,7 @@
   border: 1px solid var(--border-gray);
   overflow: hidden;
   margin-bottom: 6px;
+  margin-top: 51px
 }
 
 /* Dashboard Section Spacing Override */
