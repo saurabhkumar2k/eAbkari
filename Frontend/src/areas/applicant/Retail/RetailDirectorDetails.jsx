@@ -1,7 +1,7 @@
 import React from "react";
 import RetailDirectorRow from "./RetailDirectorRow";
 
-import "../../../Style/Retail.css";
+
 //import "../Style/Restaurant.css";
 import "../../../Style/Retail.css"
 
@@ -14,7 +14,7 @@ const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, Constit
      
       <div className="restaurants-header">
         <div>
-          <h2>Bar Details</h2>
+          <h2>Directors/Proprietors/Partners Details</h2>
           {/* <p className="restaurant-subheading">
             As per MCA Portal (Companies Act 2013)
           </p> */}
@@ -25,7 +25,7 @@ const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, Constit
       <div className="restaurants-wrapper">
         {ClubDetails.length === 0 ? (
           <div className="restaurants-empty-state">
-            <p className="empty-message">No Club Details added yet. Click "Add Club Details" to start.</p>
+            <p className="empty-message">No Directors/Proprietors/Partners Details added yet. Click "Add Directors/Proprietors/Partners Details" to start.</p>
           </div>
         ) : (
           ClubDetails.map((detail, index) => (
@@ -49,12 +49,12 @@ const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, Constit
           onClick={onAdd}
           className="btn-add-director"
         >
-          + Add Bar Details
+          + Add Directors/Proprietors/Partners Details
         </button>
 
         {ClubDetails.length > 0 && (
           <span className="restaurants-count">
-            {ClubDetails.length} bar detail{ClubDetails.length !== 1 ? "s" : ""} added
+            {ClubDetails.length} directors/partners{ClubDetails.length !== 1 ? "s" : ""} added
           </span>
         )}
       </div>

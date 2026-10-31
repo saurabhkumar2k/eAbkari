@@ -30,7 +30,7 @@ export default function RetailDirectorRow({
         <div className="restaurant-section">
           {/* Restaurant Header */}
           <div className="restaurant-header">
-            <h3>Bar Details #{index + 1}</h3>
+            <h3>Name of Company Directors/Proprietors/Partners #{index + 1}</h3>
 
             <button
               type="button"
@@ -44,12 +44,12 @@ export default function RetailDirectorRow({
           </div>
 
           {/* 3 × 3 Grid */}
-          <div className="club-grid">
+          <div className="director-fields">
             {/* 1. Restaurant Name */}
             <div className="restaurant-field">
               <label>
                 {" "}
-                Restaurant/Bar Name <span>*</span>{" "}
+                Name of the <span>*</span>{" "}
               </label>
               <div className="input-wrapper">
                 <User size={16} />
@@ -78,7 +78,7 @@ export default function RetailDirectorRow({
             <div className="restaurant-field">
               <label>
                 {" "}
-                Number Of DisPensing Counter <span>*</span>{" "}
+                Name <span>*</span>{" "}
               </label>
               <div className="input-wrapper">
                 <input

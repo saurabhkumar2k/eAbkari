@@ -4,12 +4,13 @@ import { Check, ChevronLeft, ChevronRight, ShieldAlert } from "lucide-react";
 import { createApplicant } from "../../../Model/Applicant";
 import { createHCRApplicant } from "../../../Model/HCRApplicant";
 import { createHCRAdditional } from "../../../Model/HCRAdditional";
+import { createRetailPremiseDetails } from "../../../Model/RetailPremiseDetails";
 
 // import HcrApplicantDetails from "./HcrApplicantDetail";
 
 import HcrApplicantStep from "../HCR/HcrApplicantStep";
 import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
-import RetailAdditionalStep from "../Retail/RetailAdditionalStep"
+import RetailAdditionalStep from "../Retail/RetailAdditionalStep";
 import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
 import HcrDeclarationStep from "../HCR/HcrDeclarationStep";
@@ -55,7 +56,9 @@ export default function RetailLicensee({
 
   const [siteForm, setSiteForm] = useState(createHCRApplicant());
 
-  const [additionalFrom, setAdditionalFrom] = useState(createHCRAdditional());
+  const [additionalFrom, setAdditionalFrom] = useState(
+    createRetailPremiseDetails(),
+  );
 
   // =========================================================
   // Master Data
@@ -305,13 +308,41 @@ export default function RetailLicensee({
   // Additional
   // =========================================================
 
-  const handleAdditionalChange = (field, value) => {
-    // console.log("Test 3333333333333")
-    setAdditionalFrom((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  // const handleAdditionalChange = (field, value) => {
+  //   // console.log("Test 3333333333333")
+  //   setAdditionalFrom((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
 
+  //   setAdditionalFormErrors((prev) => ({
+  //     ...prev,
+  //     [field]: null,
+  //   }));
+  // };
+
+  const handleAdditionalChange = (field, value) => {
+    setAdditionalFrom((prev) => {
+      const updatedData = {
+        ...prev,
+        [field]: value,
+      };
+
+      // Calculate Total Area when Length or Breadth changes
+      if (
+        field === "ProposedPremiseLength" ||
+        field === "ProposedPremiseBreath"
+      ) {
+        const length = parseFloat(updatedData.ProposedPremiseLength) || 0;
+        const breadth = parseFloat(updatedData.ProposedPremiseBreath) || 0;
+
+        updatedData.ProposedPremiseTotalArea = (length * breadth).toString();
+      }
+
+      return updatedData;
+    });
+
+    // Clear validation error for the changed field
     setAdditionalFormErrors((prev) => ({
       ...prev,
       [field]: null,
@@ -532,7 +563,7 @@ export default function RetailLicensee({
     debugger;
     try {
       const response = await fetch(
-        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`
+        `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`,
       );
 
       if (!response.ok) {
@@ -1306,34 +1337,30 @@ export default function RetailLicensee({
 
       // Additional Details
       Object.entries(additionalFrom).forEach(([key, value]) => {
-        if (key === "directors") return;
-
-        const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
-
-        const booleanFields = [
-          "additionalArea",
-          "isSuitableGagdget",
-          "isLocalAuthorityApproved",
-          "isIndicatingLiquor",
-        ];
-
-        const normalizedValue = booleanFields.includes(key)
-          ? value === true ||
-            value === "true" ||
-            value === "True" ||
-            value === "1" ||
-            value === 1
-            ? "true"
-            : value === false ||
-                value === "false" ||
-                value === "False" ||
-                value === "0" ||
-                value === 0
-              ? "false"
-              : String(value ?? "")
-          : (value ?? "");
-
-        formData.append(`AdditionalDetails.${propertyName}`, normalizedValue);
+        // if (key === "directors") return;
+        // const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
+        // const booleanFields = [
+        //   "additionalArea",
+        //   "isSuitableGagdget",
+        //   "isLocalAuthorityApproved",
+        //   "isIndicatingLiquor",
+        // ];
+        // const normalizedValue = booleanFields.includes(key)
+        //   ? value === true ||
+        //     value === "true" ||
+        //     value === "True" ||
+        //     value === "1" ||
+        //     value === 1
+        //     ? "true"
+        //     : value === false ||
+        //         value === "false" ||
+        //         value === "False" ||
+        //         value === "0" ||
+        //         value === 0
+        //       ? "false"
+        //       : String(value ?? "")
+        //   : (value ?? "");
+        // formData.append(`AdditionalDetails.${propertyName}`, normalizedValue);
       });
 
       formData.set("AdditionalDetails.ApplicationIdNo", applicationIdNo || "");
@@ -1462,7 +1489,7 @@ export default function RetailLicensee({
       console.log(formData);
 
       const response = await fetch(
-        "http://localhost:5214/api/CommonHCR/SaveAdditionalHCRCompleteDetails",
+        "http://localhost:5214/api/CommonRetail/SaveAdditionalRetailCompleteDetails",
         {
           method: "POST",
           body: formData,
@@ -1841,6 +1868,10 @@ export default function RetailLicensee({
             onClubDetailChange={handleClubDetailChange}
             onAddClubDetail={addClubDetail}
             ondeleteClubDetail={deleteClubDetail}
+            states={states}
+            districts={restaurantDistricts}
+            subDivisions={restaurantSubDivisions}
+            policeStations={restaurantPoliceStations}
           />
         )}
 

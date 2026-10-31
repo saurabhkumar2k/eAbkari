@@ -61,13 +61,13 @@ const RetailBasicFields = ({
           <input
             type="text"
             className="reg-input"
-            value={additionalFrom.SiteAddress}
-            onChange={(e) => onChange("SiteAddress", e.target.value)}
+            value={additionalFrom.OwnerPremiseAddress1}
+            onChange={(e) => onChange("OwnerPremiseAddress1", e.target.value)}
             placeholder="Enter Address Line 1"
           />
         </div>
-        {errors.SiteAddress && (
-          <p className="error-text">{errors.SiteAddress}</p>
+        {errors.OwnerPremiseAddress1 && (
+          <p className="error-text">{errors.OwnerPremiseAddress1}</p>
         )}
       </div>
 
@@ -84,13 +84,13 @@ const RetailBasicFields = ({
           <input
             type="text"
             className="reg-input"
-            value={additionalFrom.SiteAddress2}
-            onChange={(e) => onChange("SiteAddress2", e.target.value)}
+            value={additionalFrom.OwnerPremiseAddress2}
+            onChange={(e) => onChange("OwnerPremiseAddress2", e.target.value)}
             placeholder="Enter Address Line 2"
           />
         </div>
-        {errors.SiteAddress2 && (
-          <p className="error-text">{errors.SiteAddress2}</p>
+        {errors.OwnerPremiseAddress2 && (
+          <p className="error-text">{errors.OwnerPremiseAddress2}</p>
         )}
       </div>
 
@@ -107,9 +107,11 @@ const RetailBasicFields = ({
 
           <select
             className="reg-select"
-            name="state"
-            value={additionalFrom.State}
-            onChange={(e) => onChange("State", e.target.value.trim())}
+            name="OwnerPremiseState"
+            value={additionalFrom.OwnerPremiseState}
+            onChange={(e) =>
+              onChange("OwnerPremiseState", e.target.value.trim())
+            }
           >
             <option value="">Select State</option>
 
@@ -124,7 +126,9 @@ const RetailBasicFields = ({
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
-        {errors.State && <p className="error-text">{errors.State}</p>}
+        {errors.OwnerPremiseState && (
+          <p className="error-text">{errors.OwnerPremiseState}</p>
+        )}
       </div>
 
       {/* District */}
@@ -140,9 +144,9 @@ const RetailBasicFields = ({
 
           <select
             className="reg-select"
-            value={additionalFrom.DistrictCode}
-            disabled={!additionalFrom.State}
-            onChange={(e) => onChange("DistrictCode", e.target.value)}
+            value={additionalFrom.OwnerPremiseDistrict}
+            disabled={!additionalFrom.OwnerPremiseState}
+            onChange={(e) => onChange("OwnerPremiseDistrict", e.target.value)}
           >
             <option value="">Select District</option>
 
@@ -157,8 +161,8 @@ const RetailBasicFields = ({
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
-        {errors.DistrictCode && (
-          <p className="error-text">{errors.DistrictCode}</p>
+        {errors.OwnerPremiseDistrict && (
+          <p className="error-text">{errors.OwnerPremiseDistrict}</p>
         )}
       </div>
 
@@ -175,8 +179,10 @@ const RetailBasicFields = ({
 
           <select
             className="reg-select"
-            value={additionalFrom.SubDivisionCode}
-            onChange={(e) => onChange("SubDivisionCode", e.target.value)}
+            value={additionalFrom.OwnerPremiseSubDivisionCode}
+            onChange={(e) =>
+              onChange("OwnerPremiseSubDivisionCode", e.target.value)
+            }
           >
             <option value="">Select Sub Division</option>
 
@@ -191,8 +197,8 @@ const RetailBasicFields = ({
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
-        {errors.SubDivisionCode && (
-          <p className="error-text">{errors.SubDivisionCode}</p>
+        {errors.OwnerPremiseSubDivisionCode && (
+          <p className="error-text">{errors.OwnerPremiseSubDivisionCode}</p>
         )}
       </div>
 
@@ -209,8 +215,8 @@ const RetailBasicFields = ({
 
           <select
             className="reg-select"
-            value={additionalFrom.PoliceStationCode || ""}
-            onChange={(e) => onChange("PoliceStationCode", e.target.value)}
+            value={additionalFrom.OwnerPremisePSCode || ""}
+            onChange={(e) => onChange("OwnerPremisePSCode", e.target.value)}
           >
             <option value="">Select Police Station</option>
 
@@ -225,8 +231,8 @@ const RetailBasicFields = ({
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
-        {errors.PoliceStationCode && (
-          <p className="error-text">{errors.PoliceStationCode}</p>
+        {errors.OwnerPremisePSCode && (
+          <p className="error-text">{errors.OwnerPremisePSCode}</p>
         )}
       </div>
 
@@ -245,14 +251,16 @@ const RetailBasicFields = ({
             type="text"
             className="reg-input"
             maxLength={6}
-            value={additionalFrom.SitePin}
+            value={additionalFrom.OwnerPremisePin}
             onChange={(e) =>
-              onChange("SitePin", e.target.value.replace(/\D/g, ""))
+              onChange("OwnerPremisePin", e.target.value.replace(/\D/g, ""))
             }
             placeholder="Enter PIN Code"
           />
         </div>
-        {errors.SitePin && <p className="error-text">{errors.SitePin}</p>}
+        {errors.OwnerPremisePin && (
+          <p className="error-text">{errors.OwnerPremisePin}</p>
+        )}
       </div>
 
       {/* Mobile */}
@@ -271,13 +279,15 @@ const RetailBasicFields = ({
             className="reg-input"
             maxLength={10}
             placeholder="Enter Mobile Number"
-            value={additionalFrom.SiteMobile}
+            value={additionalFrom.OwnerPremiseMobile}
             onChange={(e) =>
-              onChange("SiteMobile", e.target.value.replace(/\D/g, ""))
+              onChange("OwnerPremiseMobile", e.target.value.replace(/\D/g, ""))
             }
           />
         </div>
-        {errors.SiteMobile && <p className="error-text">{errors.SiteMobile}</p>}
+        {errors.OwnerPremiseMobile && (
+          <p className="error-text">{errors.OwnerPremiseMobile}</p>
+        )}
       </div>
 
       <br></br>
@@ -288,21 +298,30 @@ const RetailBasicFields = ({
         </h1>
       </div>
 
+      {/* Length */}
       <div className="reg-field">
         <label className="reg-label">
-          Length(Ft) <span className="required">*</span>
+          Length (Ft) <span className="required">*</span>
         </label>
 
         <input
           type="text"
           className="reg-input"
-          maxLength={3}
+          maxLength={6}
           placeholder="Enter Premise Length"
-          value={additionalFrom.hoursOfSaleList}
-          onChange={(e) => onChange("hoursOfSaleList", e.target.value())}
+          value={additionalFrom.ProposedPremiseLength ?? ""}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            // Allow numbers and one decimal point
+            if (/^\d{0,3}(\.\d{0,2})?$/.test(value) || value === "") {
+              onChange("ProposedPremiseLength", value);
+            }
+          }}
         />
       </div>
 
+      {/* Breadth */}
       <div className="reg-field">
         <length className="reg-label">
           Breadth(Ft) <span className="required">*</span>
@@ -311,39 +330,49 @@ const RetailBasicFields = ({
         <input
           type="text"
           className="reg-input"
-          maxLength={3}
+          maxLength={6}
           placeholder="Enter Premise Breadth"
-          value={additionalFrom.hoursOfSaleList}
-          onChange={(e) => onChange("hoursOfSaleList", e.target.value())}
+          value={additionalFrom.ProposedPremiseBreath ?? ""}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            // Allow numbers and one decimal point
+            if (/^\d{0,3}(\.\d{0,2})?$/.test(value) || value === "") {
+              onChange("ProposedPremiseBreath", value);
+            }
+          }}
         />
       </div>
+
+      {/* Height */}
       <div className="reg-field">
         <length className="reg-label">
-          Height(Ft)  <span className="required">*</span>
+          Height(Ft) <span className="required">*</span>
         </length>
 
         <input
           type="text"
           className="reg-input"
-          maxLength={3}
+          maxLength={2}
           placeholder="Enter Premise Height"
-          value={additionalFrom.hoursOfSaleList}
-          onChange={(e) => onChange("hoursOfSaleList", e.target.value())}
+          value={additionalFrom.ProposedPremiseHeight}
+          onChange={(e) => onChange("ProposedPremiseHeight", e.target.value)}
         />
       </div>
 
+      {/* Total Area */}
       <div className="reg-field">
-        <length className="reg-label">
-          Total Area(in Sq Ft) <span className="required">*</span>
-        </length>
+        <label className="reg-label">
+          Total Area (in Sq Ft) <span className="required">*</span>
+        </label>
 
         <input
           type="text"
           className="reg-input"
-          maxLength={3}
+          maxLength={10}
           placeholder="Enter Premise Total Area"
-          value={additionalFrom.hoursOfSaleList}
-          onChange={(e) => onChange("hoursOfSaleList", e.target.value())}
+          value={additionalFrom.ProposedPremiseTotalArea ?? ""}
+          readOnly
         />
       </div>
 
