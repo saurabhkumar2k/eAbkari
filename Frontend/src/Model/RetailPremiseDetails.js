@@ -1,31 +1,4 @@
 export const createRetailPremiseDetails = () => ({
-//   numberOfClubMember: "",
-//   numberOfSeatCovers: "",
-//   numberOfDispensingCounter: "",
-//   additionalArea: "0",
-//   numberOfManagers: "",
-//   numberOfKitchenStaff: "",
-//   numberOfUtlityEmployees: "",
-//   totalRoom: "",
-//   staffStrength: "",
-//   starCategory: "",
-//   serviceCounter: "",
-//   totalArea: "",
-//   educationalInsDist: "",
-//   religiousPlaceDist: "",
-//   isSuitableGagdget: "",
-//   isLocalAuthorityApproved: "",
-//   isIndicatingLiquor: "",
-//   numberOfBarAttendent: "",
-//   starCategoryRating: "",
-//   restaurantArea: "",
-//   hourOfSale: "",
-//   HasStoreProvisionYN: "",
-//   StoreLocationInHotel:"",
-//   TINNumber:"",
-//   CompanyFirmPANNo:"",
-//   ConstitutionType:"",
-//   CINNo:"",
 
   //ApplicationIdNo: "",
   ProposedPremiseType: "",
@@ -60,37 +33,5 @@ export const createRetailPremiseDetails = () => ({
   // questionsList: [
   // ],
 
-//   partners: [
-//     {
-//       PName: "",
-//       PPerShare: "",
-//       PPanNo: "",
-//       PExciseNominee: "",
-//       DINNo: "",
 
-//       // File objects
-//       panFile: null,
-//       addressFile: null,
-//     },
-//   ],
-
-  // applicantAnswers: [
-  //   {
-  //     "applicationIdNo": "",
-  //     "questionId": "",
-  //     "answerGiven": "",
-  //   }
-  // ],
-
-//   restaurantDetails: [{
-//     NameOfAdditionalRestaurant: "",
-//     NumberOfSeatCovers: "",
-//     NumberOfCounter: "",
-//     AddtionalArea: "",
-//     HoursofSale: "",
-//     HoursofSaleAddtionalArea: "",
-//     ForeignLiquor: "",
-//     AreaSqMtr: "",
-//   }
-// ]
 });

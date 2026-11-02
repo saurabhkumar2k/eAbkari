@@ -1,12 +1,9 @@
 import React from "react";
 
 import "../../../Style/Retail.css";
-import {allowOnlyNumbers} from '../../../areas/applicant/HCR/validation'
+import { allowOnlyNumbers } from "../../../areas/applicant/HCR/validation";
 
-import {
-  User,
-  Trash2,
-} from "lucide-react";
+import { User, Trash2 } from "lucide-react";
 
 export default function RetailDirectorRow({
   ClubDetail,
@@ -45,8 +42,8 @@ export default function RetailDirectorRow({
 
           {/* 3 × 3 Grid */}
           <div className="director-fields">
-            {/* 1. Restaurant Name */}
-            <div className="restaurant-field">
+            {/* 1. Director type */}
+            {/* <div className="restaurant-field">
               <label>
                 {" "}
                 Name of the <span>*</span>{" "}
@@ -55,26 +52,50 @@ export default function RetailDirectorRow({
                 <User size={16} />
                 <input
                   type="text"
-                  value={ClubDetail.NameOfAdditionalRestaurant || ""}
+                  value={ClubDetail.NameOfthe || ""}
                   onChange={(e) =>
                     onChange(
                       index,
-                      "NameOfAdditionalRestaurant",
+                      "NameOfthe",
                       e.target.value,
                     )
                   }
                 />
               </div>
-              {errors?.NameOfAdditionalRestaurantErr && (
+              {errors?.NameOftheErr && (
                 <span className="error-text">
-                  {errors.NameOfAdditionalRestaurantErr}
+                  {errors.NameOftheErr}
                 </span>
+              )}
+            </div> */}
+
+            <div className="restaurant-field">
+              <label>
+                Name of the <span>*</span>
+              </label>
+
+              <div className="input-wrapper">
+                <User size={16} />
+
+                <select
+                  value={ClubDetail.NameOfthe || "0"}
+                  onChange={(e) => onChange(index, "NameOfthe", e.target.value)}
+                >
+                  <option value="">Select</option>
+                  <option value="1">Company Directors</option>
+                  <option value="2">Proprietors</option>
+                  <option value="3">Partners</option>
+                  <option value="4">Cooperative Society</option>
+                  <option value="5">LLP</option>
+                </select>
+              </div>
+
+              {errors?.NameOftheErr && (
+                <span className="error-text">{errors.NameOftheErr}</span>
               )}
             </div>
 
-
-
-            {/* 3. No. of Dispensing Counter */}
+            {/* Name */}
             <div className="restaurant-field">
               <label>
                 {" "}
@@ -83,21 +104,15 @@ export default function RetailDirectorRow({
               <div className="input-wrapper">
                 <input
                   type="text"
-                  inputMode="numeric"
-                  value={ClubDetail.NumberOfCounter || ""}
-                  onChange={(e) => onChange(index, "NumberOfCounter", allowOnlyNumbers(e.target.value))}
-                  maxLength={3}
+                  value={ClubDetail.Name || ""}
+                  onChange={(e) => onChange(index, "Name", e.target.value)}
+                  maxLength={20}
                 />
               </div>
-              {errors?.NumberOfCounterErr && (
-                <span className="error-text">{errors.NumberOfCounterErr}</span>
+              {errors?.NameErr && (
+                <span className="error-text">{errors.NameErr}</span>
               )}
             </div>
-
-
-
-            
-
 
             {/* 9. Grid Placeholder (Replace this div when you add your 9th field) */}
             <div className="restaurant-field empty-placeholder"></div>

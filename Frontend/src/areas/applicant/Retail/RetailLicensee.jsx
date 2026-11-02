@@ -27,6 +27,7 @@ import {
   validateRestaurantDetails,
   validateClubDetails,
   Cat_Label,
+  validateRetailPartnerDetails,
 } from "../HCR/validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
@@ -304,22 +305,6 @@ export default function RetailLicensee({
     return true;
   };
 
-  // =========================================================
-  // Additional
-  // =========================================================
-
-  // const handleAdditionalChange = (field, value) => {
-  //   // console.log("Test 3333333333333")
-  //   setAdditionalFrom((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-
-  //   setAdditionalFormErrors((prev) => ({
-  //     ...prev,
-  //     [field]: null,
-  //   }));
-  // };
 
   const handleAdditionalChange = (field, value) => {
     setAdditionalFrom((prev) => {
@@ -929,7 +914,7 @@ export default function RetailLicensee({
     let additionalUpdateErrors = { ...additionalFormErrors };
 
     // 1. Run the evaluation using your custom function
-    const clubErr = validateClubDetails(additionalFrom.clubDetails);
+    const clubErr = validateRetailPartnerDetails(additionalFrom.clubDetails);
     if (clubErr) errors.clubDetails = clubErr;
 
     // 2. Check if the data structure contains items before proceeding
@@ -970,9 +955,8 @@ export default function RetailLicensee({
       clubDetails: [
         ...(prev.clubDetails || []),
         {
-          NameOfAdditionalRestaurant: "",
-          NumberOfCounter: "",
-          AddtionalArea: "",
+          NameOfthe: "",
+          Name: "",       
         },
       ],
     }));
@@ -1050,17 +1034,7 @@ export default function RetailLicensee({
     const errors = {};
     // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
     let additionalUpdateErrors = { ...additionalFormErrors };
-    // console.log("HcrLicensee - addDirector additionalFrom  ", additionalFrom.directors)
 
-    // const directorsErr = validateDirectors(additionalFrom.directors);
-    // if (directorsErr) errors.directors = directorsErr;
-
-    // setAdditionalFormErrors(errors);
-
-    // // Safely checks if the validation failed and if we have row errors populated
-    // if ((additionalFormErrors.directors?.isValid === false && (additionalFrom.directors && additionalFrom.directors.length > 0)) || (directorsErr?.errors && directorsErr.errors.length > 0)) {
-    //   return; // Stop form submission
-    // }
     const directorsErr = validateDirectors(additionalFrom.directors);
     if (directorsErr) errors.directors = directorsErr;
 

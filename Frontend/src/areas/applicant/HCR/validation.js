@@ -489,6 +489,63 @@ export const validateClubDetails = (clubDetails) => {
   return result;
 };
 
+
+export const validateRetailPartnerDetails = (clubDetails) => {
+  const result = {
+    isValid: true,
+    globalError: "",
+    errors: [],
+  };
+
+  // 1. Guard check if it doesn't exist or length is 0
+  if (
+    !clubDetails ||
+    !clubDetails.length ||
+    clubDetails.length === 0
+  ) {
+    result.isValid = false;
+    result.globalError = "At least one Club detail must be added";
+    return result;
+  }
+
+  // 2. Safe numeric loop that bypasses all array prototype/proxy limitations
+  for (let index = 0; index < clubDetails.length; index++) {
+    const club = clubDetails[index];
+
+    // Safety check in case the index item is empty or undefined
+    if (!club) continue;
+
+    const rowErrors = {};
+
+    // Validate NameOfAdditionalRestaurant
+    const nameErr = requiredCheck(
+      club.NameOfthe,
+      "Name of the",
+    );
+    if (nameErr) rowErrors.NameOfthe = nameErr;
+
+
+    // Validate NumberOfCounter (Number Validation)
+    const counterErr = nameCheck(
+      club.Name,
+      "Name",
+    );
+    if (counterErr) rowErrors.Name = counterErr;
+
+
+    // If this specific index has errors, collect them
+    if (Object.keys(rowErrors).length > 0) {
+      result.isValid = false;
+      result.errors[index] = rowErrors;
+    } else {
+      result.errors[index] = null; // Clean state for this row
+    }
+  }
+
+  return result;
+};
+
+
 export const validateTrainRoutes = (routes) => {
   const result = {
     isValid: true,
