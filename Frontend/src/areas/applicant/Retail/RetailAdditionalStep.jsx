@@ -26,6 +26,10 @@ export default function RetailAdditionalStep({
   onClubDetailChange,
   onAddClubDetail,
   ondeleteClubDetail,
+  states,
+  districts,
+  subDivisions,
+  policeStations,
 }) {
   return (
     <div className="form-group full-width ">
@@ -64,6 +68,10 @@ export default function RetailAdditionalStep({
           onClubDetailChange={onClubDetailChange}
           onAddClubDetail={onAddClubDetail}
           ondeleteClubDetail={ondeleteClubDetail}
+          states={states}
+          districts={districts}
+          subDivisions={subDivisions}
+          policeStations={policeStations}
         />
       </div>
     </div>

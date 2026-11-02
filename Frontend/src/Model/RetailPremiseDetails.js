@@ -1,0 +1,96 @@
+export const createRetailPremiseDetails = () => ({
+//   numberOfClubMember: "",
+//   numberOfSeatCovers: "",
+//   numberOfDispensingCounter: "",
+//   additionalArea: "0",
+//   numberOfManagers: "",
+//   numberOfKitchenStaff: "",
+//   numberOfUtlityEmployees: "",
+//   totalRoom: "",
+//   staffStrength: "",
+//   starCategory: "",
+//   serviceCounter: "",
+//   totalArea: "",
+//   educationalInsDist: "",
+//   religiousPlaceDist: "",
+//   isSuitableGagdget: "",
+//   isLocalAuthorityApproved: "",
+//   isIndicatingLiquor: "",
+//   numberOfBarAttendent: "",
+//   starCategoryRating: "",
+//   restaurantArea: "",
+//   hourOfSale: "",
+//   HasStoreProvisionYN: "",
+//   StoreLocationInHotel:"",
+//   TINNumber:"",
+//   CompanyFirmPANNo:"",
+//   ConstitutionType:"",
+//   CINNo:"",
+
+  //ApplicationIdNo: "",
+  ProposedPremiseType: "",
+  ProposedPremiseLength: "",
+  ProposedPremiseBreath: "",
+  ProposedPremiseHeight: "",
+  ProposedPremiseTotalArea: "",
+  PropPremiseAppComArea: "",
+  PropPremiseAppComAreaAdInfo: "",
+  LandLordPhyPossession: "",
+  PropPremiseCondition: "",
+  PropPremiseLocalBody: "",
+  PropPremiseLiquorLicenceRule: "",
+  PropPremisePuccaBuild: "",
+  PropPremisePuccaBuildAdInfo: "",
+  PropPremisePresentUse: "",
+  PropPremisePresentUseAdInfo: "",
+  PropPremiseSuitPending: "",
+  PropPremiseWaterConn: "",
+  PropPremiseJoint: "",
+  PropPremiseNOC: "",
+  PropPremiseShopMap: "",
+  OwnerPremiseAddress1: "",
+  OwnerPremiseAddress2: "",
+  OwnerPremiseState: "",
+  OwnerPremiseDistrict: "",
+  OwnerPremisePin: "",
+  OwnerPremiseMobile: "",
+  OwnerPremiseSubDivisionCode: "",
+  OwnerPremisePSCode: "",
+
+  // questionsList: [
+  // ],
+
+//   partners: [
+//     {
+//       PName: "",
+//       PPerShare: "",
+//       PPanNo: "",
+//       PExciseNominee: "",
+//       DINNo: "",
+
+//       // File objects
+//       panFile: null,
+//       addressFile: null,
+//     },
+//   ],
+
+  // applicantAnswers: [
+  //   {
+  //     "applicationIdNo": "",
+  //     "questionId": "",
+  //     "answerGiven": "",
+  //   }
+  // ],
+
+//   restaurantDetails: [{
+//     NameOfAdditionalRestaurant: "",
+//     NumberOfSeatCovers: "",
+//     NumberOfCounter: "",
+//     AddtionalArea: "",
+//     HoursofSale: "",
+//     HoursofSaleAddtionalArea: "",
+//     ForeignLiquor: "",
+//     AreaSqMtr: "",
+//   }
+// ]
+});

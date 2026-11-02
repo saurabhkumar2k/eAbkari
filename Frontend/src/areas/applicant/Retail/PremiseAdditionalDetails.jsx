@@ -8,7 +8,7 @@ import RetailQuestionList from "./RetailQuestionList";
 //import HCRBasicFieldsL28 from "./HCRBasicFieldsL28";
 //import RestaurantDetailsL16 from "./RestaurantDetailsL16";
 import RetailDirectorDetails from "./RetailDirectorDetails";
-import RetailBasicFields from "./RetailBasicFields"
+import RetailBasicFields from "./RetailBasicFields";
 //import { Cat_Label } from "../areas/applicant/HCR/validation";
 
 export default function PremiseAdditionalDetails({
@@ -35,6 +35,10 @@ export default function PremiseAdditionalDetails({
   onClubDetailChange,
   onAddClubDetail,
   ondeleteClubDetail,
+  states,
+  districts,
+  subDivisions,
+  policeStations,
 }) {
   console.log("RestaurantAdditionalDetails - errors  ", errors);
   /* */
@@ -49,39 +53,48 @@ export default function PremiseAdditionalDetails({
     "34",
   ];
   /* */
-  const HCRBasicFieldsCategories = ["02", "11", "25", "39", "40", "41", "46", "83", "34"];
+  const HCRBasicFieldsCategories = [
+    "02",
+    "11",
+    "25",
+    "39",
+    "40",
+    "41",
+    "46",
+    "83",
+    "34",
+  ];
   //const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
   return (
     <div className="hcr-form-section animate-fade">
-      
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-8">
         <form onSubmit={onSubmit} className="hcr-premises-form">
           <div className="hcr-form-grid">
-                      
             {/* Retail Premise Details */}
-            {
-            HCRBasicFieldsCategories.includes(CatCode) && (
+            {HCRBasicFieldsCategories.includes(CatCode) && (
               <RetailBasicFields
                 additionalFrom={additionalFrom}
                 onChange={onChange}
                 hoursOfSaleList={hoursOfSaleList}
                 errors={errors}
                 ConstitutionType={ConstitutionType}
+                states={states}
+                districts={districts}
+                subDivisions={subDivisions}
+                policeStations={policeStations}
               />
             )}
 
             {/* Retail Question List */}
-            {
-              HCRBasicFieldsCategories.includes(CatCode) && (
-                <div className="form-group full-width">
-                  <RetailQuestionList
-                    questions={questions}
-                    onChange={onQuestionsChange}
-                    error={errors?.answer}
-                  />
-                </div>
-              )
-            }
+            {HCRBasicFieldsCategories.includes(CatCode) && (
+              <div className="form-group full-width">
+                <RetailQuestionList
+                  questions={questions}
+                  onChange={onQuestionsChange}
+                  error={errors?.answer}
+                />
+              </div>
+            )}
 
             <div className="form-group full-width">
               {HCRBasicFieldsCategories.includes(CatCode) && (
@@ -90,7 +103,7 @@ export default function PremiseAdditionalDetails({
                   ConstitutionType={constitutionType}
                   onChange={onClubDetailChange}
                   onAdd={onAddClubDetail}
-                  onDelete={ondeleteClubDetail}                  
+                  onDelete={ondeleteClubDetail}
                   errors={errors?.clubDetails?.errors}
                 />
               )}
@@ -100,10 +113,8 @@ export default function PremiseAdditionalDetails({
                     {errors?.clubDetails?.globalError}
                   </span>
                 )}
-              </div> 
+              </div>
             </div>
-
-
           </div>
         </form>
       </div>
