@@ -6,7 +6,7 @@ import { allowOnlyNumbers } from "../../../areas/applicant/HCR/validation";
 import { User, Trash2 } from "lucide-react";
 
 export default function RetailDirectorRow({
-  ClubDetail,
+  RetailPropDetails,
   index,
   onChange,
   onDelete,
@@ -19,7 +19,7 @@ export default function RetailDirectorRow({
   console.log("DirectorRow:", ConstitutionType);
   console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
   console.log("DirectorRow ConstitutionType:", ConstitutionType);
-  console.log(ClubDetail);
+  console.log(RetailPropDetails);
   return (
     <div className="restaurant-container">
       {/* Restaurant List */}
@@ -43,32 +43,6 @@ export default function RetailDirectorRow({
           {/* 3 × 3 Grid */}
           <div className="director-fields">
             {/* 1. Director type */}
-            {/* <div className="restaurant-field">
-              <label>
-                {" "}
-                Name of the <span>*</span>{" "}
-              </label>
-              <div className="input-wrapper">
-                <User size={16} />
-                <input
-                  type="text"
-                  value={ClubDetail.NameOfthe || ""}
-                  onChange={(e) =>
-                    onChange(
-                      index,
-                      "NameOfthe",
-                      e.target.value,
-                    )
-                  }
-                />
-              </div>
-              {errors?.NameOftheErr && (
-                <span className="error-text">
-                  {errors.NameOftheErr}
-                </span>
-              )}
-            </div> */}
-
             <div className="restaurant-field">
               <label>
                 Name of the <span>*</span>
@@ -78,7 +52,7 @@ export default function RetailDirectorRow({
                 <User size={16} />
 
                 <select
-                  value={ClubDetail.NameOfthe || "0"}
+                  value={RetailPropDetails.NameOfthe || "0"}
                   onChange={(e) => onChange(index, "NameOfthe", e.target.value)}
                 >
                   <option value="">Select</option>
@@ -104,7 +78,7 @@ export default function RetailDirectorRow({
               <div className="input-wrapper">
                 <input
                   type="text"
-                  value={ClubDetail.Name || ""}
+                  value={RetailPropDetails.Name || ""}
                   onChange={(e) => onChange(index, "Name", e.target.value)}
                   maxLength={20}
                 />

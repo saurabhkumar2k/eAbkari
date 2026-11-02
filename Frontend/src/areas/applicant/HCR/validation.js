@@ -490,27 +490,34 @@ export const validateClubDetails = (clubDetails) => {
 };
 
 
-export const validateRetailPartnerDetails = (clubDetails) => {
+export const validateRetailPartnerDetails = (RetailPropDetails) => {
   const result = {
     isValid: true,
     globalError: "",
     errors: [],
   };
-
-  // 1. Guard check if it doesn't exist or length is 0
   if (
-    !clubDetails ||
-    !clubDetails.length ||
-    clubDetails.length === 0
+    !RetailPropDetails ||
+    !RetailPropDetails.length ||
+    RetailPropDetails.length === 0
   ) {
-    result.isValid = false;
-    result.globalError = "At least one Club detail must be added";
     return result;
   }
 
+  // 1. Guard check if it doesn't exist or length is 0
+  // if (
+  //   !RetailPropDetails ||
+  //   !RetailPropDetails.length ||
+  //   RetailPropDetails.length === 0
+  // ) {
+  //   result.isValid = false;
+  //   result.globalError = "At least one Club detail must be added";
+  //   return result;
+  // }
+
   // 2. Safe numeric loop that bypasses all array prototype/proxy limitations
-  for (let index = 0; index < clubDetails.length; index++) {
-    const club = clubDetails[index];
+  for (let index = 0; index < RetailPropDetails.length; index++) {
+    const club = RetailPropDetails[index];
 
     // Safety check in case the index item is empty or undefined
     if (!club) continue;

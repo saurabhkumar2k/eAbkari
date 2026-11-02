@@ -33,6 +33,11 @@ namespace backend.Infrastructure.Repositories.License
                 var details = await _context.RetailDetails
                     .FirstOrDefaultAsync(x => x.ApplicationIdNo == appId);
 
+                var catcode = await _context.LicenseApplications
+                    .Where(x => x.ApplicationIdNo == appId)
+                    .Select(x => x.CatCode)
+                    .FirstOrDefaultAsync();
+
                 if (details == null)
                 {
                     details = new RetailDetails
@@ -140,132 +145,142 @@ namespace backend.Infrastructure.Repositories.License
                 //==========================
                 // STEP 3 : PropDetails
                 //==========================
+                if (catcode != "02" && catcode != "46" ){
+                    //var oldPropPartners = _context.RetailAdditionalPropDetail
+                    //    .Where(x => x.ApplicationIdNo == appId);
 
-                var oldPropPartners = _context.RetailAdditionalPropDetail
-                    .Where(x => x.ApplicationIdNo == appId);
+                    //_context.RetailAdditionalPropDetail.RemoveRange(oldPropPartners);
 
-                _context.RetailAdditionalPropDetail.RemoveRange(oldPropPartners);
+                    var oldPropPartners = await _context.RetailAdditionalPropDetail
+                    .Where(x => x.ApplicationIdNo == appId)
+                    .ToListAsync();
 
-                int slNo = 1;
+                    _context.RetailAdditionalPropDetail.RemoveRange(oldPropPartners);
 
-                foreach (var item in dto.RetailPropDetails)
-                {
-                    RetailAdditionalPropDetail Proppartner =
-                        new RetailAdditionalPropDetail
-                        {
-                            ApplicationIdNo = appId,
-                            Name = item.Name,
-                            AddtionalDesigTypeValue = item.AddtionalDesigTypeValue,
-                            Slno = slNo++
-                        };
+                    int slNo = 1;
 
-                    _context.RetailAdditionalPropDetail.Add(Proppartner);
+                    foreach (var item in dto.RetailPropDetails)
+                    {
+                        RetailAdditionalPropDetail Proppartner =
+                            new RetailAdditionalPropDetail
+                            {
+                                ApplicationIdNo = appId,
+                                Name = item.Name,
+                                AddtionalDesigTypeValue = item.AddtionalDesigTypeValue,
+                                Slno = slNo++
+                            };
+
+                        _context.RetailAdditionalPropDetail.Add(Proppartner);
+                    }
+                    
                 }
                 //==========================
                 // STEP 2 : ApplicantLicensePartnersDetails
                 //==========================
 
-                var L10Partners = _context.ApplicantLicensePartnersDetails
-                    .Where(x => x.ApplicationIdNo == appId);
-
-                _context.ApplicantLicensePartnersDetails.RemoveRange(L10Partners);
-
-                int slNoL10 = 1;
-
-                foreach (var item in dto.Partners)
+                if (catcode == "02" || catcode == "46" )
                 {
-                    ApplicantLicensePartnersDetails partner =
-                        new ApplicantLicensePartnersDetails
+                    var L10Partners = _context.ApplicantLicensePartnersDetails
+                        .Where(x => x.ApplicationIdNo == appId);
+
+                    _context.ApplicantLicensePartnersDetails.RemoveRange(L10Partners);
+
+                    int slNoL10 = 1;
+
+                    foreach (var item in dto.Partners)
+                    {
+                        ApplicantLicensePartnersDetails partner =
+                            new ApplicantLicensePartnersDetails
+                            {
+                                ApplicationIdNo = appId,
+                                PName = item.PName,
+                                PPerShare = item.PPerShare,
+                                PPanNo = item.PPanNo,
+                                PExciseNominee = item.PExciseNominee,
+                                DINNo = item.DINNo,
+
+                                PhotoURLPanNo = string.IsNullOrWhiteSpace(item.PanFileUploaded)
+                                    ? null
+                                    : appId + "_" + item.PanFileUploaded,
+
+                                PhotoURLAddressProof = string.IsNullOrWhiteSpace(item.AddressFileUploaded)
+                                    ? null
+                                    : appId + "_" + item.AddressFileUploaded,
+
+                                SlNo = slNoL10++
+                            };
+
+                        _context.ApplicantLicensePartnersDetails.Add(partner);
+                    }
+
+                    //Step 4 :
+                    //=============
+                    var L10L22details = await _context.AdditionalL10L22Details
+                        .FirstOrDefaultAsync(x => x.ApplicationIdNo == appId);
+
+                    if (L10L22details == null)
+                    {
+                        L10L22details = new AdditionalL10L22Details
                         {
                             ApplicationIdNo = appId,
-                            PName = item.PName,
-                            PPerShare = item.PPerShare,
-                            PPanNo = item.PPanNo,
-                            PExciseNominee = item.PExciseNominee,
-                            DINNo = item.DINNo,
 
-                            PhotoURLPanNo = string.IsNullOrWhiteSpace(item.PanFileUploaded)
-                                ? null
-                                : appId + "_" + item.PanFileUploaded,
-
-                            PhotoURLAddressProof = string.IsNullOrWhiteSpace(item.AddressFileUploaded)
-                                ? null
-                                : appId + "_" + item.AddressFileUploaded,
-
-                            SlNo = slNoL10++
+                            ConstitutionType = dto.AdditionalL10L22Details.ConstitutionType,
+                            L10Airport = dto.AdditionalL10L22Details.L10Airport,
+                            FirmPanNo = dto.AdditionalL10L22Details.FirmPanNo,
+                            TinVatNo = dto.AdditionalL10L22Details.TinVatNo,
+                            ExciseNomineeEmail = dto.AdditionalL10L22Details.ExciseNomineeEmail,
+                            ExciseNomieeMobile = dto.AdditionalL10L22Details.ExciseNomieeMobile,
+                            ExciseNomineeDirCompany = dto.AdditionalL10L22Details.ExciseNomineeDirCompany,
+                            LicencePremiseType = dto.AdditionalL10L22Details.LicencePremiseType,
+                            IssuanceDeclaration = dto.AdditionalL10L22Details.IssuanceDeclaration,
+                            ArchitectRegNo = dto.AdditionalL10L22Details.ArchitectRegNo,
+                            VendLocation = dto.AdditionalL10L22Details.VendLocation,
+                            POSTerminalVendNo = dto.AdditionalL10L22Details.POSTerminalVendNo,
+                            NoCCTVCamInstalled = dto.AdditionalL10L22Details.NoCCTVCamInstalled,
+                            CameraMake = dto.AdditionalL10L22Details.CameraMake,
+                            RecordingCapacity = dto.AdditionalL10L22Details.RecordingCapacity,
+                            PropPremiseComComplex = dto.AdditionalL10L22Details.PropPremiseComComplex,
+                            PropPremiseComComplexAdInfo = dto.AdditionalL10L22Details.PropPremiseComComplexAdInfo,
+                            PropPremiseSustainability = dto.AdditionalL10L22Details.PropPremiseSustainability,
+                            PropPremiseSustainabilityInfo = dto.AdditionalL10L22Details.PropPremiseSustainabilityInfo,
+                            CINNO = dto.AdditionalL10L22Details.CINNO,
+                            ExciseNomineePANProof = dto.AdditionalL10L22Details.ExciseNomineePANProof,
+                            L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale,
+                            L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault,
+                            FDRDetails = dto.AdditionalL10L22Details.FDRDetails
                         };
 
-                    _context.ApplicantLicensePartnersDetails.Add(partner);
-                }
 
-                //Step 4 :
-                //=============
-                var L10L22details = await _context.AdditionalL10L22Details
-                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == appId);
-
-                if (L10L22details == null)
-                {
-                    L10L22details = new AdditionalL10L22Details
+                        await _context.AdditionalL10L22Details.AddAsync(L10L22details);
+                    }
+                    else
                     {
-                        ApplicationIdNo = appId,
-
-                        ConstitutionType = dto.AdditionalL10L22Details.ConstitutionType,
-                        L10Airport = dto.AdditionalL10L22Details.L10Airport,
-                        FirmPanNo = dto.AdditionalL10L22Details.FirmPanNo,
-                        TinVatNo = dto.AdditionalL10L22Details.TinVatNo,
-                        ExciseNomineeEmail = dto.AdditionalL10L22Details.ExciseNomineeEmail,
-                        ExciseNomieeMobile = dto.AdditionalL10L22Details.ExciseNomieeMobile,
-                        ExciseNomineeDirCompany = dto.AdditionalL10L22Details.ExciseNomineeDirCompany,
-                        LicencePremiseType = dto.AdditionalL10L22Details.LicencePremiseType,
-                        IssuanceDeclaration = dto.AdditionalL10L22Details.IssuanceDeclaration,
-                        ArchitectRegNo = dto.AdditionalL10L22Details.ArchitectRegNo,
-                        VendLocation = dto.AdditionalL10L22Details.VendLocation,
-                        POSTerminalVendNo = dto.AdditionalL10L22Details.POSTerminalVendNo,
-                        NoCCTVCamInstalled = dto.AdditionalL10L22Details.NoCCTVCamInstalled,
-                        CameraMake = dto.AdditionalL10L22Details.CameraMake,
-                        RecordingCapacity = dto.AdditionalL10L22Details.RecordingCapacity,
-                        PropPremiseComComplex = dto.AdditionalL10L22Details.PropPremiseComComplex,
-                        PropPremiseComComplexAdInfo = dto.AdditionalL10L22Details.PropPremiseComComplexAdInfo,
-                        PropPremiseSustainability = dto.AdditionalL10L22Details.PropPremiseSustainability,
-                        PropPremiseSustainabilityInfo = dto.AdditionalL10L22Details.PropPremiseSustainabilityInfo,
-                        CINNO = dto.AdditionalL10L22Details.CINNO,
-                        ExciseNomineePANProof = dto.AdditionalL10L22Details.ExciseNomineePANProof,
-                        L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale,
-                        L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault,
-                        FDRDetails = dto.AdditionalL10L22Details.FDRDetails
-                    };
-
-
-                    await _context.AdditionalL10L22Details.AddAsync(L10L22details);
+                        L10L22details.ConstitutionType = dto.AdditionalL10L22Details.ConstitutionType;
+                        L10L22details.L10Airport = dto.AdditionalL10L22Details.L10Airport;
+                        L10L22details.FirmPanNo = dto.AdditionalL10L22Details.FirmPanNo;
+                        L10L22details.TinVatNo = dto.AdditionalL10L22Details.TinVatNo;
+                        L10L22details.ExciseNomineeEmail = dto.AdditionalL10L22Details.ExciseNomineeEmail;
+                        L10L22details.ExciseNomieeMobile = dto.AdditionalL10L22Details.ExciseNomieeMobile;
+                        L10L22details.ExciseNomineeDirCompany = dto.AdditionalL10L22Details.ExciseNomineeDirCompany;
+                        L10L22details.LicencePremiseType = dto.AdditionalL10L22Details.LicencePremiseType;
+                        L10L22details.IssuanceDeclaration = dto.AdditionalL10L22Details.IssuanceDeclaration;
+                        L10L22details.ArchitectRegNo = dto.AdditionalL10L22Details.ArchitectRegNo;
+                        L10L22details.VendLocation = dto.AdditionalL10L22Details.VendLocation;
+                        L10L22details.POSTerminalVendNo = dto.AdditionalL10L22Details.POSTerminalVendNo;
+                        L10L22details.NoCCTVCamInstalled = dto.AdditionalL10L22Details.NoCCTVCamInstalled;
+                        L10L22details.CameraMake = dto.AdditionalL10L22Details.CameraMake;
+                        L10L22details.RecordingCapacity = dto.AdditionalL10L22Details.RecordingCapacity;
+                        L10L22details.PropPremiseComComplex = dto.AdditionalL10L22Details.PropPremiseComComplex;
+                        L10L22details.PropPremiseComComplexAdInfo = dto.AdditionalL10L22Details.PropPremiseComComplexAdInfo;
+                        L10L22details.PropPremiseSustainability = dto.AdditionalL10L22Details.PropPremiseSustainability;
+                        L10L22details.PropPremiseSustainabilityInfo = dto.AdditionalL10L22Details.PropPremiseSustainabilityInfo;
+                        L10L22details.CINNO = dto.AdditionalL10L22Details.CINNO;
+                        L10L22details.ExciseNomineePANProof = dto.AdditionalL10L22Details.ExciseNomineePANProof;
+                        L10L22details.L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale;
+                        L10L22details.L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault;
+                        L10L22details.FDRDetails = dto.AdditionalL10L22Details.FDRDetails;
+                    }
                 }
-                else
-                {
-                    L10L22details.ConstitutionType = dto.AdditionalL10L22Details.ConstitutionType;
-                    L10L22details.L10Airport = dto.AdditionalL10L22Details.L10Airport;
-                    L10L22details.FirmPanNo = dto.AdditionalL10L22Details.FirmPanNo;
-                    L10L22details.TinVatNo = dto.AdditionalL10L22Details.TinVatNo;
-                    L10L22details.ExciseNomineeEmail = dto.AdditionalL10L22Details.ExciseNomineeEmail;
-                    L10L22details.ExciseNomieeMobile = dto.AdditionalL10L22Details.ExciseNomieeMobile;
-                    L10L22details.ExciseNomineeDirCompany = dto.AdditionalL10L22Details.ExciseNomineeDirCompany;
-                    L10L22details.LicencePremiseType = dto.AdditionalL10L22Details.LicencePremiseType;
-                    L10L22details.IssuanceDeclaration = dto.AdditionalL10L22Details.IssuanceDeclaration;
-                    L10L22details.ArchitectRegNo = dto.AdditionalL10L22Details.ArchitectRegNo;
-                    L10L22details.VendLocation = dto.AdditionalL10L22Details.VendLocation;
-                    L10L22details.POSTerminalVendNo = dto.AdditionalL10L22Details.POSTerminalVendNo;
-                    L10L22details.NoCCTVCamInstalled = dto.AdditionalL10L22Details.NoCCTVCamInstalled;
-                    L10L22details.CameraMake = dto.AdditionalL10L22Details.CameraMake;
-                    L10L22details.RecordingCapacity = dto.AdditionalL10L22Details.RecordingCapacity;
-                    L10L22details.PropPremiseComComplex = dto.AdditionalL10L22Details.PropPremiseComComplex;
-                    L10L22details.PropPremiseComComplexAdInfo = dto.AdditionalL10L22Details.PropPremiseComComplexAdInfo;
-                    L10L22details.PropPremiseSustainability = dto.AdditionalL10L22Details.PropPremiseSustainability;
-                    L10L22details.PropPremiseSustainabilityInfo = dto.AdditionalL10L22Details.PropPremiseSustainabilityInfo;
-                    L10L22details.CINNO = dto.AdditionalL10L22Details.CINNO;
-                    L10L22details.ExciseNomineePANProof = dto.AdditionalL10L22Details.ExciseNomineePANProof;
-                    L10L22details.L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale;
-                    L10L22details.L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault;
-                    L10L22details.FDRDetails = dto.AdditionalL10L22Details.FDRDetails;
-                }
-
                 await _context.SaveChangesAsync();
 
                 return "Saved Successfully";
@@ -283,7 +298,7 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 1 : RetailDetails
                 // ============================================
 
-                var retailDetails = await _context.RetailDetails                   
+                var retailDetails = await _context.RetailDetails
                     .FirstOrDefaultAsync(x => x.ApplicationIdNo == applicationIdNo);
 
 
@@ -291,7 +306,7 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 2 : Applicant Answers
                 // ============================================
 
-                var applicantAnswers = await _context.LicenseApplicationCategoryWiseAnswers                   
+                var applicantAnswers = await _context.LicenseApplicationCategoryWiseAnswers
                     .Where(x => x.ApplicationIdNo == applicationIdNo)
                     .Select(x => new CategoryWiseAnswersDto
                     {
@@ -307,7 +322,7 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 3 : Retail Additional Prop Details
                 // ============================================
 
-                var retailPropDetails = await _context.RetailAdditionalPropDetail                   
+                var retailPropDetails = await _context.RetailAdditionalPropDetail
                     .Where(x => x.ApplicationIdNo == applicationIdNo)
                     .OrderBy(x => x.Slno)
                     .Select(x => new RetailAdditionalPropDetailDto
@@ -324,7 +339,7 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 4 : Partners
                 // ============================================
 
-                var partners = await _context.ApplicantLicensePartnersDetails                    
+                var partners = await _context.ApplicantLicensePartnersDetails
                     .Where(x => x.ApplicationIdNo == applicationIdNo)
                     .OrderBy(x => x.SlNo)
                     .Select(x => new AdditionalCompanyPartnersDetailsDto
@@ -346,7 +361,7 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 5 : Additional L10/L22 Details
                 // ============================================
 
-                var additionalL10L22Details = await _context.AdditionalL10L22Details                   
+                var additionalL10L22Details = await _context.AdditionalL10L22Details
                     .FirstOrDefaultAsync(x => x.ApplicationIdNo == applicationIdNo);
 
 

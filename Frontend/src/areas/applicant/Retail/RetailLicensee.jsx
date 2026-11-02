@@ -20,6 +20,7 @@ import {
   validateAdditionalSiteData,
   validateSiteData,
   validateApplicantData,
+  validateAdditionalPremiseData,
 } from "../HCR/HcrApplicationValidation";
 
 import {
@@ -305,7 +306,6 @@ export default function RetailLicensee({
     return true;
   };
 
-
   const handleAdditionalChange = (field, value) => {
     setAdditionalFrom((prev) => {
       const updatedData = {
@@ -341,37 +341,32 @@ export default function RetailLicensee({
     const AdditionalRestaurantFrom = additionalFrom;
     AdditionalRestaurantFrom.questions = questions;
     AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
-    const errors = validateAdditionalSiteData(
+    const errors = validateAdditionalPremiseData(
       AdditionalRestaurantFrom,
       selectedLicenseCode,
     );
     console.log(errors);
 
-    // console.log("Test 111111111111")
-    // Set the error state
     setAdditionalFormErrors(errors);
 
-    // Trigger Toast alerts if fields fail validation
-    // if (
-    //   Object.keys(errors).length > 0 &&
-    //   Array.isArray(errors.directors?.errors) &&
-    //   errors.directors.errors.some(err => err !== null)
-    // )
-
     const hasStringErrors = Object.keys(errors).some((key) => {
-      if (key === "directors") return false; // Skip the nested object here
+      if (key === "RetailPropDetails") return false; // Skip the nested object here
       return errors[key] !== ""; // Returns true if an error string is not empty
     });
 
     // 2. Check if the nested directors array contains any real error objects
     const hasDirectorErrors =
-      Array.isArray(errors.directors?.errors) &&
-      errors.directors.errors.some(
+      Array.isArray(errors.RetailPropDetails?.errors) &&
+      errors.RetailPropDetails.errors.some(
         (err) => err !== null && Object.keys(err || {}).length > 0,
       );
 
     // 3. Stop submission if either condition is true
-    if (hasStringErrors || hasDirectorErrors || errors.directors?.globalError) {
+    if (
+      hasStringErrors ||
+      hasDirectorErrors ||
+      errors.RetailPropDetails?.globalError
+    ) {
       triggerToast(
         "Please verify restaurant/site additional details.",
         "error",
@@ -894,16 +889,16 @@ export default function RetailLicensee({
 
   const handleClubDetailChange = (index, field, value) => {
     setAdditionalFrom((prev) => {
-      const clubDetails = [...(prev.clubDetails || [])];
+      const RetailPropDetails = [...(prev.RetailPropDetails || [])];
 
-      clubDetails[index] = {
-        ...clubDetails[index],
+      RetailPropDetails[index] = {
+        ...RetailPropDetails[index],
         [field]: value,
       };
 
       return {
         ...prev,
-        clubDetails,
+        RetailPropDetails,
       };
     });
   };
@@ -914,15 +909,18 @@ export default function RetailLicensee({
     let additionalUpdateErrors = { ...additionalFormErrors };
 
     // 1. Run the evaluation using your custom function
-    const clubErr = validateRetailPartnerDetails(additionalFrom.clubDetails);
-    if (clubErr) errors.clubDetails = clubErr;
+    const clubErr = validateRetailPartnerDetails(
+      additionalFrom.RetailPropDetails,
+    );
+    if (clubErr) errors.RetailPropDetails = clubErr;
 
     // 2. Check if the data structure contains items before proceeding
     const hasClubs =
-      additionalFrom.clubDetails && additionalFrom.clubDetails.length > 0;
+      additionalFrom.RetailPropDetails &&
+      additionalFrom.RetailPropDetails.length > 0;
 
     if (hasClubs) {
-      additionalUpdateErrors.clubDetails = errors.clubDetails;
+      additionalUpdateErrors.RetailPropDetails = errors.RetailPropDetails;
       setAdditionalFormErrors(additionalUpdateErrors);
       console.log(
         "HcrLicensee - addClubDetail additionalFormErrors ",
@@ -943,8 +941,8 @@ export default function RetailLicensee({
     if (isInvalidWithData || hasRowErrors) {
       return; // Halt structural changes
     } else {
-      if (additionalUpdateErrors.clubDetails) {
-        additionalUpdateErrors.clubDetails.errors = []; // Flush existing error tracking array safely
+      if (additionalUpdateErrors.RetailPropDetails) {
+        additionalUpdateErrors.RetailPropDetails.errors = []; // Flush existing error tracking array safely
         setAdditionalFormErrors(additionalUpdateErrors);
       }
     }
@@ -952,11 +950,11 @@ export default function RetailLicensee({
     // 4. Safely push the fresh entry layout block forward into the state container
     setAdditionalFrom((prev) => ({
       ...prev,
-      clubDetails: [
-        ...(prev.clubDetails || []),
+      RetailPropDetails: [
+        ...(prev.RetailPropDetails || []),
         {
           NameOfthe: "",
-          Name: "",       
+          Name: "",
         },
       ],
     }));
@@ -965,7 +963,9 @@ export default function RetailLicensee({
   const deleteClubDetail = (index) => {
     setAdditionalFrom((prev) => ({
       ...prev,
-      clubDetails: (prev.clubDetails || []).filter((_, i) => i !== index),
+      RetailPropDetails: (prev.RetailPropDetails || []).filter(
+        (_, i) => i !== index,
+      ),
     }));
   };
 
@@ -1299,6 +1299,9 @@ export default function RetailLicensee({
   // STEP 6 - Save Additional
   // =========================================================
 
+  const getNumericValue = (value) =>
+    value === "" || value === null || value === undefined ? 0 : value;
+
   const saveAdditional = async () => {
     const applicationIdNo = localStorage.getItem("applicationIdNo");
 
@@ -1307,160 +1310,361 @@ export default function RetailLicensee({
     }
 
     try {
-      const formData = new FormData();
+      // const formData = new FormData();
 
       // Additional Details
-      Object.entries(additionalFrom).forEach(([key, value]) => {
-        // if (key === "directors") return;
-        // const propertyName = key.charAt(0).toUpperCase() + key.slice(1);
-        // const booleanFields = [
-        //   "additionalArea",
-        //   "isSuitableGagdget",
-        //   "isLocalAuthorityApproved",
-        //   "isIndicatingLiquor",
-        // ];
-        // const normalizedValue = booleanFields.includes(key)
-        //   ? value === true ||
-        //     value === "true" ||
-        //     value === "True" ||
-        //     value === "1" ||
-        //     value === 1
-        //     ? "true"
-        //     : value === false ||
-        //         value === "false" ||
-        //         value === "False" ||
-        //         value === "0" ||
-        //         value === 0
-        //       ? "false"
-        //       : String(value ?? "")
-        //   : (value ?? "");
-        // formData.append(`AdditionalDetails.${propertyName}`, normalizedValue);
-      });
+      // Object.entries(additionalFrom).forEach(([key, value]) => {
+      // });
 
-      formData.set("AdditionalDetails.ApplicationIdNo", applicationIdNo || "");
+      // formData.set("AdditionalDetails.ApplicationIdNo", applicationIdNo || "");
 
       // Partners
-      (additionalFrom.directors || []).forEach((partner, index) => {
-        formData.append(`Partners[${index}].Id`, "0");
+      // (additionalFrom?.RetailPropDetails || []).forEach((partner, index) => {
+      //   formData.append(
+      //     `RetailPropDetails[${index}].ApplicationIdNo`,
+      //     applicationIdNo || "",
+      //   );
 
+      //   formData.append(
+      //     `RetailPropDetails[${index}].NameOfthe`,
+      //     partner.NameOfthe || "",
+      //   );
+
+      //   formData.append(`RetailPropDetails[${index}].Name`, partner.Name || "");
+
+      //   formData.append(`RetailPropDetails[${index}].slno`, 0 );
+      // });
+
+      // // Answers
+      // questionsAnswers?.forEach((item, index) => {
+      //   formData.append(
+      //     `ApplicantAnswers[${index}].ApplicationIdNo`,
+      //     applicationIdNo || "",
+      //   );
+
+      //   formData.append(
+      //     `ApplicantAnswers[${index}].QuestionId`,
+      //     item.questionId,
+      //   );
+
+      //   formData.append(
+      //     `ApplicantAnswers[${index}].AnswerGiven`,
+      //     item.answerGiven || "",
+      //   );
+
+      //   formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
+      // });
+
+      // // additionalFrom?.RetailDetails?.forEach((item, index) => {
+      // formData.append(`RetailDetails.ApplicationIdNo`, applicationIdNo ?? "");
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseAddress1`,
+      //   additionalFrom?.OwnerPremiseAddress1 ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseAddress2`,
+      //   additionalFrom?.OwnerPremiseAddress2 ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseState`,
+      //   additionalFrom?.OwnerPremiseState ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseDistrict`,
+      //   additionalFrom?.OwnerPremiseDistrict ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseSubDivisionCode`,
+      //   additionalFrom?.OwnerPremiseSubDivisionCode ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremisePSCode`,
+      //   additionalFrom?.OwnerPremisePSCode ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremisePin`,
+      //   additionalFrom?.OwnerPremisePin ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.OwnerPremiseMobile`,
+      //   additionalFrom?.OwnerPremiseMobile ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.ProposedPremiseLength`,
+      //   additionalFrom?.ProposedPremiseLength ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.ProposedPremiseBreath`,
+      //   additionalFrom?.ProposedPremiseBreath ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.ProposedPremiseHeight`,
+      //   additionalFrom?.ProposedPremiseHeight ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails.ProposedPremiseTotalArea`,
+      //   additionalFrom?.ProposedPremiseTotalArea ?? "",
+      // );
+
+      // formData.append(
+      //   `RetailDetails[${index}].slNo`,
+      //   item.slNo ?? index + 1,
+      // );
+      // });
+
+      // console.log(formData);
+
+      // console.log("========== FormData Values ==========");
+
+      // for (const [key, value] of formData.entries()) {
+      //   console.log(key, ":", value);
+      // }
+
+      // console.log("====================================");
+
+      // Create FormData
+      const formData = new FormData();
+
+      // ======================================================
+      // 1. RetailPropDetails
+      // ======================================================
+
+      (additionalFrom?.RetailPropDetails || []).forEach((partner, index) => {
         formData.append(
-          `Partners[${index}].ApplicationIdNo`,
-          applicationIdNo || "",
+          `RetailPropDetails[${index}].ApplicationIdNo`,
+          String(applicationIdNo ?? ""),
         );
 
-        formData.append(`Partners[${index}].PName`, partner.PName || "");
+        formData.append(`RetailPropDetails[${index}].Name`, partner.Name ?? "");
 
+        // React NameOfthe dropdown maps to backend AddtionalDesigTypeValue
         formData.append(
-          `Partners[${index}].PPerShare`,
-          partner.PPerShare || "",
+          `RetailPropDetails[${index}].AddtionalDesigTypeValue`,
+          String(partner.NameOfthe ?? ""),
         );
 
-        formData.append(`Partners[${index}].PPanNo`, partner.PPanNo || "");
-
-        formData.append(
-          `Partners[${index}].PExciseNominee`,
-          partner.PExciseNominee || "",
-        );
-
-        formData.append(`Partners[${index}].DINNo`, partner.DINNo || "");
-
-        if (partner.panFile instanceof File) {
-          formData.append(`Partners[${index}].PanFile`, partner.panFile);
-
-          formData.append(
-            `Partners[${index}].PanFileUploaded`,
-            partner.panFile.name,
-          );
-        }
-
-        if (partner.addressFile instanceof File) {
-          formData.append(
-            `Partners[${index}].AddressFile`,
-            partner.addressFile,
-          );
-
-          formData.append(
-            `Partners[${index}].AddressFileUploaded`,
-            partner.addressFile.name,
-          );
-        }
-
-        formData.append(`Partners[${index}].SlNo`, String(index + 1));
+        formData.append(`RetailPropDetails[${index}].SlNo`, String(index + 1));
       });
 
-      // Answers
-      questionsAnswers?.forEach((item, index) => {
+      // ======================================================
+      // 2. ApplicantAnswers
+      // ======================================================
+
+      (questionsAnswers || []).forEach((item, index) => {
         formData.append(
           `ApplicantAnswers[${index}].ApplicationIdNo`,
-          applicationIdNo || "",
+          String(applicationIdNo ?? ""),
         );
 
         formData.append(
           `ApplicantAnswers[${index}].QuestionId`,
-          item.questionId,
+          String(item.questionId ?? ""),
         );
 
         formData.append(
           `ApplicantAnswers[${index}].AnswerGiven`,
-          item.answerGiven || "",
+          item.answerGiven ?? "",
         );
 
         formData.append(`ApplicantAnswers[${index}].SlNo`, String(index + 1));
       });
 
-      additionalFrom?.restaurantDetails?.forEach((item, index) => {
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].ApplicationIdNo`,
-          item.ApplicationIdNo ?? applicationIdNo ?? "",
-        );
+      // ======================================================
+      // 3. RetailDetails
+      // ======================================================
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].NameOfAdditionalRestaurant`,
-          item.NameOfAdditionalRestaurant ?? "",
-        );
+      // RetailDetails is a single object
+      const retail = additionalFrom || {};
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].NumberOfSeatCovers`,
-          item.NumberOfSeatCovers ?? "",
-        );
+      // Application ID
+      formData.append(
+        "RetailDetails.ApplicationIdNo",
+        String(applicationIdNo ?? ""),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].NumberOfCounter`,
-          item.NumberOfCounter ?? "",
-        );
+      // Proposed Premise Details
+      formData.append(
+        "RetailDetails.ProposedPremiseType",
+        String(getNumericValue(retail.ProposedPremiseType)),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].AddtionalArea`,
-          item.AddtionalArea ?? "",
-        );
+      formData.append(
+        "RetailDetails.ProposedPremiseLength",
+        String(retail.ProposedPremiseLength ?? 0),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].HoursofSale`,
-          item.HoursofSale ?? "",
-        );
+      formData.append(
+        "RetailDetails.ProposedPremiseBreath",
+        String(retail.ProposedPremiseBreath ?? 0),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].HoursofSaleAddtionalArea`,
-          item.HoursofSaleAddtionalArea ?? "",
-        );
+      formData.append(
+        "RetailDetails.ProposedPremiseHeight",
+        String(retail.ProposedPremiseHeight ?? 0),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].ForeignLiquor`,
-          item.ForeignLiquor ?? "",
-        );
+      formData.append(
+        "RetailDetails.ProposedPremiseTotalArea",
+        String(retail.ProposedPremiseTotalArea ?? 0),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].AreaSqMtr`,
-          item.AreaSqMtr ?? "",
-        );
+      // Commercial Area
+      formData.append(
+        "RetailDetails.PropPremiseAppComArea",
+        String(getNumericValue(retail.PropPremiseAppComArea)),
+      );
 
-        formData.append(
-          `AdditionalRestaurentDetails[${index}].slNo`,
-          item.slNo ?? index + 1,
-        );
-      });
+      formData.append(
+        "RetailDetails.PropPremiseAppComAreaAdInfo",
+        retail.PropPremiseAppComAreaAdInfo ?? "",
+      );
 
-      console.log(formData);
+      // Landlord Physical Possession
+      formData.append(
+        "RetailDetails.LandLordPhyPossession",
+        String(getNumericValue(retail.LandLordPhyPossession)),
+      );
+
+      // Premise Condition
+      formData.append(
+        "RetailDetails.PropPremiseCondition",
+        String(getNumericValue(retail.PropPremiseCondition)),
+      );
+
+      // Local Body
+      formData.append(
+        "RetailDetails.PropPremiseLocalBody",
+        String(getNumericValue(retail.PropPremiseLocalBody)),
+      );
+
+      // Liquor Licence Rule
+      formData.append(
+        "RetailDetails.PropPremiseLiquorLicenceRule",
+        String(getNumericValue(retail.PropPremiseLiquorLicenceRule)),
+      );
+
+      // Pucca Building
+      formData.append(
+        "RetailDetails.PropPremisePuccaBuild",
+        String(getNumericValue((retail.PropPremisePuccaBuild ?? 0))),
+      );
+
+      formData.append(
+        "RetailDetails.PropPremisePuccaBuildAdInfo",
+        retail.PropPremisePuccaBuildAdInfo ?? "",
+      );
+
+      // Present Use
+      formData.append(
+        "RetailDetails.PropPremisePresentUse",
+        String(getNumericValue((retail.PropPremisePresentUse ?? 0))),
+      );
+
+      formData.append(
+        "RetailDetails.PropPremisePresentUseAdInfo",
+        retail.PropPremisePresentUseAdInfo ?? "",
+      );
+
+      // Suit Pending
+      formData.append(
+        "RetailDetails.PropPremiseSuitPending",
+        String(getNumericValue((retail.PropPremiseSuitPending ?? 0))),
+      );
+
+      // Water Connection
+      formData.append(
+        "RetailDetails.PropPremiseWaterConn",
+        String(getNumericValue((retail.PropPremiseWaterConn ?? 0))),
+      );
+
+      // Joint Property
+      formData.append(
+        "RetailDetails.PropPremiseJoint",
+        String(getNumericValue((retail.PropPremiseJoint ?? 0))),
+      );
+
+      // NOC
+      formData.append(
+        "RetailDetails.PropPremiseNOC",
+        String(getNumericValue((retail.PropPremiseNOC ?? 0))),
+      );
+
+      // Shop Map
+      formData.append(
+        "RetailDetails.PropPremiseShopMap",
+        String(getNumericValue((retail.PropPremiseShopMap ?? 0))),
+      );
+
+      // ======================================================
+      // 4. Owner Premise Address Details
+      // ======================================================
+
+      formData.append(
+        "RetailDetails.OwnerPremiseAddress1",
+        retail.OwnerPremiseAddress1 ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremiseAddress2",
+        retail.OwnerPremiseAddress2 ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremiseState",
+        retail.OwnerPremiseState ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremiseDistrict",
+        retail.OwnerPremiseDistrict ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremisePin",
+        retail.OwnerPremisePin ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremiseMobile",
+        retail.OwnerPremiseMobile ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremiseSubDivisionCode",
+        retail.OwnerPremiseSubDivisionCode ?? "",
+      );
+
+      formData.append(
+        "RetailDetails.OwnerPremisePSCode",
+        retail.OwnerPremisePSCode ?? "",
+      );
+
+      // ======================================================
+      // 5. Print FormData
+      // ======================================================
+
+      console.log("========== FormData ==========");
+
+      console.table(
+        Array.from(formData.entries()).map(([key, value]) => ({
+          Field: key,
+          Value: value,
+        })),
+      );
+
+      console.log("==============================");
 
       const response = await fetch(
         "http://localhost:5214/api/CommonRetail/SaveAdditionalRetailCompleteDetails",

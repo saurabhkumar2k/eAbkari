@@ -34,7 +34,7 @@ export default function HcrSiteDocumentsStep({
           error={errors?.errors}
         />
         <div className="error-text-container">
-          {errors.isValid === false && <span className="error-text-all">{errors.globalError}</span>}
+          {errors?.isValid === false && <span className="error-text-all">{errors.globalError}</span>}
         </div>
 
         <div className="hcr-step-navigation">

@@ -5,7 +5,7 @@ import RetailDirectorRow from "./RetailDirectorRow";
 //import "../Style/Restaurant.css";
 import "../../../Style/Retail.css"
 
-const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, ConstitutionType, errors }) => {
+const RetailDirectorDetails = ({ RetailPropDetails, onChange, onAdd, onDelete, ConstitutionType, errors }) => {
 
   console.log("ClubDetailsL2829 errors:", errors); 
   return (
@@ -23,15 +23,15 @@ const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, Constit
 
       {/* restaurants List */}
       <div className="restaurants-wrapper">
-        {ClubDetails.length === 0 ? (
+        {RetailPropDetails.length === 0 ? (
           <div className="restaurants-empty-state">
             <p className="empty-message">No Directors/Proprietors/Partners Details added yet. Click "Add Directors/Proprietors/Partners Details" to start.</p>
           </div>
         ) : (
-          ClubDetails.map((detail, index) => (
+          RetailPropDetails.map((detail, index) => (
             <RetailDirectorRow
               key={index}
-              ClubDetail={detail}
+              RetailPropDetails={detail}
               index={index}
               onChange={onChange}
               onDelete={onDelete}
@@ -52,9 +52,9 @@ const RetailDirectorDetails = ({ ClubDetails, onChange, onAdd, onDelete, Constit
           + Add Directors/Proprietors/Partners Details
         </button>
 
-        {ClubDetails.length > 0 && (
+        {RetailPropDetails.length > 0 && (
           <span className="restaurants-count">
-            {ClubDetails.length} directors/partners{ClubDetails.length !== 1 ? "s" : ""} added
+            {RetailPropDetails.length} directors/partners{RetailPropDetails.length !== 1 ? "s" : ""} added
           </span>
         )}
       </div>
