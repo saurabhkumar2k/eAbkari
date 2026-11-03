@@ -692,7 +692,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       }
 
       const updatedApplication = await responseForward.json();
-      if (String(updatedApplication.applicationStatus).trim() !== "03") {
+      if (!updatedApplication.success) {
         throw new Error("Application status was not persisted as 03.");
       }
 
@@ -1069,7 +1069,8 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   <h3 className="applications-title">Active Applications</h3>
                   <span className="applications-badge">
                     {" "}
-                    3 Applications Total{" "}
+                    {/* 3 Applications Total{" "} */}
+                    {applications.length  } Applications
                   </span>
                 </div>
               </div>
