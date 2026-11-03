@@ -99,18 +99,18 @@ export default function PremiseAdditionalDetails({
             <div className="form-group full-width">
               {HCRBasicFieldsCategories.includes(CatCode) && (
                 <RetailDirectorDetails
-                  ClubDetails={additionalFrom?.clubDetails || []}
+                  RetailPropDetails={additionalFrom?.RetailPropDetails || []}
                   ConstitutionType={constitutionType}
                   onChange={onClubDetailChange}
                   onAdd={onAddClubDetail}
                   onDelete={ondeleteClubDetail}
-                  errors={errors?.clubDetails?.errors}
+                  errors={errors?.RetailPropDetails?.errors}
                 />
               )}
               <div className="error-text-container">
-                {errors?.clubDetails?.globalError && (
+                {errors?.RetailPropDetails?.globalError && (
                   <span className="error-text-all">
-                    {errors?.clubDetails?.globalError}
+                    {errors?.RetailPropDetails?.globalError}
                   </span>
                 )}
               </div>

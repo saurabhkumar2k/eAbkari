@@ -8,7 +8,7 @@ namespace backend.Core.DTOs
         public List<CategoryWiseAnswersDto> ApplicantAnswers { get; set; } = new();
         public RetailDetailsDto  RetailDetails {get;set;} = new();
         public List<RetailAdditionalPropDetailDto> RetailPropDetails { get; set; } = new();
-        public  AdditionalL10L22DetailsDto AdditionalL10L22Details { get; set; } = new();
+        public AdditionalL10L22DetailsDto? AdditionalL10L22Details { get; set; }
         public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
     }
 
