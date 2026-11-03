@@ -45,9 +45,9 @@ namespace backend.Application.Services.ApplicationFlow
             return accessPermissionHistory.ApplicationIdNo;
         }
 
-        public async Task<List<PlaAccessPermissionHistoryDto>> GetAccessPermissionHistory(string applicationIdNo)
+        public async Task<List<ApplicationsPermissionHistoryDto>> GetAccessPermissionHistory(string userId, DateOnly fromDate, DateOnly toDate)
         {
-            return await _applicationFlowRepository.GetAccessPermissionHistory(applicationIdNo);
+            return await _applicationFlowRepository.GetAccessPermissionHistory(userId, fromDate, toDate);
         }
     }
 }

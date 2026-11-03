@@ -20,7 +20,7 @@ namespace backend.API.ApplicationFlow.Controllers
         public async Task<IActionResult> CreateAccessPermissionHistory([FromBody] PlaAccessPermissionHistoryDto Dto)
         {
             if (!ModelState.IsValid)
-            {          
+            {
                 return BadRequest(ModelState);
             }
 
@@ -34,26 +34,53 @@ namespace backend.API.ApplicationFlow.Controllers
 
             var user = await _applicationFlowService.SaveAccessPermissionHistory(Dto);
             return Ok(new
-                    {
-                        applicationId = user,
-                        //message = "Access Permission History Saved Successfully"
-                        message = "Application Forwarded Successfully"
-                    });
+            {
+                applicationId = user,
+                //message = "Access Permission History Saved Successfully"
+                message = "Application Forwarded Successfully"
+            });
         }
 
-        [HttpGet("GetAccessPermissionHistory/{applicationIdNo}")]
-        public async Task<IActionResult> GetAccessPermissionHistory(string applicationIdNo)
+        // [HttpGet("GetAccessPermissionHistory/{applicationIdNo}")]
+        // public async Task<IActionResult> GetAccessPermissionHistory(string applicationIdNo)
+        // {
+        //     if (string.IsNullOrWhiteSpace(applicationIdNo))
+        //     {
+        //         return BadRequest("ApplicationIdNo is required.");
+        //     }
+
+        //     var history = await _applicationFlowService.GetAccessPermissionHistory(applicationIdNo);
+
+        //     if (history == null || !history.Any())
+        //     {
+        //         return NotFound("No access permission history found for the given ApplicationIdNo.");
+        //     }
+
+        //     return Ok(history);
+        // }
+
+        [HttpGet("GetAccessPermissionHistory")]
+        public async Task<IActionResult> GetAccessPermissionHistory(
+            [FromQuery] string userId,
+            [FromQuery] DateTime fromDate,
+            [FromQuery] DateTime toDate)
         {
-            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                return BadRequest("ApplicationIdNo is required.");
+                return BadRequest("UserId is required.");
             }
 
-            var history = await _applicationFlowService.GetAccessPermissionHistory(applicationIdNo);
+            if (fromDate > toDate)
+            {
+                return BadRequest("FromDate cannot be greater than ToDate.");
+            }
+
+            var history = await _applicationFlowService
+                .GetAccessPermissionHistory(userId, DateOnly.FromDateTime(fromDate), DateOnly.FromDateTime(toDate));
 
             if (history == null || !history.Any())
             {
-                return NotFound("No access permission history found for the given ApplicationIdNo.");
+                return NotFound("No access permission history found.");
             }
 
             return Ok(history);
