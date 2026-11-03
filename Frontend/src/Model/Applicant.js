@@ -34,6 +34,7 @@ export const createApplicant = () => ({
   OwnerType: "",
   ArchitectRegistrationNo: "",
   ArchitectRegistrationNoValidUpto: "",
+  SiteSize:"",
 
   SuperAreaofLicensePremise: "",
   CarpetAreaofLicensePremise: "",

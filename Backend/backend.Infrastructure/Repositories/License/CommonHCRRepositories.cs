@@ -117,6 +117,7 @@ namespace backend.Infrastructure.Repositories.License
                     LicenseValidFor = site.LicenseValidFor,
                     IsCommercialActivity = site.IsCommercialActivity,
                     //CreatedDate = site.CreatedDate
+                    SiteSize = site.SiteSize
                 };
 
                 return dto;

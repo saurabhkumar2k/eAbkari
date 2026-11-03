@@ -59,5 +59,7 @@ namespace backend.Core.DTOs
         public string? IsCommercialActivity { get; set; }
        // public DateTime CreatedDate { get; set; }
 
+       public string? SiteSize { get; set;} 
+
     }
 }
