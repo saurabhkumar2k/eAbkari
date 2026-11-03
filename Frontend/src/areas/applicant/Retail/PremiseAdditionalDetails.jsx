@@ -1,12 +1,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-//import DirectorsList from "./DirectorsList";
 import RetailQuestionList from "./RetailQuestionList";
-//import HCRBasicFieldsL17 from "./HcrBasicFieldsL17";
-//import HCRBasicFieldsL16 from "./HcrBasicFieldsL16";
-//import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
-//import HCRBasicFieldsL28 from "./HCRBasicFieldsL28";
-//import RestaurantDetailsL16 from "./RestaurantDetailsL16";
 import RetailDirectorDetails from "./RetailDirectorDetails";
 import RetailBasicFields from "./RetailBasicFields";
 //import { Cat_Label } from "../areas/applicant/HCR/validation";
@@ -42,27 +36,18 @@ export default function PremiseAdditionalDetails({
 }) {
   console.log("RestaurantAdditionalDetails - errors  ", errors);
   /* */
-  const HcrQuestionListCategories = [
-    "04",
-    "05",
-    "06",
-    "30",
-    "31",
-    "32",
-    "07",
-    "34",
-  ];
-  /* */
+  // /* */ 02,11,25,26,39,40,41,46,83,88
   const HCRBasicFieldsCategories = [
     "02",
     "11",
     "25",
+    "26",
     "39",
     "40",
     "41",
     "46",
     "83",
-    "34",
+    "88",
   ];
   //const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
   return (

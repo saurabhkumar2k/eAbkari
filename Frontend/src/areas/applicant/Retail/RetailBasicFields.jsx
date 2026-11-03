@@ -22,8 +22,6 @@ import {
 const RetailBasicFields = ({
   additionalFrom,
   onChange,
-  //   starCategory,
-  //   starCategoryRating,
   hoursOfSaleList,
   errors,
   ConstitutionType,

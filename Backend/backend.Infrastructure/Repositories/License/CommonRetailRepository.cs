@@ -22,6 +22,7 @@ namespace backend.Infrastructure.Repositories.License
 
         public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCompleteDto dto)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 string appId = dto.RetailDetails.ApplicationIdNo;
@@ -281,12 +282,15 @@ namespace backend.Infrastructure.Repositories.License
                         L10L22details.FDRDetails = dto.AdditionalL10L22Details.FDRDetails;
                     }
                 }
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                return "Saved Successfully";
+                    await transaction.CommitAsync();
+
+                    return "Saved Successfully";
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return ex.Message;
             }
         }

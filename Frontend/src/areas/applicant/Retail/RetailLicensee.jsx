@@ -10,6 +10,7 @@ import { createRetailPremiseDetails } from "../../../Model/RetailPremiseDetails"
 
 import HcrApplicantStep from "../HCR/HcrApplicantStep";
 import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
+import RetailVendStep from "../Retail/RetailVendStep"
 import RetailAdditionalStep from "../Retail/RetailAdditionalStep";
 import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
@@ -2007,7 +2008,7 @@ export default function RetailLicensee({
 
         {/* STEP 5 */}
         {currentStep === 2 && (
-          <HcrRestaurantStep
+          <RetailVendStep
             siteForm={siteForm}
             states={states}
             districts={restaurantDistricts}
