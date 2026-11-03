@@ -190,6 +190,8 @@ namespace backend.Infrastructure.Repositories.License
 
         public async Task<string> SaveAdditionalHCRCompleteDetails(AdditionalHCRCompleteDto dto)
         {
+
+                 using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 string appId = dto.AdditionalDetails.ApplicationIdNo;
@@ -388,13 +390,16 @@ namespace backend.Infrastructure.Repositories.License
 
                     }
                 }
-                await _context.SaveChangesAsync();
+                 await _context.SaveChangesAsync();
 
-                return "Saved Successfully";
+                 await transaction.CommitAsync();
+
+                 return "Saved Successfully";
 
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();               
                 return ex.Message;
             }
         }
