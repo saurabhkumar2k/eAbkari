@@ -3,6 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import RetailQuestionList from "./RetailQuestionList";
 import RetailDirectorDetails from "./RetailDirectorDetails";
 import RetailBasicFields from "./RetailBasicFields";
+import L10AdditionalDetails from "./L10AdditionalDetails";
+import DirectorsList from "../../../components/DirectorsList";
+import L10EmployeeDetails from "./L10EmployeeDetails"
 //import { Cat_Label } from "../areas/applicant/HCR/validation";
 
 export default function PremiseAdditionalDetails({
@@ -38,7 +41,6 @@ export default function PremiseAdditionalDetails({
   /* */
   // /* */ 02,11,25,26,39,40,41,46,83,88
   const HCRBasicFieldsCategories = [
-    "02",
     "11",
     "25",
     "26",
@@ -70,14 +72,69 @@ export default function PremiseAdditionalDetails({
               />
             )}
 
+            {/* L10 Premise Details */}
+            {CatCode === "02" && (
+              <L10AdditionalDetails
+                additionalFrom={additionalFrom}
+                onChange={onChange}
+                hoursOfSaleList={hoursOfSaleList}
+                errors={errors}
+                ConstitutionType={ConstitutionType}
+                states={states}
+                districts={districts}
+                subDivisions={subDivisions}
+                policeStations={policeStations}
+              />
+            )}
+
             {/* Retail Question List */}
-            {HCRBasicFieldsCategories.includes(CatCode) && (
+            <div className="form-group full-width">
+              <RetailQuestionList
+                questions={questions}
+                onChange={onQuestionsChange}
+                error={errors?.answer}
+              />
+            </div>
+
+            {/* L10 Director Details */}
+            {CatCode === "02" && (
               <div className="form-group full-width">
-                <RetailQuestionList
-                  questions={questions}
-                  onChange={onQuestionsChange}
-                  error={errors?.answer}
+                <DirectorsList
+                  directors={additionalFrom?.directors || []}
+                  ConstitutionType={constitutionType}
+                  onChange={onDirectorChange}
+                  onAdd={onAddDirector}
+                  onDelete={onDeleteDirector}
+                  directorsError={errors?.directors}
                 />
+                <div className="error-text-container">
+                  {errors?.directors?.globalError && (
+                    <span className="error-text-all">
+                      {errors?.directors?.globalError}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* L10 Director Details */}
+            {CatCode === "02" && (
+              <div className="form-group full-width">
+                <L10EmployeeDetails
+                  directors={additionalFrom?.directors || []}
+                  ConstitutionType={constitutionType}
+                  onChange={onDirectorChange}
+                  onAdd={onAddDirector}
+                  onDelete={onDeleteDirector}
+                  directorsError={errors?.directors}
+                />
+                <div className="error-text-container">
+                  {errors?.directors?.globalError && (
+                    <span className="error-text-all">
+                      {errors?.directors?.globalError}
+                    </span>
+                  )}
+                </div>
               </div>
             )}
 
