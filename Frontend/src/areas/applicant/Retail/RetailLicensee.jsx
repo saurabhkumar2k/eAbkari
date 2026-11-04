@@ -76,9 +76,19 @@ export default function RetailLicensee({
 
   const [restaurantDistricts, setRestaurantDistricts] = useState([]);
 
+  const [retailPremiseDistricts, setRetailPremiseDistricts] = useState([]);
+
   const [restaurantSubDivisions, setRestaurantSubDivisions] = useState([]);
 
+  const [retailPremiseSubDivisions, setRetailPremiseSubDivisions] = useState([]);
+
   const [restaurantPoliceStations, setRestaurantPoliceStations] = useState([]);
+
+  const [retailPremisePoliceStations, setRetailPremisePoliceStations] = useState([]);
+
+  console.log('retailPremiseDistricts',retailPremiseDistricts)
+  console.log('retailPremiseSubDivisions',retailPremiseSubDivisions)
+  console.log('retailPremisePoliceStations',retailPremisePoliceStations)
 
   const [constitutionTypes, setConstitutionTypes] = useState([]);
 
@@ -355,6 +365,15 @@ export default function RetailLicensee({
       ...prev,
       [field]: null,
     }));
+
+    if (field === "State") {
+      fetchDistricts(value, "additionalFrom");
+    }
+
+    if (field === "DistrictCode") {
+      fetchSubDivisions(value, "additionalFrom");
+      fetchPoliceStations(value, "additionalFrom");
+    }
   };
 
   const validateAdditionalSiteDetails = () => {
@@ -475,6 +494,11 @@ export default function RetailLicensee({
       if (type === "siteForm") {
         setRestaurantDistricts(data || []);
       }
+
+      if (type === "additionalFrom") {
+        setRetailPremiseDistricts(data || []);
+      }
+
     } catch (error) {
       console.error("District API Error:", error);
     }
@@ -501,6 +525,10 @@ export default function RetailLicensee({
       if (type === "siteForm") {
         setRestaurantSubDivisions(data || []);
       }
+
+      if (type === "additionalFrom") {
+        setRetailPremiseSubDivisions(data || []);
+      }
     } catch (error) {
       console.error("Subdivision API Error:", error);
     }
@@ -524,7 +552,16 @@ export default function RetailLicensee({
 
       const data = await response.json();
 
-      setRestaurantPoliceStations(data || []);
+      // if (type === "siteForm") {
+      //   setRestaurantPoliceStations(data || []);
+      // }
+
+       setRestaurantPoliceStations(data || []);
+
+      
+        setRetailPremisePoliceStations(data || []);
+      
+
     } catch (error) {
       console.error("Police Station API Error:", error);
     }
@@ -562,6 +599,19 @@ export default function RetailLicensee({
       fetchSubDivisions(siteForm.DistrictCode, "siteForm");
     }
   }, [siteForm.DistrictCode]);
+
+   useEffect(() => {
+    if (additionalFrom.OwnerPremiseState) {
+      fetchDistricts(additionalFrom.OwnerPremiseState, "additionalFrom");
+    }
+  }, [additionalFrom.OwnerPremiseState]);
+
+  useEffect(() => {
+    if (additionalFrom.OwnerPremiseDistrict) {
+      fetchPoliceStations(additionalFrom.OwnerPremiseDistrict);
+      fetchSubDivisions(additionalFrom.OwnerPremiseDistrict, "additionalFrom");
+    }
+  }, [additionalFrom.OwnerPremiseDistrict]);
 
   // =========================================================
   // Load Applicant
@@ -2187,9 +2237,9 @@ export default function RetailLicensee({
             onAddClubDetail={addClubDetail}
             ondeleteClubDetail={deleteClubDetail}
             states={states}
-            districts={restaurantDistricts}
-            subDivisions={restaurantSubDivisions}
-            policeStations={restaurantPoliceStations}
+            districts={retailPremiseDistricts}
+            subDivisions={retailPremiseSubDivisions}
+            policeStations={retailPremisePoliceStations}
           />
         )}
 
