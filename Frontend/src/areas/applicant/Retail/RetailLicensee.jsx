@@ -10,7 +10,7 @@ import { createRetailPremiseDetails } from "../../../Model/RetailPremiseDetails"
 
 import HcrApplicantStep from "../HCR/HcrApplicantStep";
 import HcrRestaurantStep from "../HCR/HcrRestaurantStep";
-import RetailVendStep from "../Retail/RetailVendStep"
+import RetailVendStep from "../Retail/RetailVendStep";
 import RetailAdditionalStep from "../Retail/RetailAdditionalStep";
 import HcrPersonalDocumentsStep from "../HCR/HcrPersonalDocumentsStep";
 import HcrSiteDocumentsStep from "../HCR/HcrSiteDocumentsStep";
@@ -22,6 +22,7 @@ import {
   validateSiteData,
   validateApplicantData,
   validateAdditionalPremiseData,
+  validateUploadedDocuments,
 } from "../HCR/HcrApplicationValidation";
 
 import {
@@ -118,9 +119,30 @@ export default function RetailLicensee({
 
   const [additionalFormErrors, setAdditionalFormErrors] = useState({});
 
+  const [personalDocumentsErrors, setPersonalDocumentsErrors] = useState({});
   const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
+  const [declarationErrors, setDeclarationErrors] = useState({});
 
   const [formErrors, setFormErrors] = useState({});
+
+  const [declarationFrom, setDeclarationFrom] = useState({
+    undertakingAccept: false,
+  });
+
+
+  
+  const handleDeclarationChange = (field, value) => {
+    console.log("handleDeclarationChange field:", field, "value:", value, declarationFrom);
+    setDeclarationFrom((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setDeclarationErrors((prev) => ({
+      ...prev,
+      [field]: null,
+    }));
+  };
 
   // =========================================================
   // Success
@@ -375,6 +397,29 @@ export default function RetailLicensee({
       return false;
     }
 
+    return true;
+  };
+
+  const validateApplicationDocuments = (documents, uploadedFiles, type) => {
+    const errors = validateUploadedDocuments(documents, uploadedFiles);
+    console.log("validateApplicationDocuments errors:", errors);
+
+    if (
+      type === "P" &&
+      ((errors && errors.isValid === false) ||
+        (errors && errors.errors && Object.keys(errors.errors).length > 0))
+    ) {
+      setPersonalDocumentsErrors(errors);
+      return false;
+    }
+    if (
+      type === "S" &&
+      ((errors && errors.isValid === false) ||
+        (errors && errors.errors && Object.keys(errors.errors).length > 0))
+    ) {
+      setSiteDocumentsErrors(errors);
+      return false;
+    }
     return true;
   };
 
@@ -1008,6 +1053,7 @@ export default function RetailLicensee({
           },
         ];
       });
+
   }, [currentStep, selectedLicensee]);
 
   // =========================================================
@@ -1123,6 +1169,7 @@ export default function RetailLicensee({
   }, [currentStep, selectedLicensee]);
 
   const handleFileChange = (key, file) => {
+    debugger;
     console.log("handleDocumentFileChange", key, file);
     if (!file) return;
 
@@ -1133,6 +1180,27 @@ export default function RetailLicensee({
         previewUrl: URL.createObjectURL(file),
       },
     }));
+
+    // Clear errors for this specific key inside the nested errors object
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
+    }
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
+    }
   };
 
   const handleValidityDateChange = (docId, validityDate) => {
@@ -1143,6 +1211,26 @@ export default function RetailLicensee({
         validityDate,
       },
     }));
+
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
   };
 
   const handleDeleteFile = (key) => {
@@ -1559,7 +1647,7 @@ export default function RetailLicensee({
       // Pucca Building
       formData.append(
         "RetailDetails.PropPremisePuccaBuild",
-        String(getNumericValue((retail.PropPremisePuccaBuild ?? 0))),
+        String(getNumericValue(retail.PropPremisePuccaBuild ?? 0)),
       );
 
       formData.append(
@@ -1570,7 +1658,7 @@ export default function RetailLicensee({
       // Present Use
       formData.append(
         "RetailDetails.PropPremisePresentUse",
-        String(getNumericValue((retail.PropPremisePresentUse ?? 0))),
+        String(getNumericValue(retail.PropPremisePresentUse ?? 0)),
       );
 
       formData.append(
@@ -1581,31 +1669,31 @@ export default function RetailLicensee({
       // Suit Pending
       formData.append(
         "RetailDetails.PropPremiseSuitPending",
-        String(getNumericValue((retail.PropPremiseSuitPending ?? 0))),
+        String(getNumericValue(retail.PropPremiseSuitPending ?? 0)),
       );
 
       // Water Connection
       formData.append(
         "RetailDetails.PropPremiseWaterConn",
-        String(getNumericValue((retail.PropPremiseWaterConn ?? 0))),
+        String(getNumericValue(retail.PropPremiseWaterConn ?? 0)),
       );
 
       // Joint Property
       formData.append(
         "RetailDetails.PropPremiseJoint",
-        String(getNumericValue((retail.PropPremiseJoint ?? 0))),
+        String(getNumericValue(retail.PropPremiseJoint ?? 0)),
       );
 
       // NOC
       formData.append(
         "RetailDetails.PropPremiseNOC",
-        String(getNumericValue((retail.PropPremiseNOC ?? 0))),
+        String(getNumericValue(retail.PropPremiseNOC ?? 0)),
       );
 
       // Shop Map
       formData.append(
         "RetailDetails.PropPremiseShopMap",
-        String(getNumericValue((retail.PropPremiseShopMap ?? 0))),
+        String(getNumericValue(retail.PropPremiseShopMap ?? 0)),
       );
 
       // ======================================================
@@ -1822,14 +1910,30 @@ export default function RetailLicensee({
   // NAVIGATION
   // =========================================================
 
+  // const goToSiteDocuments = async () => {
+  //   await uploadDocuments();
+  //   setCurrentStep(5);
+  // };
+
+  // const goToDeclaration = async () => {
+  //   await uploadDocuments();
+  //   setCurrentStep(6);
+  // };
+
   const goToSiteDocuments = async () => {
-    await uploadDocuments();
-    setCurrentStep(5);
+    if (!validateApplicationDocuments(documents, uploadedFiles, "P")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
   };
 
   const goToDeclaration = async () => {
-    await uploadDocuments();
-    setCurrentStep(6);
+    if (!validateApplicationDocuments(documents, uploadedFiles, "S")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
   };
 
   const handleNext = async () => {
@@ -1865,18 +1969,53 @@ export default function RetailLicensee({
       return;
     }
 
+    // if (currentStep === 4) {
+    //   await goToSiteDocuments();
+    //   return;
+    // }
+
+    // if (currentStep === 5) {
+    //   await goToDeclaration();
+    //   return;
+    // }
+
+    // if (currentStep === 6) {
+    //   await submitApplication();
+    // }
+
     if (currentStep === 4) {
-      await goToSiteDocuments();
+      debugger;
+      const success = await goToSiteDocuments();
+      // console.log("goToSiteDocuments success", success);
+
+      if (success) {
+        setCurrentStep(5);
+      }
       return;
     }
 
     if (currentStep === 5) {
-      await goToDeclaration();
+      const success = await goToDeclaration();
+
+      if (success) {
+        setCurrentStep(6);
+      }
       return;
     }
 
     if (currentStep === 6) {
-      await submitApplication();
+      console.log("Submitting application...", declarationFrom);
+      if (!declarationFrom.undertakingAccept) {
+        setDeclarationErrors({
+          undertakingAccept: "You must accept the undertaking to proceed.",
+        });
+        return;
+      }
+      const success = await submitApplication();
+      if (success) {
+        setSubmitSuccess(true);
+      }
+      return;
     }
   };
 
@@ -2063,7 +2202,8 @@ export default function RetailLicensee({
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
             onBack={() => setCurrentStep(3)}
-            onContinue={goToSiteDocuments}
+            errors={personalDocumentsErrors}
+            onContinue={handleNext}
           />
         )}
 
@@ -2076,16 +2216,17 @@ export default function RetailLicensee({
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
             onBack={() => setCurrentStep(4)}
-            onContinue={goToDeclaration}
+            errors={siteDocumentsErrors}
+            onContinue={handleNext}
           />
         )}
 
         {/* STEP 9 */}
         {currentStep === 6 && (
           <HcrDeclarationStep
-            formData={applicantForm}
-            formErrors={formErrors}
-            onChange={handleApplicantChange}
+            declarationFrom={declarationFrom}
+            declarationErrors={declarationErrors}
+            onChange={handleDeclarationChange}
             onBack={() => setCurrentStep(5)}
             onSubmit={handleNext}
           />
