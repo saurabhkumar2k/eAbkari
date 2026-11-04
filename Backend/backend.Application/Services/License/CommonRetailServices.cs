@@ -35,7 +35,7 @@ namespace backend.Application.Services.License
             }
         }
 
-        public async Task<RetailCompleteDto?> GetAdditionalRetailCompleteDetails(string applicationIdNo)
+        public async Task<RetailCommonCompleteGetDto?> GetAdditionalRetailCompleteDetails(string applicationIdNo)
         {
             try
             {
@@ -46,12 +46,34 @@ namespace backend.Application.Services.License
                 return null;
             }
         }
+         public async Task<RetailL10L22CommonGetDto?> GetAdditionalRetailL10L22CompleteDetails(string applicationIdNo)
+        {
+            try
+            {
+                return await _Licenserepository.GetAdditionalRetailL10L22CompleteDetails(applicationIdNo);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
-        public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCompleteDto dto)
+        public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCommonCompleteSaveDto dto)
         {
             try
             {
                 return await _Licenserepository.SaveAdditionalRetailCompleteDetails(dto);
+            }
+            catch
+            {
+                return "Operation Failed";
+            }
+        }
+        public async Task<string> SaveAdditionalRetailL10L22CompleteDetails(RetailL10L22CommonSaveDto dto)
+        {
+            try
+            {
+                return await _Licenserepository.SaveAdditionalRetailL10L22CompleteDetails(dto);
             }
             catch
             {
