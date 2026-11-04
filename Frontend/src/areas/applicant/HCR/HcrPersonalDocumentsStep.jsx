@@ -19,7 +19,8 @@ export default function HcrPersonalDocumentsStep({
   onContinue,
 }) {
 
-  // console.log("HcrPersonalDocumentsStep - errors  ", errors);
+  console.log("HcrPersonalDocumentsStep - errors  ", errors);
+  console.log("HcrPersonalDocumentsStep - uploadedFiles  ", uploadedFiles);
 
 
   return (

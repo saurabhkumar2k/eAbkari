@@ -8,6 +8,8 @@ export default function HcrDeclarationStep({
   onBack,
   onSubmit,
 }) {
+
+  console.log("declarationFrom",declarationFrom)
   return (
     <div className="hcr-declaration-shell animate-fade text-left">
       <div className="hcr-declaration-notice">
