@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 //import ActOnNewLicense from ""
 
 const ActOnNewLicenseApplication = () => {
-  const today = new Date();
-  const currentDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState(currentDate);
+  const currentDate = new Date();
+
+  const formatDate = (date) => {
+    return date.toISOString().split("T")[0];
+  };
+
+  const toDateValue = new Date();
+
+  const fromDateValue = new Date();
+  fromDateValue.setDate(fromDateValue.getDate() - 7);
+
+  const [fromDate, setFromDate] = useState(formatDate(fromDateValue));
+  const [toDate, setToDate] = useState(formatDate(toDateValue));
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,13 +31,14 @@ const ActOnNewLicenseApplication = () => {
       setError("");
 
       const applicationIdNo = localStorage.getItem("applicationIdNo");
+      const userId = localStorage.getItem("userId");
 
       if (!applicationIdNo) {
         throw new Error("No application ID is set.");
       }
 
       const response = await fetch(
-        `http://localhost:5214/api/ApplicationFlow/GetAccessPermissionHistory/${encodeURIComponent(applicationIdNo)}`,
+        `http://localhost:5214/api/ApplicationFlow/GetAccessPermissionHistory?userId=${encodeURIComponent(userId)}&fromDate=${fromDate}&toDate=${toDate}`,
       );
 
       if (!response.ok) {
@@ -36,6 +46,7 @@ const ActOnNewLicenseApplication = () => {
       }
 
       const data = await response.json();
+      console.log("data", data);
 
       // If API directly returns an array
       setApplications(data);
@@ -211,7 +222,7 @@ const ActOnNewLicenseApplication = () => {
                       <span className="colon">:</span>
 
                       <strong className="license-description">
-                        {application.licenseDescription}
+                        {application.licenseeCatDesc}
                       </strong>
                     </div>
 
@@ -230,7 +241,7 @@ const ActOnNewLicenseApplication = () => {
 
                       <span className="colon">:</span>
 
-                      <span>{application.applicantName}</span>
+                      <span>{application.siteName}</span>
                     </div>
                   </td>
 
@@ -282,7 +293,9 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() => handleAction("Scrutiny Application", application)}
+                      onClick={() =>
+                        handleAction("Scrutiny Application", application)
+                      }
                     >
                       Scrutiny Application
                     </button>
@@ -290,7 +303,9 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() => handleAction("Forward Application", application)}
+                      onClick={() =>
+                        handleAction("Forward Application", application)
+                      }
                     >
                       Forward Application
                     </button>
@@ -308,7 +323,9 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() => handleAction("Reject Application", application)}
+                      onClick={() =>
+                        handleAction("Reject Application", application)
+                      }
                     >
                       Reject Application
                     </button>
@@ -316,7 +333,9 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() => handleAction("Generate Offer Letter", application)}
+                      onClick={() =>
+                        handleAction("Generate Offer Letter", application)
+                      }
                     >
                       Generate Offer Letter
                     </button>
