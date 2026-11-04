@@ -20,7 +20,7 @@ namespace backend.Infrastructure.Repositories.License
             return await _context.MstLicenseeCategory.Where(x => RetailCatCodes.Contains(x.BranchCode)).ToListAsync();
         }
 
-        public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCompleteDto dto)
+        public async Task<string> SaveAdditionalRetailCompleteDetails(RetailCommonCompleteSaveDto dto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -146,7 +146,8 @@ namespace backend.Infrastructure.Repositories.License
                 //==========================
                 // STEP 3 : PropDetails
                 //==========================
-                if (catcode != "02" && catcode != "46" ){
+                if (catcode != "02" && catcode != "46")
+                {
                     //var oldPropPartners = _context.RetailAdditionalPropDetail
                     //    .Where(x => x.ApplicationIdNo == appId);
 
@@ -173,13 +174,150 @@ namespace backend.Infrastructure.Repositories.License
 
                         _context.RetailAdditionalPropDetail.Add(Proppartner);
                     }
-                    
+
+                }
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return "Saved Successfully";
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return ex.Message;
+            }
+        }
+
+        public async Task<string> SaveAdditionalRetailL10L22CompleteDetails(RetailL10L22CommonSaveDto dto)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                string appId = dto.RetailDetails.ApplicationIdNo;
+
+                //==========================
+                // STEP 1 : AdditionalHCRDetails
+                //==========================
+
+                var details = await _context.RetailDetails
+                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == appId);
+
+                var catcode = await _context.LicenseApplications
+                    .Where(x => x.ApplicationIdNo == appId)
+                    .Select(x => x.CatCode)
+                    .FirstOrDefaultAsync();
+
+                if (details == null)
+                {
+                    details = new RetailDetails
+                    {
+                        ApplicationIdNo = appId,
+
+                        ProposedPremiseType = dto.RetailDetails.ProposedPremiseType,
+                        ProposedPremiseLength = dto.RetailDetails.ProposedPremiseLength,
+                        ProposedPremiseBreath = dto.RetailDetails.ProposedPremiseBreath,
+                        ProposedPremiseHeight = dto.RetailDetails.ProposedPremiseHeight,
+                        ProposedPremiseTotalArea = dto.RetailDetails.ProposedPremiseTotalArea,
+                        PropPremiseAppComArea = dto.RetailDetails.PropPremiseAppComArea,
+                        PropPremiseAppComAreaAdInfo = dto.RetailDetails.PropPremiseAppComAreaAdInfo,
+                        LandLordPhyPossession = dto.RetailDetails.LandLordPhyPossession,
+                        PropPremiseCondition = dto.RetailDetails.PropPremiseCondition,
+                        PropPremiseLocalBody = dto.RetailDetails.PropPremiseLocalBody,
+                        PropPremiseLiquorLicenceRule = dto.RetailDetails.PropPremiseLiquorLicenceRule,
+                        PropPremisePuccaBuild = dto.RetailDetails.PropPremisePuccaBuild,
+                        PropPremisePuccaBuildAdInfo = dto.RetailDetails.PropPremisePuccaBuildAdInfo,
+                        PropPremisePresentUse = dto.RetailDetails.PropPremisePresentUse,
+                        PropPremisePresentUseAdInfo = dto.RetailDetails.PropPremisePresentUseAdInfo,
+                        PropPremiseSuitPending = dto.RetailDetails.PropPremiseSuitPending,
+                        PropPremiseWaterConn = dto.RetailDetails.PropPremiseWaterConn,
+                        PropPremiseJoint = dto.RetailDetails.PropPremiseJoint,
+                        PropPremiseNOC = dto.RetailDetails.PropPremiseNOC,
+                        PropPremiseShopMap = dto.RetailDetails.PropPremiseShopMap,
+                        OwnerPremiseAddress1 = dto.RetailDetails.OwnerPremiseAddress1,
+                        OwnerPremiseAddress2 = dto.RetailDetails.OwnerPremiseAddress2,
+                        OwnerPremiseState = dto.RetailDetails.OwnerPremiseState,
+                        OwnerPremiseDistrict = dto.RetailDetails.OwnerPremiseDistrict,
+                        OwnerPremisePin = dto.RetailDetails.OwnerPremisePin,
+                        OwnerPremiseMobile = dto.RetailDetails.OwnerPremiseMobile,
+                        OwnerPremiseSubDivisionCode = dto.RetailDetails.OwnerPremiseSubDivisionCode,
+                        OwnerPremisePSCode = dto.RetailDetails.OwnerPremisePSCode
+                    };
+
+                    await _context.RetailDetails.AddAsync(details);
+                }
+                else
+                {
+                    details.ProposedPremiseType = dto.RetailDetails.ProposedPremiseType;
+                    details.ProposedPremiseLength = dto.RetailDetails.ProposedPremiseLength;
+                    details.ProposedPremiseBreath = dto.RetailDetails.ProposedPremiseBreath;
+                    details.ProposedPremiseHeight = dto.RetailDetails.ProposedPremiseHeight;
+                    details.ProposedPremiseTotalArea = dto.RetailDetails.ProposedPremiseTotalArea;
+                    details.PropPremiseAppComArea = dto.RetailDetails.PropPremiseAppComArea;
+                    details.PropPremiseAppComAreaAdInfo = dto.RetailDetails.PropPremiseAppComAreaAdInfo;
+                    details.LandLordPhyPossession = dto.RetailDetails.LandLordPhyPossession;
+                    details.PropPremiseCondition = dto.RetailDetails.PropPremiseCondition;
+                    details.PropPremiseLocalBody = dto.RetailDetails.PropPremiseLocalBody;
+                    details.PropPremiseLiquorLicenceRule = dto.RetailDetails.PropPremiseLiquorLicenceRule;
+                    details.PropPremisePuccaBuild = dto.RetailDetails.PropPremisePuccaBuild;
+                    details.PropPremisePuccaBuildAdInfo = dto.RetailDetails.PropPremisePuccaBuildAdInfo;
+                    details.PropPremisePresentUse = dto.RetailDetails.PropPremisePresentUse;
+                    details.PropPremisePresentUseAdInfo = dto.RetailDetails.PropPremisePresentUseAdInfo;
+                    details.PropPremiseSuitPending = dto.RetailDetails.PropPremiseSuitPending;
+                    details.PropPremiseWaterConn = dto.RetailDetails.PropPremiseWaterConn;
+                    details.PropPremiseJoint = dto.RetailDetails.PropPremiseJoint;
+                    details.PropPremiseNOC = dto.RetailDetails.PropPremiseNOC;
+                    details.PropPremiseShopMap = dto.RetailDetails.PropPremiseShopMap;
+                    details.OwnerPremiseAddress1 = dto.RetailDetails.OwnerPremiseAddress1;
+                    details.OwnerPremiseAddress2 = dto.RetailDetails.OwnerPremiseAddress2;
+                    details.OwnerPremiseState = dto.RetailDetails.OwnerPremiseState;
+                    details.OwnerPremiseDistrict = dto.RetailDetails.OwnerPremiseDistrict;
+                    details.OwnerPremisePin = dto.RetailDetails.OwnerPremisePin;
+                    details.OwnerPremiseMobile = dto.RetailDetails.OwnerPremiseMobile;
+                    details.OwnerPremiseSubDivisionCode = dto.RetailDetails.OwnerPremiseSubDivisionCode;
+                    details.OwnerPremisePSCode = dto.RetailDetails.OwnerPremisePSCode;
+                }
+                //==========================
+                // STEP 2 : ApplicantAnswers
+                //==========================
+
+                if (dto.ApplicantAnswers != null && dto.ApplicantAnswers.Count > 0)
+                {
+                    foreach (var item in dto.ApplicantAnswers)
+                    {
+                        var answer = await _context.LicenseApplicationCategoryWiseAnswers
+                            .FirstOrDefaultAsync(x =>
+                                x.ApplicationIdNo == appId &&
+                                x.QuestionId == item.QuestionId);
+
+                        if (answer != null)
+                        {
+                            // Existing QuestionId -> Update Answer
+                            answer.AnswerGiven = item.AnswerGiven;
+                            answer.SlNo = item.SlNo;
+                        }
+                        else
+                        {
+                            // New QuestionId -> Insert
+                            LicenseApplicationCategoryWiseAnswers newAnswer = new LicenseApplicationCategoryWiseAnswers
+                            {
+                                ApplicationIdNo = appId,
+                                QuestionId = item.QuestionId,
+                                AnswerGiven = item.AnswerGiven,
+                                SlNo = item.SlNo
+                            };
+
+                            _context.LicenseApplicationCategoryWiseAnswers.Add(newAnswer);
+                        }
+
+                    }
                 }
                 //==========================
                 // STEP 2 : ApplicantLicensePartnersDetails
                 //==========================
 
-                if (catcode == "02" || catcode == "46" )
+                if (catcode == "02" || catcode == "46")
                 {
                     var L10Partners = _context.ApplicantLicensePartnersDetails
                         .Where(x => x.ApplicationIdNo == appId);
@@ -248,7 +386,15 @@ namespace backend.Infrastructure.Repositories.License
                             ExciseNomineePANProof = dto.AdditionalL10L22Details.ExciseNomineePANProof,
                             L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale,
                             L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault,
-                            FDRDetails = dto.AdditionalL10L22Details.FDRDetails
+                            FDRDetails = dto.AdditionalL10L22Details.FDRDetails,
+                            ProposedPremiseType = dto.AdditionalL10L22Details.ProposedPremiseType,
+                            ProposedPremiseLength = dto.AdditionalL10L22Details.ProposedPremiseLength,
+                            ProposedPremiseBreath = dto.AdditionalL10L22Details.ProposedPremiseBreath,
+                            ProposedPremiseHeight = dto.AdditionalL10L22Details.ProposedPremiseHeight,
+                            ProposedPremiseTotalArea = dto.AdditionalL10L22Details.ProposedPremiseTotalArea,
+                            BankName = dto.AdditionalL10L22Details.BankName,
+                            AccountNo = dto.AdditionalL10L22Details.AccountNo,
+                            IFSCCode = dto.AdditionalL10L22Details.IFSCCode
                         };
 
 
@@ -280,13 +426,21 @@ namespace backend.Infrastructure.Repositories.License
                         L10L22details.L10AirportHourSale = dto.AdditionalL10L22Details.L10AirportHourSale;
                         L10L22details.L10AirportHourSaleDefault = dto.AdditionalL10L22Details.L10AirportHourSaleDefault;
                         L10L22details.FDRDetails = dto.AdditionalL10L22Details.FDRDetails;
+                        L10L22details.ProposedPremiseType = dto.AdditionalL10L22Details.ProposedPremiseType;
+                        L10L22details.ProposedPremiseLength = dto.AdditionalL10L22Details.ProposedPremiseLength;
+                        L10L22details.ProposedPremiseBreath = dto.AdditionalL10L22Details.ProposedPremiseBreath;
+                        L10L22details.ProposedPremiseHeight = dto.AdditionalL10L22Details.ProposedPremiseHeight;
+                        L10L22details.ProposedPremiseTotalArea = dto.AdditionalL10L22Details.ProposedPremiseTotalArea;
+                        L10L22details.BankName = dto.AdditionalL10L22Details.BankName;
+                        L10L22details.AccountNo = dto.AdditionalL10L22Details.AccountNo;
+                        L10L22details.IFSCCode = dto.AdditionalL10L22Details.IFSCCode;
                     }
                 }
-                    await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                    await transaction.CommitAsync();
+                await transaction.CommitAsync();
 
-                    return "Saved Successfully";
+                return "Saved Successfully";
             }
             catch (Exception ex)
             {
@@ -294,7 +448,8 @@ namespace backend.Infrastructure.Repositories.License
                 return ex.Message;
             }
         }
-        public async Task<RetailCompleteDto?> GetAdditionalRetailCompleteDetails(string applicationIdNo)
+
+        public async Task<RetailCommonCompleteGetDto?> GetAdditionalRetailCompleteDetails(string applicationIdNo)
         {
             try
             {
@@ -339,6 +494,107 @@ namespace backend.Infrastructure.Repositories.License
                     .ToListAsync();
 
 
+
+
+                // ============================================
+                // STEP 6 : If nothing exists
+                // ============================================
+
+                if (retailDetails == null &&
+                    applicantAnswers.Count == 0 &&
+                    retailPropDetails.Count == 0
+                    )
+                {
+                    return null;
+                }
+
+
+                // ============================================
+                // STEP 7 : Prepare Final DTO
+                // ============================================
+
+                var result = new RetailCommonCompleteGetDto
+                {
+                    ApplicantAnswers = applicantAnswers,
+
+                    RetailPropDetails = retailPropDetails,
+
+
+                    RetailDetails = retailDetails == null
+                        ? new RetailDetailsDto()
+                        : new RetailDetailsDto
+                        {
+                            ApplicationIdNo = retailDetails.ApplicationIdNo,
+                            ProposedPremiseType = retailDetails.ProposedPremiseType,
+                            ProposedPremiseLength = retailDetails.ProposedPremiseLength,
+                            ProposedPremiseBreath = retailDetails.ProposedPremiseBreath,
+                            ProposedPremiseHeight = retailDetails.ProposedPremiseHeight,
+                            ProposedPremiseTotalArea = retailDetails.ProposedPremiseTotalArea,
+                            PropPremiseAppComArea = retailDetails.PropPremiseAppComArea,
+                            PropPremiseAppComAreaAdInfo = retailDetails.PropPremiseAppComAreaAdInfo,
+                            LandLordPhyPossession = retailDetails.LandLordPhyPossession,
+                            PropPremiseCondition = retailDetails.PropPremiseCondition,
+                            PropPremiseLocalBody = retailDetails.PropPremiseLocalBody,
+                            PropPremiseLiquorLicenceRule = retailDetails.PropPremiseLiquorLicenceRule,
+                            PropPremisePuccaBuild = retailDetails.PropPremisePuccaBuild,
+                            PropPremisePuccaBuildAdInfo = retailDetails.PropPremisePuccaBuildAdInfo,
+                            PropPremisePresentUse = retailDetails.PropPremisePresentUse,
+                            PropPremisePresentUseAdInfo = retailDetails.PropPremisePresentUseAdInfo,
+                            PropPremiseSuitPending = retailDetails.PropPremiseSuitPending,
+                            PropPremiseWaterConn = retailDetails.PropPremiseWaterConn,
+                            PropPremiseJoint = retailDetails.PropPremiseJoint,
+                            PropPremiseNOC = retailDetails.PropPremiseNOC,
+                            PropPremiseShopMap = retailDetails.PropPremiseShopMap,
+                            OwnerPremiseAddress1 = retailDetails.OwnerPremiseAddress1,
+                            OwnerPremiseAddress2 = retailDetails.OwnerPremiseAddress2,
+                            OwnerPremiseState = retailDetails.OwnerPremiseState,
+                            OwnerPremiseDistrict = retailDetails.OwnerPremiseDistrict,
+                            OwnerPremisePin = retailDetails.OwnerPremisePin,
+                            OwnerPremiseMobile = retailDetails.OwnerPremiseMobile,
+                            OwnerPremiseSubDivisionCode = retailDetails.OwnerPremiseSubDivisionCode,
+                            OwnerPremisePSCode = retailDetails.OwnerPremisePSCode
+                        },
+                };
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    "Error while fetching Retail complete details: " + ex.Message,
+                    ex
+                );
+            }
+        }
+        public async Task<RetailL10L22CommonGetDto?> GetAdditionalRetailL10L22CompleteDetails(string applicationIdNo)
+        {
+            try
+            {
+                // ============================================
+                // STEP 1 : RetailDetails
+                // ============================================
+
+                var retailDetails = await _context.RetailDetails
+                    .FirstOrDefaultAsync(x => x.ApplicationIdNo == applicationIdNo);
+
+
+                // ============================================
+                // STEP 2 : Applicant Answers
+                // ============================================
+
+                var applicantAnswers = await _context.LicenseApplicationCategoryWiseAnswers
+                    .Where(x => x.ApplicationIdNo == applicationIdNo)
+                    .Select(x => new CategoryWiseAnswersDto
+                    {
+                        ApplicationIdNo = x.ApplicationIdNo,
+                        QuestionId = x.QuestionId,
+                        AnswerGiven = x.AnswerGiven,
+                        SlNo = x.SlNo
+                    })
+                    .ToListAsync();
+
+
                 // ============================================
                 // STEP 4 : Partners
                 // ============================================
@@ -375,7 +631,6 @@ namespace backend.Infrastructure.Repositories.License
 
                 if (retailDetails == null &&
                     applicantAnswers.Count == 0 &&
-                    retailPropDetails.Count == 0 &&
                     partners.Count == 0 &&
                     additionalL10L22Details == null)
                 {
@@ -387,11 +642,9 @@ namespace backend.Infrastructure.Repositories.License
                 // STEP 7 : Prepare Final DTO
                 // ============================================
 
-                var result = new RetailCompleteDto
+                var result = new RetailL10L22CommonGetDto
                 {
                     ApplicantAnswers = applicantAnswers,
-
-                    RetailPropDetails = retailPropDetails,
 
                     Partners = partners,
 
@@ -459,7 +712,15 @@ namespace backend.Infrastructure.Repositories.License
                             ExciseNomineePANProof = additionalL10L22Details.ExciseNomineePANProof,
                             L10AirportHourSale = additionalL10L22Details.L10AirportHourSale,
                             L10AirportHourSaleDefault = additionalL10L22Details.L10AirportHourSaleDefault,
-                            FDRDetails = additionalL10L22Details.FDRDetails
+                            FDRDetails = additionalL10L22Details.FDRDetails,
+                            ProposedPremiseType = additionalL10L22Details.ProposedPremiseType,
+                            ProposedPremiseLength = additionalL10L22Details.ProposedPremiseLength,
+                            ProposedPremiseBreath = additionalL10L22Details.ProposedPremiseBreath,
+                            ProposedPremiseHeight = additionalL10L22Details.ProposedPremiseHeight,
+                            ProposedPremiseTotalArea = additionalL10L22Details.ProposedPremiseTotalArea,
+                            BankName = additionalL10L22Details.BankName,
+                            AccountNo = additionalL10L22Details.AccountNo,
+                            IFSCCode = additionalL10L22Details.IFSCCode,
                         }
                 };
 

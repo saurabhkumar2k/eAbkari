@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RetailApplicationCompleteEnities
 {
-   // =========================================================
+    // =========================================================
     // 1. RetailDetails
     // =========================================================
 
@@ -105,8 +105,8 @@ namespace RetailApplicationCompleteEnities
         [StringLength(250)]
         public string? AddtionalDesigTypeValue { get; set; }
 
-        
-        public int Slno { get; set; } 
+
+        public int Slno { get; set; }
     }
 
 
@@ -186,5 +186,23 @@ namespace RetailApplicationCompleteEnities
 
         [StringLength(500)]
         public string? FDRDetails { get; set; }
+        public int? ProposedPremiseType { get; set; }
+
+        public decimal? ProposedPremiseLength { get; set; }
+
+        public decimal? ProposedPremiseBreath { get; set; }
+
+        public decimal? ProposedPremiseHeight { get; set; }
+
+        public decimal? ProposedPremiseTotalArea { get; set; }
+
+        [StringLength(150)]
+        public string? BankName { get; set; }
+
+        [StringLength(50)]
+        public string? AccountNo { get; set; }
+
+        [StringLength(50)]
+        public string? IFSCCode { get; set; }
     }
 }

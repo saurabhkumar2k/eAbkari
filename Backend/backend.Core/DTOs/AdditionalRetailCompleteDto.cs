@@ -3,14 +3,38 @@ using backend.Core.Entities.Licence;
 
 namespace backend.Core.DTOs
 {
-    public class RetailCompleteDto
+    public class RetailCommonCompleteSaveDto
     {
         public List<CategoryWiseAnswersDto> ApplicantAnswers { get; set; } = new();
-        public RetailDetailsDto  RetailDetails {get;set;} = new();
+        public RetailDetailsDto RetailDetails { get; set; } = new();
         public List<RetailAdditionalPropDetailDto> RetailPropDetails { get; set; } = new();
+        //public AdditionalL10L22DetailsDto? AdditionalL10L22Details { get; set; }
+        //public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
+    }
+
+    public class RetailL10L22CommonSaveDto
+    {
+        public List<CategoryWiseAnswersDto> ApplicantAnswers { get; set; } = new();
+        public RetailDetailsDto RetailDetails { get; set; } = new();
         public AdditionalL10L22DetailsDto? AdditionalL10L22Details { get; set; }
         public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
     }
+
+    public class RetailCommonCompleteGetDto
+    {
+        public List<CategoryWiseAnswersDto> ApplicantAnswers { get; set; } = new();
+        public RetailDetailsDto RetailDetails { get; set; } = new();
+        public List<RetailAdditionalPropDetailDto> RetailPropDetails { get; set; } = new();
+    }
+
+    public class RetailL10L22CommonGetDto
+    {
+        public List<CategoryWiseAnswersDto> ApplicantAnswers { get; set; } = new();
+        public RetailDetailsDto RetailDetails { get; set; } = new();
+        public AdditionalL10L22DetailsDto? AdditionalL10L22Details { get; set; }
+        public List<AdditionalCompanyPartnersDetailsDto> Partners { get; set; } = new();
+    }
+
 
     public class RetailDetailsDto
     {
@@ -137,5 +161,13 @@ namespace backend.Core.DTOs
         public int? L10AirportHourSaleDefault { get; set; }
 
         public string? FDRDetails { get; set; }
+        public int? ProposedPremiseType { get; set; }
+        public decimal? ProposedPremiseLength { get; set; }
+        public decimal? ProposedPremiseBreath { get; set; }
+        public decimal? ProposedPremiseHeight { get; set; }
+        public decimal? ProposedPremiseTotalArea { get; set; }
+        public string? BankName { get; set; }
+        public string? AccountNo { get; set; }
+        public string? IFSCCode { get; set; }
     }
 }
