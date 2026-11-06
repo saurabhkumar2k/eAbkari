@@ -44,7 +44,7 @@ export default function HcrAdditionalStep({
           additionalFrom={additionalFrom}
           hoursOfSaleList={hoursOfSaleList}
           constitutionType={constitutionType}
-          questions={questions}
+          // questions={questions}
           onChange={onChange}
           onQuestionsChange={onQuestionsChange}
           onDirectorChange={onDirectorChange}
