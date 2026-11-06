@@ -83,8 +83,9 @@ namespace backend.Infrastructure.Repositories.License
         {
             try
             {
-                //var site = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
-                var site = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+                //var site = await _context.LicenseSiteDetails.AsNoTracking().FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);                
+                var site = await _context.LicenseSiteDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == AppId);
+                
 
 
                 if (site == null)
@@ -533,7 +534,8 @@ namespace backend.Infrastructure.Repositories.License
                     AdditionalDetails = additionalDetails,
                     Partners = partners,
                     ApplicantAnswers = applicantAnswers,
-                    AdditionalRestaurentDetails = AdditionalDetailsL16
+                    AdditionalRestaurentDetails = AdditionalDetailsL16,
+                    ApplicantLicenseAdditionalBarMaster = AdditionalclubDetails
                 };
             }
             catch (Exception ex)
