@@ -447,6 +447,29 @@ namespace backend.Infrastructure.Data
 
             });
 
+            modelBuilder.Entity<ApplicationScruitinyStatus>(entity =>
+            {
+                entity.ToTable("ApplicationScruitinyStatus");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.ApplicationIdNo)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.UserId)
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(e => e.UserTypeCode)
+                      .IsRequired()
+                      .HasMaxLength(2);
+
+                entity.Property(e => e.DocId)
+                      .IsRequired()
+                      .HasMaxLength(50);             
+            });
+
 
             modelBuilder.Entity<FlowHierarchyMapping>(entity =>
             {
