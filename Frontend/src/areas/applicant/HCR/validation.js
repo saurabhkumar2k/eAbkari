@@ -189,28 +189,52 @@ export const validateFileObject = (file, fileName, maxMb, allowedExtensions) => 
   return null;
 };
 
-export const checkAnswersRequired = (questions, questionsAnswers) => {
+// export const checkAnswersRequired = (questions, questionsAnswers) => {
+//   // 1. Guard check: If there are no questions to answer, no validation needed
+//   if (!Array.isArray(questions) || questions.length === 0) {
+//     return "";
+//   }
+
+//   // 2. Guard check: If there are questions but no answers array at all
+//   if (!Array.isArray(questionsAnswers) || questionsAnswers.length === 0) {
+//     return "Please answer all questions";
+//   }
+
+//   // 3. Create a Map or Set of answers for O(1) lightning-fast lookups
+//   const answeredIds = new Map(
+//     questionsAnswers.map((ans) => [ans.questionId, ans.answerGiven]),
+//   );
+
+//   // 4. Verify that every single question exists in the answers map and is not blank
+//   for (let i = 0; i < questions.length; i++) {
+//     const qId = questions[i].questionId;
+//     const answer = answeredIds.get(qId);
+
+//     // Checks if the question ID wasn't found, or if it is null, undefined, or empty spaces
+//     if (
+//       answer === undefined ||
+//       answer === null ||
+//       answer.toString().trim() === ""
+//     ) {
+//       return "Please answer all questions";
+//     }
+//   }
+
+//   return "";
+// };
+
+
+export const checkAnswersRequired = (questions) => {
   // 1. Guard check: If there are no questions to answer, no validation needed
   if (!Array.isArray(questions) || questions.length === 0) {
     return "";
   }
 
-  // 2. Guard check: If there are questions but no answers array at all
-  if (!Array.isArray(questionsAnswers) || questionsAnswers.length === 0) {
-    return "Please answer all questions";
-  }
-
-  // 3. Create a Map or Set of answers for O(1) lightning-fast lookups
-  const answeredIds = new Map(
-    questionsAnswers.map((ans) => [ans.questionId, ans.answerGiven]),
-  );
-
-  // 4. Verify that every single question exists in the answers map and is not blank
+  // 2. Verify that every single question has a valid, non-blank answerGiven value
   for (let i = 0; i < questions.length; i++) {
-    const qId = questions[i].questionId;
-    const answer = answeredIds.get(qId);
+    const answer = questions[i].answerGiven;
 
-    // Checks if the question ID wasn't found, or if it is null, undefined, or empty spaces
+    // Checks if answerGiven is missing, null, undefined, or empty spaces
     if (
       answer === undefined ||
       answer === null ||
@@ -222,7 +246,6 @@ export const checkAnswersRequired = (questions, questionsAnswers) => {
 
   return "";
 };
-
 export const validateDirectors = (directors) => {
   const result = {
     isValid: true,

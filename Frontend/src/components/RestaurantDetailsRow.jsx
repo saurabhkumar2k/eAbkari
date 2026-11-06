@@ -19,11 +19,11 @@ export default function RestaurantDetailsRow({
   errors,
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
-  console.log("DirectorsList:", ConstitutionType);
-  console.log("DirectorRow:", ConstitutionType);
-  console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
-  console.log("DirectorRow ConstitutionType:", ConstitutionType);
-  console.log(RestaurantDetail);
+  // console.log("DirectorsList:", ConstitutionType);
+  // console.log("DirectorRow:", ConstitutionType);
+  // console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
+  // console.log("DirectorRow ConstitutionType:", ConstitutionType);
+  // console.log(RestaurantDetail);
   return (
     <div className="restaurant-container">
       {/* Restaurant List */}

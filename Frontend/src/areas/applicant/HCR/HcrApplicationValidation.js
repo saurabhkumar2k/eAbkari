@@ -343,7 +343,7 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
 
     const answerErr = checkAnswersRequired(
       additionalFrom.questions,
-      additionalFrom.questionsAnswers,
+      // additionalFrom.questionsAnswers,
     );
     if (answerErr) errors.answer = answerErr;
 

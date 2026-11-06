@@ -39,7 +39,7 @@ export default function RetailVendStep({
   };
 
   const HCRTrainFieldsCategories = ["52", "43"];
-  console.log("HCRTrainFieldsCategories trainFrom", trainFrom);
+  // console.log("HCRTrainFieldsCategories trainFrom", trainFrom);
 
   return (
     <div className="hcr-form-section animate-fade">

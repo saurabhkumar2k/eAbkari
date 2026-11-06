@@ -97,7 +97,8 @@ export default function HcrLicensee({
 
   const [documents, setDocuments] = useState([]);
 
-  const [uploadedFiles, setUploadedFiles] = useState({});
+  const [appUploadedFiles, setAppUploadedFiles] = useState({});
+  const [siteUploadedFiles, setSiteUploadedFiles] = useState({});
 
   // =========================================================
   // Additional
@@ -265,7 +266,7 @@ export default function HcrLicensee({
   };
 
   const handleDeclarationChange = (field, value) => {
-    console.log("handleDeclarationChange field:", field, "value:", value, declarationFrom);
+    // console.log("handleDeclarationChange field:", field, "value:", value, declarationFrom);
     setDeclarationFrom((prev) => ({
       ...prev,
       [field]: value,
@@ -406,15 +407,15 @@ export default function HcrLicensee({
   const validateAdditionalSiteDetails = () => {
     //debugger;
 
-    console.log(additionalFrom);
+    // console.log(additionalFrom);
     const AdditionalRestaurantFrom = additionalFrom;
-    AdditionalRestaurantFrom.questions = questions;
-    AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
+    // AdditionalRestaurantFrom.questions = questions;
+    // AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
     const errors = validateAdditionalSiteData(
       AdditionalRestaurantFrom,
       selectedLicenseCode,
     );
-    console.log(errors);
+    // console.log(errors);
 
     // console.log("Test 111111111111")
     // Set the error state
@@ -460,7 +461,7 @@ export default function HcrLicensee({
 
   const validateApplicationDocuments = (documents, uploadedFiles, type) => {
     const errors = validateUploadedDocuments(documents, uploadedFiles);
-    console.log("validateApplicationDocuments errors:", errors);
+    // console.log("validateApplicationDocuments errors:", errors);
 
     if (type === "P" && ((errors && errors.isValid === false) || (errors && errors.errors && Object.keys(errors.errors).length > 0))) {
       setPersonalDocumentsErrors(errors);
@@ -619,7 +620,7 @@ export default function HcrLicensee({
 
   useEffect(() => {
     //debugger;
-    console.log("Previous application check");
+    // console.log("Previous application check");
     if (!regId) return;
 
     // Create an async helper function inside useEffect
@@ -724,7 +725,7 @@ export default function HcrLicensee({
 
       const data = await getAppId.json();
 
-      console.log("getAppId response:", data);
+      // console.log("getAppId response:", data);
 
       const applicationIdNo = data?.data?.applicationIdNo;
 
@@ -747,7 +748,19 @@ export default function HcrLicensee({
         BindPendingSiteData(applicationIdNo);
       }
 
-      /* /api/CommonHCR/GetAdditionalHCRCompleteDetails */
+      let questions = await fetchQuestions(selectedLicenseCode);
+
+      /* Bind site addtitional data */
+
+      // if (questions && questions.length > 0)  {
+      BindAdditionSiteData(applicationIdNo, questions);
+      // }
+
+      /* Bind Applicant document data */
+      BindDocumentData(applicationIdNo, "A", selectedLicenseCode);
+
+      /* Bind site document data */
+      BindDocumentData(applicationIdNo, "S", selectedLicenseCode);
 
 
       return true;
@@ -923,6 +936,227 @@ export default function HcrLicensee({
     } catch (error) { }
   };
 
+  /**
+  * Bind pending application additional Site data for the Site` form
+  * @param {string} applicationIdNo - The application ID number
+  * @param {Array} questions - The list of questions to map answers to
+  */
+  const BindAdditionSiteData = async (applicationIdNo, masterQuestions) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/CommonHCR/GetAdditionalHCRCompleteDetails?applicationIdNo=${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const data = await response.json();
+
+      // Helper to safely handle null or undefined values as empty strings
+      const clearNull = (val) => (val === null || val === undefined ? "" : val);
+
+      const apiDetails = data.additionalDetails || {};
+
+      // const masterQuestions = questions;
+
+      console.log("masterQuestions 11111111111111:", data);
+
+      // Map answers from API response directly onto your masterQuestions array by matching questionId
+
+      const mappedQuestions = (masterQuestions || []).map((masterQ) => {
+        const apiMatch = (data.applicantAnswers || []).find(
+          (ans) => ans.questionId === masterQ.questionId
+        );
+
+        return {
+          applicationIdNo: apiMatch ? (applicationIdNo || "") : "",
+          questionId: masterQ.questionId,
+          questionDesc: masterQ.questionDesc,
+          answerGiven: clearNull(apiMatch?.answerGiven),
+        };
+      })
+
+      // Map the API array to your save object structure
+      const saveObject = {
+        clubDetails: (data.applicantLicenseAdditionalBarMaster || []).map((item) => ({
+          NameOfAdditionalRestaurant: item.nameOfAdditionalBar || "",
+          NumberOfCounter: String(item.numberOfCounter || 0), // Converts number 4 to string "4"
+          AddtionalArea: item.addtionalArea || ""
+        }))
+      };
+
+      // Construct the entire form state structure matching your target object
+      const mappedFormState = {
+        numberOfClubMember: clearNull(apiDetails.numberOfClubMember),
+        numberOfSeatCovers: clearNull(apiDetails.numberOfSeatCovers),
+        numberOfDispensingCounter: clearNull(apiDetails.numberOfDispensingCounter),
+        additionalArea: apiDetails.additionalArea ? "1" : "0",
+        numberOfManagers: clearNull(apiDetails.numberOfManagers),
+        numberOfKitchenStaff: clearNull(apiDetails.numberOfKitchenStaff),
+        numberOfUtlityEmployees: clearNull(apiDetails.numberOfUtlityEmployees),
+        totalRoom: clearNull(apiDetails.totalRoom),
+        staffStrength: clearNull(apiDetails.staffStrength),
+        starCategory: clearNull(apiDetails.starCategory),
+        serviceCounter: clearNull(apiDetails.serviceCounter),
+        totalArea: clearNull(apiDetails.totalArea),
+        educationalInsDist: clearNull(apiDetails.educationalInsDist),
+        religiousPlaceDist: clearNull(apiDetails.religiousPlaceDist),
+        isSuitableGagdget: clearNull(apiDetails.isSuitableGagdget),
+        isLocalAuthorityApproved: clearNull(apiDetails.isLocalAuthorityApproved),
+        isIndicatingLiquor: clearNull(apiDetails.isIndicatingLiquor),
+        numberOfBarAttendent: clearNull(apiDetails.numberOfBarAttendent),
+        starCategoryRating: clearNull(apiDetails.starCategoryRating),
+        restaurantArea: clearNull(apiDetails.restaurantArea),
+        hourOfSale: clearNull(apiDetails.hourOfSale),
+        HasStoreProvisionYN: clearNull(apiDetails.hasStoreProvisionYN),
+        StoreLocationInHotel: clearNull(apiDetails.storeLocationInHotel),
+        TINNumber: clearNull(apiDetails.tinNumber),
+        CompanyFirmPANNo: clearNull(apiDetails.companyFirmPANNo),
+        ConstitutionType: clearNull(apiDetails.constitutionType),
+        CINNo: clearNull(apiDetails.cinNo),
+
+        // Map partners array into required PascalCase template
+        partners: (data.partners || []).map((partner) => ({
+          PName: clearNull(partner.pName),
+          PPerShare: clearNull(partner.pPerShare),
+          PPanNo: clearNull(partner.pPanNo),
+          PExciseNominee: clearNull(partner.pExciseNominee),
+          DINNo: clearNull(partner.dinNo),
+          panFile: null,
+          addressFile: null,
+        })),
+
+        // Fallback fallback configuration for directors
+        directors: [
+          {
+            PName: "Test",
+            PPanNo: "CDFGT6789K",
+            PPerShare: "12",
+            PExciseNominee: "0",
+            panFile: {},
+            addressFile: {}
+          }
+        ],
+
+        // Map restaurant details array into required PascalCase template
+        restaurantDetails: (data.additionalRestaurentDetails || []).map((rest) => ({
+          NameOfAdditionalRestaurant: clearNull(rest.nameOfAdditionalRestaurant),
+          NumberOfSeatCovers: String(clearNull(rest.numberOfSeatCovers)),
+          NumberOfCounter: String(clearNull(rest.numberOfCounter)),
+          AddtionalArea: clearNull(rest.addtionalArea),
+          AreaSqMtr: clearNull(rest.areaSqMtr),
+          ForeignLiquor: clearNull(rest.foreignLiquor),
+          HoursofSale: clearNull(rest.hoursofSale),
+          HoursofSaleAddtionalArea: clearNull(rest.hoursofSaleAddtionalArea),
+        })),
+
+        // Integrated mapped questions array
+        questions: mappedQuestions,
+
+        clubDetails: saveObject.clubDetails,
+
+        // Generate systematic answers block directly derived from mapped master tracking
+        // questionsAnswers: mappedQuestions.map((q, index) => ({
+        //   applicationIdNo: applicationIdNo,
+        //   questionId: q.questionId,
+        //   answerGiven: q.answer,
+        //   slNo: index + 1,
+        // })),
+      };
+
+      // Update the React component's local state hook configuration
+      setAdditionalFrom(mappedFormState);
+
+      console.log("set mappedFormState:", mappedFormState);
+
+      // console.log("set Questions:", questions);
+
+      // setQuestions(
+      //   questions.map((question) => {
+      //     // Find matching answer from the API payload (data.applicantAnswers)
+      //     const savedAnswer = (data.applicantAnswers || []).find(
+      //       (answer) => answer.questionId === question.questionId
+      //     );
+
+      //     return savedAnswer
+      //       ? {
+      //         ...question,
+      //         answer: savedAnswer.answerGiven, // inject the value from the API payload
+      //       }
+      //       : {
+      //         ...question,
+      //         answer: "", // default fallback if no answer was returned from the database
+      //       };
+      //   })
+      // );
+
+      // console.log("set Questions:", masterQuestions);
+
+
+
+      // Inside your BindAdditionSiteData function, after fetching data:
+      // const apiAnswers = data.applicantAnswers || [];
+
+      // const mappedAnswersForState = apiAnswers.map((ans, index) => ({
+      //   applicationIdNo: ans.applicationIdNo || applicationIdNo || "",
+      //   questionId: ans.questionId,
+      //   answerGiven: ans.answerGiven,
+      //   slNo: index + 1 // Sequential numbering based on the items returned by the API
+      // }));
+
+      // // Set the state directly with the mapped array
+      // setQuestionsAnswers(mappedAnswersForState);
+
+    } catch (error) {
+      console.error("Error executing BindAdditionSiteData mapping layer:", error);
+    }
+  };
+
+  /**
+  * Bind pending application document data for the site 
+  * @param {string} applicationIdNo - The application ID number
+  * @param {string} DocType - The type of document to bind
+  * @param {string} CatCode - The code of the category
+  */
+  const BindDocumentData = async (applicationIdNo, DocType, CatCode) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&CatCode=${CatCode}&DocType=${DocType}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const result = await response.json();
+      const apiList = result.data || [];
+
+      // Convert the API array into the key-value document object structure
+      const transformedDocs = apiList.reduce((acc, currentItem) => {
+        if (currentItem.docID) {
+          acc[currentItem.docID] = {
+            file: {}, // Default empty file object
+            previewUrl: currentItem.docUrl || "" // Maps your API URL to the preview URL field
+          };
+        }
+        return acc;
+      }, {});
+
+      // Update the state based on DocType
+      if (DocType === "A") {
+        setAppUploadedFiles(transformedDocs);
+      } else if (DocType === "S") {
+        setSiteUploadedFiles(transformedDocs);
+      }
+
+    } catch (error) {
+      console.error("Error binding document data:", error);
+    }
+  };
+
+
+
   // =========================================================
   // Questions
   // =========================================================
@@ -930,8 +1164,13 @@ export default function HcrLicensee({
   useEffect(() => {
     if (currentStep !== 3) return;
     if (!selectedLicenseCode) return;
-
+    debugger;
     fetchQuestions(selectedLicenseCode);
+    // console.log("after fetchQuestions ", questions);
+    // /* /api/CommonHCR/GetAdditionalHCRCompleteDetails */
+    // if (applicationIdNo) {
+    //   BindAdditionSiteData(applicationIdNo, questions);
+    // }
   }, [currentStep, selectedLicenseCode]);
 
   const fetchQuestions = async (catCode) => {
@@ -945,28 +1184,46 @@ export default function HcrLicensee({
       }
 
       const data = await response.json();
+
+      console.log("Fetched Questions API Response:", data);
+
+      // 1. Process and normalize your incoming list of master questions
       const normalizedQuestions = (data || []).map((question) => ({
-        ...question,
         questionId: question.questionId ?? question.QuestionId,
         questionDesc: question.questionDesc ?? question.QuestionDesc,
       }));
 
-      setQuestions(
-        normalizedQuestions.map((question) => {
-          const savedAnswer = questionsAnswers.find(
-            (answer) =>
-              answer.questionId ===
-              (question.questionId ?? question.QuestionId),
-          );
+      // 2. Map questions against known answers with structured fallback states
+      const mappedQuestions = normalizedQuestions.map((question) => {
+        // Added standard array protection safeguard using || []
+        const savedAnswer = (additionalFrom.questions || []).find(
+          (answer) => answer.questionId === question.questionId
+        );
 
-          return savedAnswer
-            ? {
-              ...question,
-              answer: savedAnswer.answerGiven,
-            }
-            : question;
-        }),
-      );
+        return {
+          applicationIdNo: savedAnswer ? (savedAnswer.applicationIdNo || applicationIdNo || "") : "",
+          questionId: question.questionId,
+          questionDesc: question.questionDesc,
+          // Maps the actual answer ("Y"/"N") from your payload, or defaults to "" if not found
+          answerGiven: savedAnswer ? (savedAnswer.answerGiven || "") : "",
+        };
+      });
+
+      // Update independent states
+      setQuestions(normalizedQuestions);
+
+      setAdditionalFrom((prev) => ({
+        ...prev,
+        questions: mappedQuestions,
+      }));
+      // console.log("2",normalizedQuestions,questions);
+
+      // CORRECT LOGGING: To see the true state output, construct the preview log manually
+      // console.log("Fetched Questions:", mappedQuestions);
+      // console.log("Future Additional Form State Preview:", { ...additionalFrom, questions: mappedQuestions });
+
+      return mappedQuestions; // Return the mapped questions for any further processing if needed
+
     } catch (error) {
       console.error("Question API Error:", error);
       setQuestions([]);
@@ -1015,6 +1272,28 @@ export default function HcrLicensee({
         },
       ];
     });
+
+    setAdditionalFrom((prev) => {
+      // Safely fallback to an empty array if questions doesn't exist yet
+      const currentQuestions = prev.questions || [];
+
+      // Map through the existing questions array to find and update the target question
+      const updatedQuestions = currentQuestions.map((q) => {
+        if (q.questionId === questionId) {
+          return {
+            ...q,
+            answerGiven: answer, // Update the answer field matching your structure
+          };
+        }
+        return q; // Leave other questions unchanged
+      });
+
+      // Return the new state object with the updated questions array
+      return {
+        ...prev,
+        questions: updatedQuestions,
+      };
+    });
   };
 
   const handleRestaurantDetailChange = (index, field, value) => {
@@ -1052,11 +1331,11 @@ export default function HcrLicensee({
     if (hasRestaurants) {
       additionalUpdateErrors.restaurantDetails = errors.restaurantDetails;
       setAdditionalFormErrors(additionalUpdateErrors);
-      console.log(
-        "HcrLicensee - addRestaurantDetail additionalFormErrors ",
-        additionalFormErrors,
-        additionalUpdateErrors,
-      );
+      // console.log(
+      //   "HcrLicensee - addRestaurantDetail additionalFormErrors ",
+      //   additionalFormErrors,
+      //   additionalUpdateErrors,
+      // );
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
@@ -1137,6 +1416,7 @@ export default function HcrLicensee({
       };
     });
 
+
     // 2. Clear the field error and global error dynamically
     setAdditionalFormErrors((prev) => {
       // Safely copy the existing clubDetails error object
@@ -1198,11 +1478,11 @@ export default function HcrLicensee({
     if (hasClubs) {
       additionalUpdateErrors.clubDetails = errors.clubDetails;
       setAdditionalFormErrors(additionalUpdateErrors);
-      console.log(
-        "HcrLicensee - addClubDetail additionalFormErrors ",
-        additionalFormErrors,
-        additionalUpdateErrors,
-      );
+      // console.log(
+      //   "HcrLicensee - addClubDetail additionalFormErrors ",
+      //   additionalFormErrors,
+      //   additionalUpdateErrors,
+      // );
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
@@ -1242,6 +1522,7 @@ export default function HcrLicensee({
       ...prev,
       clubDetails: (prev.clubDetails || []).filter((_, i) => i !== index),
     }));
+
   };
 
   // const handleTrainDetailChange = (index, field, value) => {
@@ -1333,11 +1614,11 @@ export default function HcrLicensee({
     if (hastrainroute) {
       additionalUpdateErrors.routes = errors.routes;
       setTrainFromErrors(additionalUpdateErrors);
-      console.log(
-        "HcrLicensee - addTrainDetail trainFromErrors ",
-        trainFromErrors,
-        additionalUpdateErrors,
-      );
+      // console.log(
+      //   "HcrLicensee - addTrainDetail trainFromErrors ",
+      //   trainFromErrors,
+      //   additionalUpdateErrors,
+      // );
     }
 
     // Condition 1: Function evaluation fails AND the array is populated
@@ -1450,7 +1731,9 @@ export default function HcrLicensee({
         ...directors[index],
         [field]: value,
       };
+
       return { ...prev, directors };
+
     });
 
     // 2. Clear the field error and the global error dynamically
@@ -1526,11 +1809,11 @@ export default function HcrLicensee({
     if (hasDirectors) {
       additionalUpdateErrors.directors = errors.directors; // Clear the errors array if no errors are found
       setAdditionalFormErrors(additionalUpdateErrors);
-      console.log(
-        "HcrLicensee - addDirector additionalFormErrors  ",
-        additionalFormErrors,
-        additionalUpdateErrors,
-      );
+      // console.log(
+      //   "HcrLicensee - addDirector additionalFormErrors  ",
+      //   additionalFormErrors,
+      //   additionalUpdateErrors,
+      // );
     }
 
     // Condition 1: Local error object says invalid AND director list is not empty
@@ -1561,6 +1844,7 @@ export default function HcrLicensee({
         },
       ],
     }));
+
   };
 
   const deleteDirector = (index) => {
@@ -1602,16 +1886,15 @@ export default function HcrLicensee({
   }, [currentStep, selectedLicensee]);
 
   const handleValidityDateChange = (docId, validityDate) => {
-    setUploadedFiles((prev) => ({
-      ...prev,
-      [docId]: {
-        ...prev[docId],
-        validityDate,
-      },
-    }));
-
     // Clear errors for this specific docId inside the nested errors object
     if (currentStep === 4) {
+      setAppUploadedFiles((prev) => ({
+        ...prev,
+        [docId]: {
+          ...prev[docId],
+          validityDate,
+        },
+      }));
       setPersonalDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1622,6 +1905,13 @@ export default function HcrLicensee({
     }
 
     if (currentStep === 5) {
+      setSiteUploadedFiles((prev) => ({
+        ...prev,
+        [docId]: {
+          ...prev[docId],
+          validityDate,
+        },
+      }));
       setSiteDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1633,16 +1923,8 @@ export default function HcrLicensee({
   };
 
   const handleFileChange = (key, file) => {
-    console.log("handleDocumentFileChange", key, file);
+    // console.log("handleDocumentFileChange", key, file);
     if (!file) return;
-
-    setUploadedFiles((prev) => ({
-      ...prev,
-      [key]: {
-        file,
-        previewUrl: URL.createObjectURL(file),
-      },
-    }));
 
     // Clear errors for this specific key inside the nested errors object
     if (currentStep === 4) {
@@ -1653,9 +1935,26 @@ export default function HcrLicensee({
           [key]: null,
         },
       }));
+
+      setAppUploadedFiles((prev) => ({
+        ...prev,
+        [key]: {
+          file,
+          previewUrl: URL.createObjectURL(file),
+        },
+      }));
     }
 
     if (currentStep === 5) {
+
+      setSiteUploadedFiles((prev) => ({
+        ...prev,
+        [key]: {
+          file,
+          previewUrl: URL.createObjectURL(file),
+        },
+      }));
+
       setSiteDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1667,15 +1966,28 @@ export default function HcrLicensee({
   };
 
   const handleDeleteFile = (key) => {
-    setUploadedFiles((prev) => {
-      const updated = {
-        ...prev,
-      };
+    if (currentStep === 4) {
+      setAppUploadedFiles((prev) => {
+        const updated = {
+          ...prev,
+        };
 
-      delete updated[key];
+        delete updated[key];
 
-      return updated;
-    });
+        return updated;
+      });
+    }
+    if (currentStep === 5) {
+      setSiteUploadedFiles((prev) => {
+        const updated = {
+          ...prev,
+        };
+
+        delete updated[key];
+
+        return updated;
+      });
+    }
   };
 
   // =========================================================
@@ -1805,7 +2117,7 @@ export default function HcrLicensee({
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      console.log("SaveSiteDetails", response);
+      // console.log("SaveSiteDetails", response);
 
       return true;
     } catch (error) {
@@ -1854,7 +2166,7 @@ export default function HcrLicensee({
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      console.log("SaveTrainDetails", response);
+      // console.log("SaveTrainDetails", response);
 
       return true;
     } catch (error) {
@@ -1878,6 +2190,9 @@ export default function HcrLicensee({
     }
 
     try {
+
+      console.log("saveAdditional additionalFrom", additionalFrom);
+
       const formData = new FormData();
 
       // Additional Details
@@ -1964,19 +2279,19 @@ export default function HcrLicensee({
       });
 
       // Answers
-      questionsAnswers?.forEach((item, index) => {
+      additionalFrom.questions?.forEach((item, index) => {
         formData.append(
           `ApplicantAnswers[${index}].ApplicationIdNo`,
-          applicationIdNo || "",
+          item.applicationIdNo || applicationIdNo || "",
         );
 
         formData.append(
-          `ApplicantAnswers[${index}].QuestionId`,
+          `ApplicantAnswers[${index}].questionId`,
           item.questionId,
         );
 
         formData.append(
-          `ApplicantAnswers[${index}].AnswerGiven`,
+          `ApplicantAnswers[${index}].answerGiven`,
           item.answerGiven || "",
         );
 
@@ -2037,7 +2352,7 @@ export default function HcrLicensee({
       });
 
       // Bar
-         additionalFrom?.clubDetails?.forEach((item, index) => {
+      additionalFrom?.clubDetails?.forEach((item, index) => {
         formData.append(
           `ApplicantLicenseAdditionalBarMaster[${index}].ApplicationIdNo`,
           item.ApplicationIdNo ?? applicationIdNo ?? "",
@@ -2064,7 +2379,7 @@ export default function HcrLicensee({
         );
       });
 
-      console.log(formData);
+      // console.log(formData);
 
       const response = await fetch(
         "http://localhost:5214/api/CommonHCR/SaveAdditionalHCRCompleteDetails",
@@ -2092,10 +2407,11 @@ export default function HcrLicensee({
   // STEP 7/8 - Upload Documents
   // =========================================================
 
-  const uploadDocuments = async () => {
+  const uploadDocuments = async (uploadedFiles) => {
     try {
       //debugger;
       // console.log("uploadDocuments", uploadDocuments);
+
       const filesToUpload = documents.filter(
         (doc) => uploadedFiles[doc.docID]?.file,
       );
@@ -2142,7 +2458,7 @@ export default function HcrLicensee({
         },
       );
 
-      console.log("response", response);
+      // console.log("response", response);
 
       if (!response.ok) {
         return false;
@@ -2226,18 +2542,19 @@ export default function HcrLicensee({
   // =========================================================
 
   const goToSiteDocuments = async () => {
-    if (!validateApplicationDocuments(documents, uploadedFiles, "P")) {
+    if (!validateApplicationDocuments(documents, appUploadedFiles, "P")) {
       return false;
     }
-    const result = await uploadDocuments();
+    // console.log("goToSiteDocuments appUploadedFiles", appUploadedFiles);
+    const result = await uploadDocuments(appUploadedFiles);
     return result;
   };
 
   const goToDeclaration = async () => {
-    if (!validateApplicationDocuments(documents, uploadedFiles, "S")) {
+    if (!validateApplicationDocuments(documents, siteUploadedFiles, "S")) {
       return false;
     }
-    const result = await uploadDocuments();
+    const result = await uploadDocuments(siteUploadedFiles);
     return result;
   };
 
@@ -2328,7 +2645,7 @@ export default function HcrLicensee({
     }
 
     if (currentStep === 6) {
-      console.log("Submitting application...", declarationFrom);
+      // console.log("Submitting application...", declarationFrom);
       if (!declarationFrom.undertakingAccept) {
         setDeclarationErrors({
           undertakingAccept: "You must accept the undertaking to proceed.",
@@ -2495,7 +2812,7 @@ export default function HcrLicensee({
             additionalFrom={additionalFrom}
             hoursOfSaleList={hoursOfSaleList}
             constitutionType={applicantForm?.ConstitutionType}
-            questions={questions}
+            // questions={questions}
             onChange={handleAdditionalChange}
             onQuestionsChange={handleQuestions}
             onDirectorChange={handleDirectorChange}
@@ -2521,7 +2838,7 @@ export default function HcrLicensee({
         {currentStep === 4 && (
           <HcrPersonalDocumentsStep
             documents={documents}
-            uploadedFiles={uploadedFiles}
+            uploadedFiles={appUploadedFiles}
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
@@ -2541,7 +2858,7 @@ export default function HcrLicensee({
         {currentStep === 5 && (
           <HcrSiteDocumentsStep
             documents={documents}
-            uploadedFiles={uploadedFiles}
+            uploadedFiles={siteUploadedFiles}
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}

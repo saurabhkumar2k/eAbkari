@@ -16,7 +16,7 @@ export default function RestaurantAdditionalDetails({
   constitutionType,
   onChange,
   onQuestionsChange,
-  questions,
+  // questions,
   onDirectorChange,
   onAddDirector,
   onDeleteDirector,
@@ -35,7 +35,7 @@ export default function RestaurantAdditionalDetails({
   onAddClubDetail,
   ondeleteClubDetail,
 }) {
-  console.log("RestaurantAdditionalDetails - errors  ", errors);
+  // console.log("RestaurantAdditionalDetails - errors  ", errors);
   /* */
   const HcrQuestionListCategories = [
     "04",
@@ -50,6 +50,9 @@ export default function RestaurantAdditionalDetails({
   /* */
   const HCRBasicFieldsCategories = ["05", "06", "31", "32", "07", "34"];
   const HCRClubAdditionalCategories = ["01", "35", "08", "36"]
+
+  // console.log("RestaurantAdditionalDetails - questions  ", questions);
+  console.log("RestaurantAdditionalDetails - additionalFrom  ", additionalFrom);
   return (
     <div className="hcr-form-section animate-fade">
       {/* <div className="hcr-step-header">
@@ -140,7 +143,7 @@ export default function RestaurantAdditionalDetails({
               HcrQuestionListCategories.includes(CatCode) && (
                 <div className="form-group full-width">
                   <HcrQuestionList
-                    questions={questions}
+                    questions={additionalFrom?.questions || []}
                     onChange={onQuestionsChange}
                     error={errors?.answer}
                   />

@@ -32,7 +32,7 @@ export default function EmployeeRow({
   // console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
   // console.log("DirectorRow ConstitutionType:", ConstitutionType);
   // console.log(director);
-  console.log("DirectorRow - directorsError  ", directorsError);
+  // console.log("DirectorRow - directorsError  ", directorsError);
   return (
     <div className="directors-container">
       {/* Director List */}
