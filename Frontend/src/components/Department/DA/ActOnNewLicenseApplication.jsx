@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 //import ActOnNewLicense from ""
-import "../../../Style/Scruitiny.css"
+import "../../../Style/Scruitiny.css";
 
 const ActOnNewLicenseApplication = () => {
   const currentDate = new Date();
@@ -12,7 +12,7 @@ const ActOnNewLicenseApplication = () => {
   const toDateValue = new Date();
 
   const fromDateValue = new Date();
-  fromDateValue.setDate(fromDateValue.getDate() - 7);
+  fromDateValue.setDate(fromDateValue.getDate() - 10);
 
   const [fromDate, setFromDate] = useState(formatDate(fromDateValue));
   const [toDate, setToDate] = useState(formatDate(toDateValue));
@@ -85,29 +85,34 @@ const ActOnNewLicenseApplication = () => {
   };
 
   const handleScrutinyApplication = async (application) => {
-
     console.log("Selected Application:", application);
     setSelectedApplication(application);
 
     setShowScrutinyPopup(true);
 
-    // setScrutinyRows([]);
+    setScrutinyDocuments([]);
 
-    // try {
-    //   const response = await fetch(
-    //     `http://localhost:5214/api/ApplicationFlow/GetApplicationScrutiny?applicationIdNo=${encodeURIComponent(application.ApplicationIdNo)}`,
-    //   );
+    useEffect(() => {
+      getDocuments();
+    }, []);
 
-    //   if (!response.ok) {
-    //     throw new Error("Unable to load scrutiny data");
-    //   }
+    const getDocuments = async () => {
+      try {
+        const url = `http://localhost:5214/api/ApplicationFlow/GetApplicationScrutiny?applicationIdNo=${encodeURIComponent(application.ApplicationIdNo)}`;
+        const response = await fetch(url);
+        response = await response.json();
+        console.log("response", response);
 
-    //   const data = await response.json();
+        if (!response.ok) {
+          throw new Error("Unable to load scrutiny data");
+        }
 
-    //   setScrutinyRows(data || []);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+        const data = response;
+        setScrutinyDocuments(data || []);
+      } catch (error) {
+        console.error(error);
+      }
+    };
   };
 
   return (
@@ -293,11 +298,7 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleScrutinyApplication(                         
-                          application
-                        )
-                      }
+                      onClick={() => handleScrutinyApplication(application)}
                     >
                       Scrutiny Application
                     </button>

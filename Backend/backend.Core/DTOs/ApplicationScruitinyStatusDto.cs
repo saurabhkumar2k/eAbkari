@@ -15,14 +15,6 @@ namespace backend.Core.DTOs
 
         public string DocId { get; set; }
 
-        public string DocumentName { get; set; } = string.Empty;
-
-        public string UploadStatus { get; set; } = string.Empty;
-
-        public string DocumentType { get; set; } = string.Empty;
-
-        public string? DocumentUrl { get; set; }
-
         public string? IsValid { get; set; }
 
         public string? Remarks { get; set; }

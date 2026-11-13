@@ -10,6 +10,7 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
     public class ApplicationFlowRepository : IApplicationFlowRepository
     {
         private readonly ApplicationDbContext _context;
+
         public ApplicationFlowRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -166,5 +167,13 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
 
             return history;
         }
+
+ 
+
+
+        
+
+
     }
+
 }
