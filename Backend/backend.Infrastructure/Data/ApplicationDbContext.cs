@@ -97,6 +97,7 @@ namespace backend.Infrastructure.Data
         public DbSet<RetailAdditionalPropDetail> RetailAdditionalPropDetail { get; set; }
 
         public DbSet<AdditionalL10L22Details> AdditionalL10L22Details { get; set; }
+        public DbSet<ApplicationScruitinyStatus> ApplicationScruitinyStatus{ get; set;}
 
 
 

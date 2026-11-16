@@ -2,6 +2,7 @@ using backend.Application.Interfaces.ApplicationFlow;
 using backend.Core.DTOs;
 using backend.Core.Entities.ApplicationFlow;
 using backend.Core.Interfaces.ApplicationFlow;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 
 namespace backend.Application.Services.ApplicationFlow
@@ -10,9 +11,12 @@ namespace backend.Application.Services.ApplicationFlow
     {
         private readonly IApplicationFlowRepository _applicationFlowRepository;
 
+        //  private readonly IApplicationScruitinyStatusRepository  _applicationScruitinyStatusRepository;
+
         public ApplicationFlowService(IApplicationFlowRepository applicationFlowRepository)
         {
             _applicationFlowRepository = applicationFlowRepository;
+            // this._applicationScruitinyStatusRepository = applicationScruitinyStatusRepository;
         }
 
         public async Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistoryDto dto)
@@ -49,5 +53,41 @@ namespace backend.Application.Services.ApplicationFlow
         {
             return await _applicationFlowRepository.GetAccessPermissionHistory(userId, fromDate, toDate);
         }
+
+        // public async Task<string> ApplicationScruitinyStatus(ApplicationScruitinyStatusDto dto)
+        // {
+        //     if (dto == null)
+        //     {
+        //         throw new ArgumentNullException(nameof(dto), "Scruitiny data cannot be null.");
+        //     }
+
+        //     var scruitinystatus = new ApplicationScruitinyStatus
+        //     {
+        //         ApplicationIdNo = dto.ApplicationIdNo,
+        //         UserId = dto.UserId,
+        //         UserTypeCode = dto.UserTypeCode,
+        //         DocId = dto.DocId,              
+        //         IsValid = dto.IsValid,
+        //         Remarks = dto.Remarks,
+        //         RemarkDate = dto.RemarkDate
+
+        //     };
+
+        //     await _applicationScruitinyStatusRepository.ApplicationScruitinyStatus(scruitinystatus);
+        //     return scruitinystatus.ApplicationIdNo;
+        // }
+
+        // public async Task<List<ApplicationScruitinyStatusDto>> GetApplicationScruitinyStatus(string applicationIdNo)
+        // {
+        //     return await _applicationScruitinyStatusRepository.GetApplicationScruitinyStatus(applicationIdNo);
+        // } 
+
+        public async Task<ApplicationFlowUserResult?> GetApplicationFlowUser(string applicationIdNo)
+        {
+            return await _applicationFlowRepository.GetApplicationFlowUser(applicationIdNo);
+        }
+
+
+
     }
 }

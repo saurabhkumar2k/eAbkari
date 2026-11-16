@@ -15,13 +15,26 @@ namespace backend.Core.DTOs
 
         public string DocId { get; set; }
 
-        public string DocumentName { get; set; } = string.Empty;
+        public string? IsValid { get; set; }
 
-        public string UploadStatus { get; set; } = string.Empty;
+        public string? Remarks { get; set; }
 
-        public string DocumentType { get; set; } = string.Empty;
+        public DateTime? RemarkDate { get; set; }
+    }
 
-        public string? DocumentUrl { get; set; }
+     public class ApplicationScruitinyStatusGetResultDto
+    {
+        public string ApplicationIdNo { get; set; }
+
+        public string DocId { get; set; }
+
+        public string? DocDesc { get; set; }
+
+        public string? UploadStatus { get; set; }
+
+        public string? Document { get; set; }
+
+        public string? DocUrl { get; set; }
 
         public string? IsValid { get; set; }
 
