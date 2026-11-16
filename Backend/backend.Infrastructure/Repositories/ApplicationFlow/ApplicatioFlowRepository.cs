@@ -168,10 +168,28 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             return history;
         }
 
- 
+        public async Task<ApplicationFlowUserResult?> GetApplicationFlowUser(string applicationIdNo)
+        {
+            var result = await (
+                from la in _context.LicenseApplications
+                join fhm in _context.FlowHierarchyMapping
+                    on la.FlowUptoCode equals fhm.FlowUpto
+                where la.ApplicationIdNo == applicationIdNo
+                select new ApplicationFlowUserResult
+                {
+                    ApplicationIdNo = la.ApplicationIdNo,
+                    FlowUpto = la.FlowUptoCode.ToString(),
+                    UserTypeCode = fhm.UserTypeCode
+                }
+            ).FirstOrDefaultAsync();
+
+            return result;
+        }
 
 
-        
+
+
+
 
 
     }

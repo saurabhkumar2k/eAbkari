@@ -81,5 +81,13 @@ namespace backend.Application.Services.ApplicationFlow
         // {
         //     return await _applicationScruitinyStatusRepository.GetApplicationScruitinyStatus(applicationIdNo);
         // } 
+
+        public async Task<ApplicationFlowUserResult?> GetApplicationFlowUser(string applicationIdNo)
+        {
+            return await _applicationFlowRepository.GetApplicationFlowUser(applicationIdNo);
+        }
+
+
+
     }
 }

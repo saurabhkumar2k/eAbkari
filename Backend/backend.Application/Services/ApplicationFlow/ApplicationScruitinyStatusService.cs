@@ -64,7 +64,7 @@ namespace backend.Application.Services.ApplicationFlow
             return scrutinyEntities.First().ApplicationIdNo;
         }
 
-        public async Task<List<ApplicationScruitinyStatusDto>> GetApplicationScruitinyStatus(string applicationIdNo)
+        public async Task<List<ApplicationScruitinyStatusGetResultDto>> GetApplicationScruitinyStatus(string applicationIdNo)
         {
             return await _applicationScruitinyStatusRepository.GetApplicationScruitinyStatus(applicationIdNo);
         }

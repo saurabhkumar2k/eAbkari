@@ -44,36 +44,50 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             return scrutinyStatuses.First().ApplicationIdNo;
         }
 
-        public async Task<List<ApplicationScruitinyStatusDto>> GetApplicationScruitinyStatus(string applicationIdNo)
+
+        public async Task<List<ApplicationScruitinyStatusGetResultDto>>
+            GetApplicationScruitinyStatus(string applicationIdNo)
         {
             var result = await (
-                from s in _context.ApplicationScruitinyStatus
+                from la in _context.LicenseApplicationUploadedDocument
 
-                join d in _context.LicenseApplicationUploadedDocument
-                    on s.DocId equals d.DocId
+                join ma in _context.MstLicenseApplicationDocument
+                    on la.DocId equals ma.DocId
 
-                where s.ApplicationIdNo == applicationIdNo
+                join a in _context.ApplicationScruitinyStatus
+                    on new { la.DocId, la.ApplicationIdNo }
+                    equals new { a.DocId, a.ApplicationIdNo }
+                    into scrutinyGroup
 
-                select new ApplicationScruitinyStatusDto
+                from a in scrutinyGroup.DefaultIfEmpty()
+
+                where la.ApplicationIdNo == applicationIdNo
+
+                select new ApplicationScruitinyStatusGetResultDto
                 {
-                    ApplicationIdNo = s.ApplicationIdNo,
-                    UserId = s.UserId,
-                    UserTypeCode = s.UserTypeCode,
-                    DocId = s.DocId,
+                    ApplicationIdNo = la.ApplicationIdNo,
 
-                    // DocumentName = d.DocumentName,
-                    // UploadStatus = d.UploadStatus,
-                    // DocumentType = d.DocumentType,
-                    // DocumentUrl = d.DocumentUrl,
+                    DocId = la.DocId,
 
-                    IsValid = s.IsValid,
-                    Remarks = s.Remarks,
-                    RemarkDate = s.RemarkDate
+                    DocDesc = ma.DocDesc,
+
+                    UploadStatus = la.DocStatus,
+
+                    Document = ma.DocStatus,
+
+                    DocUrl = la.DocUrl,
+
+                    IsValid = a == null ? null : a.IsValid,
+
+                    Remarks = a == null ? null : a.Remarks,
+
+                    RemarkDate = a == null ? null : a.RemarkDate
                 }
-            ).ToListAsync();
+            ).AsNoTracking().ToListAsync();
 
             return result;
         }
+
 
 
     }

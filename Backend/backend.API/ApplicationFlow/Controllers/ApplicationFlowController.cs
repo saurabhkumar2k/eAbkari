@@ -11,12 +11,10 @@ namespace backend.API.ApplicationFlow.Controllers
     {
         private readonly IApplicationFlowService _applicationFlowService;
 
-        // private readonly IApplicationScruitinyStatusService _applicationScruitinyStatusService;
 
         public ApplicationFlowController(IApplicationFlowService applicationFlowService)
         {
             _applicationFlowService = applicationFlowService;
-            // this._applicationScruitinyStatusService = applicationScruitinyStatusService;
 
         }
 
@@ -133,6 +131,24 @@ namespace backend.API.ApplicationFlow.Controllers
 
         //     return Ok(result);
         // }
+
+        [HttpGet("GetApplicationFlowUser")]
+        public async Task<IActionResult> GetApplicationFlowUser([FromQuery] string applicationIdNo)
+        {
+            if (string.IsNullOrWhiteSpace(applicationIdNo))
+            {
+                return BadRequest("Application ID is required.");
+            }
+
+            var result = await _applicationFlowService.GetApplicationFlowUser(applicationIdNo);
+
+            if (result == null)
+            {
+                return NotFound("Application flow details not found.");
+            }
+
+            return Ok(result);
+        }
 
 
     }

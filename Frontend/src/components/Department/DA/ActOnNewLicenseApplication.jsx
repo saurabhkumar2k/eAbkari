@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 //import ActOnNewLicense from ""
 import "../../../Style/Scruitiny.css";
 
@@ -12,7 +12,7 @@ const ActOnNewLicenseApplication = () => {
   const toDateValue = new Date();
 
   const fromDateValue = new Date();
-  fromDateValue.setDate(fromDateValue.getDate() - 10);
+  fromDateValue.setDate(fromDateValue.getDate() - 15);
 
   const [fromDate, setFromDate] = useState(formatDate(fromDateValue));
   const [toDate, setToDate] = useState(formatDate(toDateValue));
@@ -24,6 +24,12 @@ const ActOnNewLicenseApplication = () => {
   const [showScrutinyPopup, setShowScrutinyPopup] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [scrutinyDocuments, setScrutinyDocuments] = useState([]);
+
+  const [scrutinyLoading, setScrutinyLoading] = useState(false);
+  const [scrutinyError, setScrutinyError] = useState("");
+
+  const remarksInputRefs = useRef({});
+  const [applicationComplete, setApplicationComplete] = useState("");
 
   const fetchApplications = async () => {
     try {
@@ -84,35 +90,180 @@ const ActOnNewLicenseApplication = () => {
     // Add navigation/API logic here
   };
 
-  const handleScrutinyApplication = async (application) => {
-    console.log("Selected Application:", application);
-    setSelectedApplication(application);
+  const getApplicationFlowUser = async (applicationIdNo) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/ApplicationFlow/GetApplicationFlowUser?applicationIdNo=${encodeURIComponent(applicationIdNo)}`,
+      );
 
-    setShowScrutinyPopup(true);
-
-    setScrutinyDocuments([]);
-
-    useEffect(() => {
-      getDocuments();
-    }, []);
-
-    const getDocuments = async () => {
-      try {
-        const url = `http://localhost:5214/api/ApplicationFlow/GetApplicationScrutiny?applicationIdNo=${encodeURIComponent(application.ApplicationIdNo)}`;
-        const response = await fetch(url);
-        response = await response.json();
-        console.log("response", response);
-
-        if (!response.ok) {
-          throw new Error("Unable to load scrutiny data");
-        }
-
-        const data = response;
-        setScrutinyDocuments(data || []);
-      } catch (error) {
-        console.error(error);
+      if (!response.ok) {
+        throw new Error("Unable to get application flow details.");
       }
-    };
+
+      const data = await response.json();
+
+      console.log("Application Flow Details:", data);
+
+      return data;
+    } catch (error) {
+      console.error("Application Flow API Error:", error);
+      alert(error.message);
+      return null;
+    }
+  };
+
+  const handleSubmitScruiny = async () => {
+    debugger;
+    try {
+      if (!scrutinyDocuments.length) {
+        alert("No scrutiny documents found.");
+        return;
+      }
+
+      //VALIDATION 1: Every document must have Yes or No selected
+
+      //const invalidDocument = scrutinyDocuments.find((row) => !row.isValid);
+
+      const invalidDocument = scrutinyDocuments.find(
+        (row) => row.isValid !== "Y" && row.isValid !== "N",
+      );
+
+      if (invalidDocument) {
+        console.log("Document without selection:", invalidDocument);
+        console.log("All scrutiny documents:", scrutinyDocuments);
+
+        alert("Please select Yes or No for all documents.");
+        return;
+      }
+
+      // VALIDATION 2: Remarks mandatory only when Valid = No
+
+      const remarksMissing = scrutinyDocuments.find(
+        (row) => row.isValid === "N" && !row.remarks?.trim(),
+      );
+
+      if (remarksMissing) {
+        alert("Please give remark.");
+
+        remarksInputRefs.current[remarksMissing.docId]?.focus();
+
+        return;
+      }
+
+      // VALIDATION 3: Application Complete checking
+
+      const hasInvalidDocument = scrutinyDocuments.some(
+        (row) => row.isValid === "N",
+      );
+
+      if (hasInvalidDocument && applicationComplete !== "N") {
+        alert("Please select No for Whether Application is Complete?");
+        return;
+      }
+
+      if (!hasInvalidDocument && applicationComplete !== "Y") {
+        alert(
+          "All documents are valid. Please select Yes for Whether Application is Complete?",
+        );
+        return;
+      }
+
+      // ALL VALIDATIONS PASSED - CALL SAVE API
+
+      const applicationIdNo =
+        selectedApplication?.ApplicationIdNo ??
+        selectedApplication?.applicationIdNo;
+
+      const flowData = await getApplicationFlowUser(applicationIdNo);
+
+      if (!flowData) {
+        return;
+      }
+
+      const userId = localStorage.getItem("userId");
+
+      const userTypeCode = flowData.userTypeCode;
+
+      const payload = scrutinyDocuments.map((row) => ({
+        applicationIdNo: applicationIdNo,
+        userId: userId,
+        userTypeCode: userTypeCode,
+        docId: row.docId,
+        isValid: row.isValid,
+        remarks: row.remarks || "",
+        remarkDate: new Date().toISOString(),
+      }));
+
+      console.log("Scrutiny Save Payload:", payload);
+
+      const response = await fetch(
+        "http://localhost:5214/api/ApplicationScruitinyStatus/ApplicationScruitinyStatus",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Scrutiny save failed.");
+      }
+
+      alert("Application Scrutiny Successfully Done!");
+
+      setShowScrutinyPopup(false);
+    } catch (error) {
+      console.error("Scrutiny Save Error:", error);
+
+      alert(error.message || "Something went wrong.");
+    }
+  };
+
+  const handleScrutinyApplication = async (application) => {
+    debugger;
+
+    console.log("Selected Application:", application);
+
+    setSelectedApplication(application);
+    setShowScrutinyPopup(true);
+    setScrutinyDocuments([]);
+    setScrutinyError("");
+    setScrutinyLoading(true);
+
+    // useEffect(() => {
+    //   getDocuments();
+    // }, []);
+
+    // const getDocuments = async () => {
+    try {
+      const applicationIdNo =
+        application.ApplicationIdNo ?? application.applicationIdNo;
+      if (!applicationIdNo) {
+        throw new Error("Application ID not found.");
+      }
+      // const url = `http://localhost:5214/api/ApplicationScruitinyStatus/GetApplicationScruitinyStatus?applicationIdNo=${encodeURIComponent(application.ApplicationIdNo)}`;
+      const url = `http://localhost:5214/api/ApplicationScruitinyStatus/GetApplicationScruitinyStatus?applicationIdNo=${encodeURIComponent(applicationIdNo)}`;
+      const response = await fetch(url);
+      // response = await response.json();
+      // console.log("response", response);
+
+      if (!response.ok) {
+        throw new Error("Unable to load scrutiny data");
+      }
+
+      const data = await response.json();
+      console.log("Scrutiny API Response:", data);
+      setScrutinyDocuments(data || []);
+    } catch (error) {
+      console.error("Scrutiny API Error:", error);
+      setScrutinyError(error.message);
+    } finally {
+      setScrutinyLoading(false);
+    }
   };
 
   return (
@@ -383,10 +534,23 @@ const ActOnNewLicenseApplication = () => {
             <div className="scrutiny-content">
               <h4>Application Details</h4>
 
-              <p>Application ID: {selectedApplication?.applicationIdNo}</p>
+              <p>
+                Application ID:
+                {selectedApplication?.ApplicationIdNo ??
+                  selectedApplication?.applicationIdNo}
+              </p>
 
               <div className="scrutiny-table-container">
                 <table className="scrutiny-table">
+                  <colgroup>
+                    <col style={{ width: "5%" }} />
+                    <col style={{ width: "38%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "15%" }} />
+                    <col style={{ width: "6%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: "16%" }} />
+                  </colgroup>
                   <thead>
                     <tr>
                       <th>Sl No.</th>
@@ -400,57 +564,125 @@ const ActOnNewLicenseApplication = () => {
                   </thead>
 
                   <tbody>
-                    {scrutinyDocuments.map((row, index) => (
-                      <tr key={row.id}>
-                        <td>{index + 1}</td>
-
-                        <td className="scrutiny-doc-name">
-                          {row.documentName}
+                    {scrutinyLoading ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: "center" }}>
+                          Loading scrutiny documents...
                         </td>
-
-                        <td>{row.uploadStatus}</td>
-
-                        <td>{row.documentType}</td>
-
-                        <td>
-                          {row.uploadStatus === "Uploaded" && (
-                            <a href="#" onClick={(e) => e.preventDefault()}>
-                              View
-                            </a>
-                          )}
+                      </tr>
+                    ) : scrutinyError ? (
+                      <tr>
+                        <td
+                          colSpan="7"
+                          style={{ textAlign: "center", color: "red" }}
+                        >
+                          {scrutinyError}
                         </td>
+                      </tr>
+                    ) : scrutinyDocuments.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: "center" }}>
+                          No documents found.
+                        </td>
+                      </tr>
+                    ) : (
+                      scrutinyDocuments.map((row, index) => (
+                        <tr key={`${row.docId}-${index}`}>
+                          <td>{index + 1}</td>
 
-                        <td>
-                          <div className="scrutiny-radio">
+                          <td className="scrutiny-doc-name">{row.docDesc}</td>
+
+                          <td>
+                            {row.uploadStatus === "Y"
+                              ? "Yes"
+                              : row.uploadStatus}
+                          </td>
+
+                          <td>
+                            {row.document === "A"
+                              ? "Personal Documents"
+                              : row.document === "S"
+                                ? "Site Documents"
+                                : row.document}
+                          </td>
+
+                          <td>
+                            {row.docUrl ? (
+                              <a
+                                href={row.docUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View
+                              </a>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+
+                          <td>
                             <label>
                               <input
                                 type="radio"
-                                name={`valid-${row.docId}`}
-                                value="No"
-                              />
-                              No
-                            </label>
-
-                            <label>
-                              <input
-                                type="radio"
-                                name={`valid-${row.docId}`}
-                                value="Yes"
+                                name={`valid-${index}`}
+                                value="Y"
+                                checked={row.isValid === "Y"}
+                                onChange={() => {
+                                  setScrutinyDocuments((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index
+                                        ? { ...item, isValid: "Y" }
+                                        : item,
+                                    ),
+                                  );
+                                }}
                               />
                               Yes
                             </label>
-                          </div>
-                        </td>
 
-                        <td>
-                          <input
-                            type="text"
-                            className="scrutiny-remarks"
-                            placeholder="Remarks"
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                            <label>
+                              <input
+                                type="radio"
+                                name={`valid-${index}`}
+                                value="N"
+                                checked={row.isValid === "N"}
+                                onChange={() => {
+                                  setScrutinyDocuments((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index
+                                        ? { ...item, isValid: "N" }
+                                        : item,
+                                    ),
+                                  );
+                                }}
+                              />
+                              No
+                            </label>
+                          </td>
+
+                          <td>
+                            <input
+                              type="text"
+                              className="scrutiny-remarks"
+                              placeholder="Remarks"
+                              value={row.remarks || ""}
+                              ref={(el) => {
+                                remarksInputRefs.current[row.docId] = el;
+                              }}
+                              onChange={(e) => {
+                                setScrutinyDocuments((prev) =>
+                                  prev.map((item, i) =>
+                                    i === index
+                                      ? { ...item, remarks: e.target.value }
+                                      : item,
+                                  ),
+                                );
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -459,12 +691,24 @@ const ActOnNewLicenseApplication = () => {
                 <strong>Whether Application is Complete?</strong>
 
                 <label>
-                  <input type="radio" name="applicationComplete" value="Yes" />
+                  <input
+                    type="radio"
+                    name="applicationComplete"
+                    value="Y"
+                    checked={applicationComplete === "Y"}
+                    onChange={(e) => setApplicationComplete(e.target.value)}
+                  />
                   Yes
                 </label>
 
                 <label>
-                  <input type="radio" name="applicationComplete" value="No" />
+                  <input
+                    type="radio"
+                    name="applicationComplete"
+                    value="N"
+                    checked={applicationComplete === "N"}
+                    onChange={(e) => setApplicationComplete(e.target.value)}
+                  />
                   No
                 </label>
               </div>
@@ -472,7 +716,11 @@ const ActOnNewLicenseApplication = () => {
               <div className="scrutiny-footer">
                 {/* <button type="button">Previous Remarks</button> */}
 
-                <button type="button" className="scrutiny-submit">
+                <button
+                  type="button"
+                  className="scrutiny-submit"
+                  onClick={handleSubmitScruiny}
+                >
                   Submit
                 </button>
               </div>

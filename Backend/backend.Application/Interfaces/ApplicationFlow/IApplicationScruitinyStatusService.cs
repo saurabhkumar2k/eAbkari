@@ -9,7 +9,7 @@ namespace backend.Application.Interfaces.ApplicationFlow
          Task<string> ApplicationScruitinyStatus(List<ApplicationScruitinyStatusDto> dtos);
 
 
-        Task<List<ApplicationScruitinyStatusDto>> GetApplicationScruitinyStatus(string applicationIdNo);
+        Task<List<ApplicationScruitinyStatusGetResultDto>> GetApplicationScruitinyStatus(string applicationIdNo);
 
         
     }
