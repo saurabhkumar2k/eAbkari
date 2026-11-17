@@ -19,10 +19,7 @@ namespace backend.Application.Services.ApplicationFlow
             _repository = repository;
         }
 
-        public async Task<List<PLAPullApplicationDto>>
-            GetLicensePermitApplications(
-                string category,
-                string userId)
+        public async Task<List<PLAPullApplicationDto>> GetLicensePermitApplications( string category, string userId)
         {
             return await _repository
                 .GetLicensePermitApplications(category, userId);

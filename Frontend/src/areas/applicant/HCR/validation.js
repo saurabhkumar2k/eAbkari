@@ -247,6 +247,7 @@ export const checkAnswersRequired = (questions) => {
   return "";
 };
 export const validateDirectors = (directors) => {
+  debugger;
   const result = {
     isValid: true,
     globalError: "",

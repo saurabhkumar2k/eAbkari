@@ -26,6 +26,7 @@ export default function DirectorRow({
   disableDelete,
   ConstitutionType,
   directorsError,
+  catCode
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
   // console.log("DirectorsList:", ConstitutionType);
@@ -58,6 +59,8 @@ export default function DirectorRow({
           <div className="director-grid">
             {/* Name */}
             <div className="director-field">
+
+              
               <label>
                 Name <span>*</span>
               </label>
@@ -155,155 +158,341 @@ export default function DirectorRow({
               )}
             </div>
 
+
+
+
+
+
             {/* PAN Proof */}
-            <div className="director-field">
-              <label>PAN Proof</label>
+            {String(catCode) !== "37" && (
+              <div className="director-field">
+                <label>PAN Proof</label>
 
-              {!director.panFile ? (
-                <label className="upload-button">
-                  📄 Upload PAN Proof
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) =>
-                      onChange(index, "panFile", e.target.files?.[0] || null)
-                    }
-                  />
-                </label>
-              ) : (
-                <div className="uploaded-file">
-                  <span title={director.panFile.name}>
-                    {director.panFile.name}
-                  </span>
+  {/* =========================
+      NEWLY SELECTED FILE
+  ========================== */}
+  {director.panFile instanceof File ? (
+    <div className="uploaded-file">
 
-                  <div className="file-actions">
-                    <button
-                      type="button"
-                      className="file-view"
-                      onClick={() =>
-                        window.open(
-                          URL.createObjectURL(director.panFile),
-                          "_blank",
-                        )
-                      }
-                    >
-                      <Eye size={16} strokeWidth={2.5} />
-                    </button>
+      <span title={director.panFile.name}>
+        {director.panFile.name}
+      </span>
 
-                    <div className="file-replace">
-                      <label className="file-replace">
-                        <RotateCw size={16} strokeWidth={2.5} />
-                        <input
-                          type="file"
-                          hidden
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) =>
-                            onChange(
-                              index,
-                              "panFile",
-                              e.target.files?.[0] || null,
-                            )
-                          }
-                        />
-                      </label>
-                    </div>
+      <div className="file-actions">
 
-                    <button
-                      type="button"
-                      className="file-remove"
-                      onClick={() => onChange(index, "panFile", null)}
-                    >
-                      <X size={16} strokeWidth={2.5} />
-                    </button>
-                  </div>
-                </div>
-              )}
-              {directorsError?.panFileErr && (
-                <span className="error-text">{directorsError.panFileErr}</span>
-              )}
-            </div>
+        {/* VIEW NEW FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              URL.createObjectURL(director.panFile),
+              "_blank"
+            )
+          }
+        >
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
 
+        {/* REPLACE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
+
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) =>
+                onChange(
+                  index,
+                  "panFile",
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+          </label>
+        </div>
+
+        {/* REMOVE NEW FILE */}
+        <button
+          type="button"
+          className="file-remove"
+     onClick={(e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  console.log("Removing PAN file");
+
+  onChange(index, "panFile", null);
+  onChange(index, "PanFileUploaded", "");
+}}
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+
+      </div>
+    </div>
+
+  ) : director.PanFileUploaded ? (
+
+    /* =========================
+       EXISTING FILE FROM GET
+    ========================== */
+    <div className="uploaded-file">
+
+      <span title={director.PanFileUploaded}>
+        {director.PanFileUploaded}
+      </span>
+
+      <div className="file-actions">
+
+        {/* VIEW EXISTING FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              `http://localhost:5214/Documents/LicenseCompanyDocuments/${director.PanFileUploaded}`,
+              "_blank"
+            )
+          }
+        >
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
+
+        {/* REPLACE EXISTING FILE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
+
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) =>
+                onChange(
+                  index,
+                  "panFile",
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+          </label>
+        </div>
+
+        {/* REMOVE EXISTING FILE */}
+        <button
+          type="button"
+          className="file-remove"
+          onClick={(e) => {
+            e.preventDefault();
+
+            onChange(index, "panFile", null);
+            onChange(index, "PanFileUploaded", "");
+          }}
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+
+      </div>
+    </div>
+
+  ) : (
+
+    /* =========================
+       NO FILE
+    ========================== */
+    <label className="upload-button">
+      📄 Upload PAN Proof
+
+      <input
+        type="file"
+        hidden
+        accept=".pdf,.jpg,.jpeg,.png"
+        onChange={(e) =>
+          onChange(
+            index,
+            "panFile",
+            e.target.files?.[0] || null
+          )
+        }
+      />
+    </label>
+  )}
+
+  {directorsError?.panFileErr && (
+    <span className="error-text">
+      {directorsError.panFileErr}
+    </span>
+  )}
+</div>
+            )}
+
+            
             {/* Address Proof */}
+             {String(catCode) !== "37" && (
             <div className="director-field">
-              <label>Address Proof </label>
+  <label>Address Proof </label>
 
-              {!director.addressFile ? (
-                <label className="upload-button">
-                  📄 Upload Address Proof
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) =>
-                      onChange(
-                        index,
-                        "addressFile",
-                        e.target.files?.[0] || null,
-                      )
-                    }
-                  />
-                </label>
-              ) : (
-                <div className="uploaded-file">
-                  <span title={director.addressFile.name}>
-                    {director.addressFile.name}
-                  </span>
+  {/* =========================
+      NEWLY SELECTED FILE
+  ========================== */}
+  {director.addressFile instanceof File ? (
+    <div className="uploaded-file">
 
-                  <div className="file-actions">
-                    <button
-                      type="button"
-                      className="file-view"
-                      onClick={() =>
-                        window.open(
-                          URL.createObjectURL(director.addressFile),
-                          "_blank",
-                        )
-                      }
-                    >
-                      {/* 👁 */}
+      <span title={director.addressFile.name}>
+        {director.addressFile.name}
+      </span>
 
-                      <Eye size={16} strokeWidth={2.5} />
-                    </button>
-                    <div className="file-replace">
-                      <label className="file-replace">
-                        {/* 🔄 */}
-                        <RotateCw size={16} strokeWidth={2.5} />
-                        <input
-                          type="file"
-                          hidden
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) =>
-                            onChange(
-                              index,
-                              "addressFile",
-                              e.target.files?.[0] || null,
-                            )
-                          }
-                        />
-                      </label>
-                    </div>
-                    <button
-                      type="button"
-                      className="file-remove"
-                      // onClick={() => onChange(index, "addressFile", null)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onChange(index, "addressFile", null);
-                      }}
-                    >
-                      {/* × */}
-                      <X size={16} strokeWidth={2.5} />
-                    </button>
-                  </div>
-                </div>
-              )}
-              {directorsError?.addressFileErr && (
-                <span className="error-text">
-                  {directorsError.addressFileErr}
-                </span>
-              )}
-            </div>
+      <div className="file-actions">
+
+        {/* VIEW NEW FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              URL.createObjectURL(director.addressFile),
+              "_blank"
+            )
+          }
+        >
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
+
+        {/* REPLACE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
+
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) =>
+                onChange(
+                  index,
+                  "addressFile",
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+          </label>
+        </div>
+
+        {/* REMOVE */}
+        <button
+          type="button"
+          className="file-remove"
+          onClick={(e) => {
+            e.preventDefault();
+
+            onChange(index, "addressFile", null);
+            onChange(index, "AddressFileUploaded", "");
+          }}
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+
+      </div>
+    </div>
+
+  ) : director.AddressFileUploaded ? (
+
+    /* =========================
+       EXISTING FILE FROM GET
+    ========================== */
+    <div className="uploaded-file">
+
+      <span title={director.AddressFileUploaded}>
+        {director.AddressFileUploaded}
+      </span>
+
+      <div className="file-actions">
+
+        {/* VIEW EXISTING FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              `http://localhost:5214/Documents/LicenseCompanyDocuments/${director.AddressFileUploaded}`,
+              "_blank"
+            )
+          }
+        >
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
+
+        {/* REPLACE EXISTING FILE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
+
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) =>
+                onChange(
+                  index,
+                  "addressFile",
+                  e.target.files?.[0] || null
+                )
+              }
+            />
+          </label>
+        </div>
+
+        {/* REMOVE EXISTING FILE */}
+        <button
+          type="button"
+          className="file-remove"
+          onClick={(e) => {
+            e.preventDefault();
+
+            onChange(index, "addressFile", null);
+            onChange(index, "AddressFileUploaded", "");
+          }}
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+
+      </div>
+    </div>
+
+  ) : (
+
+    /* =========================
+       NO FILE
+    ========================== */
+    <label className="upload-button">
+      📄 Upload Address Proof
+
+      <input
+        type="file"
+        hidden
+        accept=".pdf,.jpg,.jpeg,.png"
+        onChange={(e) =>
+          onChange(
+            index,
+            "addressFile",
+            e.target.files?.[0] || null
+          )
+        }
+      />
+    </label>
+  )}
+
+  {directorsError?.addressFileErr && (
+    <span className="error-text">
+      {directorsError.addressFileErr}
+    </span>
+  )}
+</div>
+
+ )}
           </div>
 
           {/* DIN - only when required */}

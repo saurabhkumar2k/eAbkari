@@ -590,42 +590,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     showToast("License Transfer request submitted for departmental review!");
   };
 
-  // const handleDownloadPdf = async (applicationIdNo) => {
-  // debugger;
-  //   try {
 
-  // const element = document.getElementById("report-content");
-  // console.log(element);
-
-  //     const response = await fetch(
-  //       `http://localhost:5214/api/Report/L1/${applicationIdNo}`
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to load report");
-  //     }
-
-  //     const data = await response.json();
-
-  //     // Report data state me set karo
-  //     setApplicant(data);
-
-  //     // React ko render karne ka time do
-  //     setTimeout(() => {
-
-  //       const element = document.getElementById("report-content");
-
-  //       html2pdf()
-  //         .from(element)
-  //         .save(`L1_Application_${applicationIdNo}.pdf`);
-
-  //     }, 300);
-
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Unable to generate report.");
-  //   }
-  // };
 
   const handleDownloadPdf = async (applicationIdNo) => {
     debugger;
@@ -692,7 +657,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       }
 
       const updatedApplication = await responseForward.json();
-      if (!updatedApplication.success) {
+      if (String(updatedApplication.data.applicationStatus).trim() !== "03") {
         throw new Error("Application status was not persisted as 03.");
       }
 
@@ -764,20 +729,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     }
   };
 
-  // useEffect(() => {
-  //   const regId = localStorage.getItem("regId");
 
-  //   if (!regId) return;
-
-  //   axios
-  //     .get(`http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`)
-  //     .then((res) => {
-  //       setProfile(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error fetching profile:", err);
-  //     });
-  // }, []);
 
   console.log("Parent Applicant:", applicant);
   const regId = localStorage.getItem("regId");

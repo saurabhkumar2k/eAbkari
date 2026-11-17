@@ -132,10 +132,7 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
 
 
         {
-            var query =
-    from A in _context.LicenseApplications
-
-    join P in _context.MstFlowApplicable
+            var query = from A in _context.LicenseApplications join P in _context.MstFlowApplicable
         on new
         {
             CatCode = A.CatCode,
@@ -147,33 +144,23 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             FlowUptoCode = P.FlowUptoCode
         }
 
-    join LSData in _context.LicenseSiteDetails
-        on A.ApplicationIdNo equals LSData.ApplicationIdNo into LSGroup
+    join LSData in _context.LicenseSiteDetails on A.ApplicationIdNo equals LSData.ApplicationIdNo into LSGroup
 
     from LS in LSGroup.DefaultIfEmpty()
 
-    join URData in _context.MstUsReg
-        on LS.Regnumber equals URData.RegId.ToString() into URGroup
+    join URData in _context.MstUsReg on LS.Regnumber equals URData.RegId.ToString() into URGroup
 
     from UR in URGroup.DefaultIfEmpty()
 
-    join L in _context.MstLicenseeCategory
-        on A.CatCode equals L.LicenseeCatCode
+    join L in _context.MstLicenseeCategory on A.CatCode equals L.LicenseeCatCode
 
-    join PA in _context.PlaAccessPermissionHistory
-        on A.ApplicationIdNo equals PA.ApplicationIdNo
+    join PA in _context.PlaAccessPermissionHistory on A.ApplicationIdNo equals PA.ApplicationIdNo
 
-    join FData in
-        (
-            from F in _context.FlowHierarchyMapping
-            where F.UserID == userId
-                  && (F.Active == null || F.Active == "Y")
-            group F by new
+    join FData in ( from F in _context.FlowHierarchyMapping where F.UserID == userId && (F.Active == null || F.Active == "Y")  group F by new
             {
                 F.FlowUpto,
                 F.UserID
-            }
-            into FG
+            } into FG
             select new
             {
                 FlowUpto = FG.Key.FlowUpto,

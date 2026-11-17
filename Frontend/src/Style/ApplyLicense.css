@@ -1270,3 +1270,11 @@ input {
 .appform-card > * + * {
   margin-top: 1.5rem; /* space-y-6 */
 }
+
+.error-text {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  width: 100%;
+}

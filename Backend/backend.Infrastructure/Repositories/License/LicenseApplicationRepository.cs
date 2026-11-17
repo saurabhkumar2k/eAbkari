@@ -30,51 +30,33 @@ namespace backend.Infrastructure.Repositories.License
                 long regId,
                 string catCode)
         {
-            return await _context.LicenseApplications
-                .FirstOrDefaultAsync(x =>
-                    x.RegId == regId &&
-                    x.CatCode == catCode &&
-                    x.ApplicationStatus == "P");
+            return await _context.LicenseApplications .FirstOrDefaultAsync(x => x.RegId == regId && x.CatCode == catCode && x.ApplicationStatus == "01");
         }
 
         // ---------------------------------------------
         // Get Applicant License Details
         // ---------------------------------------------
         public async Task<LicenseApplicationUserDetails?>
-            GetLicenseDetails(
-                string applicationId)
+            GetLicenseDetails(  string applicationId)
         {
-            return await _context
-                .LicenseApplicationUserDetails
-                .FirstOrDefaultAsync(x =>
-                    x.ApplicationIdNo == applicationId);
+            return await _context.LicenseApplicationUserDetails.FirstOrDefaultAsync(x => x.ApplicationIdNo == applicationId);
         }
 
         // ---------------------------------------------
         // Get Last Application ID
         // ---------------------------------------------
-        public async Task<string?>
-            GetLastApplicationId()
+        public async Task<string?> GetLastApplicationId()
         {
-            return await _context
-                .LicenseApplications
-                .OrderByDescending(x => x.Id)
-                .Select(x => x.ApplicationIdNo)
-                .FirstOrDefaultAsync();
+            return await _context.LicenseApplications.OrderByDescending(x => x.Id).Select(x => x.ApplicationIdNo).FirstOrDefaultAsync();
         }
 
         // ---------------------------------------------
         // Save New Application
         // ---------------------------------------------
-        public async Task SaveApplication(
-            LicenseApplication application,
-            LicenseApplicationUserDetails licenseDetails)
+        public async Task SaveApplication( LicenseApplication application, LicenseApplicationUserDetails licenseDetails)
         {
             _context.LicenseApplications.Add(application);
-
-            _context.LicenseApplicationUserDetails
-                .Add(licenseDetails);
-
+            _context.LicenseApplicationUserDetails.Add(licenseDetails);
             await _context.SaveChangesAsync();
         }
 
@@ -95,24 +77,17 @@ namespace backend.Infrastructure.Repositories.License
 
         public async Task<MstUsReg?> GetApplicantByRegId(long regId)
         {
-            return await _context.MstUsReg
-                .FirstOrDefaultAsync(x => x.RegId == regId);
+            return await _context.MstUsReg.FirstOrDefaultAsync(x => x.RegId == regId);
         }
 
         public async Task<string?> GetActiveFinancialYear()
         {
-            return await _context.MstFinancialYear
-                .Where(x => x.ActiveStatus == "Y")
-                .Select(x => x.FinYear)
-                .FirstOrDefaultAsync();
+            return await _context.MstFinancialYear.Where(x => x.ActiveStatus == "Y").Select(x => x.FinYear).FirstOrDefaultAsync();
         }
 
-        public async Task<WarehouseDetails?> GetWarehouseDetails(
-    string applicationIdNo)
+        public async Task<WarehouseDetails?> GetWarehouseDetails(string applicationIdNo)
         {
-            return await _context.WarehouseDetails
-                .FirstOrDefaultAsync(x =>
-                    x.ApplicationIdNo == applicationIdNo);
+            return await _context.WarehouseDetails.FirstOrDefaultAsync(x =>x.ApplicationIdNo == applicationIdNo);
         }
 
 
@@ -124,103 +99,134 @@ namespace backend.Infrastructure.Repositories.License
 
 
 
-        public async Task<LicenseCompanyDetails?> GetCompanyDetails(
-    string applicationIdNo)
+        public async Task<LicenseCompanyDetails?> GetCompanyDetails( string applicationIdNo)
         {
-            return await _context.LicenseCompanyDetails
-                .FirstOrDefaultAsync(x =>
-                    x.ApplicationIdNo == applicationIdNo);
+            return await _context.LicenseCompanyDetails.FirstOrDefaultAsync(x =>x.ApplicationIdNo == applicationIdNo);
         }
 
-        public async Task AddCompanyDetails(
-    LicenseCompanyDetails company)
+        public async Task AddCompanyDetails( LicenseCompanyDetails company)
         {
             _context.LicenseCompanyDetails.Add(company);
 
             await Task.CompletedTask;
         }
 
-        public async Task<List<ApplicantLicensePartnersDetails>>
-    GetCompanyPartners(string applicationIdNo)
+        public async Task<List<ApplicantLicensePartnersDetails>> GetCompanyPartners(string applicationIdNo)
         {
-            return await _context
-                .ApplicantLicensePartnersDetails
-                .Where(x =>
-                    x.ApplicationIdNo == applicationIdNo)
-                .ToListAsync();
+            return await _context .ApplicantLicensePartnersDetails .Where(x =>  x.ApplicationIdNo == applicationIdNo).ToListAsync();
         }
 
 
-        public async Task AddCompanyPartner(
-    ApplicantLicensePartnersDetails partner)
+        public async Task AddCompanyPartner( ApplicantLicensePartnersDetails partner)
         {
-            _context.ApplicantLicensePartnersDetails
-                .Add(partner);
+            _context.ApplicantLicensePartnersDetails.Add(partner);
 
             await Task.CompletedTask;
         }
 
 
-        public async Task<string> SaveCompanyDocument(
-    IFormFile file)
+        //    public async Task<string> SaveCompanyDocument(
+        //IFormFile file)
+        //    {
+        //        var fileName =
+        //            Guid.NewGuid().ToString() +
+        //            Path.GetExtension(file.FileName);
+
+        //        var folder = Path.Combine(
+        //            Directory.GetCurrentDirectory(),
+        //            "Documents",
+        //            "LicenseCompanyDocuments");
+
+        //        if (!Directory.Exists(folder))
+        //            Directory.CreateDirectory(folder);
+
+        //        var filePath = Path.Combine(
+        //            folder,
+        //            fileName);
+
+        //        using var stream =
+        //            new FileStream(
+        //                filePath,
+        //                FileMode.Create);
+
+        //        await file.CopyToAsync(stream);
+
+        //        return fileName;
+        //    }
+
+
+
+        public async Task<string> SaveCompanyDocument( IFormFile file, string appId,string documentType,int? partnerIndex = null)
         {
-            var fileName =
-                Guid.NewGuid().ToString() +
-                Path.GetExtension(file.FileName);
-
-            var folder = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "Documents",
-                "LicenseCompanyDocuments");
-
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            var filePath = Path.Combine(
-                folder,
-                fileName);
-
-            using var stream =
-                new FileStream(
-                    filePath,
-                    FileMode.Create);
-
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = $"{appId}_Partner{partnerIndex}_{documentType}{extension}";
+            var folder = Path.Combine( Directory.GetCurrentDirectory(),  "Documents",  "LicenseCompanyDocuments");
+            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+            var filePath = Path.Combine(folder, fileName);
+            using var stream = new FileStream( filePath,  FileMode.Create);
             await file.CopyToAsync(stream);
-
             return fileName;
         }
 
-        public async Task<LicenseApplicationUploadedDocument?>
-          GetApplicationDocument(
-              string applicationIdNo,
-              string docId)
+
+
+
+        //public async Task<LicenseApplicationUploadedDocument?> GetApplicationDocument( string applicationIdNo, string docId)
+        //{
+        //    return await _context.LicenseApplicationUploadedDocument .FirstOrDefaultAsync(x =>   x.ApplicationIdNo == applicationIdNo && x.DocId == docId);
+        //}
+
+
+        //public async Task<LicenseApplicationUploadedDocument?>GetApplicationDocument(string applicationIdNo, string docId)
+        //{
+        //    return await _context.LicenseApplicationUploadedDocument
+        //        .FirstOrDefaultAsync(x =>
+        //            x.ApplicationIdNo == applicationIdNo &&
+        //            x.DocId == docId);
+        //}
+
+        public async Task<List<LicenseApplicationUploadedDocument>>
+    GetApplicationDocumentsByApplicationId(string applicationIdNo)
         {
-            return await _context
-                .LicenseApplicationUploadedDocument
-                .FirstOrDefaultAsync(x =>
-                    x.ApplicationIdNo == applicationIdNo &&
-                    x.DocId == docId);
+            return await _context.LicenseApplicationUploadedDocument
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .ToListAsync();
         }
 
-        public async Task AddApplicationDocument(
-    LicenseApplicationUploadedDocument document)
+        public async Task AddApplicationDocument( LicenseApplicationUploadedDocument document)
         {
-            _context
-                .LicenseApplicationUploadedDocument
-                .Add(document);
-
+            _context.LicenseApplicationUploadedDocument.Add(document);
             await Task.CompletedTask;
         }
 
-        public async Task<string?> SaveApplicationDocumentFile(
-    IFormFile file)
-        {
-            if (file == null)
-                return null;
+        //public async Task<string?> SaveApplicationDocumentFile( IFormFile file)
+        //{
+        //    if (file == null)
+        //        return null;
 
-            var fileName =
-                Guid.NewGuid().ToString()
-                + Path.GetExtension(file.FileName);
+        //    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+        //    var folder = Path.Combine(  Directory.GetCurrentDirectory(),  "Documents", "ApplicationDocuments");
+
+        //    if (!Directory.Exists(folder))
+        //    {
+        //        Directory.CreateDirectory(folder);
+        //    }
+
+        //    var filePath = Path.Combine(folder, fileName);
+        //    using var stream =  new FileStream( filePath,FileMode.Create);
+        //    await file.CopyToAsync(stream);
+        //    return fileName;
+        //}
+
+
+
+        public async Task<string?> SaveApplicationDocumentFile(
+    IFormFile file,
+    string fileName)
+        {
+            if (file == null || file.Length == 0)
+                return null;
 
             var folder = Path.Combine(
                 Directory.GetCurrentDirectory(),
@@ -232,18 +238,27 @@ namespace backend.Infrastructure.Repositories.License
                 Directory.CreateDirectory(folder);
             }
 
-            var filePath =
-                Path.Combine(folder, fileName);
+            var filePath = Path.Combine(folder, fileName);
 
-            using var stream =
-                new FileStream(
-                    filePath,
-                    FileMode.Create);
-
+            using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
             return fileName;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //public async Task SaveChanges()
         //{

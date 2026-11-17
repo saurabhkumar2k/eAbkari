@@ -112,8 +112,7 @@ namespace backend.API.Master.Controllers
 
 
         [HttpPut("UpdateApplicationStatus")]
-        public async Task<IActionResult> UpdateApplicationStatus(
-    [FromBody] UpdateApplicationStatusDto dto)
+        public async Task<IActionResult> UpdateApplicationStatus([FromBody] UpdateApplicationStatusDto dto)
         {
             try
             {
@@ -123,12 +122,7 @@ namespace backend.API.Master.Controllers
                 }
 
                 var rows =
-                    await _context.LicenseApplications
-                        .Where(x =>
-                            x.ApplicationIdNo ==
-                            dto.ApplicationIdNo)
-                        .ExecuteUpdateAsync(setters =>
-                            setters.SetProperty(
+                    await _context.LicenseApplications.Where(x =>  x.ApplicationIdNo ==    dto.ApplicationIdNo) .ExecuteUpdateAsync(setters =>setters.SetProperty(
                                 x => x.ApplicationStatus,
                                 dto.ApplicationStatus
                             )
