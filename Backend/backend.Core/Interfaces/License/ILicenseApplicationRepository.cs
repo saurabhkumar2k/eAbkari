@@ -50,21 +50,36 @@ namespace backend.Core.Interfaces.License
             ApplicantLicensePartnersDetails partner);
 
         Task<string> SaveCompanyDocument(
-            IFormFile file);
+           IFormFile file,
+           string appId,
+           string documentType,
+           int? partnerIndex = null);
 
-        Task<LicenseApplicationUploadedDocument?>
-       GetApplicationDocument(
-           string applicationIdNo,
-           string docId);
+       // Task<LicenseApplicationUploadedDocument?>
+       //GetApplicationDocument(
+       //    string applicationIdNo,
+       //    string docId);
+
+
+        Task<List<LicenseApplicationUploadedDocument>>
+    GetApplicationDocumentsByApplicationId(string applicationIdNo);
+
+        Task<string?> SaveApplicationDocumentFile(
+    IFormFile file,
+    string fileName);
 
         Task AddApplicationDocument(
             LicenseApplicationUploadedDocument document);
 
-        Task<string?> SaveApplicationDocumentFile(
-            IFormFile file);
+        //Task<string?> SaveApplicationDocumentFile(
+        //    IFormFile file);
         Task AddLicenseSiteDetails(LicenseSiteDetails siteDetails);
 
         Task<string?> GetFlowUpto(string CatCode, string ActivityId);
+
+
+
+
     }
     
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import "../Style/ApplyLicense.css";
 
+
 import {
   Warehouse,
   Building2,
@@ -16,13 +17,14 @@ import {
   FileText,
   Calendar,
   Clock3
+  
 
 
 
  
 } from "lucide-react";
 
-
+import { useRef } from "react";
 
 
 const WarehouseDetails = ({
@@ -31,8 +33,15 @@ const WarehouseDetails = ({
   districts = [],
   subDivisions = [],
   policeStations = [],
+  errors = {},
+  
   onChange,
+  onSubmit,
+  onBack,
+  onContinue
 }) => {
+
+const warehouseNameRef = useRef(null);
   return (
     <div className="premium-form">
 
@@ -62,12 +71,16 @@ const WarehouseDetails = ({
           <Warehouse className="w-4 h-4 text-blue-600" />
         </div>
 
-        <input
-          className="reg-input"
-          value={applicant.warehouseName || ""}
-          onChange={(e) => onChange("warehouseName", e.target.value)}
-        />
+<input
+  id="warehouseName"
+  className="reg-input"
+  value={applicant.warehouseName || ""}
+onChange={(e) => onChange("warehouseName", e.target.value)}
+/>
       </div>
+       {errors.warehouseName && (
+  <p className="error-text">{errors.warehouseName}</p>
+)}
     </div>
 
 <div className="reg-field">
@@ -82,12 +95,16 @@ const WarehouseDetails = ({
 
     <input
       type="text"
+      id="warehouseAddress1"
       className="reg-input"
       value={applicant.warehouseAddress1 || ""}
-      onChange={(e) => onChange("warehouseAddress1", e.target.value)}
       placeholder="Enter Address Line 1"
+      onChange={(e) => onChange("warehouseAddress1", e.target.value)}
     />
   </div>
+  {errors.warehouseAddress1 && (
+  <p className="error-text">{errors.warehouseAddress1}</p>
+)}
 </div>
 
 <div className="reg-field">
@@ -102,6 +119,7 @@ const WarehouseDetails = ({
 
     <input
       type="text"
+      id="warehouseAddress2"
       className="reg-input"
       value={applicant.warehouseAddress2 || ""}
       onChange={(e) => onChange("warehouseAddress2", e.target.value)}
@@ -168,9 +186,14 @@ const WarehouseDetails = ({
   ))}
 </select>
         <div className="reg-input-icon-right">
+       
           <ChevronDown className="w-4 h-4" />
         </div>
+        
       </div>
+         {errors.warehouseState && (
+  <p className="error-text">{errors.warehouseState}</p>
+          )}
     </div>
 
     {/* District */}
@@ -225,6 +248,9 @@ const WarehouseDetails = ({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+         {errors.warehouseDistrict && (
+  <p className="error-text">{errors.warehouseDistrict}</p>
+          )}
     </div>
 
     {/* PIN */}
@@ -249,6 +275,9 @@ const WarehouseDetails = ({
           placeholder="Enter PIN Code"
         />
       </div>
+         {errors.warehousePin && (
+  <p className="error-text">{errors.warehousePin}</p>
+          )}
     </div>
 
     {/* Sub Division */}
@@ -303,6 +332,9 @@ const WarehouseDetails = ({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+         {errors.warehouseSubDivision && (
+  <p className="error-text">{errors.warehouseSubDivision}</p>
+          )}
     </div>
 
     {/* Police Station */}
@@ -355,6 +387,9 @@ const WarehouseDetails = ({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+         {errors.warehousePoliceStation && (
+  <p className="error-text">{errors.warehousePoliceStation}</p>
+          )}
     </div>
 
   </div>
@@ -387,6 +422,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.warehouseEmail && (
+  <p className="error-text">{errors.warehouseEmail}</p>
+)}
     </div>
 
     {/* Mobile */}
@@ -414,6 +452,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.warehouseMobile && (
+  <p className="error-text">{errors.warehouseMobile}</p>
+)}
     </div>
 
     {/* Landline */}
@@ -440,6 +481,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.warehouseLandline && (
+  <p className="error-text">{errors.warehouseLandline}</p>
+)}
     </div>
 
   </div>
@@ -477,7 +521,11 @@ const WarehouseDetails = ({
         <div className="reg-input-icon-right">
           <ChevronDown className="w-4 h-4" />
         </div>
+        
       </div>
+      {errors.leasePremise && (
+  <p className="error-text">{errors.leasePremise}</p>
+)}
     </div>
 
     {/* Lease Registration */}
@@ -499,6 +547,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.leaseRegistration && (
+  <p className="error-text">{errors.leaseRegistration}</p>
+)}
     </div>
 
     {/* Registration Date */}
@@ -512,15 +563,29 @@ const WarehouseDetails = ({
           <Calendar className="w-4 h-4 text-blue-600" />
         </div>
 
-        <input
+        {/* <input
           type="date"
           className="reg-input"
           value={applicant.leaseRegistrationDate || ""}
           onChange={(e) =>
             onChange("leaseRegistrationDate", e.target.value)
           }
-        />
+        /> */}
+
+
+        <input
+  type="date"
+  className="reg-input"
+  max={new Date().toISOString().split("T")[0]}
+  value={applicant.leaseRegistrationDate || ""}
+  onChange={(e) =>
+    onChange("leaseRegistrationDate", e.target.value)
+  }
+/>
       </div>
+      {errors.leaseRegistrationDate && (
+  <p className="error-text">{errors.leaseRegistrationDate}</p>
+)}
     </div>
 
     {/* Expiration Date */}
@@ -534,15 +599,29 @@ const WarehouseDetails = ({
           <Calendar className="w-4 h-4 text-blue-600" />
         </div>
 
-        <input
+        {/* <input
           type="date"
           className="reg-input"
           value={applicant.leaseRegistrationExpiryDate || ""}
           onChange={(e) =>
             onChange("leaseRegistrationExpiryDate", e.target.value)
           }
-        />
+        /> */}
+
+<input
+  type="date"
+  className="reg-input"
+  min={new Date().toISOString().split("T")[0]}
+  value={applicant.leaseRegistrationExpiryDate || ""}
+  onChange={(e) =>
+    onChange("leaseRegistrationExpiryDate", e.target.value)
+  }
+/>
+
       </div>
+      {errors.leaseRegistrationExpiryDate && (
+  <p className="error-text">{errors.leaseRegistrationExpiryDate}</p>
+)}
     </div>
 
     {/* Architect Registration */}
@@ -564,6 +643,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.architectRegistrationNo && (
+  <p className="error-text">{errors.architectRegistrationNo}</p>
+)}
     </div>
 
     {/* Architect Valid Upto */}
@@ -580,6 +662,7 @@ const WarehouseDetails = ({
         <input
           type="date"
           className="reg-input"
+            min={new Date().toISOString().split("T")[0]}
           value={applicant.architectRegistrationNoValidUpto || ""}
           onChange={(e) =>
             onChange(
@@ -589,6 +672,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.architectRegistrationNoValidUpto && (
+  <p className="error-text">{errors.architectRegistrationNoValidUpto}</p>
+)}
     </div>
 
     {/* Super Area */}
@@ -615,6 +701,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.superAreaofLicensePremise && (
+  <p className="error-text">{errors.superAreaofLicensePremise}</p>
+)}
     </div>
 
     {/* Carpet Area */}
@@ -641,6 +730,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.carpetAreaofLicensePremise && (
+  <p className="error-text">{errors.carpetAreaofLicensePremise}</p>
+)}
     </div>
 
     {/* Distance */}
@@ -667,6 +759,9 @@ const WarehouseDetails = ({
           }
         />
       </div>
+      {errors.distanceofDistilleryCP && (
+  <p className="error-text">{errors.distanceofDistilleryCP}</p>
+)}  
     </div>
 
     {/* Hours of Sale */}
@@ -695,6 +790,9 @@ const WarehouseDetails = ({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+      {errors.hoursofSale && (
+  <p className="error-text">{errors.hoursofSale}</p>
+)}
     </div>
 
   </div>

@@ -25,84 +25,45 @@ namespace backend.Application.Services.License
                
             }
 
-            public async Task<string> ApplyLicense(
-                LicenseApplicationUserDetailsDto dto,
-                string? ipAddress)
+            public async Task<string> ApplyLicense( LicenseApplicationUserDetailsDto dto,string? ipAddress)
             {
                 // -------------------------------------------------
                 // 1. Check Existing Draft
                 // -------------------------------------------------
 
                 var existingApplication =
-                    await _repository.GetDraftApplication(
-                        dto.RegId,
-                        dto.CatCode);
+                    await _repository.GetDraftApplication( dto.RegId, dto.CatCode);
 
                 string applicationId;
-
                 // -------------------------------------------------
                 // 2. If Draft Already Exists
                 // -------------------------------------------------
-
                 if (existingApplication != null)
                 {
-                    applicationId =
-                        existingApplication.ApplicationIdNo;
+                    applicationId = existingApplication.ApplicationIdNo;
 
-                    var licenseDetails =
-                        await _repository.GetLicenseDetails(
-                            applicationId);
+                    var licenseDetails =await _repository.GetLicenseDetails( applicationId);
 
                     if (licenseDetails != null)
                     {
-                        licenseDetails.ApplicantName =
-                            dto.ApplicantName;
-
-                        licenseDetails.DateOfBirth =
-                            dto.Dob;
-
-                        licenseDetails.FatherHusbandName =
-                            dto.FatherHusbandName ?? "";
-
-                        licenseDetails.Occupation =
-                            dto.Occupation ?? "";
-
-                        licenseDetails.PanNo =
-                            dto.PanNo ?? "";
-
-                        licenseDetails.PresentAddress =
-                            dto.PresentAddress ?? "";
-
-                        licenseDetails.PermanentAddress =
-                            dto.PermanentAddress ?? "";
-
-                        licenseDetails.StateUT =
-                            dto.StateUT ?? "";
-
-                        licenseDetails.District =
-                            dto.District ?? "";
-
-                        licenseDetails.SubDivision =
-                            dto.SubDivision ?? "";
-
-                        licenseDetails.PIN =
-                            dto.PIN ?? "";
-
-                        licenseDetails.Email =
-                            dto.Email ?? "";
-
-                        licenseDetails.Mobile =
-                            dto.Mobile ?? "";
-
-                        licenseDetails.LandLine =
-                            dto.LandLine ?? "";
+                        licenseDetails.ApplicantName = dto.ApplicantName;
+                        licenseDetails.DateOfBirth =  dto.Dob;
+                        licenseDetails.FatherHusbandName = dto.FatherHusbandName ?? "";
+                        licenseDetails.Occupation =  dto.Occupation ?? "";
+                        licenseDetails.PanNo = dto.PanNo ?? "";
+                        licenseDetails.PresentAddress =  dto.PresentAddress ?? "";
+                        licenseDetails.PermanentAddress =   dto.PermanentAddress ?? "";
+                        licenseDetails.StateUT =  dto.StateUT ?? "";
+                        licenseDetails.District =  dto.District ?? "";
+                        licenseDetails.SubDivision = dto.SubDivision ?? "";
+                        licenseDetails.PIN = dto.PIN ?? "";
+                        licenseDetails.Email = dto.Email ?? "";
+                        licenseDetails.Mobile =dto.Mobile ?? "";
+                        licenseDetails.LandLine =  dto.LandLine ?? "";
                     }
 
-                    existingApplication.LicenseType =
-                        dto.OwnerType;
-
+                    existingApplication.LicenseType =  dto.OwnerType;
                     await _repository.SaveChanges();
-
                     return applicationId;
                 }
 
@@ -110,30 +71,21 @@ namespace backend.Application.Services.License
                 // 3. Generate New Application ID
                 // -------------------------------------------------
 
-                string? lastAppId =
-                    await _repository.GetLastApplicationId();
+                string? lastAppId = await _repository.GetLastApplicationId();
 
                 // Get Financial Year
-                var finYear =
-                    await _repository.GetFinYear();
+                var finYear =  await _repository.GetFinYear();
 
                 if (string.IsNullOrWhiteSpace(finYear))
                 {
-                    throw new Exception(
-                        "Financial Year is not available.");
+                    throw new Exception( "Financial Year is not available.");
                 }
 
-                // Example:
-                // 2026-27 → 26
-                string activeYear =
-                    finYear.Substring(2, 2);
+                // Example:// 2026-27 → 26
+                string activeYear =finYear.Substring(2, 2);
 
-                // Example:
-                // CatCode = L1
-                // REF + L1 + 26
-                // REFL126
-                string prefix =
-                    $"REF{dto.CatCode}{activeYear}";
+                // Example:// CatCode = L1 // REF + L1 + 26// REFL126
+                string prefix = $"REF{dto.CatCode}{activeYear}";
 
                 int sequence = 1;
 
@@ -143,129 +95,58 @@ namespace backend.Application.Services.License
 
                 if (!string.IsNullOrWhiteSpace(lastAppId))
                 {
-                    string lastFive =
-                        lastAppId.Substring(
-                            lastAppId.Length - 5);
+                    string lastFive =  lastAppId.Substring(  lastAppId.Length - 5);
 
-                    if (int.TryParse(
-                        lastFive,
-                        out int lastSequence))
+                    if (int.TryParse( lastFive, out int lastSequence))
                     {
-                        sequence =
-                            lastSequence + 1;
+                        sequence = lastSequence + 1;
                     }
                 }
 
-                applicationId =
-                    $"{prefix}{sequence:00000}";
-
-
-
-            var ApplicationFlowUpto =
-                    await _repository.GetFlowUpto(
-                        dto.CatCode,
-                        dto.ActivityId);
-
-
-
+                applicationId =$"{prefix}{sequence:00000}";
+            var ApplicationFlowUpto =await _repository.GetFlowUpto( dto.CatCode,dto.ActivityId);
             // -------------------------------------------------
             // 5. Create Applicant Details
             // -------------------------------------------------
 
-            var licenseDetailsNew =
-                    new LicenseApplicationUserDetails
+            var licenseDetailsNew =  new LicenseApplicationUserDetails
                     {
                         RegId = dto.RegId,
-
-                        ApplicantName =
-                            dto.ApplicantName,
-
-                        ApplicationIdNo =
-                            applicationId,
-
-                        DateOfBirth =
-                            dto.Dob,
-
-                        FatherHusbandName =
-                            dto.FatherHusbandName ?? "",
-
-                        Occupation =
-                            dto.Occupation ?? "",
-
-                        PanNo =
-                            dto.PanNo ?? "",
-
-                        PresentAddress =
-                            dto.PresentAddress ?? "",
-
-                        PermanentAddress =
-                            dto.PermanentAddress ?? "",
-
-                        StateUT =
-                            dto.StateUT ?? "",
-
-                        District =
-                            dto.District ?? "",
-
-                        SubDivision =
-                            dto.SubDivision ?? "",
-
-                        PIN =
-                            dto.PIN ?? "",
-
-                        Email =
-                            dto.Email ?? "",
-
-                        Mobile =
-                            dto.Mobile ?? "",
-
-                        LandLine =
-                            dto.LandLine ?? ""
+                        ApplicantName =  dto.ApplicantName,
+                        ApplicationIdNo =  applicationId,
+                        DateOfBirth =dto.Dob,
+                        FatherHusbandName = dto.FatherHusbandName ?? "",
+                        Occupation = dto.Occupation ?? "",
+                        PanNo =dto.PanNo ?? "",
+                        PresentAddress =dto.PresentAddress ?? "",
+                        PermanentAddress = dto.PermanentAddress ?? "",
+                        StateUT = dto.StateUT ?? "",
+                        District =dto.District ?? "",
+                        SubDivision =dto.SubDivision ?? "",
+                        PIN = dto.PIN ?? "",
+                        Email = dto.Email ?? "",
+                        Mobile =dto.Mobile ?? "",
+                        LandLine = dto.LandLine ?? ""
                     };
 
                 // -------------------------------------------------
                 // 6. Create License Application
                 // -------------------------------------------------
 
-                var application =
-                    new LicenseApplication
+                var application = new LicenseApplication
                     {
-                        IPAddress =
-                            ipAddress,
-
-                        RegId =
-                            dto.RegId,
-
-                        ApplicationIdNo =
-                            applicationId,
-
-                        ApplicationDate =
-                            DateTime.Now,
-
-                        FinYear =
-                            finYear,
-
-                        CatCode =
-                            dto.CatCode,
-
-                        LicenseType =
-                            dto.OwnerType,
-
-                        IsApplicationCompleted =
-                            "N",
-
-                        ApplicationFlag =
-                            "A",
-
-                        ApplicationStatus =
-                            "01",
-
-                        IsLicenseGenerated =
-                            "N",
-
-                        IsApproveYN =
-                            "N",
-
+                        IPAddress =ipAddress,
+                        RegId =  dto.RegId,
+                        ApplicationIdNo =applicationId,
+                        ApplicationDate = DateTime.Now,
+                        FinYear = finYear,
+                        CatCode =dto.CatCode,
+                        LicenseType =dto.OwnerType,
+                        IsApplicationCompleted ="N",
+                        ApplicationFlag = "F",
+                        ApplicationStatus = "01",
+                        IsLicenseGenerated ="N",
+                        IsApproveYN = "N",
                       FlowUptoCode = ApplicationFlowUpto
                     };
 
@@ -299,16 +180,14 @@ namespace backend.Application.Services.License
             // 1. Get Active Financial Year
             // -----------------------------------------
 
-            var finYear =
-                await _repository.GetActiveFinancialYear();
+            var finYear =  await _repository.GetActiveFinancialYear();
 
             // -----------------------------------------
             // 2. Check Existing Warehouse Details
             // -----------------------------------------
 
             var warehouse =
-                await _repository.GetWarehouseDetails(
-                    dto.ApplicationIdNo);
+                await _repository.GetWarehouseDetails(  dto.ApplicationIdNo);
 
             // -----------------------------------------
             // 3. INSERT
@@ -322,69 +201,27 @@ namespace backend.Application.Services.License
                     CatCode = dto.CatCode,
                     FinYear = finYear,
                     ApplicationIdNo = dto.ApplicationIdNo,
-
-                    WarehouseName =
-                        dto.WarehouseName,
-
-                    WarehouseAddress1 =
-                        dto.WarehouseAddress1,
-
-                    WarehouseAddress2 =
-                        dto.WarehouseAddress2,
-
-                    WarehouseState =
-                        dto.WarehouseState,
-
-                    WarehouseDistrict =
-                        dto.WarehouseDistrict,
-
-                    WarehousePin =
-                        dto.WarehousePin,
-
-                    WarehouseMobile =
-                        dto.WarehouseMobile,
-
-                    WarehouseEmail =
-                        dto.WarehouseEmail,
-
-                    WarehouseSubDivision =
-                        dto.WarehouseSubDivision,
-
-                    WarehousePoliceStation =
-                        dto.WarehousePoliceStation,
-
-                    LeaseRegistration =
-                        dto.LeaseRegistration,
-
-                    LeasePremise =
-                        dto.LeasePremise,
-
-                    LeaseRegistrationDate =
-                        dto.LeaseRegistrationDate,
-
-                    LeaseRegistrationExpiryDate =
-                        dto.LeaseRegistrationExpiryDate,
-
-                    ArchitectRegistrationNo =
-                        dto.ArchitectRegistrationNo,
-
-                    ArchitectRegistrationNoValidUpto =
-                        dto.ArchitectRegistrationNoValidUpto,
-
-                    SuperAreaofLicensePremise =
-                        dto.SuperAreaofLicensePremise,
-
-                    CarpetAreaofLicensePremise =
-                        dto.CarpetAreaofLicensePremise,
-
-                    DistanceofDistilleryCP =
-                        dto.DistanceofDistilleryCP,
-
-                    HoursofSale =
-                        dto.HoursofSale,
-
-                    CreatedDateAt =
-                        DateTime.Now
+                    WarehouseName = dto.WarehouseName,
+                    WarehouseAddress1 =  dto.WarehouseAddress1,
+                    WarehouseAddress2 =   dto.WarehouseAddress2,
+                    WarehouseState = dto.WarehouseState,
+                    WarehouseDistrict = dto.WarehouseDistrict,
+                    WarehousePin = dto.WarehousePin,
+                    WarehouseMobile =dto.WarehouseMobile,
+                    WarehouseEmail =  dto.WarehouseEmail,
+                    WarehouseSubDivision =  dto.WarehouseSubDivision,
+                    WarehousePoliceStation = dto.WarehousePoliceStation,
+                    LeaseRegistration =  dto.LeaseRegistration,
+                    LeasePremise = dto.LeasePremise,
+                    LeaseRegistrationDate = dto.LeaseRegistrationDate,
+                    LeaseRegistrationExpiryDate =  dto.LeaseRegistrationExpiryDate,
+                    ArchitectRegistrationNo = dto.ArchitectRegistrationNo,
+                    ArchitectRegistrationNoValidUpto =  dto.ArchitectRegistrationNoValidUpto,
+                    SuperAreaofLicensePremise = dto.SuperAreaofLicensePremise,
+                    CarpetAreaofLicensePremise =  dto.CarpetAreaofLicensePremise,
+                    DistanceofDistilleryCP = dto.DistanceofDistilleryCP,
+                    HoursofSale =dto.HoursofSale,
+                    CreatedDateAt = DateTime.Now
                 };
 
                 await _repository.AddWarehouseDetails(
@@ -412,6 +249,8 @@ namespace backend.Application.Services.License
                     SiteEmail = dto.WarehouseEmail,
                     SiteMobile = dto.WarehouseMobile,
 
+                    CreatedDate= DateTime.Now
+
                     // agar Warehouse DTO me ye fields hain
                     //SiteLandline = dto.SiteLandline,
                     //SiteFax = dto.SiteFax,
@@ -428,74 +267,51 @@ namespace backend.Application.Services.License
                 // 4. UPDATE
                 // -----------------------------------------
 
-                warehouse.RegId =
-                    dto.RegId;
+                warehouse.RegId =     dto.RegId;
 
-                warehouse.CatCode =
-                    dto.CatCode;
+                warehouse.CatCode = dto.CatCode;
 
-                warehouse.FinYear =
-                    finYear;
+                warehouse.FinYear =  finYear;
 
-                warehouse.WarehouseName =
-                    dto.WarehouseName;
+                warehouse.WarehouseName =dto.WarehouseName;
 
-                warehouse.WarehouseAddress1 =
-                    dto.WarehouseAddress1;
+                warehouse.WarehouseAddress1 = dto.WarehouseAddress1;
 
-                warehouse.WarehouseAddress2 =
-                    dto.WarehouseAddress2;
+                warehouse.WarehouseAddress2 = dto.WarehouseAddress2;
 
-                warehouse.WarehouseState =
-                    dto.WarehouseState;
+                warehouse.WarehouseState = dto.WarehouseState;
 
-                warehouse.WarehouseDistrict =
-                    dto.WarehouseDistrict;
+                warehouse.WarehouseDistrict =dto.WarehouseDistrict;
 
-                warehouse.WarehousePin =
-                    dto.WarehousePin;
+                warehouse.WarehousePin = dto.WarehousePin;
 
-                warehouse.WarehouseMobile =
-                    dto.WarehouseMobile;
+                warehouse.WarehouseMobile = dto.WarehouseMobile;
 
-                warehouse.WarehouseEmail =
-                    dto.WarehouseEmail;
+                warehouse.WarehouseEmail =dto.WarehouseEmail;
 
-                warehouse.WarehouseSubDivision =
-                    dto.WarehouseSubDivision;
+                warehouse.WarehouseSubDivision = dto.WarehouseSubDivision;
 
-                warehouse.WarehousePoliceStation =
-                    dto.WarehousePoliceStation;
+                warehouse.WarehousePoliceStation = dto.WarehousePoliceStation;
 
-                warehouse.LeaseRegistration =
-                    dto.LeaseRegistration;
+                warehouse.LeaseRegistration =dto.LeaseRegistration;
 
-                warehouse.LeasePremise =
-                    dto.LeasePremise;
+                warehouse.LeasePremise = dto.LeasePremise;
 
-                warehouse.LeaseRegistrationDate =
-                    dto.LeaseRegistrationDate;
+                warehouse.LeaseRegistrationDate = dto.LeaseRegistrationDate;
 
-                warehouse.LeaseRegistrationExpiryDate =
-                    dto.LeaseRegistrationExpiryDate;
+                warehouse.LeaseRegistrationExpiryDate = dto.LeaseRegistrationExpiryDate;
 
-                warehouse.ArchitectRegistrationNo =
-                    dto.ArchitectRegistrationNo;
+                warehouse.ArchitectRegistrationNo =  dto.ArchitectRegistrationNo;
 
-                warehouse.ArchitectRegistrationNoValidUpto =
-                    dto.ArchitectRegistrationNoValidUpto;
+                warehouse.ArchitectRegistrationNoValidUpto = dto.ArchitectRegistrationNoValidUpto;
 
-                warehouse.SuperAreaofLicensePremise =
-                    dto.SuperAreaofLicensePremise;
+                warehouse.SuperAreaofLicensePremise =dto.SuperAreaofLicensePremise;
 
-                warehouse.CarpetAreaofLicensePremise =
-                    dto.CarpetAreaofLicensePremise;
+                warehouse.CarpetAreaofLicensePremise = dto.CarpetAreaofLicensePremise;
 
-                warehouse.DistanceofDistilleryCP =
-                    dto.DistanceofDistilleryCP;
+                warehouse.DistanceofDistilleryCP = dto.DistanceofDistilleryCP;
 
-                warehouse.HoursofSale =
-                    dto.HoursofSale;
+                warehouse.HoursofSale = dto.HoursofSale;
 
                 // CreatedDateAt ko change nahi karenge
             }
@@ -553,11 +369,20 @@ namespace backend.Application.Services.License
             // EXCISE NOMINEE PAN IMAGE
             // -----------------------------
 
+            //if (dto.ExciseNomineePanImage != null)
+            //{
+            //    company.ExciseNomineePanImage =
+            //        await _repository.SaveCompanyDocument(
+            //            dto.ExciseNomineePanImage);
+            //}
+
             if (dto.ExciseNomineePanImage != null)
             {
                 company.ExciseNomineePanImage =
                     await _repository.SaveCompanyDocument(
-                        dto.ExciseNomineePanImage);
+                        dto.ExciseNomineePanImage,
+                        dto.ApplicationIdNo,
+                        "ExciseNomineePAN");
             }
 
             // -----------------------------
@@ -617,6 +442,82 @@ namespace backend.Application.Services.License
                 await _repository.GetCompanyPartners(
                     dto.ApplicationIdNo);
 
+            //foreach (var director in dto.CompanyPartnersDetails)
+            //{
+            //    ApplicantLicensePartnersDetails? partnerEntity = null;
+
+            //    if (!string.IsNullOrWhiteSpace(director.PPanNo))
+            //    {
+            //        partnerEntity = existingPartners
+            //            .FirstOrDefault(x =>
+            //                x.PPanNo == director.PPanNo);
+            //    }
+
+            //    if (partnerEntity == null)
+            //    {
+            //        partnerEntity =
+            //            new ApplicantLicensePartnersDetails
+            //            {
+            //                ApplicationIdNo =
+            //                    dto.ApplicationIdNo
+            //            };
+
+            //        await _repository.AddCompanyPartner(
+            //            partnerEntity);
+            //    }
+
+            //    // Basic details
+            //    partnerEntity.PName =
+            //        director.PName;
+
+            //    partnerEntity.PPerShare =
+            //        director.PPerShare;
+
+            //    partnerEntity.PPanNo =
+            //        director.PPanNo;
+
+            //    partnerEntity.PExciseNominee =
+            //        director.PExciseNominee;
+
+            //    partnerEntity.DINNo =
+            //        director.DINNo;
+
+            //    // PAN file
+            //    if (director.PanFile != null)
+            //    {
+            //        partnerEntity.PhotoURLPanNo =
+            //            await _repository.SaveCompanyDocument(
+            //                director.PanFile);
+            //    }
+            //    else if (!string.IsNullOrWhiteSpace(
+            //        director.PanFileUploaded))
+            //    {
+            //        partnerEntity.PhotoURLPanNo =
+            //            director.PanFileUploaded;
+            //    }
+
+            //    // Address file
+            //    if (director.addressFile != null)
+            //    {
+            //        partnerEntity.PhotoURLAddressProof =
+            //            await _repository.SaveCompanyDocument(
+            //                director.addressFile);
+            //    }
+            //    else if (!string.IsNullOrWhiteSpace(
+            //        director.AddressFileUploaded))
+            //    {
+            //        partnerEntity.PhotoURLAddressProof =
+            //            director.AddressFileUploaded;
+            //    }
+
+            //    // PAN file
+
+            //}
+
+
+            int slNo = 1;
+            int partnerIndex = 1;
+
             foreach (var director in dto.CompanyPartnersDetails)
             {
                 ApplicantLicensePartnersDetails? partnerEntity = null;
@@ -626,6 +527,7 @@ namespace backend.Application.Services.License
                     partnerEntity = existingPartners
                         .FirstOrDefault(x =>
                             x.PPanNo == director.PPanNo);
+                   
                 }
 
                 if (partnerEntity == null)
@@ -634,7 +536,8 @@ namespace backend.Application.Services.License
                         new ApplicantLicensePartnersDetails
                         {
                             ApplicationIdNo =
-                                dto.ApplicationIdNo
+                                dto.ApplicationIdNo,
+                            SlNo = slNo++
                         };
 
                     await _repository.AddCompanyPartner(
@@ -661,8 +564,11 @@ namespace backend.Application.Services.License
                 if (director.PanFile != null)
                 {
                     partnerEntity.PhotoURLPanNo =
-                        await _repository.SaveCompanyDocument(
-                            director.PanFile);
+    await _repository.SaveCompanyDocument(
+        director.PanFile,
+        dto.ApplicationIdNo,
+        "PAN",
+        partnerIndex);
                 }
                 else if (!string.IsNullOrWhiteSpace(
                     director.PanFileUploaded))
@@ -675,8 +581,11 @@ namespace backend.Application.Services.License
                 if (director.addressFile != null)
                 {
                     partnerEntity.PhotoURLAddressProof =
-                        await _repository.SaveCompanyDocument(
-                            director.addressFile);
+      await _repository.SaveCompanyDocument(
+          director.addressFile,
+          dto.ApplicationIdNo,
+          "AddressProof",
+          partnerIndex);
                 }
                 else if (!string.IsNullOrWhiteSpace(
                     director.AddressFileUploaded))
@@ -684,139 +593,217 @@ namespace backend.Application.Services.License
                     partnerEntity.PhotoURLAddressProof =
                         director.AddressFileUploaded;
                 }
+
+                partnerIndex++;
             }
+
+
+
+
+
+
+
 
             await _repository.SaveChanges();
 
             return dto.ApplicationIdNo;
         }
 
-        public async Task UploadApplicationDocuments(
-     ApplicationDocumentUploadDto dto)
+        //   public async Task UploadApplicationDocuments(
+        //ApplicationDocumentUploadDto dto)
+        //   {
+        //       foreach (var doc in dto.Documents)
+        //       {
+        //           // ---------------------------------------------
+        //           // Find existing document
+        //           // ---------------------------------------------
+
+        //           var existingDocument = await _repository.GetApplicationDocument( dto.ApplicationIdNo, doc.DocId);
+
+        //           // ---------------------------------------------
+        //           // Upload new file if selected
+        //           // ---------------------------------------------
+
+        //           string? newFileName = null;
+
+        //           if (doc.DocumentFile != null)
+        //           {
+        //               newFileName =
+        //                   await _repository.SaveApplicationDocumentFile(doc.DocumentFile);
+        //           }
+
+        //           // ---------------------------------------------
+        //           // UPDATE EXISTING
+        //           // ---------------------------------------------
+
+        //           if (existingDocument != null)
+        //           {
+        //               existingDocument.MobileNo = dto.MobileNo;
+
+        //               existingDocument.ApplicantSl =doc.ApplicantSl;
+
+        //               existingDocument.DocSl = doc.DocSl;
+
+        //               existingDocument.Remarks =  doc.Remarks;
+
+        //               existingDocument.DateOfValidity =doc.DateOfValidity;
+
+        //               existingDocument.LicenseeIdNo =doc.LicenseeIdNo;
+
+        //               existingDocument.DocStatus = "N";
+
+        //               existingDocument.IsValid ="N";
+
+        //               existingDocument.DocumentvalidationYN ="N";
+
+        //               existingDocument.SubmitDate = DateTime.Now;
+
+        //               // New file selected
+        //               // => replace old filename
+        //               if (!string.IsNullOrWhiteSpace(newFileName))
+        //               {
+        //                   existingDocument.DocUrl = newFileName;
+        //               }
+
+        //               // No repository Update needed.
+        //               // EF will track existing entity.
+        //           }
+
+        //           // ---------------------------------------------
+        //           // INSERT NEW
+        //           // ---------------------------------------------
+
+        //           else
+        //           {
+        //               var entity =
+        //                   new LicenseApplicationUploadedDocument
+        //                   {
+        //                       ApplicationIdNo =  dto.ApplicationIdNo,
+        //                       MobileNo =  dto.MobileNo,
+        //                       ApplicantSl = doc.ApplicantSl,
+        //                       DocId =   doc.DocId,
+        //                       DocSl = doc.DocSl,
+        //                       Remarks = doc.Remarks,
+        //                       DateOfValidity = doc.DateOfValidity,
+        //                       LicenseeIdNo = doc.LicenseeIdNo,
+        //                       DocStatus ="N",
+        //                       IsValid = "N",
+        //                       DocumentvalidationYN = "N",
+        //                       DocUrl = newFileName,
+        //                       SubmitDate = DateTime.Now
+        //                   };
+
+        //               await _repository
+        //                   .AddApplicationDocument(entity);
+        //           }
+        //       }
+
+        //       await _repository.SaveChanges();
+        //   }
+
+
+        public async Task UploadApplicationDocuments(ApplicationDocumentUploadDto dto)
         {
+            // Get all existing documents for this application
+            var existingDocuments =
+                await _repository.GetApplicationDocumentsByApplicationId(
+                    dto.ApplicationIdNo);
+
+            // Get maximum ApplicantSl
+            int applicantSl = existingDocuments
+                .Select(x => int.TryParse(x.ApplicantSl, out var value) ? value : 0)
+                .DefaultIfEmpty(0)
+                .Max();
+
             foreach (var doc in dto.Documents)
             {
-                // ---------------------------------------------
-                // Find existing document
-                // ---------------------------------------------
-
-                var existingDocument =
-                    await _repository.GetApplicationDocument(
-                        dto.ApplicationIdNo,
-                        doc.DocId);
-
-                // ---------------------------------------------
-                // Upload new file if selected
-                // ---------------------------------------------
+                // Find existing document using ApplicationIdNo and DocId
+                var existingDocument = existingDocuments.FirstOrDefault(x =>
+                    x.ApplicationIdNo == dto.ApplicationIdNo &&
+                    x.DocId == doc.DocId);
 
                 string? newFileName = null;
 
-                if (doc.DocumentFile != null)
+                if (doc.DocumentFile != null && doc.DocumentFile.Length > 0)
                 {
-                    newFileName =
-                        await _repository.SaveApplicationDocumentFile(
-                            doc.DocumentFile);
-                }
+                    string applicantSlForFile;
 
-                // ---------------------------------------------
-                // UPDATE EXISTING
-                // ---------------------------------------------
+                    if (existingDocument != null)
+                    {
+                        // Existing document ka serial number same rahega
+                        applicantSlForFile = existingDocument.ApplicantSl;
+                    }
+                    else
+                    {
+                        // New document ka next serial number
+                        applicantSl++;
+                        applicantSlForFile = applicantSl.ToString();
+                    }
+
+                    string fileExtension =
+                        Path.GetExtension(doc.DocumentFile.FileName);
+
+                    string fileName =
+                        $"{dto.ApplicationIdNo}_{applicantSlForFile}_{doc.DocId}{fileExtension}";
+
+                    newFileName = await _repository.SaveApplicationDocumentFile(
+                        doc.DocumentFile,
+                        fileName);
+                }
 
                 if (existingDocument != null)
                 {
-                    existingDocument.MobileNo =
-                        dto.MobileNo;
+                    // Update existing document
+                    existingDocument.MobileNo = dto.MobileNo;
+                    existingDocument.ApplicantSl = existingDocument.ApplicantSl;
+                    existingDocument.DocSl = doc.DocSl;
+                    existingDocument.Remarks = doc.Remarks;
+                    existingDocument.DateOfValidity = doc.DateOfValidity;
+                    existingDocument.LicenseeIdNo = doc.LicenseeIdNo;
 
-                    existingDocument.ApplicantSl =
-                        doc.ApplicantSl;
+                    existingDocument.DocStatus = "N";
+                    existingDocument.IsValid = "N";
+                    existingDocument.DocumentvalidationYN = "N";
+                    existingDocument.SubmitDate = DateTime.Now;
 
-                    existingDocument.DocSl =
-                        doc.DocSl;
-
-                    existingDocument.Remarks =
-                        doc.Remarks;
-
-                    existingDocument.DateOfValidity =
-                        doc.DateOfValidity;
-
-                    existingDocument.LicenseeIdNo =
-                        doc.LicenseeIdNo;
-
-                    existingDocument.DocStatus =
-                        "N";
-
-                    existingDocument.IsValid =
-                        "N";
-
-                    existingDocument.DocumentvalidationYN =
-                        "N";
-
-                    existingDocument.SubmitDate =
-                        DateTime.Now;
-
-                    // New file selected
-                    // => replace old filename
+                    // Update filename only if a new file was uploaded
                     if (!string.IsNullOrWhiteSpace(newFileName))
                     {
-                        existingDocument.DocUrl =
-                            newFileName;
+                        existingDocument.DocUrl = newFileName;
                     }
-
-                    // No repository Update needed.
-                    // EF will track existing entity.
                 }
-
-                // ---------------------------------------------
-                // INSERT NEW
-                // ---------------------------------------------
-
                 else
                 {
-                    var entity =
-                        new LicenseApplicationUploadedDocument
-                        {
-                            ApplicationIdNo =
-                                dto.ApplicationIdNo,
+                    // Create new document
+                    // If no file was uploaded, still assign the next serial number
+                    if (doc.DocumentFile == null || doc.DocumentFile.Length == 0)
+                    {
+                        applicantSl++;
+                    }
 
-                            MobileNo =
-                                dto.MobileNo,
+                    var entity = new LicenseApplicationUploadedDocument
+                    {
+                        ApplicationIdNo = dto.ApplicationIdNo,
+                        MobileNo = dto.MobileNo,
+                        ApplicantSl = applicantSl.ToString(),
+                        DocId = doc.DocId,
+                        DocSl = doc.DocSl,
+                        Remarks = doc.Remarks,
+                        DateOfValidity = doc.DateOfValidity,
+                        LicenseeIdNo = doc.LicenseeIdNo,
 
-                            ApplicantSl =
-                                doc.ApplicantSl,
+                        DocStatus = "N",
+                        IsValid = "N",
+                        DocumentvalidationYN = "N",
 
-                            DocId =
-                                doc.DocId,
+                        DocUrl = newFileName,
+                        SubmitDate = DateTime.Now
+                    };
 
-                            DocSl =
-                                doc.DocSl,
+                    await _repository.AddApplicationDocument(entity);
 
-                            Remarks =
-                                doc.Remarks,
-
-                            DateOfValidity =
-                                doc.DateOfValidity,
-
-                            LicenseeIdNo =
-                                doc.LicenseeIdNo,
-
-                            DocStatus =
-                                "N",
-
-                            IsValid =
-                                "N",
-
-                            DocumentvalidationYN =
-                                "N",
-
-                            DocUrl =
-                                newFileName,
-
-                            SubmitDate =
-                                DateTime.Now
-                        };
-
-                    await _repository
-                        .AddApplicationDocument(entity);
+                    // Add locally to prevent duplicate processing
+                    existingDocuments.Add(entity);
                 }
             }
 
@@ -825,5 +812,5 @@ namespace backend.Application.Services.License
 
 
     }
-    }
+}
 

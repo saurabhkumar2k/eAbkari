@@ -8,6 +8,17 @@ import ReceiptSuccess from "../../../components/ReceiptSuccess";
 
 import { createApplicant } from "../../../Model/Applicant";
 
+//import {Cat_Label} from "../areas/applicant/Wholesale/validation"
+
+import {
+  validateAdditionalData,
+  validateWarehouseData,
+  validateTrainData,
+  validateApplicantData,
+  validateUploadedDocuments,
+} from "./WholesaleApplicationValidation";
+
+
 
 
 import {
@@ -40,10 +51,13 @@ import {
   ReceiptText,
   ChevronDown,
  Shield ,
+  RotateCw,
+  X,
   Eye,
   RefreshCw,
   Trash2,
   CheckCircle2 
+
 
 
 
@@ -53,6 +67,7 @@ import {
 
 
 export default function L1AndL31License({ ownerType,catCode,onBackToSelect, showToast }) {
+  const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
 
   const [applicant, setApplicant] = useState(createApplicant());
@@ -65,6 +80,23 @@ const [warehouseDistricts, setWarehouseDistricts] = useState([]);
 const [constitutionTypes, setConstitutionTypes] = useState([]);
 const [warehouseSubDivisions, setWarehouseSubDivisions] = useState([]);
 const [warehousePoliceStations, setWarehousePoliceStations] = useState([]);
+
+ const [warehouseFormErrors, setWarehouseFormErrors] = useState({});
+
+const [AdditionalFormErrors, setAdditionalFormErrors] = useState({});
+
+  const [personalDocumentsErrors, setPersonalDocumentsErrors] = useState({});
+  const [siteDocumentsErrors, setSiteDocumentsErrors] = useState({});
+  const [declarationErrors, setDeclarationErrors] = useState({});
+
+
+  const [fssaiErrors, setFssaiErrors] = useState({});
+
+  const [nomineeErrors, setNomineeErrors] = useState({});
+
+  const [vatErrors, setVatErrors] = useState({});
+  const [distilleryErrors, setDistilleryErrors] = useState({});
+  const [bwhErrors, setBwhErrors] = useState({});
 
 const [applicationId, setApplicationId] = useState(null);
 
@@ -93,12 +125,79 @@ const [applicationId, setApplicationId] = useState(null);
     ExciseNomineePanImage:"",
   });
 
+  
+
+  const [toast, setToast] = useState(null);
+
+  const triggerToast = (message, type = "success") => {
+    setToast({
+      message,
+      type,
+    });
+  };
+
+
+
 
 console.table(documents);
 console.log("Applicant:", applicant);
 const selectedLicense = JSON.parse(
   localStorage.getItem("selectedLicense")
 );
+
+
+
+const handelWarehouseDetails = () => {
+    debugger;
+    const errors = {};
+    if (!siteForm.SiteName.trim()) {
+      errors.SiteName = "Resturant Name is required";
+    }
+    if (!siteForm.SiteAddress.trim()) {
+      errors.SiteAddress = "Resturant state is required";
+    }
+    if (!siteForm.State.trim()) {
+      errors.State = "Resturant state is required";
+    }
+    if (!siteForm.DistrictCode.trim()) {
+      errors.DistrictCode = "Resturant district is required";
+    }
+    if (!siteForm.SubDivisionCode.trim()) {
+      errors.SubDivisionCode = "Resturant subDivision is required";
+    }
+    if (!siteForm.PoliceStationCode.trim()) {
+      errors.PoliceStationCode = "Resturant policeStation is required";
+    }
+    if (!siteForm.SitePin.trim()) {
+      errors.SitePin = "Resturant pin is required";
+    }
+
+    if (!siteForm.SiteEmail.trim()) {
+      errors.SiteEmail = "Resturant email is required";
+    }
+    if (!siteForm.SiteMobile.trim()) {
+      errors.SiteMobile = "Resturant mobile is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      console.log("errors", errors);
+      setsiteFormErrors(errors);
+      triggerToast(
+        "Please verify required fields in primary applicant profile.",
+        "error",
+      );
+      return false;
+    }
+    setsiteFormErrors({});
+    return true;
+  };
+
+
+
+
+//
+
+
 
 
 
@@ -189,6 +288,30 @@ const handleApplicantChange = (field, value) => {
   debugger;
   setApplicant((prev) => ({ ...prev, [field]: value }));
 
+ setWarehouseFormErrors(prev => ({
+    ...prev,
+    [field]: ""
+  }));
+
+setWarehouseFormErrors(prev => ({
+    ...prev,
+    [field]: ""
+  }));
+
+
+ // Clear error while typing
+  setAdditionalFormErrors((prev) => ({
+    ...prev,
+    [field]: "",
+  }));
+
+setFssaiErrors((prev) => ({
+    ...prev,
+    [field]: "",
+  }));
+
+
+
   if (field === "state") {
     fetchDistricts(value, "applicant");
   }
@@ -217,6 +340,24 @@ fetchPoliceStations(applicant.warehouseDistrict);   // 👈 Add this
 };
 
 
+
+const handleFieldChange = (field, value, setData, setErrors) => {
+  setData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+
+  setErrors((prev) => ({
+    ...prev,
+    [field]: "",
+  }));
+};
+
+
+
+
+
+
 // Applicant
 useEffect(() => {
   if (applicant.StateUT) {
@@ -233,12 +374,45 @@ useEffect(() => {
 
 
 
-  const handleDirectorChange = (i, f, v) => {
-    debugger;
-    const d = [...(applicant.directors || [])];
-    d[i][f] = v;
-    setApplicant({ ...applicant, directors: d });
+const handleDirectorChange = (i, f, v) => {
+  const d = [...(applicant.directors || [])];
+  d[i][f] = v;
+  setApplicant({ ...applicant, directors: d });
+
+  const errorFieldMap = {
+    PName: "PNameErr",
+    PPanNo: "PPanNoErr",
+    PPerShare: "PPerShareErr",
+    PExciseNominee: "PExciseNomineeErr", // Added
+    panFile: "panFileErr",
+    addressFile: "addressFileErr",
   };
+
+  const errorKey = errorFieldMap[f];
+  if (!errorKey) return;
+
+  setAdditionalFormErrors((prev) => {
+    const directorsError = { ...(prev.directors || {}) };
+    const rowErrors = [...(directorsError.errors || [])];
+    const currentErrors = { ...(rowErrors[i] || {}) };
+
+    delete currentErrors[errorKey];
+    rowErrors[i] = currentErrors;
+
+    // First-row error is also exposed at top level by the prop
+    if (i === 0) {
+      delete directorsError[errorKey];
+    }
+
+    return {
+      ...prev,
+      directors: {
+        ...directorsError,
+        errors: rowErrors,
+      },
+    };
+  });
+};
 
   const addRow = () =>
     setApplicant((p) => ({
@@ -252,15 +426,57 @@ useEffect(() => {
       directors: p.directors.filter((_, x) => x !== i)
     }));
 
-const handleFileChange = (key, file) => {
-  setUploadedFiles((prev) => ({
-    ...prev,
-    [key]: {
-      file,
-      previewUrl: URL.createObjectURL(file)
+// const handleFileChange = (key, file) => {
+//   setUploadedFiles((prev) => ({
+//     ...prev,
+//     [key]: {
+//       file,
+//       previewUrl: URL.createObjectURL(file)
+//     }
+//   }));
+// };
+
+
+ const handleFileChange = (key, file) => {
+    console.log("handleDocumentFileChange", key, file);
+    if (!file) return;
+
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [key]: {
+        file,
+        previewUrl: URL.createObjectURL(file),
+      },
+    }));
+
+    // Clear errors for this specific key inside the nested errors object
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
     }
-  }));
-};
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
+    }
+  };
+
+
+  
+
+
+
+
 
 const handleDeleteFile = (key) => {
   setUploadedFiles((prev) => {
@@ -269,6 +485,46 @@ const handleDeleteFile = (key) => {
     return updated;
   });
 };
+
+
+
+const handleValidityDateChange = (docId, validityDate) => {
+    setUploadedFiles((prev) => ({
+      ...prev,
+      [docId]: {
+        ...prev[docId],
+        validityDate,
+      },
+    }));
+
+    // Clear errors for this specific docId inside the nested errors object
+    if (currentStep === 4) {
+      setPersonalDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
+
+    if (currentStep === 5) {
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [docId]: null,
+        },
+      }));
+    }
+  };
+
+
+
+
+
+
+
 
 
 const fetchConstitutionTypes = async () => {
@@ -295,11 +551,6 @@ useEffect(() => {
 
 
 
-  // useEffect(() => {
-  //   fetch("http://localhost:5214/api/LGDiretory/getState")
-  //     .then((r) => r.json())
-  //     .then(setStates);
-  // }, []);
 
 
 useEffect(() => {
@@ -395,32 +646,19 @@ const fetchSubDivisions = async (districtCode) => {
 
 
 
-// useEffect(() => {
-//   debugger;
-//   const applicationIdNo = localStorage.getItem("applicationId");
-//   const catCode = localStorage.getItem("catCode");
-
-//   console.log("ApplicationId:", applicationIdNo);
-//   console.log("CatCode:", catCode);
-
-//   fetch(
-//     `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}`
-//   )
-//     .then((r) => r.json())
-//     .then((data) => setDocuments(data));
-// }, []);
 
 
 useEffect(() => {
+ debugger;
   if (currentStep !== 4 && currentStep !== 5) return;
 
-  const applicationIdNo = localStorage.getItem("applicationId");
-  if (!applicationIdNo || !catCode) return;
+  const applicationId = localStorage.getItem("applicationId");
+  if (!applicationId || !catCode) return;
 
   const docStatus = currentStep === 4 ? "A" : "S";
 
   fetch(
-    `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationIdNo}&catCode=${catCode}&docStatus=${docStatus}`
+    `http://localhost:5214/api/LicenseDocument/documents?applicationIdNo=${applicationId}&catCode=${catCode}&docStatus=${docStatus}`
   )
     .then((r) => r.json())
     .then((data) => setDocuments(data));
@@ -518,16 +756,7 @@ await fetchApplicantSubdivisions(data.district);
   }
 };
 
-// useEffect(() => {
-//     const applicationId = localStorage.getItem("applicationId");
 
-//     console.log("ApplicationId:", applicationId);
-
-//     if (applicationId) {
-//         console.log("Calling Warehouse API...");
-//         loadWarehouseData(applicationId);
-//     }
-// }, []);
 
 useEffect(() => {
   debugger;
@@ -566,6 +795,7 @@ useEffect(() => {
 
 
 const loadWarehouseData = async (applicationId) => {
+  debugger;
   try {
     const response = await fetch(
       `http://localhost:5214/api/ApplicationProgress/GetWarehouseByApplicationId/${applicationId}`
@@ -584,9 +814,7 @@ const loadWarehouseData = async (applicationId) => {
       "warehouse"
     );
 
-//     const subDivisionCode = String(
-//   data.warehouseSubDivision || ""
-// ).trim();
+
 
   //await fetchDistricts(data.stateUT, "applicant");
 await fetchSubDivisions(data.warehouseDistrict);
@@ -640,43 +868,7 @@ setApplicant((prev) => ({
 
 
 
-// const loadWarehouseData = async (applicationId) => {
-//   debugger;
 
-//   console.log("🚀 Warehouse GET function called");
-//   console.log("📌 ApplicationId:", applicationId);
-
-//   try {
-//     const url =
-//       `http://localhost:5214/api/ApplicationProgress/GetWarehouseByApplicationId/${applicationId}`;
-
-//     console.log("🌐 Warehouse GET URL:", url);
-
-//     const response = await fetch(url);
-
-//     console.log("📡 Warehouse API response:", response);
-//     console.log("📡 Status:", response.status);
-//     console.log("📡 OK:", response.ok);
-
-//     if (!response.ok) {
-//       console.error(
-//         "❌ Warehouse API failed:",
-//         response.status
-//       );
-//       return;
-//     }
-
-//     const data = await response.json();
-
-//     console.log("✅ Warehouse GET DATA:", data);
-
-//   } catch (error) {
-//     console.error(
-//       "❌ Warehouse GET ERROR:",
-//       error
-//     );
-//   }
-// };
 
 
 
@@ -711,6 +903,7 @@ console.log("Company Details Data:", data);
 // -------------------------------
 
 setApplicant((prev) => ({
+  
   ...prev,
 
   applicationIdNo: data.applicationIdNo || "",
@@ -727,13 +920,14 @@ setApplicant((prev) => ({
   vatno: data.vatno || "",
   cinno: data.cinno || "",
 
-  isExciseNominee: data.isExciseNominee || "",
+
+
   exciseNomineeName: data.exciseNomineeName || "",
   exciseNomineeAddress: data.exciseNomineeAddress || "",
   exciseNomineeEmailID: data.exciseNomineeEmailID || "",
   exciseNomineeMobileNo: data.exciseNomineeMobileNo || "",
   exciseNomineePAN: data.exciseNomineePAN || "",
-  exciseNomineePanImage: data.exciseNomineePanImage || "",
+  //exciseNomineePanImage: data.exciseNomineePanImage || "",
 
 
 
@@ -888,10 +1082,16 @@ setNominee((prev) => ({
   exciseNomineePAN:
     data.exciseNomineePAN || "",
 
-  exciseNomineePanImage:
-    data.exciseNomineePanImage || "",
+  // exciseNomineePanImage:
+  //   data.exciseNomineePanImage || "",
 
+    // Existing file received from GET API
+exciseNomineePanImageUploaded:
+  data.exciseNomineePanImageUploaded || "",
 
+  isExciseNominee: String(
+  data.isExciseNominee ?? data.IsExciseNominee ?? "0"
+),
 
 
     
@@ -911,154 +1111,10 @@ console.log("FSSAI API No:", data.fssaiLicenceNo);
 
 
 
-
-// const loadCompanyDetails = async (applicationId) => {
-//   debugger;
-//   try {
-//     const response = await fetch(
-//       `http://localhost:5214/api/ApplicationProgress/GetCompanyDetailsByApplicationId/${applicationId}`
-//     );
-
-//     if (!response.ok) {
-//       console.log("Company Details API:", response.status);
-//       return;
-//     }
-
-//     const data = await response.json();
-
-//     console.log("Company Details GET:", data);
-
-//     setApplicant((prev) => ({
-//       ...prev,
-
-//       applicationIdNo: data.applicationIdNo || "",
-
-//       registrationNo: data.registrationNo || "",
-//       companyName: data.companyName || "",
-//       constitutionType: data.constitutionType || "",
-//       regDate: data.regDate
-//         ? data.regDate.split("T")[0]
-//         : "",
-
-//       companyPAN: data.companyPAN || "",
-//       vatno: data.vatno || "",
-//       cinno: data.cinno || "",
-
-//       isExciseNominee: data.isExciseNominee || "",
-//       exciseNomineeName: data.exciseNomineeName || "",
-//       exciseNomineeAddress: data.exciseNomineeAddress || "",
-//       exciseNomineeEmailID: data.exciseNomineeEmailID || "",
-//       exciseNomineeMobileNo: data.exciseNomineeMobileNo || "",
-//       exciseNomineePAN: data.exciseNomineePAN || "",
-//       exciseNomineePanImage: data.exciseNomineePanImage || "",
-
-//       fssaiLicenceNo: data.fssaiLicenceNo || "",
-//       fssaiLicenceStartDate: data.fssaiLicenceStartDate
-//         ? data.fssaiLicenceStartDate.split("T")[0]
-//         : "",
-//       fssaiLicenceEndDate: data.fssaiLicenceEndDate
-//         ? data.fssaiLicenceEndDate.split("T")[0]
-//         : "",
-
-//       vatgstCertNo: data.vatgstCertNo || "",
-//       vatgstCertEnddate: data.vatgstCertEnddate
-//         ? data.vatgstCertEnddate.split("T")[0]
-//         : "",
-
-//       distilleryLicNo: data.distilleryLicNo || "",
-//       distilleryLicEnddate: data.distilleryLicEnddate
-//         ? data.distilleryLicEnddate.split("T")[0]
-//         : "",
-
-//       bwhInsuranceEndDate: data.bwhInsuranceEndDate
-//         ? data.bwhInsuranceEndDate.split("T")[0]
-//         : "",
-//       bwhRentAgreementEndDate: data.bwhRentAgreementEndDate
-//         ? data.bwhRentAgreementEndDate.split("T")[0]
-//         : "",
-//       bwhLeaseRentAgreementNo:
-//         data.bwhLeaseRentAgreementNo || "",
-//       bwhInsuranceNo:
-//         data.bwhInsuranceNo || ""
-//     }));
-
-//   } catch (error) {
-//     console.error("Company Details GET Error:", error);
-//   }
-// };
-
-  
-//   const loadWarehouseData = async () => {
-//     debugger;
-//   const applicationIdNo =
-//     localStorage.getItem("applicationId");
-
-//   console.log(
-//     "Warehouse ApplicationIdNo:",
-//     applicationIdNo
-//   );
-
-//   if (!applicationIdNo) {
-//     console.log("ApplicationIdNo not found");
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch(
-//       `http://localhost:5214/api/LicenseApplication/GetWarehouseByApplicationId/${applicationIdNo}`
-//     );
-
-//     console.log(
-//       "Warehouse GET status:",
-//       response.status
-//     );
-
-//     if (!response.ok) {
-//       console.log("Warehouse GET failed");
-//       return;
-//     }
-
-//     const data = await response.json();
-
-//     console.log(
-//       "Warehouse Data:",
-//       data
-//     );
-
-//     // yahan setApplicant(...)
-    
-//   } catch (error) {
-//     console.error(
-//       "Warehouse GET Error:",
-//       error
-//     );
-//   }
-// };
-
-  // const handleNextStep = () => {
-  //   if (validateStep(currentStep)) {
-  //     if (currentStep < 6) {
-  //       setCurrentStep(currentStep + 1);
-  //       if (showToast) showToast(`Step ${currentStep} completed successfully!`);
-  //     } else {
-  //       // Trigger final submit
-  //       handleFinalSubmission();
-  //     }
-  //   } else {
-  //     if (showToast) showToast("Please review marked fields before advancing.", "error");
-  //   }
-  // };
-
-
-
 const validateStep = (step) => {
   console.log("Validating step:", step);
   return true;
 };
-
-
-
-
 
 
 
@@ -1189,6 +1245,240 @@ const formatDateForApi = (value) => {
 };
 
 
+//for all validation conditions
+
+
+const handleWarehouseSubmit = () => {
+  const validationErrors = validateWarehouseData(applicant);
+  setWarehouseFormErrors(validationErrors);
+
+ const firstError = Object.keys(validationErrors)[0];
+
+  if (firstError) {
+    document.getElementById(firstError)?.focus();
+    return;
+  }
+
+  handleNextStep();
+};
+
+
+  const validateApplicationDocuments = (documents, uploadedFiles, type) => {
+    debugger;
+    const errors = validateUploadedDocuments(documents, uploadedFiles);
+    console.log("validateApplicationDocuments errors:", errors);
+
+    if (type === "P" && ((errors && errors.isValid === false) || (errors && errors.errors && Object.keys(errors.errors).length > 0))) {
+      setPersonalDocumentsErrors(errors);
+      return false;
+    }
+    if (type === "S" && ((errors && errors.isValid === false) || (errors && errors.errors && Object.keys(errors.errors).length > 0))) {
+      setSiteDocumentsErrors(errors);
+      return false;
+    }
+    return true;
+  };
+
+
+const handleAdditionaldetailsSubmit = () => {
+  debugger;
+
+const errors = validateAdditionalData(applicant,fssai,vat,distillery,bwh,nominee, catCode);
+
+console.log("PNameErr:", errors?.directors?.errors?.[0]?.PNameErr);
+
+setAdditionalFormErrors(errors);
+setFssaiErrors(errors);
+setVatErrors(errors);
+setDistilleryErrors(errors);
+setBwhErrors(errors);
+setNomineeErrors(errors);
+
+  // 1. Check normal field errors
+  const hasStringErrors = Object.keys(errors || {}).some((key) => {
+    if (key === "directors") return false;
+
+    return (
+      typeof errors[key] === "string" &&
+      errors[key].trim() !== ""
+    );
+  });
+
+  // 2. Check director errors
+  const hasDirectorErrors =
+    errors.directors?.isValid === false ||
+    (
+      Array.isArray(errors.directors?.errors) &&
+      errors.directors.errors.some(
+        (err) => err && Object.keys(err).length > 0
+      )
+    );
+
+
+
+
+  if (hasStringErrors || hasDirectorErrors) {
+    // Find first normal field error
+    const firstError = Object.keys(errors || {}).find(
+      (key) =>
+        key !== "directors" &&
+        typeof errors[key] === "string" &&
+        errors[key].trim() !== ""
+    );
+
+    if (firstError) {
+      document.getElementById(firstError)?.focus();
+    } else if (hasDirectorErrors) {
+      document.getElementById("directors")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+
+console.log("Validation result:", errors);
+console.log("Directors object:", errors?.directors);
+console.log("Director error array:", errors?.directors?.errors);
+console.log("First director error:", errors?.directors?.errors?.[0]);
+
+    triggerToast(
+      errors.directors?.globalError ||
+        "Please verify restaurant/site additional details.",
+      "error"
+    );
+
+    return false;
+  }
+
+  handleNextStep();
+  return true;
+};
+
+
+// const handleAdditionaldetailsSubmit = () => {
+//   const errors = validateAdditionalData(applicant, catCode);
+
+//   console.log("AdditionalFormErrors:", errors);
+
+//   setAdditionalFormErrors(errors);
+
+//   const hasStringErrors = Object.keys(errors).some((key) => {
+//     if (key === "directors") return false;
+
+//     return typeof errors[key] === "string" && errors[key] !== "";
+//   });
+
+//   const hasDirectorErrors =
+//     Array.isArray(errors.directors?.errors) &&
+//     errors.directors.errors.some(
+//       (err) => err !== null && Object.keys(err || {}).length > 0
+//     );
+
+//   if (
+//     hasStringErrors ||
+//     hasDirectorErrors ||
+//     errors.directors?.globalError
+//   ) {
+//     triggerToast(
+//       "Please verify additional details.",
+//       "error"
+//     );
+
+//     return false;
+//   }
+
+//   return true;
+// };
+
+  const goToSiteDocuments = async () => {
+    debugger;
+    if (!validateApplicationDocuments(documents, uploadedFiles, "P")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
+  };
+
+  const goToDeclaration = async () => {
+    if (!validateApplicationDocuments(documents, uploadedFiles, "S")) {
+      return false;
+    }
+    const result = await uploadDocuments();
+    return result;
+  };
+
+
+const uploadDocuments = async () => {
+  debugger;
+    try {
+      debugger;
+      // console.log("uploadDocuments", uploadDocuments);
+      const filesToUpload = documents.filter(
+        (doc) => uploadedFiles[doc.docId]?.file,
+      );
+
+      if (filesToUpload.length === 0) {
+        return true;
+      }
+
+      const formData = new FormData();
+
+      formData.append(
+        "ApplicationIdNo",
+        localStorage.getItem("applicationId") || "",
+      );
+
+     formData.append( "MobileNo", applicant.mobile);
+
+
+      let index = 0;
+
+      filesToUpload.forEach((doc) => {
+        const uploaded = uploadedFiles[doc.docId];
+
+        if (!uploaded?.file) return;
+
+        formData.append(`Documents[${index}].DocId`, doc.docId);
+        formData.append(`Documents[${index}].DocSl`, String(doc.docSl || 1));
+        formData.append(`Documents[${index}].IsValid`, doc.isValid ? "Y" : "N");
+
+        formData.append(
+          `Documents[${index}].DateOfValidity`,
+          uploaded.validityDate || "",
+        );
+
+        formData.append(`Documents[${index}].DocumentFile`, uploaded.file);
+
+        index++;
+      });
+
+      const response = await fetch(
+        "http://localhost:5214/api/LicenseApplication/UploadApplicationDocuments",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      console.log("response", response);
+
+      if (!response.ok) {
+        return false;
+        // throw new Error(await response.text());
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Document Upload Error:", error);
+
+      triggerToast(
+        "Unable to upload documents. Continuing to next step.",
+        "error",
+      );
+
+      return false;
+    }
+  };
+
 
 
 
@@ -1215,6 +1505,7 @@ debugger;
 const payload = {
   RegId: Number(localStorage.getItem("regId")),
   
+  ApplicationIdNo :localStorage.getItem("applicationId"),
 
   ApplicantName: applicant.applicantName,
   Dob: applicant.dateOfBirth,
@@ -1235,7 +1526,8 @@ const payload = {
   // LandLine: applicant.landline,
   CinNo: applicant.cinNo,
   OwnerType: applicant.ownerType,
-  CatCode: applicant.catCode
+  CatCode: applicant.catCode,
+  activityId: "F",
 };
 
 
@@ -1257,82 +1549,13 @@ debugger;
       console.log("Generated Id:", data.applicationId);
       localStorage.setItem("applicationId", data.applicationId);
       localStorage.setItem("catCode", data.catCode);
-      ///alert(`Your Application Reference No. is ${data.applicationId}`);
+     // alert(`Your Application Reference No. is ${data.applicationId}`);
       
 
     }
 
 
-// if (currentStep === 2) {
-//   debugger;
 
-
-// console.log(
-//   "Architect Date:",
-//   applicant.architectRegistrationNoValidUpto
-// );
-
-// console.log(
-//   "Formatted Architect Date:",
-//   formatDateForApi(
-//     applicant.architectRegistrationNoValidUpto
-//   )
-// );
-
-// console.log("FINAL PAYLOAD:", payload);
-
-
-  
-// const payload = {
-//   ...applicant,
-
-//   regId: Number(localStorage.getItem("regId")),
-//   ApplicationIdNo: localStorage.getItem("applicationId"),
-//   CatCode: localStorage.getItem("catCode"),
-
-//   LeaseRegistrationDate: formatDateForApi(
-//     applicant.leaseRegistrationDate
-//   ),
-
-//   LeaseRegistrationExpiryDate: formatDateForApi(
-//     applicant.leaseRegistrationExpiryDate
-//   ),
-
-//   ArchitectRegistrationNoValidUpto:
-//     formatDateForApi(
-//       applicant.architectRegistrationNoValidUpto
-//     )
-// };
-
-//   console.log("Warehouse Payload:", payload);
-
-//   try {
-//     const response = await fetch(
-//       "http://localhost:5214/api/LicenseApplication/ApplyWarehouseLicense",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify(payload)
-//       }
-//     );
-
-//     const data = await response.json();
-
-//     console.log("Warehouse Response:", data);
-
-//     if (!response.ok) {
-//       console.error("Warehouse API Error:", data);
-//       return;
-//     }
-
-//     setCurrentStep(3);
-
-//   } catch (error) {
-//     console.error("Warehouse API Error:", error);
-//   }
-// }
 
 
 if (currentStep === 2) {
@@ -1460,175 +1683,6 @@ if (currentStep === 2) {
 
 
 
-
-// if (currentStep === 3) {
-//   debugger;
-
-//   console.log("Directors:", applicant.directors);
-
-//   const formData = new FormData();
-
-
-
-// const payload = {
-//   ApplicationIdNo:
-//     localStorage.getItem("applicationId"),
-
-//   RegistrationNo:
-//     applicant.registrationNo || "",
-
-//   CompanyName:
-//     applicant.companyName || "",
-
-//   ConstitutionType:
-//     applicant.constitutionType || "",
-
-//   RegDate:
-//     applicant.regDate || null,
-
-//   CompanyPAN:
-//     applicant.companyPAN || "",
-
-//   VATNO:
-//     applicant.vatno || "",
-
-//   CINNO:
-//     applicant.cinno || "",
-
-//   IsExciseNominee:
-//     applicant.isExciseNominee || "",
-
-//   ExciseNomineeName:
-//     applicant.exciseNomineeName || "",
-
-//   ExciseNomineeAddress:
-//     applicant.exciseNomineeAddress || "",
-
-//   ExciseNomineeEmailID:
-//     applicant.exciseNomineeEmailID || "",
-
-//   ExciseNomineeMobileNo:
-//     applicant.exciseNomineeMobileNo || "",
-
-//   ExciseNomineePAN:
-//     applicant.exciseNomineePAN || "",
-
-//   FSSAILicenceNo:
-//     fssai.fssaiLicenceNo || "",
-
-//   FSSAILicenceStartDate:
-//     fssai.fssaiLicenceStartDate || null,
-
-//   FSSAILicenceEndDate:
-//     fssai.fssaiLicenceEndDate || null,
-
-//   VATGSTCertNo:
-//     vat.vatGstCertNo || "",
-
-//   VATGSTCertEnddate:
-//     vat.vatGstCertEndDate || null,
-
-//   DistilleryLicNo:
-//     distillery.distilleryLicNo || "",
-
-//   DistilleryLicEnddate:
-//     distillery.distilleryLicEndDate || null,
-
-//   BWHInsuranceEndDate:
-//     bwh.bwhInsuranceEndDate || null,
-
-//   BWHRentAgreementEndDate:
-//     bwh.bwhRentAgreementEndDate || null,
-
-//   BWHLeaseRentAgreementNo:
-//     bwh.bwhLeaseRentAgreementNo || "",
-
-//   BWHInsuranceNo:
-//     bwh.bwhInsuranceNo || ""
-// };
-
-
-
-
-
-
-
-//   // Append normal fields
-//   Object.keys(payload).forEach((key) => {
-//     // Skip file and list
-//     if (
-//       key !== "ExciseNomineePanImage" &&
-//       key !== "CompanyPartnersDetails"
-//     ) {
-//       formData.append(key, payload[key] ?? "");
-//     }
-//   });
-
-//   // Append file
-//   if (nominee.ExciseNomineePanImage) {
-//     formData.append(
-//       "ExciseNomineePanImage",
-//       nominee.ExciseNomineePanImage
-//     );
-//   }
-
-// applicant.directors.forEach((director, index) => {
-// debugger;
-//     formData.append(
-//         `CompanyPartnersDetails[${index}].PName`,
-//         director.PName || ""
-//     );
-
-//     formData.append(
-//         `CompanyPartnersDetails[${index}].PPerShare`,
-//         director.PPerShare || ""
-//     );
-
-//     formData.append(
-//         `CompanyPartnersDetails[${index}].PPanNo`,
-//         director.PPanNo || ""
-//     );
-
-//     formData.append(
-//         `CompanyPartnersDetails[${index}].PExciseNominee`,
-//         director.PExciseNominee || ""
-//     );
-
-// formData.append(
-//         `CompanyPartnersDetails[${index}].DINNo`,
-//         director.DINNo || ""
-//     );
-
-
-//     // PAN File
-//     if (director.panFile) {
-//         formData.append(
-//             `CompanyPartnersDetails[${index}].PanFile`,
-//             director.panFile
-//         );
-//     }
-//         if (director.addressFile) {
-//         formData.append(
-//             `CompanyPartnersDetails[${index}].addressFile`,
-//             director.addressFile
-//         );
-//     }
-// });
-
-//   const response = await fetch(
-//     "http://localhost:5214/api/LicenseApplication/ApplyCompanydetails",
-//     {
-//       method: "POST",
-//       body: formData
-//     }
-//   );
-
-//   const data = await response.json();
-
-//   console.log("Warehouse License Response:", data);
-// }
-
-
 if (currentStep === 3) {
   debugger;
 
@@ -1665,8 +1719,8 @@ if (currentStep === 3) {
     CINNO:
       applicant.cinno || "",
 
-    IsExciseNominee:
-      applicant.isExciseNominee || "",
+    // IsExciseNominee:
+    //   applicant.isExciseNominee || "",
 
     ExciseNomineeName:
       applicant.exciseNomineeName || "",
@@ -1696,7 +1750,7 @@ if (currentStep === 3) {
       vat.vatGstCertNo || "",
 
     VATGSTCertEnddate:
-      vat.vatGstCertEndDate || "",
+      vat.vatGstCertEnddate || "",
 
     DistilleryLicNo:
       distillery.distilleryLicNo || "",
@@ -1729,10 +1783,14 @@ ExciseNomineeMobileNo:
 
 ExciseNomineePAN:
   nominee.exciseNomineePAN || "",
+
+      IsExciseNominee:
+      nominee.isExciseNominee || "",
+
   };
 
   console.log("FINAL PAYLOAD:", payload);
-
+//testttt
   // ---------------------------------------
   // APPEND NORMAL FIELDS
   // ---------------------------------------
@@ -1775,7 +1833,7 @@ console.log(
 
     formData.append(
       `CompanyPartnersDetails[${index}].ApplicationIdNo`,
-      localStorage.getItem("applicationId") || ""
+      localStorage.getItem("applicationIdNo") || ""
     );
 
     formData.append(
@@ -1802,6 +1860,19 @@ console.log(
       `CompanyPartnersDetails[${index}].DINNo`,
       director.DINNo || ""
     );
+
+
+formData.append(
+  `CompanyPartnersDetails[${index}].PanFileUploaded`,
+  director.PanFileUploaded || ""
+);
+
+formData.append(
+  `CompanyPartnersDetails[${index}].AddressFileUploaded`,
+  director.AddressFileUploaded || ""
+);
+
+
 
     if (director.panFile) {
       formData.append(
@@ -2078,7 +2149,7 @@ const handleFinalSubmission = async () => {
         },
         body: JSON.stringify({
           applicationIdNo: applicationId,
-          applicationStatus: "S",
+          applicationStatus: "02",
         }),
       }
     );
@@ -2152,6 +2223,13 @@ const handleFinalSubmission = async () => {
     if (showToast) showToast("Printing license application dossier to connected local PDF writer...", "success");
     window.print();
   };
+
+
+console.log(
+  "Passing director error:",
+  AdditionalFormErrors?.directors?.errors?.[0]
+);
+
 
   return (
      
@@ -2245,15 +2323,26 @@ const handleFinalSubmission = async () => {
 
             {/* Step 2: WAREHOUSE DETAILS FORM BLOCK */}
             {currentStep === 2 && (
-                  <WarehouseDetails
-              applicant={applicant}
-              states={states}
-               districts={warehouseDistricts}   // ✅ correct
+  //                 <WarehouseDetails
+  //             applicant={applicant}
+  //             states={states}
+  //              districts={warehouseDistricts}   // ✅ correct
+  // subDivisions={warehouseSubDivisions}
+  //  errors={warehouseFormErrors}
+  // policeStations={warehousePoliceStations}
+  //             onChange={handleApplicantChange}
+  //           />
+<WarehouseDetails
+  applicant={applicant}
+  states={states}
+  districts={warehouseDistricts}
   subDivisions={warehouseSubDivisions}
-  
   policeStations={warehousePoliceStations}
-              onChange={handleApplicantChange}
-            />
+  errors={warehouseFormErrors}
+  onChange={handleApplicantChange}
+  onSubmit={handleWarehouseSubmit}
+  onContinue={handleWarehouseSubmit}
+/>
             )}
 
             {/* Step 3: ADDITIONAL DETAILS FORM BLOCK */}
@@ -2278,6 +2367,7 @@ const handleFinalSubmission = async () => {
         </div>
         <input
           type="text"
+          id="CompanyName"
           className="reg-input"
           value={applicant.companyName || ""}
           onChange={(e) =>
@@ -2285,6 +2375,11 @@ const handleFinalSubmission = async () => {
           }
         />
       </div>
+      {AdditionalFormErrors.companyName && (
+  <p className="error-text">
+    {AdditionalFormErrors.companyName}
+  </p>
+          )}
     </div>
 
     {/* Constitution Type */}
@@ -2297,6 +2392,7 @@ const handleFinalSubmission = async () => {
 
         <select
           className="reg-select"
+          id="constitutionType"
           value={applicant.constitutionType || ""}
           onChange={(e) =>
             handleApplicantChange("constitutionType", e.target.value)
@@ -2318,6 +2414,11 @@ const handleFinalSubmission = async () => {
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
+      {AdditionalFormErrors.constitutionType && (
+  <p className="error-text">
+    {AdditionalFormErrors.constitutionType}
+  </p>
+          )}
     </div>
 
     {/* CIN */}
@@ -2358,6 +2459,11 @@ const handleFinalSubmission = async () => {
           }
         />
       </div>
+      {AdditionalFormErrors.registrationNo && (
+  <p className="error-text">
+    {AdditionalFormErrors.registrationNo}
+  </p>
+          )}
     </div>
 
     {/* Registration Date */}
@@ -2377,6 +2483,7 @@ const handleFinalSubmission = async () => {
           }
         />
       </div>
+      {AdditionalFormErrors.regDate && ( <p className="error-text">{AdditionalFormErrors.regDate}</p> )}
     </div>
 
     {/* PAN */}
@@ -2399,6 +2506,7 @@ const handleFinalSubmission = async () => {
           }
         />
       </div>
+      {AdditionalFormErrors.companyPAN && ( <p className="error-text">{AdditionalFormErrors.companyPAN}</p> )}
     </div>
 
     {/* VAT */}
@@ -2413,11 +2521,10 @@ const handleFinalSubmission = async () => {
           type="text"
           className="reg-input"
           value={applicant.vatno || ""}
-          onChange={(e) =>
-            handleApplicantChange("vatno", e.target.value)
-          }
+          onChange={(e) => handleApplicantChange("vatno", e.target.value) }
         />
       </div>
+      {AdditionalFormErrors.vatno && ( <p className="error-text">{AdditionalFormErrors.vatno}</p> )}
     </div>
 
   </div>
@@ -2425,17 +2532,43 @@ const handleFinalSubmission = async () => {
 
 
 
+{/* <DirectorsList
+  directors={applicant.directors || []}
+  ConstitutionType={applicant.constitutionType}
+  onChange={handleDirectorChange}
+  onAdd={addRow}
+  onDelete={deleteRow}
+/> */}
 
-
+{/* <DirectorsList
+  directors={applicant.directors || []}
+  ConstitutionType={applicant.constitutionType}
+  onChange={handleDirectorChange}
+  onAdd={addRow}
+  onDelete={deleteRow}
+  directorsError={AdditionalFormErrors?.directors || {}}
+/> */}
 <DirectorsList
   directors={applicant.directors || []}
   ConstitutionType={applicant.constitutionType}
   onChange={handleDirectorChange}
   onAdd={addRow}
   onDelete={deleteRow}
+  directorsError={{
+    ...AdditionalFormErrors?.directors,
+    ...(AdditionalFormErrors?.directors?.errors?.[0] || {}),
+  }}
 />
+    <div className="error-text-container">
+                {AdditionalFormErrors?.directors?.globalError && (
+                  <span className="error-text-all">
+                    {AdditionalFormErrors?.directors?.globalError}
+                  </span>
+                )}
+              </div>
 
- {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */}
+
+ {/* Step 4: PERSONAL DOCUMENT FILE MANAGEMENT */ }
 
 
 
@@ -2452,44 +2585,36 @@ const handleFinalSubmission = async () => {
           Is Excise Nominee other than applicant?
         </label>
 
-        <div className="radio-group">
-<label>
-  <input
-    type="radio"
-    name="isExciseNominee"
-    value="1"
-    checked={nominee.isExciseNominee === "1"}
-    onChange={(e) =>
-      setNominee({
-        ...nominee,
-        isExciseNominee: e.target.value,
-      })
-    }
-  />
-  Yes
-</label>
+       <div className="radio-group">
+  <label>
+    <input
+      type="radio"
+      name="isExciseNominee"
+      value="1"
+      checked={String(nominee.isExciseNominee) === "1"}
+         onChange={() =>  setNominee((prev) => ({...prev,isExciseNominee: "1",}))}
+         //onChange={(e) => handleFieldChange( "isExciseNominee", e.target.value,setNominee,setNomineeErrors)}
+    />
+    Yes
+  </label>
 
-<label>
-  <input
-    type="radio"
-    name="isExciseNominee"
-    value="0"
-    checked={nominee.isExciseNominee === "0"}
-    onChange={(e) =>
-      setNominee({
-        ...nominee,
-        isExciseNominee: e.target.value,
-      })
-    }
-  />
-  No
-</label>
-        </div>
+  <label>
+    <input
+      type="radio"
+      name="isExciseNominee"
+      value="0"
+      checked={String(nominee.isExciseNominee) === "0"}
+      onChange={() =>setNominee((prev) => ({ ...prev,isExciseNominee: "0", })) }
+      //onChange={(e) => handleFieldChange( "isExciseNominee", e.target.value,setNominee,setNomineeErrors)}
+    />
+    No
+  </label>
+</div>
       </div>
     </div>
 
     {/* ================= NOMINEE DETAILS ================= */}
-    {nominee.isExciseNominee === "1" && (
+    {String(nominee.isExciseNominee) === "1" && (
 
 
   <div className="card-section">
@@ -2508,14 +2633,14 @@ const handleFinalSubmission = async () => {
     <input
       className="reg-input"
       value={nominee.exciseNomineeName}
-      onChange={(e) =>
-        setNominee({
-          ...nominee,
-          exciseNomineeName: e.target.value,
-        })
-      }
+  onChange={(e) => handleFieldChange( "exciseNomineeName", e.target.value,setNominee,setNomineeErrors)}
     />
   </div>
+  {nomineeErrors.exciseNomineeName && (
+  <p className="error-text">
+    {nomineeErrors.exciseNomineeName}
+  </p>
+)} 
 </div>
 
 <div className="reg-field">
@@ -2530,10 +2655,7 @@ const handleFinalSubmission = async () => {
       className="reg-input"
       value={nominee.exciseNomineeAddress}
       onChange={(e) =>
-        setNominee({
-          ...nominee,
-          exciseNomineeAddress: e.target.value,
-        })
+        handleFieldChange("exciseNomineeAddress", e.target.value, setNominee, setNomineeErrors)
       }
     />
   </div>
@@ -2552,13 +2674,15 @@ const handleFinalSubmission = async () => {
       className="reg-input"
       value={nominee.exciseNomineeEmailID}
       onChange={(e) =>
-        setNominee({
-          ...nominee,
-          exciseNomineeEmailID: e.target.value,
-        })
+        handleFieldChange("exciseNomineeEmailID", e.target.value, setNominee, setNomineeErrors)
       }
     />
   </div>
+  {nomineeErrors.exciseNomineeEmailID && (
+  <p className="error-text">
+    {nomineeErrors.exciseNomineeEmailID}
+  </p>
+)} 
 </div>
 
 
@@ -2582,6 +2706,11 @@ const handleFinalSubmission = async () => {
       }
     />
   </div>
+               {AdditionalFormErrors?.exciseNomineeMobileNo && (
+  <span className="error-text">
+    {AdditionalFormErrors.exciseNomineeMobileNo}
+  </span>
+)} 
 </div>
 
 
@@ -2604,103 +2733,163 @@ const handleFinalSubmission = async () => {
       }
     />
   </div>
+        {AdditionalFormErrors?.exciseNomineePAN && ( <span className="error-text"> {AdditionalFormErrors.exciseNomineePAN}
+
+  </span>
+)}
 </div>
+
+
 
 <div className="reg-field">
   <label className="reg-label">PAN Proof</label>
 
-  <div className="reg-input-group">
+  {/* NEWLY SELECTED FILE */}
+  {nominee.exciseNomineePanImage instanceof File ? (
+    <div className="uploaded-file">
+      <span title={nominee.exciseNomineePanImage.name}>
+        {nominee.exciseNomineePanImage.name}
+      </span>
 
-    <div className="reg-input-icon">
-      <Upload className="w-4 h-4 text-blue-600" />
-    </div>
-
-    {!nominee.exciseNomineePanImage ? (
-      <label
-        className="reg-input"
-        style={{
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          color: "#64748b",
-        }}
-      >
-        Choose File
-
-        <input
-          type="file"
-          hidden
-          accept=".pdf,.jpg,.jpeg"
-          onChange={(e) =>
-            setNominee({
-              ...nominee,
-              exciseNomineePanImage: e.target.files?.[0] || null,
-            })
+      <div className="file-actions">
+        {/* VIEW NEW FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              URL.createObjectURL(
+                nominee.exciseNomineePanImage
+              ),
+              "_blank"
+            )
           }
-        />
-      </label>
-    ) : (
-      <>
-        <input
-          className="reg-input"
-          value={nominee.exciseNomineePanImage.name}
-          readOnly
-        />
-
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginLeft: "10px",
-          }}
         >
-          <button
-            type="button"
-            className="btn btn-light"
-            onClick={() =>
-              window.open(
-                URL.createObjectURL(nominee.exciseNomineePanImage),
-                "_blank"
-              )
-            }
-          >
-            <Eye size={16} />
-          </button>
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
 
-          <label className="btn btn-light" style={{ margin: 0 }}>
-            <RefreshCw size={16} />
+        {/* REPLACE FILE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
 
             <input
               type="file"
               hidden
-              accept=".pdf,.jpg,.jpeg"
+              accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) =>
-                setNominee({
-                  ...nominee,
-                  exciseNomineePanImage: e.target.files?.[0] || null,
-                })
+                setNominee((prev) => ({
+                  ...prev,
+                  exciseNomineePanImage:
+                    e.target.files?.[0] || null,
+                }))
               }
             />
           </label>
-
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={() =>
-              setNominee({
-                ...nominee,
-                exciseNomineePanImage: null,
-              })
-            }
-          >
-            <Trash2 size={16} />
-          </button>
         </div>
-      </>
-    )}
 
-  </div>
+        {/* REMOVE NEW FILE */}
+        <button
+          type="button"
+          className="file-remove"
+          onClick={() =>
+            setNominee((prev) => ({
+              ...prev,
+              exciseNomineePanImage: null,
+              ExciseNomineePanImageUploaded: "",
+            }))
+          }
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+      </div>
+    </div>
+
+  ) : nominee.exciseNomineePanImageUploaded ? (
+
+    /* EXISTING FILE FROM GET */
+    <div className="uploaded-file">
+      <span title={nominee.exciseNomineePanImageUploaded}>
+        {nominee.exciseNomineePanImageUploaded}
+      </span>
+
+      <div className="file-actions">
+        {/* VIEW EXISTING FILE */}
+        <button
+          type="button"
+          className="file-view"
+          onClick={() =>
+            window.open(
+              `http://localhost:5214/Documents/LicenseCompanyDocuments/${nominee.exciseNomineePanImageUploaded}`,
+              "_blank"
+            )
+          }
+        >
+          <Eye size={16} strokeWidth={2.5} />
+        </button>
+
+        {/* REPLACE EXISTING FILE */}
+        <div className="file-replace">
+          <label className="file-replace">
+            <RotateCw size={16} strokeWidth={2.5} />
+
+            <input
+              type="file"
+              hidden
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) =>
+                setNominee((prev) => ({
+                  ...prev,
+                  exciseNomineePanImage:
+                    e.target.files?.[0] || null,
+                }))
+              }
+            />
+          </label>
+        </div>
+
+        {/* REMOVE EXISTING FILE */}
+        <button
+          type="button"
+          className="file-remove"
+          onClick={() =>
+            setNominee((prev) => ({
+              ...prev,
+              exciseNomineePanImage: null,
+              ExciseNomineePanImageUploaded: "",
+            }))
+          }
+        >
+          <X size={16} strokeWidth={2.5} />
+        </button>
+      </div>
+    </div>
+
+  ) : (
+
+    /* NO FILE */
+    <label className="upload-button">
+      📄 Upload PAN Proof
+
+      <input
+        type="file"
+        hidden
+        accept=".pdf,.jpg,.jpeg,.png"
+        onChange={(e) =>
+          setNominee((prev) => ({
+            ...prev,
+            exciseNomineePanImage:
+              e.target.files?.[0] || null,
+          }))
+        }
+      />
+    </label>
+  )}
 </div>
+
+
+
+
 
 
 
@@ -2724,7 +2913,7 @@ const handleFinalSubmission = async () => {
         <div className="reg-input-icon">
           <FileText className="w-4 h-4 text-blue-600" />
         </div>
-
+{/* 
         <input
           type="text"
           className="reg-input"
@@ -2735,8 +2924,18 @@ const handleFinalSubmission = async () => {
               fssaiLicenceNo: e.target.value,
             })
           }
-        />
+        /> */}
+
+<input
+  type="text"
+  className="reg-input"
+  value={fssai.fssaiLicenceNo || ""}
+  onChange={(e) => handleFieldChange( "fssaiLicenceNo", e.target.value,setFssai,setFssaiErrors)}
+/>
+
+
       </div>
+      {fssaiErrors.fssaiLicenceNo && ( <p className="error-text">{fssaiErrors.fssaiLicenceNo}</p> )}
     </div>
 
     {/* Start Date */}
@@ -2752,14 +2951,10 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={fssai.fssaiLicenceStartDate}
-          onChange={(e) =>
-            setFssai({
-              ...fssai,
-              fssaiLicenceStartDate: e.target.value,
-            })
-          }
+           onChange={(e) => handleFieldChange( "fssaiLicenceStartDate", e.target.value,setFssai,setFssaiErrors)}
         />
       </div>
+{fssaiErrors.fssaiLicenceStartDate && ( <p className="error-text">{fssaiErrors.fssaiLicenceStartDate}</p> )}
     </div>
 
     {/* End Date */}
@@ -2775,14 +2970,10 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={fssai.fssaiLicenceEndDate}
-          onChange={(e) =>
-            setFssai({
-              ...fssai,
-              fssaiLicenceEndDate: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange( "fssaiLicenceEndDate", e.target.value,setFssai,setFssaiErrors)}
         />
       </div>
+      {fssaiErrors.fssaiLicenceEndDate && ( <p className="error-text">{fssaiErrors.fssaiLicenceEndDate}</p> )}
     </div>
 
   </div>
@@ -2807,14 +2998,10 @@ const handleFinalSubmission = async () => {
           type="text"
           className="reg-input"
           value={vat.vatGstCertNo}
-          onChange={(e) =>
-            setVat({
-              ...vat,
-              vatGstCertNo: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange( "vatGstCertNo", e.target.value,setVat,setVatErrors)}
         />
       </div>
+      {vatErrors.vatGstCertNo && ( <p className="error-text">{vatErrors.vatGstCertNo}</p> )}
     </div>
 
     {/* Expiry Date */}
@@ -2830,14 +3017,10 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={vat.vatGstCertEnddate}
-          onChange={(e) =>
-            setVat({
-              ...vat,
-              vatGstCertEnddate: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange( "vatGstCertEnddate", e.target.value,setVat,setVatErrors)}
         />
       </div>
+      {vatErrors.vatGstCertEnddate && ( <p className="error-text">{vatErrors.vatGstCertEnddate}</p> )}
     </div>
 
   </div>
@@ -2862,14 +3045,10 @@ const handleFinalSubmission = async () => {
           type="text"
           className="reg-input"
           value={distillery.distilleryLicNo || ""}
-          onChange={(e) =>
-            setDistillery({
-              ...distillery,
-              distilleryLicNo: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange("distilleryLicNo", e.target.value, setDistillery, setDistilleryErrors) }
         />
       </div>
+      {distilleryErrors.distilleryLicNo && ( <p className="error-text">{distilleryErrors.distilleryLicNo}</p> )}
     </div>
 
     {/* Expiry Date */}
@@ -2885,14 +3064,10 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={distillery.distilleryLicEnddate}
-          onChange={(e) =>
-            setDistillery({
-              ...distillery,
-              distilleryLicEnddate: e.target.value,
-            })
-          }
+         onChange={(e) => handleFieldChange("distilleryLicEnddate", e.target.value, setDistillery, setDistilleryErrors) }
         />
       </div>
+      {distilleryErrors.distilleryLicEnddate && ( <p className="error-text">{distilleryErrors.distilleryLicEnddate}</p>)}
     </div>
 
   </div>
@@ -2917,14 +3092,10 @@ const handleFinalSubmission = async () => {
           type="text"
           className="reg-input"
           value={bwh.bwhInsuranceNo}
-          onChange={(e) =>
-            setBwh({
-              ...bwh,
-              bwhInsuranceNo: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange("bwhInsuranceNo", e.target.value, setBwh, setBwhErrors) }
         />
       </div>
+{bwhErrors.bwhInsuranceNo && ( <p className="error-text">{bwhErrors.bwhInsuranceNo}</p>)}
     </div>
 
     {/* Insurance Expiry */}
@@ -2940,14 +3111,12 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={bwh.bwhInsuranceEndDate}
-          onChange={(e) =>
-            setBwh({
-              ...bwh,
-              bwhInsuranceEndDate: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange("bwhInsuranceEndDate", e.target.value, setBwh, setBwhErrors) }
         />
       </div>
+      {bwhErrors.bwhInsuranceEndDate && (
+  <p className="error-text">{bwhErrors.bwhInsuranceEndDate}</p>
+)}
     </div>
 
     {/* Lease Agreement No */}
@@ -2963,14 +3132,12 @@ const handleFinalSubmission = async () => {
           type="text"
           className="reg-input"
           value={bwh.bwhLeaseRentAgreementNo}
-          onChange={(e) =>
-            setBwh({
-              ...bwh,
-              bwhLeaseRentAgreementNo: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange("bwhLeaseRentAgreementNo", e.target.value, setBwh, setBwhErrors) }
         />
       </div>
+      {bwhErrors.bwhLeaseRentAgreementNo && (
+  <p className="error-text">{bwhErrors.bwhLeaseRentAgreementNo}</p>
+)}
     </div>
 
     {/* Lease Expiry */}
@@ -2986,14 +3153,12 @@ const handleFinalSubmission = async () => {
           type="date"
           className="reg-input"
           value={bwh.bwhRentAgreementEndDate}
-          onChange={(e) =>
-            setBwh({
-              ...bwh,
-              bwhRentAgreementEndDate: e.target.value,
-            })
-          }
+          onChange={(e) => handleFieldChange("bwhRentAgreementEndDate", e.target.value, setBwh, setBwhErrors) }
         />
       </div>
+      {bwhErrors.bwhRentAgreementEndDate && (
+  <p className="error-text">{bwhErrors.bwhRentAgreementEndDate}</p>
+)}
     </div>
 
   </div>
@@ -3024,16 +3189,29 @@ const handleFinalSubmission = async () => {
             )} */}
 
   {/* Step 5: SITE DOCUMENT FILE MANAGEMENT */}
-     {(currentStep === 4 || currentStep === 5) && (
+     {(currentStep === 4 ) && (
   <DocumentUpload
     documents={documents}
     uploadedFiles={uploadedFiles}
     handleDocumentFileChange={handleFileChange}
+    handleValidityDateChange={handleValidityDateChange}
     handleDeleteFile={handleDeleteFile}
+    error={personalDocumentsErrors?.errors || {}}
+    
+   
   />
 )}
 
-
+     {(currentStep === 5) && (
+ <DocumentUpload
+  documents={documents}
+  uploadedFiles={uploadedFiles}
+  handleDocumentFileChange={handleFileChange}
+  handleValidityDateChange={handleValidityDateChange}
+  handleDeleteFile={handleDeleteFile}
+  error={siteDocumentsErrors?.errors || {}}
+/>
+)}
 
 
             {/* Step 6: STATUTORY DECLARATIONS & UNDERTAKING */}
@@ -3041,7 +3219,7 @@ const handleFinalSubmission = async () => {
               <div className="animate-fade text-left space-y-6">
                 <div className="bg-red-50 text-red-950 p-4 rounded-xl border border-red-100 flex items-start gap-2.5">
                   <ShieldAlert className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
-                  <div className="applicant-alert-text">
+                  <div className="text-xs font-semibold leading-relaxed">
                     <p className="font-extrabold text-red-950 uppercase mb-1">Legal Notice & Liability under GNCTD Act</p>
                     Any false claim or misleading declaration submitted will cause instant forfeiture of safety deposits of ₹ 5,00,000, summary rejection of licenses, and booking of criminal liabilities under Delhi Excise Act 2010.
                   </div>
@@ -3115,15 +3293,92 @@ const handleFinalSubmission = async () => {
                 <span>{currentStep === 1 ? "Exit Wizard" : "Previous Step"}</span>
               </button>
 
-              <button 
+              {/* <button 
                 type="button" 
                 onClick={handleNextStep}
                 className={currentStep === 4 || currentStep === 5 ? "btn-next" : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"}
               >
-                <span>{currentStep === 6 ? "Submit Application" : "Next Step"}</span>
+                <span>{currentStep === 6 ? "File Joint Application" : "Next Step"}</span>
                 {currentStep !== 4 && currentStep !== 5 && <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />}
-              </button>
+              </button> */}
+                   {/* <button
+  type="button"
+  onClick={() => {
+    if (currentStep === 2) {
+      handleWarehouseSubmit();
+    }if (currentStep === 3) {
+      handleAdditionaldetailsSubmit();
+    }if (currentStep === 4) {
+      validateApplicationDocuments();
+    }
+       else {
+      handleNextStep();
+    }
+  }}
+  className={
+    currentStep === 4 || currentStep === 5
+      ? "btn-next"
+      : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"
+  }
+>
+  <span>
+    {currentStep === 6 ? "File Joint Application" : "Next Step"}
+  </span>
 
+  {currentStep !== 4 && currentStep !== 5 && (
+    <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />
+  )}
+</button> */}
+
+<button
+  type="button"
+  onClick={async () => {
+    if (currentStep === 2) {
+      handleWarehouseSubmit();
+      return;
+    }
+
+    if (currentStep === 3) {
+      handleAdditionaldetailsSubmit();
+      return;
+    }
+
+    if (currentStep === 4) {
+      const success = await goToSiteDocuments();
+
+      if (success) {
+        setCurrentStep(5);
+      }
+      return;
+    }
+
+    if (currentStep === 5) {
+      const success = await goToDeclaration();
+
+      if (success) {
+        setCurrentStep(6);
+      }
+      return;
+    }
+
+    handleNextStep();
+  }}
+  className={
+    currentStep === 4 || currentStep === 5
+      ? "btn-next"
+      : "btn btn-primary bg-blue-600 hover:bg-blue-700 px-8"
+  }
+>
+  <span>
+    {currentStep === 6
+      ? "File Joint Application"
+      : "Next Step"}
+  </span>
+
+  {currentStep !== 4 && currentStep !== 5 && (
+    <ArrowRight className="w-4 h-4 text-white animate-none opacity-100" />
+  )}
+</button>
 
 
 

@@ -1783,7 +1783,7 @@ export default function HcrLicensee({
 
 
   const addDirector = () => {
-    //debugger;
+    debugger;
     const errors = {};
     // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
     let additionalUpdateErrors = { ...additionalFormErrors };

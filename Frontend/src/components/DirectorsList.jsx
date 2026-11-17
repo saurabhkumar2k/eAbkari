@@ -4,8 +4,18 @@ import DirectorRow from "./DirectorRow";
 import "../Style/ApplyLicense.css";
 import "../Style/DirectorsList.css";
 
-const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType, directorsError }) => {
+
+
+
+const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType, directorsError,catCode }) => {
+
+console.log("Received directorsError:", directorsError);
+console.log("PNameErr inside child:", directorsError?.PNameErr);
+
   return (
+
+
+    
     <div className="directors-section">
       {/* Section Title */}
       {/* <div className="directors-header-box">
@@ -40,6 +50,7 @@ const DirectorsList = ({ directors, onChange, onAdd, onDelete, ConstitutionType,
               ConstitutionType={ConstitutionType}
               disableDelete={false}
               directorsError={directorsError?.errors?.[index] || {}}
+              catCode={catCode}
             />
           ))
         )}

@@ -84,88 +84,116 @@ const SelectWholesaleType = ({
       {/* ============================= */}
       {/* LICENSE CARDS */}
       {/* ============================= */}
+
+      
 {applicant?.ownerType && (
   <div className="license-grid">
     {licenseGroups.map((item) => {
+      // Find application for this license
       const application = applications?.find(
         (app) =>
-          app.licenseeCatDesc?.trim() === item.licenseeCatDesc?.trim()
+          app.licenseeCatDesc?.trim() ===
+          item.licenseeCatDesc?.trim()
       );
 
-      const isDraft =
-        application?.applicationStatus?.trim() === "P";
+      // Application status
+      const status = application?.applicationStatus?.trim();
+
+      // Draft
+      const isDraft = status === "01";
+
+      // Submitted
+      const isSubmitted = status === "S";
 
       return (
         <div
           key={item.licenseeCatCode}
           className={`license-card ${
-            selectedType === item.licenseeCatCode ? "selected" : ""
+            selectedType === item.licenseeCatCode
+              ? "selected"
+              : ""
           }`}
-          style={{ position: "relative", cursor: "pointer" }}
-onClick={() => {
-  localStorage.setItem(
-    "selectedLicense",
-    JSON.stringify(item)
-  );
+          style={{
+            position: "relative",
+            cursor: isSubmitted ? "not-allowed" : "pointer",
+          }}
+          onClick={() => {
+            // Already submitted → no edit
+            if (isSubmitted) {
+              showToast?.(
+                "This application has already been submitted and cannot be edited."
+              );
+              return;
+            }
 
+            // Save selected license
+            localStorage.setItem(
+              "selectedLicense",
+              JSON.stringify(item)
+            );
 
-  if (isDraft) {
-    localStorage.setItem(
-      "applicationId",
-      application.applicationIdNo
-    );
-  } else {
-    localStorage.removeItem("applicationId");
-  }
+            // Save or clear application ID
+            if (isDraft && application?.applicationIdNo) {
+              localStorage.setItem(
+                "applicationId",
+                application.applicationIdNo
+              );
+            } else {
+              localStorage.removeItem("applicationId");
+            }
 
- 
-  onSelectType(item.licenseeCatCode);
-}}
-
+            onSelectType(item.licenseeCatCode);
+          }}
         >
+          {/* Draft Ribbon */}
           {isDraft && (
             <div className="draft-ribbon">
               📝 <span>Draft Saved</span>
             </div>
           )}
 
-        
+          {/* License Title */}
           <h3 className="card-title">
             {item.licenseeCatDesc}
           </h3>
 
-       
-    {isDraft && (
-  <div className="draft-details">
-    <div className="draft-item">
-      <span>Application No.</span>
-      <strong>{application.applicationIdNo}</strong>
-    </div>
+          {/* Draft Details */}
+          {isDraft && (
+            <div className="draft-details">
+              <div className="draft-item">
+                <span>Application No.</span>
+                <strong>{application?.applicationIdNo}</strong>
+              </div>
 
-    <div className="draft-item">
-      <span>Last Updated</span>
-      <strong>
-        {new Date(application.applicationDate).toLocaleDateString("en-GB")}
-      </strong>
-    </div>
+              <div className="draft-item">
+                <span>Last Updated</span>
+                <strong>
+                  {application?.applicationDate
+                    ? new Date(
+                        application.applicationDate
+                      ).toLocaleDateString("en-GB")
+                    : ""}
+                </strong>
+              </div>
 
-    <div className="draft-message">
-      Your application is saved as Draft.
-    </div>
-  </div>
-)}
+              <div className="draft-message">
+                Your application is saved as Draft.
+              </div>
+            </div>
+          )}
 
           {/* Footer */}
- <div className="card-footer">
-  <span className="card-badge">
-    WHOLESALE
-  </span>
-</div>
+          <div className="card-footer">
+            <span className="card-badge">
+              WHOLESALE
+            </span>
+          </div>
         </div>
       );
     })}
   </div>
 )}
+
     </div>
   );
 };

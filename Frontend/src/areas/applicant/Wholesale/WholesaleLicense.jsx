@@ -36,6 +36,7 @@ import { createApplicant } from "../../../Model/Applicant";
 import L1AndL31License from "./L1_L31License";
 import L1FAndL31License from "./L1F_L32License";
 import L2License from "./L2License";
+import L3AndL33License from "./L3L33License";
 
 
 
@@ -454,18 +455,12 @@ console.log("Current Step:", currentStep);
 
 
 
+
 const handleContinueApplication = async () => {
   debugger;
 
   try {
     console.log("========== CONTINUE APPLICATION ==========");
-
-    console.log("Selected License ID:", selectedLicenseId);
-    console.log("Applications:", applications);
-
-    // ---------------------------------------
-    // VALIDATION
-    // ---------------------------------------
 
     if (!selectedLicenseId) {
       alert("Please select License Type");
@@ -477,120 +472,63 @@ const handleContinueApplication = async () => {
       return;
     }
 
-    // ---------------------------------------
-    // FIND EXISTING APPLICATION
-    // ---------------------------------------
-
+    // Find application by selected license category
     const application = applications.find((app) => {
+      const catCode = String(
+        app.catCode ?? app.licenseeCatCode ?? ""
+      ).trim();
 
-      if (
-        app.catCode != null &&
-        String(app.catCode).trim() ===
-          String(selectedLicenseId).trim()
-      ) {
-        return true;
-      }
-
-      if (
-        app.licenseeCatCode != null &&
-        String(app.licenseeCatCode).trim() ===
-          String(selectedLicenseId).trim()
-      ) {
-        return true;
-      }
-
-      return false;
+      return catCode === String(selectedLicenseId).trim();
     });
 
-    console.log(
-      "Matched Application:",
-      application
-    );
-
-    // ---------------------------------------
-    // EXISTING DRAFT
-    // ---------------------------------------
+    console.log("Matched Application:", application);
 
     if (
       application &&
-      String(application.applicationStatus)
-        .trim()
-        .toUpperCase() === "P"
+      String(application.applicationStatus ?? "").trim() === "01"
     ) {
+      // Always take ID from the matched draft
+      const applicationId = String(
+        application.applicationIdNo ?? ""
+      ).trim();
 
-      const applicationId =
-        application.applicationIdNo;
-
-      console.log(
-        "Draft Application ID:",
-        applicationId
-      );
+      console.log("Draft Application ID:", applicationId);
 
       if (!applicationId) {
-        console.error(
-          "Application ID missing in draft"
-        );
+        alert("Application ID missing in draft");
         return;
       }
 
-      // Save ApplicationIdNo
-      localStorage.setItem(
-        "applicationId",
-        applicationId
-      );
+      localStorage.setItem("applicationId", applicationId);
+      localStorage.setItem("catCode", String(selectedLicenseId));
 
-      // Save CatCode
-      localStorage.setItem(
-        "catCode",
-        String(selectedLicenseId)
-      );
+      // Verify saved ID immediately
+      const savedId = localStorage.getItem("applicationId");
 
-      console.log(
-        "Saved ApplicationId:",
-        localStorage.getItem("applicationId")
-      );
+      console.log("Expected Application ID:", applicationId);
+      console.log("Saved Application ID:", savedId);
 
-      console.log(
-        "Saved CatCode:",
-        localStorage.getItem("catCode")
-      );
-
-      // ---------------------------------------
-      // DIRECTLY OPEN STEP 4
-      // ---------------------------------------
+      if (savedId !== applicationId) {
+        alert("Application ID mismatch. Please try again.");
+        return;
+      }
 
       setCurrentStep(4);
-
       return;
     }
 
-    // ---------------------------------------
-    // NEW APPLICATION
-    // ---------------------------------------
+    // No draft found
+    console.log("No draft found - starting new application");
 
-    console.log(
-      "No draft found - starting new application"
-    );
-
-    localStorage.removeItem(
-      "applicationId"
-    );
-
-    localStorage.setItem(
-      "catCode",
-      String(selectedLicenseId)
-    );
+    localStorage.removeItem("applicationId");
+    localStorage.setItem("catCode", String(selectedLicenseId));
 
     setCurrentStep(4);
-
   } catch (error) {
-
-    console.error(
-      "Continue Application Error:",
-      error
-    );
+    console.error("Continue Application Error:", error);
   }
 };
+
 
 
 
@@ -880,7 +818,19 @@ if (selectedLicenseId === "37" && currentStep > 3) {
 />
   );
 }
-
+if (selectedLicenseId === "15" && currentStep > 3) {
+  return (
+<L3AndL33License
+  ownerType={applicant.ownerType}
+  catCode={selectedLicenseId}
+  onBackToSelect={() => {
+    setSelectedLicenseId("");
+    setCurrentStep(3);
+  }}
+  showToast={showToast || triggerToast}
+/>
+  );
+}
 
 
 

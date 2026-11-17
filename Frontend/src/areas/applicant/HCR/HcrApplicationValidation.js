@@ -37,10 +37,7 @@ export const validateApplicantData = (applicantForm) => {
   const panError = panCheck(applicantForm.panNo);
   if (panError) errors.panNo = panError;
 
-  const addressError = requiredCheck(
-    applicantForm.addressLine1,
-    "Address Line 1",
-  );
+  const addressError = requiredCheck(applicantForm.addressLine1,"Address Line 1",);
   if (addressError) errors.addressLine1 = addressError;
 
   const stateErr = selectCheck(applicantForm.StateUT, "State");
