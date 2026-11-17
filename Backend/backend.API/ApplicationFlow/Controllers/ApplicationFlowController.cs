@@ -33,14 +33,25 @@ namespace backend.API.ApplicationFlow.Controllers
 
             //await _applicationFlowService.CreateAccessPermissionHistory(Dto);
             //return CreatedAtAction(nameof(GetAccessPermissionHistory), new { applicationIdNo = Dto.ApplicationIdNo }, Dto);
-
-            var user = await _applicationFlowService.SaveAccessPermissionHistory(Dto);
-            return Ok(new
+            try
             {
-                applicationId = user,
-                //message = "Access Permission History Saved Successfully"
-                message = "Application Forwarded Successfully"
-            });
+                var user = await _applicationFlowService.SaveAccessPermissionHistory(Dto);
+                return Ok(new
+                {
+                    success = true,
+                    applicationId = user,
+                    //message = "Access Permission History Saved Successfully"
+                    message = "Application Forwarded Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // [HttpGet("GetAccessPermissionHistory/{applicationIdNo}")]

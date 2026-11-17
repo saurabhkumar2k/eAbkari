@@ -640,11 +640,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
         `http://localhost:5214/api/ApplicationFlow/GetApplicationFlowUser?applicationIdNo=${encodeURIComponent(applicationIdNo)}`,
       );
 
+      // if (!flowResponse.ok) {
+      //   throw new Error("Unable to get application flow details.");
+      // }
+      console.log("Flow API URL:", flowResponse);
+
+      // const flowData = await flowResponse.json();
+      const responseText  = await flowResponse.text();
+
       if (!flowResponse.ok) {
-        throw new Error("Unable to get application flow details.");
+        throw new Error(
+          `GetApplicationFlowUser failed. Status: ${flowResponse.status}. Response: ${responseText }`,
+        );
       }
 
-      const flowData = await flowResponse.json();
+      const flowData = JSON.parse(responseText);
+      console.log("Flow Data:", flowData);
 
       const flowUpto = String(flowData.flowUpto);
       const userTypeCode = String(flowData.userTypeCode);
@@ -748,7 +759,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       setApplications(
         Array.isArray(refreshedApplications) ? refreshedApplications : [],
       );
-      console.log("Saved History:",data);
+      console.log("Saved History:", data);
       alert(data.message);
     } catch (error) {
       console.error(error);

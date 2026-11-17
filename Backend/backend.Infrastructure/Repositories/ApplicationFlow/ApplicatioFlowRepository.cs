@@ -16,14 +16,52 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             _context = context;
         }
 
+        // public async Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistory accessPermissionHistory)
+        // {
+        //     if (accessPermissionHistory == null)
+        //     {
+        //         throw new ArgumentNullException(nameof(accessPermissionHistory), "Access permission history data cannot be null.");
+        //     }
+
+        //     _context.PlaAccessPermissionHistory.Add(accessPermissionHistory);
+        //     await _context.SaveChangesAsync();
+
+        //     return accessPermissionHistory.ApplicationIdNo;
+        // }
+
+        // public async Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistory accessPermissionHistory)
+        // {
+        //     if (accessPermissionHistory == null)
+        //         throw new ArgumentNullException(nameof(accessPermissionHistory));
+
+        //     var lastSiNo = await _context.PlaAccessPermissionHistory
+        //         .Where(x => x.ApplicationIdNo == accessPermissionHistory.ApplicationIdNo)
+        //         .Select(x => (int?)x.TransactionSiNo)
+        //         .MaxAsync();
+
+        //     accessPermissionHistory.TransactionSiNo = (lastSiNo ?? 0) + 1;
+
+        //     _context.PlaAccessPermissionHistory.Add(accessPermissionHistory);
+
+        //     await _context.SaveChangesAsync();
+
+        //     return accessPermissionHistory.ApplicationIdNo;
+        // }
+
         public async Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistory accessPermissionHistory)
         {
             if (accessPermissionHistory == null)
-            {
-                throw new ArgumentNullException(nameof(accessPermissionHistory), "Access permission history data cannot be null.");
-            }
+                throw new ArgumentNullException(nameof(accessPermissionHistory));
+
+            var lastSiNo = await _context.PlaAccessPermissionHistory
+                .Where(x => x.ApplicationIdNo == accessPermissionHistory.ApplicationIdNo)
+                .Select(x => (int?)x.TransactionSiNo)
+                .MaxAsync();
+
+            accessPermissionHistory.TransactionSiNo = (lastSiNo ?? 0) + 1;
 
             _context.PlaAccessPermissionHistory.Add(accessPermissionHistory);
+
             await _context.SaveChangesAsync();
 
             return accessPermissionHistory.ApplicationIdNo;
@@ -186,32 +224,73 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             return result;
         }
 
+        // public async Task<FlowHierarchyMapping?> GetNextReceiver(string flowUpto, string senderUserTypeCode)
+        // {
+        //     // Find current sender's mapping
+        //     var currentUser = await _context.FlowHierarchyMapping
+        //         .Where(x =>
+        //             x.FlowUpto.ToString() == flowUpto &&
+        //             x.UserTypeCode == senderUserTypeCode &&
+        //             x.CategoryType == "License")
+        //         .FirstOrDefaultAsync();
+
+        //     if (currentUser == null)
+        //         return null;
+
+        //     // Find next receiver
+        //     var nextReceiver = await _context.FlowHierarchyMapping
+        //         .Where(x =>
+        //             x.FlowUpto == currentUser.FlowUpto &&
+        //             x.HierarchyID == currentUser.HierarchyID &&
+        //             x.CategoryType == "License" &&
+        //             x.SlNo > currentUser.SlNo)
+        //         .OrderBy(x => x.SlNo)
+        //         .FirstOrDefaultAsync();
+
+        //     return nextReceiver;
+        // }
+
         public async Task<FlowHierarchyMapping?> GetNextReceiver(string flowUpto, string senderUserTypeCode)
         {
-            // Find current sender's mapping
-            var currentUser = await _context.FlowHierarchyMapping
-                .Where(x =>
-                    x.FlowUpto.ToString() == flowUpto &&
-                    x.UserTypeCode == senderUserTypeCode &&
-                    x.CategoryType == "License")
-                .FirstOrDefaultAsync();
+            // Applicant: SenderUserTypeCode = "00"
+            if (senderUserTypeCode == "00")
+            {
+                return await _context.FlowHierarchyMapping
+                    .Where(x =>
+                        x.FlowUpto == flowUpto &&
+                        x.CategoryType == "License")
+                    .OrderBy(x => x.SlNo)
+                    .FirstOrDefaultAsync();
+            }
 
-            if (currentUser == null)
+            // Find current sender
+            var currentSender = await _context.FlowHierarchyMapping
+                .FirstOrDefaultAsync(x =>
+                    x.FlowUpto == flowUpto &&
+                    x.UserTypeCode.ToString() == senderUserTypeCode &&
+                    x.CategoryType == "License");
+
+            if (currentSender == null)
                 return null;
 
             // Find next receiver
-            var nextReceiver = await _context.FlowHierarchyMapping
+            return await _context.FlowHierarchyMapping
                 .Where(x =>
-                    x.FlowUpto == currentUser.FlowUpto &&
-                    x.HierarchyID == currentUser.HierarchyID &&
+                    x.FlowUpto == flowUpto &&
+                    x.HierarchyID == currentSender.HierarchyID &&
                     x.CategoryType == "License" &&
-                    x.SlNo > currentUser.SlNo)
+                    x.SlNo > currentSender.SlNo)
                 .OrderBy(x => x.SlNo)
                 .FirstOrDefaultAsync();
-
-            return nextReceiver;
         }
 
+        public async Task<PlaAccessPermissionHistory?> GetLastAccessPermissionHistory(string applicationIdNo)
+        {
+            return await _context.PlaAccessPermissionHistory
+                .Where(x => x.ApplicationIdNo == applicationIdNo)
+                .OrderByDescending(x => x.TransactionSiNo)
+                .FirstOrDefaultAsync();
+        }
 
 
 
