@@ -26,6 +26,16 @@ namespace backend.Application.Services.ApplicationFlow
                 throw new ArgumentNullException(nameof(dto), "Access permission history data cannot be null.");
             }
 
+            var nextReceiver = await _applicationFlowRepository.GetNextReceiver(dto.FlowUpto, dto.SenderUserTypeCode);
+
+
+            if (nextReceiver == null)
+            {
+                throw new Exception(
+                    "No next receiver found in FlowHierarchyMapping. The application may have reached its final level."
+                );
+            }
+
             var accessPermissionHistory = new PlaAccessPermissionHistory
             {
                 ApplicationIdNo = dto.ApplicationIdNo,

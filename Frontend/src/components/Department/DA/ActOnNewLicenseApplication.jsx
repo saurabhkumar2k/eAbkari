@@ -266,6 +266,61 @@ const ActOnNewLicenseApplication = () => {
     }
   };
 
+  const handleForwardAction = async (application) => {
+    try {
+      debugger;
+
+      console.log("Selected Application:", application);
+
+      const applicationIdNo =
+        application.ApplicationIdNo ?? application.applicationIdNo;
+      if (!applicationIdNo) {
+        throw new Error("Application ID not found.");
+      }
+
+      const obj = {
+        applicationIdNo,
+        flowUpto: flowUpto,
+        transactionSiNo: 1,
+        transactionDate: new Date().toISOString(),
+        senderUserTypeCode: "00",
+        senderUserID: regId,
+        senderForwardingLevel: 0,
+        receiverUserTypeCode: "",
+        receiverUserID: null,
+        receiverForwardingLevel: null,
+        preScrutinyStatus: null,
+        fixDateEnquiry: null,
+        transactionRemarks: "Application forwarded by applicant",
+        transactionStatusCode: "F",
+        oprDate: new Date().toISOString(),
+      };
+      console.log("Forwarding Object:", obj);
+
+      const response = await fetch(
+        "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const data = await response.json();
+      console.log("Saved History:", data);
+      alert(data.message);
+    } catch (error) {
+      console.error("Forward Application Error:", error);
+      alert(error.message || "Unable to forward application.");
+    }
+  };
+
   return (
     <div className="act-new-license-page">
       <div className="act-page-header">
@@ -457,9 +512,7 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleAction("Forward Application", application)
-                      }
+                      onClick={() => handleForwardAction(application)}
                     >
                       Forward Application
                     </button>

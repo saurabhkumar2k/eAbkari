@@ -1,49 +1,49 @@
-  import React, { useState, useEffect } from "react";
-  import html2pdf from "html2pdf.js";
-  import { pdf } from "@react-pdf/renderer";
+import React, { useState, useEffect } from "react";
+import html2pdf from "html2pdf.js";
+import { pdf } from "@react-pdf/renderer";
 
-  //import ReportHeader from "../reports/ReportHeader";
+//import ReportHeader from "../reports/ReportHeader";
 
-  import {
-    Home,
-    Award,
-    FlaskConical,
-    Store,
-    Settings,
-    User,
-    Bell,
-    FileCheck,
-    Building,
-    ShieldCheck,
-    Search,
-    ChevronDown,
-    LogOut,
-    Calendar,
-    FileText,
-    Upload,
-    RefreshCw,
-    CheckCircle2,
-    Info,
-    ShieldAlert
-  } from "lucide-react";
-  import NewLicense from "./NewLicense";
-  // import NewPermit from "./Permit/NewPermit.jsx";
-  import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
-  import MtpLicenseWizard from "./MNTP/MtpLicenseWizard.jsx";
-  import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
-  import NewPermitWizard from "./Permit/NewPermit.jsx";
-  import RenewalLicense from "./License/RenewalLicense.jsx";
-  import DocumentRevalidation from "./License/DocumentRevalidation.jsx";
-  import AppliedMTP from "./MNTP/AppliedMtp.jsx";
-  import AppliedDealer from "./Dealer/AppliedDealer.jsx";
-  import AppliedPremise from "./Premise/AppliedPremise.jsx";
-  import DealerRegistrationWizard from "./Dealer/DealerRegistrationWizard.jsx";
-  import AppliedPermit from "./Permit/AppliedPermit.jsx";
-  import LicenseTransfer from "./LicenseTransfer/LicenseTransfer.jsx";
-  import Password from "./Password.jsx";
-  //import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
+import {
+  Home,
+  Award,
+  FlaskConical,
+  Store,
+  Settings,
+  User,
+  Bell,
+  FileCheck,
+  Building,
+  ShieldCheck,
+  Search,
+  ChevronDown,
+  LogOut,
+  Calendar,
+  FileText,
+  Upload,
+  RefreshCw,
+  CheckCircle2,
+  Info,
+  ShieldAlert,
+} from "lucide-react";
+import NewLicense from "./NewLicense";
+// import NewPermit from "./Permit/NewPermit.jsx";
+import PremiseDashboard from "./Premise/PremiseDashboard.jsx";
+import MtpLicenseWizard from "./MNTP/MtpLicenseWizard.jsx";
+import ReportPrintL1 from "../../components/Reports/ReportPrintL1.jsx";
+import NewPermitWizard from "./Permit/NewPermit.jsx";
+import RenewalLicense from "./License/RenewalLicense.jsx";
+import DocumentRevalidation from "./License/DocumentRevalidation.jsx";
+import AppliedMTP from "./MNTP/AppliedMtp.jsx";
+import AppliedDealer from "./Dealer/AppliedDealer.jsx";
+import AppliedPremise from "./Premise/AppliedPremise.jsx";
+import DealerRegistrationWizard from "./Dealer/DealerRegistrationWizard.jsx";
+import AppliedPermit from "./Permit/AppliedPermit.jsx";
+import LicenseTransfer from "./LicenseTransfer/LicenseTransfer.jsx";
+import Password from "./Password.jsx";
+//import { ReportPrintL1 } from "../../components/Reports/ReportPrintL1";
 
-  const menuItems = [
+const menuItems = [
   { id: "Home", label: "Home", icon: Home },
   { id: "License", label: "License", icon: Award },
   { id: "MTP", label: "M&TP", icon: FlaskConical },
@@ -633,6 +633,25 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     try {
       debugger;
 
+      const regId = localStorage.getItem("regId");
+
+      // STEP 1: Get FlowUpto and UserTypeCode dynamically
+      const flowResponse = await fetch(
+        `http://localhost:5214/api/ApplicationFlow/GetApplicationFlowUser?applicationIdNo=${encodeURIComponent(applicationIdNo)}`,
+      );
+
+      if (!flowResponse.ok) {
+        throw new Error("Unable to get application flow details.");
+      }
+
+      const flowData = await flowResponse.json();
+
+      const flowUpto = String(flowData.flowUpto);
+      const userTypeCode = String(flowData.userTypeCode);
+
+      console.log("Flow Upto:", flowUpto);
+      console.log("User Type Code:", userTypeCode);
+
       const finalSubmission = {
         applicationIdNo,
 
@@ -657,17 +676,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       }
 
       const updatedApplication = await responseForward.json();
-      if (String(updatedApplication.data.applicationStatus).trim() !== "03") {
+
+      if (!updatedApplication.success) {
         throw new Error("Application status was not persisted as 03.");
       }
 
       const obj = {
         applicationIdNo,
-        flowUpto: "36",
+        flowUpto: flowUpto,
         transactionSiNo: 1,
         transactionDate: new Date().toISOString(),
         senderUserTypeCode: "00",
-        senderUserID: localStorage.getItem("regId"),
+        senderUserID: regId,
         senderForwardingLevel: 0,
         receiverUserTypeCode: "",
         receiverUserID: null,
@@ -687,23 +707,24 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            applicationIdNo,
-            flowUpto: "36",
-            transactionSiNo: 1,
-            transactionDate: new Date().toISOString(),
-            senderUserTypeCode: "00",
-            senderUserID: localStorage.getItem("regId"),
-            senderForwardingLevel: 0,
-            receiverUserTypeCode: "",
-            receiverUserID: null,
-            receiverForwardingLevel: null,
-            preScrutinyStatus: null,
-            fixDateEnquiry: null,
-            transactionRemarks: "Application forwarded by applicant",
-            transactionStatusCode: "F",
-            oprDate: new Date().toISOString(),
-          }),
+          // body: JSON.stringify({
+          //   applicationIdNo,
+          //   flowUpto: "36",
+          //   transactionSiNo: 1,
+          //   transactionDate: new Date().toISOString(),
+          //   senderUserTypeCode: "00",
+          //   senderUserID: localStorage.getItem("regId"),
+          //   senderForwardingLevel: 0,
+          //   receiverUserTypeCode: "",
+          //   receiverUserID: null,
+          //   receiverForwardingLevel: null,
+          //   preScrutinyStatus: null,
+          //   fixDateEnquiry: null,
+          //   transactionRemarks: "Application forwarded by applicant",
+          //   transactionStatusCode: "F",
+          //   oprDate: new Date().toISOString(),
+          // }),
+          body: JSON.stringify(obj),
         },
       );
 
@@ -712,16 +733,22 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       }
 
       const data = await response.json();
+
       const applicationsResponse = await fetch(
         `http://localhost:5214/api/Report/GetMyApplications/${regId}`,
       );
+
       if (!applicationsResponse.ok) {
-        throw new Error("Application was updated, but the list could not be refreshed.");
+        throw new Error(
+          "Application was updated, but the list could not be refreshed.",
+        );
       }
 
       const refreshedApplications = await applicationsResponse.json();
-      setApplications(Array.isArray(refreshedApplications) ? refreshedApplications : []);
-      console.log(data);
+      setApplications(
+        Array.isArray(refreshedApplications) ? refreshedApplications : [],
+      );
+      console.log("Saved History:",data);
       alert(data.message);
     } catch (error) {
       console.error(error);
@@ -729,7 +756,20 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     }
   };
 
+  // useEffect(() => {
+  //   const regId = localStorage.getItem("regId");
 
+  //   if (!regId) return;
+
+  //   axios
+  //     .get(`http://localhost:5214/api/LicenseeCategories/GetApplicantByRegId/${regId}`)
+  //     .then((res) => {
+  //       setProfile(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching profile:", err);
+  //     });
+  // }, []);
 
   console.log("Parent Applicant:", applicant);
   const regId = localStorage.getItem("regId");
@@ -830,8 +870,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
     }
   };
 
-
-
   useEffect(() => {
     debugger;
     fetch(
@@ -867,8 +905,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
       {/* TOAST SYSTEM */}
       {toastMessage && (
         <div
-          className={`toast-message ${toastMessage.type === "success" ? "toast-success" : "toast-error"
-            }`}
+          className={`toast-message ${
+            toastMessage.type === "success" ? "toast-success" : "toast-error"
+          }`}
         >
           {toastMessage.type === "success" ? (
             <CheckCircle2 className="toast-icon success-icon" />
@@ -884,7 +923,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
         <NewLicense setActiveTab={setActiveTab} showToast={showToast} />
       ) : activeTab === "New Permit" ? (
         <NewPermitWizard
-          onBackToDashboard={() => setActiveTab("Home")}    
+          onBackToDashboard={() => setActiveTab("Home")}
           showToast={showToast}
           onSubmitPermit={(permitRecord) => {
             if (permitRecord) {
@@ -1005,7 +1044,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       <span className="profile-label">Mobile</span>
                       <span className="profile-value">{profile.mobile}</span>
                     </div>
-                   </div>
+                  </div>
                 </div>
               </div>
             </>
@@ -1014,7 +1053,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           {/* APPLIED LICENSE VIEW */}
           {activeTab === "Applied License" && (
             <div className="space-y-6">
-              <SectionTitle title="Applied Licenses" subtitle="Track the real-time processing status of your submitted applications"
+              <SectionTitle
+                title="Applied Licenses"
+                subtitle="Track the real-time processing status of your submitted applications"
               />
               <div className="dashboard-card active-applications-card">
                 <div className="applications-header">
@@ -1022,7 +1063,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                   <span className="applications-badge">
                     {" "}
                     {/* 3 Applications Total{" "} */}
-                    {applications.length  } Applications
+                    {applications.length} Applications
                   </span>
                 </div>
               </div>
@@ -1098,7 +1139,6 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
   )}
 </PDFDownloadLink> */}
                     </div>
-
                   </div>
                   <div className="application-progress-grid">
                     {[
@@ -1110,12 +1150,13 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     ].map((label, index) => (
                       <div key={index} className="progress-step">
                         <div
-                          className={`progress-bar ${index + 1 < getCurrentStage(app.status)
+                          className={`progress-bar ${
+                            index + 1 < getCurrentStage(app.status)
                               ? "progress-done"
                               : index + 1 === getCurrentStage(app.status)
                                 ? "progress-active"
                                 : "progress-pending"
-                            }`}
+                          }`}
                         ></div>
                         <p className="progress-label">{label}</p>
                       </div>
@@ -1127,10 +1168,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
           )}
           {/* RENEWAL LICENSE VIEW */}
           {activeTab === "Renewal License" && (
-            <RenewalLicense
-              userLicenses={[]}
-              onRenewLicense={handleRenew}
-            />
+            <RenewalLicense userLicenses={[]} onRenewLicense={handleRenew} />
           )}
 
           {/* LICENSE TRANSFER VIEW */}
@@ -1140,12 +1178,15 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               profile={profile}
               showToast={showToast}
               onNavigateToHome={() => setActiveTab("Home")}
-              onNavigateToChangeDirector={() => setActiveTab("Change Director Details")}
+              onNavigateToChangeDirector={() =>
+                setActiveTab("Change Director Details")
+              }
             />
           )}
 
           {/* CHANGE DIRECTOR DETAILS VIEW */}
-          {(activeTab === "Change Director Details" || activeTab === "Change Director (Applicant) Details") && (
+          {(activeTab === "Change Director Details" ||
+            activeTab === "Change Director (Applicant) Details") && (
             <ChangeDirector
               licenses={licenses}
               profile={profile}
@@ -1160,7 +1201,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
             <DocumentRevalidation
               setActiveTab={setActiveTab}
               showToast={showToast}
-              onNavigateToHome={onNavigateToHome || (() => setActiveTab("Home"))}
+              onNavigateToHome={
+                onNavigateToHome || (() => setActiveTab("Home"))
+              }
               onNavigateToRenewal={() => setActiveTab("Renewal License")}
             />
           )}
@@ -1278,8 +1321,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
             </div>
           )}
 
-       
-           {/* CHANGE PASSWORD TAB */}
+          {/* CHANGE PASSWORD TAB */}
           {activeTab === "ChangePassword" && (
             <Password
               onNavigateToHome={() => setActiveTab("Home")}
@@ -1302,9 +1344,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     <CheckCircle2 className="mtp-success-icon" />
                   </div>
 
-                  <h3 className="mtp-success-title">
-                    M&TP Application Filed
-                  </h3>
+                  <h3 className="mtp-success-title">M&TP Application Filed</h3>
 
                   <p className="mtp-success-message">
                     Your formulation licensing request for{" "}
@@ -1314,8 +1354,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     has been registered under Application Reference{" "}
                     <span className="mtp-reference-id">
                       MTP-2026-{Math.floor(1000 + Math.random() * 9000)}
-                    </span>.
-                    Technical scrutiny and chemical sample verification has been scheduled.
+                    </span>
+                    . Technical scrutiny and chemical sample verification has
+                    been scheduled.
                   </p>
                   <button
                     onClick={() => {
@@ -1323,11 +1364,12 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       setNewMtpData({
                         unitName: "Delhi Pharmaceutical Formulation Works",
                         formulationName: "",
-                        formulationType: "Ayurvedic medicine (with self-generated alcohol)",
+                        formulationType:
+                          "Ayurvedic medicine (with self-generated alcohol)",
                         spiritType: "Rectified Spirit (95% v/v)",
                         annualRequirement: "5000 Litres",
                         drugLicenseNum: "",
-                        declarationsChecked: false
+                        declarationsChecked: false,
                       });
                     }}
                     className="mtp-reset-btn"
@@ -1339,32 +1381,48 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (!newMtpData.formulationName || !newMtpData.drugLicenseNum) {
-                      showToast("Please fill all required formulation and drug license fields", "error");
+                    if (
+                      !newMtpData.formulationName ||
+                      !newMtpData.drugLicenseNum
+                    ) {
+                      showToast(
+                        "Please fill all required formulation and drug license fields",
+                        "error",
+                      );
                       return;
                     }
                     if (!newMtpData.declarationsChecked) {
-                      showToast("Please accept the compliance declaration", "error");
+                      showToast(
+                        "Please accept the compliance declaration",
+                        "error",
+                      );
                       return;
                     }
 
                     // Add to local state list
                     const newAppId = `MTP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-                    setMtpApplications(prev => [
+                    setMtpApplications((prev) => [
                       {
                         id: newAppId,
                         unitName: newMtpData.unitName,
                         formulation: newMtpData.formulationName,
-                        alcoholStrength: newMtpData.formulationType.includes("self-generated") ? "12% v/v (Self-generated)" : "90% v/v (Rectified Spirit)",
+                        alcoholStrength: newMtpData.formulationType.includes(
+                          "self-generated",
+                        )
+                          ? "12% v/v (Self-generated)"
+                          : "90% v/v (Rectified Spirit)",
                         status: "Under Technical Review",
                         submittedDate: new Date().toLocaleDateString("en-GB"),
-                        remarks: "New application filed under self-declaration standards"
+                        remarks:
+                          "New application filed under self-declaration standards",
                       },
-                      ...prev
+                      ...prev,
                     ]);
 
                     setMtpSubmissionCompleted(true);
-                    showToast(`M&TP application ${newAppId} successfully processed!`);
+                    showToast(
+                      `M&TP application ${newAppId} successfully processed!`,
+                    );
                   }}
                   className="mtp-form-card"
                 >
@@ -1389,11 +1447,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Drug License State Reference No. *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Drug License State Reference No. *
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.drugLicenseNum}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, drugLicenseNum: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            drugLicenseNum: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-mono font-bold text-slate-700"
                         placeholder="e.g. DL-DRUG-88229"
                         required
@@ -1401,11 +1466,18 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Proposed Formulation Brand/Generic Name *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Proposed Formulation Brand/Generic Name *
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.formulationName}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationName: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            formulationName: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. Medicated Herbal Syrup base"
                         required
@@ -1413,39 +1485,76 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Class of Medicinal Preparation *</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Class of Medicinal Preparation *
+                      </label>
                       <select
                         value={newMtpData.formulationType}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, formulationType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            formulationType: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                       >
-                        <option value="Ayurvedic medicine (with self-generated alcohol)">Ayurvedic medicine (with self-generated alcohol)</option>
-                        <option value="Allopathic medicinal formulation (with spirit base)">Allopathic medicinal formulation (with spirit base)</option>
-                        <option value="Homeopathic medicine tincture">Homeopathic medicine tincture</option>
-                        <option value="Toilet preparation (perfume/cologne base)">Toilet preparation (perfume/cologne base)</option>
+                        <option value="Ayurvedic medicine (with self-generated alcohol)">
+                          Ayurvedic medicine (with self-generated alcohol)
+                        </option>
+                        <option value="Allopathic medicinal formulation (with spirit base)">
+                          Allopathic medicinal formulation (with spirit base)
+                        </option>
+                        <option value="Homeopathic medicine tincture">
+                          Homeopathic medicine tincture
+                        </option>
+                        <option value="Toilet preparation (perfume/cologne base)">
+                          Toilet preparation (perfume/cologne base)
+                        </option>
                       </select>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Type of Alcohol/Spirit Base Required</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Type of Alcohol/Spirit Base Required
+                      </label>
                       <select
                         value={newMtpData.spiritType}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, spiritType: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            spiritType: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                       >
-                        <option value="Rectified Spirit (95% v/v)">Rectified Spirit (95% v/v)</option>
-                        <option value="Absolute Alcohol (99% + v/v)">Absolute Alcohol (99% + v/v)</option>
-                        <option value="Denatured Spirit Base">Denatured Spirit Base</option>
-                        <option value="Self-generating Herbal Yeast Ferment">Self-generating Herbal Yeast Ferment</option>
+                        <option value="Rectified Spirit (95% v/v)">
+                          Rectified Spirit (95% v/v)
+                        </option>
+                        <option value="Absolute Alcohol (99% + v/v)">
+                          Absolute Alcohol (99% + v/v)
+                        </option>
+                        <option value="Denatured Spirit Base">
+                          Denatured Spirit Base
+                        </option>
+                        <option value="Self-generating Herbal Yeast Ferment">
+                          Self-generating Herbal Yeast Ferment
+                        </option>
                       </select>
                     </div>
 
                     <div className="sm:col-span-2 space-y-1.5">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Estimated Annual Quota Requirement (LPL)</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase">
+                        Estimated Annual Quota Requirement (LPL)
+                      </label>
                       <input
                         type="text"
                         value={newMtpData.annualRequirement}
-                        onChange={(e) => setNewMtpData(p => ({ ...p, annualRequirement: e.target.value }))}
+                        onChange={(e) =>
+                          setNewMtpData((p) => ({
+                            ...p,
+                            annualRequirement: e.target.value,
+                          }))
+                        }
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 font-semibold text-slate-700"
                         placeholder="e.g. 5000 Litres"
                       />
@@ -1457,11 +1566,23 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
                       type="checkbox"
                       id="mtp-check"
                       checked={newMtpData.declarationsChecked}
-                      onChange={(e) => setNewMtpData(p => ({ ...p, declarationsChecked: e.target.checked }))}
+                      onChange={(e) =>
+                        setNewMtpData((p) => ({
+                          ...p,
+                          declarationsChecked: e.target.checked,
+                        }))
+                      }
                       className="mt-1 accent-blue-600 scale-110 cursor-pointer"
                     />
-                    <label htmlFor="mtp-check" className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer">
-                      I solemnly declare that the formulation ingredients, alcohol strength limits, and manufacturing procedures fulfill Delhi Excise and Drugs & Cosmetics Act rules. All samples will be placed to State Chemical Laboratories for compliance verification prior to dispatch.
+                    <label
+                      htmlFor="mtp-check"
+                      className="text-xs text-slate-500 font-semibold select-none leading-relaxed cursor-pointer"
+                    >
+                      I solemnly declare that the formulation ingredients,
+                      alcohol strength limits, and manufacturing procedures
+                      fulfill Delhi Excise and Drugs & Cosmetics Act rules. All
+                      samples will be placed to State Chemical Laboratories for
+                      compliance verification prior to dispatch.
                     </label>
                   </div>
 
@@ -1492,7 +1613,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               onNavigateToHome={() => setActiveTab("Home")}
               onNavigateToNewMtp={() => setActiveTab("New M&TP")}
               onNavigateToRenewal={() => setActiveTab("Renewal License")}
-              onNavigateToDocumentRevalidate={() => setActiveTab("Document Revalidate")}
+              onNavigateToDocumentRevalidate={() =>
+                setActiveTab("Document Revalidate")
+              }
               showToast={(msg) => showToast(msg, "success")}
             />
           )}
@@ -1524,8 +1647,7 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
             />
           )}
 
-         
-           {/* PREMISE MODULE */}
+          {/* PREMISE MODULE */}
           {activeTab === "Register Premise" && (
             <PremiseDashboard
               activeTab={activeTab}
@@ -1542,7 +1664,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               onNavigateToHome={() => setActiveTab("Home")}
               onNavigateNewPremise={() => setActiveTab("Register Premise")}
               onNavigateToRenewal={() => setActiveTab("Renewal License")}
-              onNavigateToDocumentRevalidate={() => setActiveTab("Document Revalidate")}
+              onNavigateToDocumentRevalidate={() =>
+                setActiveTab("Document Revalidate")
+              }
               onViewPremise={(id) => {
                 showToast(`Viewing Premise Dossier ${id}`, "info");
               }}
@@ -1557,7 +1681,9 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
               onNavigateToHome={() => setActiveTab("Home")}
               onNavigateNewPermit={() => setActiveTab("New Permit")}
               onNavigateToRenewal={() => setActiveTab("Renewal License")}
-              onNavigateToDocumentRevalidate={() => setActiveTab("Document Revalidate")}
+              onNavigateToDocumentRevalidate={() =>
+                setActiveTab("Document Revalidate")
+              }
               onViewPermit={(id) => {
                 showToast(`Viewing Permit Dossier ${id}`, "info");
               }}
@@ -1586,17 +1712,17 @@ export default function ApplicantDashboard({ onLogout, onNavigateToHome }) {
             "New Permit",
             "Applied Permit",
           ].includes(activeTab) && (
-              <div className="dashboard-card section-padding text-center bg-white">
-                <h2 className="section-title text-3xl font-bold">
-                  {activeTab} Module
-                </h2>
+            <div className="dashboard-card section-padding text-center bg-white">
+              <h2 className="section-title text-3xl font-bold">
+                {activeTab} Module
+              </h2>
 
-                <p className="section-subtitle mt-3">
-                  This module is now fully modular and ready for scalable feature
-                  integration.
-                </p>
-              </div>
-            )}
+              <p className="section-subtitle mt-3">
+                This module is now fully modular and ready for scalable feature
+                integration.
+              </p>
+            </div>
+          )}
         </main>
       )}
     </div>

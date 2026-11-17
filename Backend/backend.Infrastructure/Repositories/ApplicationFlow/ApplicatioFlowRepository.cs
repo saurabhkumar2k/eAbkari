@@ -186,6 +186,32 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             return result;
         }
 
+        public async Task<FlowHierarchyMapping?> GetNextReceiver(string flowUpto, string senderUserTypeCode)
+        {
+            // Find current sender's mapping
+            var currentUser = await _context.FlowHierarchyMapping
+                .Where(x =>
+                    x.FlowUpto.ToString() == flowUpto &&
+                    x.UserTypeCode == senderUserTypeCode &&
+                    x.CategoryType == "License")
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+                return null;
+
+            // Find next receiver
+            var nextReceiver = await _context.FlowHierarchyMapping
+                .Where(x =>
+                    x.FlowUpto == currentUser.FlowUpto &&
+                    x.HierarchyID == currentUser.HierarchyID &&
+                    x.CategoryType == "License" &&
+                    x.SlNo > currentUser.SlNo)
+                .OrderBy(x => x.SlNo)
+                .FirstOrDefaultAsync();
+
+            return nextReceiver;
+        }
+
 
 
 
