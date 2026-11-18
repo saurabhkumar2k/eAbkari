@@ -190,7 +190,7 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
   // console.log("HcrLicensee - validateAdditionalRestaurant questionsAnswers  ", questions)
 
   //additionalFrom
-  if (CatCode === "05" || CatCode === "31") {
+  if (CatCode === "05" || CatCode === "31" || CatCode === "06" ||  CatCode === "32") {
     // Check required text & code dropdown fields using your generic check
     const numberOfBarAttendentErr = validateSiteNum(
       additionalFrom.numberOfBarAttendent,
@@ -327,7 +327,7 @@ export const validateAdditionalSiteData = (additionalFrom, CatCode) => {
     if (directorsErr) errors.directors = directorsErr;
   }
 
-  if (CatCode === "04" || CatCode === "30" || CatCode === '05' || CatCode === '31') {
+  if (CatCode === "04" || CatCode === "30" || CatCode === '05' || CatCode === '31' || CatCode === '06' || CatCode === '32') {
     const educationalInsDistErr = selectCheck(additionalFrom.educationalInsDist, "Educational Institution Distance");
     if (educationalInsDistErr) errors.educationalInsDist = educationalInsDistErr;
 
@@ -494,7 +494,11 @@ export const validateUploadedDocuments = (filesToUpload, uploadedFiles) => {
     const doc = filesToUpload[i];
     const docId = doc.docID;
     const uploaded = uploadedFiles[docId];
-    const hasFile = !!uploaded?.file;
+    // const hasFile = !!uploaded?.file;
+    // const hasFile = Boolean(uploaded?.file && Object.keys(uploaded.file).length > 0);
+    const hasFile = uploaded?.file instanceof File;
+
+
 
     // Fallback cleanly to docID if docDesc is missing
     const documentName = doc.docDesc || `Document ID ${docId}`;
