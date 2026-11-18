@@ -282,6 +282,8 @@ namespace backend.Application.Services.License
             }
         }
 
+        
+
         public async Task<ApiResponse<string>> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto)
         {
             try
@@ -308,6 +310,48 @@ namespace backend.Application.Services.License
             catch (Exception ex)
             {
                 return ApiResponse<string>.Fail("Server error, try again later", ex.Message);
+            }
+        }
+        public async Task<ApiResponse<List<LifeCycleDto>>> GetLifeCycleService(string applicationIdNo)
+        {
+            try
+            {
+                var result = await _Licenserepository.GetLifeCycleRepositry(applicationIdNo);
+
+                if(result == null || result.Count == 0)
+                {
+                    return ApiResponse<List<LifeCycleDto>>.Fail("No Document Found.");
+                }
+                else
+                {
+                    return ApiResponse<List<LifeCycleDto>>.Ok(result);
+                }
+
+            }
+            catch(Exception ex)
+            {
+                return ApiResponse<List<LifeCycleDto>>.Fail("Server error, try again later", ex.Message);
+            }
+        }
+
+        public async Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetAttachDocService(string applicationIdNo,string catCode)
+        {
+            try
+            {
+                var result = await _Licenserepository.GetAttachDocRepositry(applicationIdNo, catCode);
+
+                if (result == null || result.Count == 0)
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("No Document Found.");
+                }
+                else
+                {
+                    return ApiResponse<List<GetApplicantDocResponseDto>>.Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<List<GetApplicantDocResponseDto>>.Fail("Server error, try again later", ex.Message);
             }
         }
     }

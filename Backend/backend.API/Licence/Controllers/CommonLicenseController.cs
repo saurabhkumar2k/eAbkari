@@ -64,5 +64,20 @@ namespace backend.API.Licence.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("GetLifeCycle")]
+        public async Task<IActionResult> GetLifeCycle (string applicationIdNo )
+        {
+            var result = await _LicenseService.GetLifeCycleService(applicationIdNo);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAttachDoc")]
+        public async Task<IActionResult> GetAttachDoc(string applicationIdNo,string catCode)
+        {
+            var result = await _LicenseService.GetAttachDocService(applicationIdNo ,catCode);
+
+            return Ok(result);
+        }
     }
 }
