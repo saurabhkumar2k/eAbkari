@@ -319,7 +319,7 @@ namespace backend.Infrastructure.Repositories.License
 
                     string fileName =
                         $"{dto.ApplicationIdNo}_{applicantSl}_{document.DocId}_{document.DocSl}{fileExtension}";
-                    
+
 
                     var entity =
                         new LicenseApplicationUploadedDocument
@@ -341,7 +341,7 @@ namespace backend.Infrastructure.Repositories.License
                             DocStatus =
                                 "Y",
 
-                                IsValid = document.IsValid,
+                            IsValid = document.IsValid,
 
                             DateOfValidity =
                                 document.DateOfValidity,
@@ -370,6 +370,74 @@ namespace backend.Infrastructure.Repositories.License
             // Save all changes together
             await _context.SaveChangesAsync();
             return "Documents saved/updated successfully.";
+        }
+
+        public async Task<List<LifeCycleDto>> GetLifeCycleRepositry(String applicationIdNo)
+        {
+            var result = await _context.PlaAccessPermissionHistory
+                        .Where(x => x.ApplicationIdNo == applicationIdNo)
+                        .OrderBy(x => x.TransactionSiNo)
+                        .Select(x => new LifeCycleDto
+                        {
+                            Slno = x.TransactionSiNo,
+                            TransactionDate = x.TransactionDate.HasValue
+                        ? x.TransactionDate.Value.Date
+                        : null,
+                            SenderUserID = x.SenderUserID,
+                            ReceiverUserID = x.ReceiverUserID,
+                            TransactionRemarks = x.TransactionRemarks
+                        })
+         .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<GetApplicantDocResponseDto>> GetAttachDocRepositry(String applicationIdNo,string catCode)
+        {
+            var result = await (from a in _context.MstLicenseApplicationDocument
+
+                                join b in _context.LicenseApplicationCategoryDocument
+                                    on a.DocId equals b.DocId
+
+                                join c in _context.LicenseApplicationUploadedDocument
+                                    on a.DocId equals c.DocId
+
+                                where
+                                    a.DeleteStatus == "N"
+                                    && b.ActiveStatus == "Y"
+                                    && b.LicenseeTypeFlag == "A"
+                                    && c.ApplicationIdNo == applicationIdNo
+                                    && b.LicenseeCatCode == catCode
+
+                                orderby
+                                    (Convert.ToInt32(a.DocId) == 186 ? 999 : 1),
+                                    Convert.ToInt32(a.DocId)
+
+                                select new GetApplicantDocResponseDto
+                                {
+                                    DocDesc = a.DocDesc,
+                                    DocID = a.DocId,
+
+                                    IsMandatory = b.IsMandatory,
+                                    IsValid = a.IsValid ?? false,
+
+                                    DocUrl = c.DocUrl,
+                                    DocSl = c.DocSl,
+
+                                    DocAppl = c.DocStatus == "N" ? "Yes" : "No",
+
+                                    SDate = c.SubmitDate == null
+                                    ? "View"
+                                    : "Submitted on : " + c.SubmitDate.Value.ToString("dd/MM/yyyy"),
+
+                                    VallidUpto = c.DateOfValidity.HasValue
+                                    ? c.DateOfValidity.Value.ToString("dd/MM/yyyy")
+                                    : null
+                                }
+
+                    ).ToListAsync();
+
+            return result;
         }
     }
 }

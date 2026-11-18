@@ -22,7 +22,7 @@ namespace backend.Core.DTOs
         public DateTime? RemarkDate { get; set; }
     }
 
-     public class ApplicationScruitinyStatusGetResultDto
+    public class ApplicationScruitinyStatusGetResultDto
     {
         public string ApplicationIdNo { get; set; }
 
@@ -41,5 +41,15 @@ namespace backend.Core.DTOs
         public string? Remarks { get; set; }
 
         public DateTime? RemarkDate { get; set; }
+    }
+
+    public class LifeCycleDto
+    {
+        public long Slno { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public string? SenderUserID { get; set; }
+        public string? ReceiverUserID { get; set; }
+        public string? TransactionRemarks { get; set; }
+
     }
 }

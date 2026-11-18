@@ -12,8 +12,12 @@ namespace backend.Application.Interfaces.License
         Task<ApiResponse<ApplicationIdResponseDto>> GetPendingApplicationId(string catCode,int regId);
 
         Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetDocDescriptionCatWiseService(string applicationIdNo,string CatCode,string DocType);
+        
+        Task<ApiResponse<List<GetApplicantDocResponseDto>>> GetAttachDocService(string applicationIdNo,string catCode);
+
 
         Task<ApiResponse<string>> SaveAndUpdateApplicantDocumentsService(SaveAndUpdateApplicantDocumentsDto dto);
+        Task<ApiResponse<List<LifeCycleDto>>> GetLifeCycleService(string applicationIdNo);
 
     }
 }
