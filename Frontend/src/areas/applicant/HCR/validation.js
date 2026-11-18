@@ -154,6 +154,7 @@ export const validateFileObject = (file, fileName, maxMb, allowedExtensions) => 
   if (!file) {
     return "File is required";
   }
+  // console.log("validateFileObject - file:", file, "fileName:", fileName, "maxMb:", maxMb, "allowedExtensions:", allowedExtensions);
 
   // const fileName = file.name || "";
   const maxBytes = maxMb * 1024 * 1024;

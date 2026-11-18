@@ -1137,7 +1137,11 @@ export default function HcrLicensee({
         if (currentItem.docID) {
           acc[currentItem.docID] = {
             file: {}, // Default empty file object
-            previewUrl: currentItem.docUrl || "" // Maps your API URL to the preview URL field
+            previewUrl: currentItem.docUrl || "", // Maps your API URL to the preview URL field
+            validityDate : currentItem.vallidUpto || "",
+            isValid : currentItem.isValid || false,
+            isMandatory : currentItem.isMandatory || false,
+
           };
         }
         return acc;
@@ -1887,6 +1891,18 @@ export default function HcrLicensee({
 
   const handleValidityDateChange = (docId, validityDate) => {
     // Clear errors for this specific docId inside the nested errors object
+
+    setDocuments((prevDocuments) =>
+      prevDocuments.map((doc) =>
+        doc.docID === docId
+          ? {
+            ...doc,
+            vallidUpto: validityDate,
+          }
+          : doc
+      )
+    );
+
     if (currentStep === 4) {
       setAppUploadedFiles((prev) => ({
         ...prev,
@@ -1923,11 +1939,36 @@ export default function HcrLicensee({
   };
 
   const handleFileChange = (key, file) => {
+
+    // console.log("applicantForm  ------ 12121212", applicantForm);
+
     // console.log("handleDocumentFileChange", key, file);
     if (!file) return;
 
+    const objectUrl = URL.createObjectURL(file);
+    setDocuments((prevDocuments) =>
+      prevDocuments.map((doc) =>
+        doc.docID === key
+          ? {
+            ...doc,
+            docUrl: objectUrl,
+            // isValid: true, // Optional: mark as valid once uploaded
+            file: file,    // Optional: keep the File object if you need to upload it via FormData later
+          }
+          : doc
+      )
+    );
+
     // Clear errors for this specific key inside the nested errors object
     if (currentStep === 4) {
+      setAppUploadedFiles((prev) => ({
+        ...prev,
+        [key]: {
+          file,
+          previewUrl: URL.createObjectURL(file),
+        },
+      }));
+
       setPersonalDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1936,16 +1977,18 @@ export default function HcrLicensee({
         },
       }));
 
-      setAppUploadedFiles((prev) => ({
-        ...prev,
-        [key]: {
-          file,
-          previewUrl: URL.createObjectURL(file),
-        },
-      }));
+
     }
 
     if (currentStep === 5) {
+
+      setSiteDocumentsErrors((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [key]: null,
+        },
+      }));
 
       setSiteUploadedFiles((prev) => ({
         ...prev,
@@ -1955,13 +1998,7 @@ export default function HcrLicensee({
         },
       }));
 
-      setSiteDocumentsErrors((prev) => ({
-        ...prev,
-        errors: {
-          ...prev?.errors,
-          [key]: null,
-        },
-      }));
+
     }
   };
 
@@ -2542,6 +2579,7 @@ export default function HcrLicensee({
   // =========================================================
 
   const goToSiteDocuments = async () => {
+    console.log("goToSiteDocuments documents", appUploadedFiles);
     if (!validateApplicationDocuments(documents, appUploadedFiles, "P")) {
       return false;
     }

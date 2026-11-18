@@ -29,6 +29,8 @@ const DocumentUploadWithDate = ({
   //     [name]: fieldValue,
   //   }));
   // };
+  // console.log("documents ----------------------", documents);
+  // console.log("uploadedFiles ----------------------", uploadedFiles);
 
 
   return (
@@ -50,7 +52,21 @@ const DocumentUploadWithDate = ({
           /*
            * Existing/new uploaded file information
            */
-          const uploaded = uploadedFiles[doc.docID];
+          // const uploaded = uploadedFiles[doc.docID];
+          const isUrlMissing = !doc.docUrl || doc.docUrl.trim() === "";
+
+
+          const uploaded = isUrlMissing
+            ? {
+              docDesc: doc.docDesc,
+              docID: doc.docID,
+              isMandatory: doc.isMandatory,
+              isValid: doc.isValid,
+            }
+            : uploadedFiles[doc.docID];
+
+          // console.log("uploadedFiles[doc.docID]", uploadedFiles[doc.docID],isUrlMissing,doc.docID,uploaded,doc);
+
 
           return (
             <div key={doc.docID} className="doc-portal-container">
