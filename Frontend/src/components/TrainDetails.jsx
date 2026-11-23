@@ -22,7 +22,7 @@ import {
   Utensils,
 } from "lucide-react";
 
-import { Cat_Label } from "../areas/applicant/HCR/validation";
+import { Cat_Label } from "../areas/applicant/validation";
 import TrainRute from "./TrainRute";
 
 const TrainDetails = ({

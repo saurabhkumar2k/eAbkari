@@ -8,7 +8,7 @@ import HCRBasicFieldsL15 from "./HCRBasicFieldsL15";
 import HCRBasicFieldsL28 from "./HCRBasicFieldsL28";
 import RestaurantDetailsL16 from "./RestaurantDetailsL16";
 import ClubDetailsL2829 from "./ClubDetailsL2829";
-import { Cat_Label } from "../areas/applicant/HCR/validation";
+// import { Cat_Label } from "./validation";
 
 export default function RestaurantAdditionalDetails({
   additionalFrom,

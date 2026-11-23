@@ -14,7 +14,7 @@ import {
     validateFileObject,
     validateDateOnly,
     validatePdfFileType
-} from "./validation";
+} from "../validation";
 
 export const validateApplicantData = (applicantForm) => {
   debugger;

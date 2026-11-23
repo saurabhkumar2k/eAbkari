@@ -1,6 +1,8 @@
 import React from "react";
 
 const RetailQuestionList = ({ questions, onChange, error }) => {
+
+  console.log("RetailQuestionList - questions  ", questions);
   return (
     <div className="card-section">
       <h3>All fields are mandatory
@@ -33,7 +35,7 @@ const RetailQuestionList = ({ questions, onChange, error }) => {
                     type="radio"
                     name={`question_${q.questionId}`}
                     value="Y"
-                    checked={q.answer === "Y"}
+                    checked={q.answerGiven === "Y"}
                     onChange={() =>
                       onChange(q.questionId, "Y")
                     }
@@ -46,7 +48,7 @@ const RetailQuestionList = ({ questions, onChange, error }) => {
                     type="radio"
                     name={`question_${q.questionId}`}
                     value="N"
-                    checked={q.answer === "N"}
+                    checked={q.answerGiven === "N"}
                     onChange={() =>
                       onChange(q.questionId, "N")
                     }

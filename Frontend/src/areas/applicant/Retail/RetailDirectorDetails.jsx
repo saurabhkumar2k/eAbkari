@@ -7,7 +7,8 @@ import "../../../Style/Retail.css"
 
 const RetailDirectorDetails = ({ RetailPropDetails, onChange, onAdd, onDelete, ConstitutionType, errors }) => {
 
-  console.log("ClubDetailsL2829 errors:", errors); 
+  console.log("RetailPropDetails ------ ",RetailPropDetails);
+
   return (
     <div className="restaurants-section">
       {/* Section Title */}

@@ -1,6 +1,6 @@
 import React from "react";
 import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
-import { Cat_Label } from "../HCR/validation";
+import { Cat_Label } from "../validation";
 
 export default function HcrAdditionalStep({
   additionalFrom,

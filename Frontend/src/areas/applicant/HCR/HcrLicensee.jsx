@@ -30,7 +30,7 @@ import {
   validateClubDetails,
   validateTrainRoutes,
   Cat_Label,
-} from "./validation";
+} from "../validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 

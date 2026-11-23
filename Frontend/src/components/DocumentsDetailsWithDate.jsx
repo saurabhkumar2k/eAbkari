@@ -29,8 +29,8 @@ const DocumentUploadWithDate = ({
   //     [name]: fieldValue,
   //   }));
   // };
-  // console.log("documents ----------------------", documents);
-  // console.log("uploadedFiles ----------------------", uploadedFiles);
+  console.log("documents ----------------------", documents);
+  console.log("uploadedFiles ----------------------", uploadedFiles);
 
 
   return (

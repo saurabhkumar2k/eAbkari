@@ -1,7 +1,7 @@
 import React from "react";
 
 import "../../../Style/Retail.css";
-import { allowOnlyNumbers } from "../../../areas/applicant/HCR/validation";
+import { allowOnlyNumbers } from "../validation";
 
 import { User, Trash2 } from "lucide-react";
 
@@ -15,11 +15,11 @@ export default function RetailDirectorRow({
   errors,
 }) {
   // console.log("DirectorsList:", applicant?.constitutionType);
-  console.log("DirectorsList:", ConstitutionType);
-  console.log("DirectorRow:", ConstitutionType);
-  console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
-  console.log("DirectorRow ConstitutionType:", ConstitutionType);
-  console.log(RetailPropDetails);
+  // console.log("DirectorsList:", ConstitutionType);
+  // console.log("DirectorRow:", ConstitutionType);
+  // console.log("ConstitutionType:", ConstitutionType); // 👈 ADD HERE
+  // console.log("DirectorRow ConstitutionType:", ConstitutionType);
+  console.log("RetailDirectorRow ------ ",RetailPropDetails);
   return (
     <div className="restaurant-container">
       {/* Restaurant List */}
@@ -52,8 +52,8 @@ export default function RetailDirectorRow({
                 <User size={16} />
 
                 <select
-                  value={RetailPropDetails.NameOfthe || "0"}
-                  onChange={(e) => onChange(index, "NameOfthe", e.target.value)}
+                  value={RetailPropDetails.addtionalDesigTypeValue || "0"}
+                  onChange={(e) => onChange(index, "addtionalDesigTypeValue", e.target.value)}
                 >
                   <option value="">Select</option>
                   <option value="1">Company Directors</option>
@@ -64,8 +64,8 @@ export default function RetailDirectorRow({
                 </select>
               </div>
 
-              {errors?.NameOftheErr && (
-                <span className="error-text">{errors.NameOftheErr}</span>
+              {errors?.addtionalDesigTypeValueErr && (
+                <span className="error-text">{errors.addtionalDesigTypeValueErr}</span>
               )}
             </div>
 
@@ -78,13 +78,13 @@ export default function RetailDirectorRow({
               <div className="input-wrapper">
                 <input
                   type="text"
-                  value={RetailPropDetails.Name || ""}
-                  onChange={(e) => onChange(index, "Name", e.target.value)}
+                  value={RetailPropDetails.name || ""}
+                  onChange={(e) => onChange(index, "name", e.target.value)}
                   maxLength={20}
                 />
               </div>
-              {errors?.NameErr && (
-                <span className="error-text">{errors.NameErr}</span>
+              {errors?.nameErr && (
+                <span className="error-text">{errors.nameErr}</span>
               )}
             </div>
 

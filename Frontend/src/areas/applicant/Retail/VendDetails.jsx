@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 //import { Cat_Label } from "../areas/applicant/HCR/validation";
-import { Cat_Label } from "../HCR/validation";
+import { Cat_Label } from "../validation";
 
 const VendDetails = ({
   siteForm,
