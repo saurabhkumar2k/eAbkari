@@ -99,49 +99,7 @@ namespace backend.API.ApplicationFlow.Controllers
             return Ok(history);
         }
 
-        // [HttpPost("ApplicationScruitinyStatus")]
-        // public async Task<IActionResult> ApplicationScruitinyStatus([FromBody] ApplicationScruitinyStatusDto Dto)
-        // {
-        //     if (!ModelState.IsValid)
-        //     {
-        //         return BadRequest(ModelState);
-        //     }
 
-        //     if (Dto == null)
-        //     {
-        //         return BadRequest("Scrutiny Not Done.");
-        //     }
-
-        //     var user = await _applicationScruitinyStatusService.ApplicationScruitinyStatus(Dto);
-        //     return Ok(new
-        //     {
-        //         applicationId = user,
-        //         //message = "Access Permission History Saved Successfully"
-        //         message = "Application Scrutiny Successfully Done"
-        //     });
-
-        // }
-
-
-        // [HttpGet("GetApplicationScruitinyStatus")]
-        // public async Task<IActionResult> GetApplicationScruitinyStatus(
-        //     [FromQuery] string applicationIdNo)
-        // {
-        //     if (string.IsNullOrWhiteSpace(applicationIdNo))
-        //     {
-        //         return BadRequest("Application ID is required.");
-        //     }
-
-        //     var result = await _applicationScruitinyStatusService
-        //         .GetApplicationScruitinyStatus(applicationIdNo);
-
-        //     if (result == null || !result.Any())
-        //     {
-        //         return NotFound("No scrutiny records found.");
-        //     }
-
-        //     return Ok(result);
-        // }
 
         [HttpGet("GetApplicationFlowUser")]
         public async Task<IActionResult> GetApplicationFlowUser([FromQuery] string applicationIdNo)
