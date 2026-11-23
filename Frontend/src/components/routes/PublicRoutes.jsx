@@ -276,7 +276,7 @@ export default function PublicRoutes({ C, handleHeaderViewSelect }) {
           <C.DepartmentLogin
             onNavigateHome={() => (window.location.href = "/")}
             onLoginSuccess={(role) => {
-              if (role === "DA" || role === "da") {
+              if (role === "DA" || role === "da" || role === "SO" || role === "so" || role === "AC" || role === "ac"|| role === "DC" || role === "dc") {
                 window.location.href = "/dadashboard";
               } else {
                 window.location.href = "/departmentdashboard";
