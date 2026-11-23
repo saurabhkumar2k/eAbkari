@@ -24,9 +24,16 @@ const ActOnNewLicenseApplication = () => {
   const [showScrutinyPopup, setShowScrutinyPopup] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [scrutinyDocuments, setScrutinyDocuments] = useState([]);
-
   const [scrutinyLoading, setScrutinyLoading] = useState(false);
   const [scrutinyError, setScrutinyError] = useState("");
+
+  const [showForwardPopup, setShowForwardPopup] = useState(false);
+  const [selectedForwardApplication, setSelectedForwardApplication] =
+    useState(null);
+  const [forwardLoading, setForwardLoading] = useState(false);
+  const [forwardError, setForwardError] = useState("");
+  const [remarks, setRemarks] = useState("");
+  // const [previousMessages, setPreviousMessages] = useState([]);
 
   const remarksInputRefs = useRef({});
   const [applicationComplete, setApplicationComplete] = useState("");
@@ -266,14 +273,18 @@ const ActOnNewLicenseApplication = () => {
     }
   };
 
-  const handleForwardAction = async (application) => {
+  const handleForwardAction = async () => {
     try {
       debugger;
+      if (!remarks.trim()) {
+        alert("Please enter remarks.");
+        return;
+      }
 
-      console.log("Selected Application:", application);
+      console.log("Selected Application:", selectedForwardApplication.applicationIdNo);
 
-      const applicationIdNo =
-        application.ApplicationIdNo ?? application.applicationIdNo;
+      const applicationIdNo = selectedForwardApplication.applicationIdNo;
+      //application.ApplicationIdNo ?? application.applicationIdNo;
 
       if (!applicationIdNo) {
         throw new Error("Application ID not found.");
@@ -365,6 +376,18 @@ const ActOnNewLicenseApplication = () => {
       console.error("Forward Application Error:", error);
       alert(error.message || "Unable to forward application.");
     }
+  };
+
+  const handleForwardSubmit = async (application) => {
+    debugger;
+
+    console.log("Selected Application:", application);
+
+    setSelectedForwardApplication(application);
+    setShowForwardPopup(true);
+    setForwardError("");
+    setForwardLoading(true);
+    setRemarks("");
   };
 
   return (
@@ -558,7 +581,7 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() => handleForwardAction(application)}
+                      onClick={() => handleForwardSubmit(application)}
                     >
                       Forward Application
                     </button>
@@ -822,6 +845,58 @@ const ActOnNewLicenseApplication = () => {
                 >
                   Submit
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showForwardPopup && (
+        <div className="modal-overlay">
+          <div className="remarks-modal">
+            <div className="remarks-modal-header">
+              <span>Forward Application</span>
+
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => {
+                  setRemarks(""); 
+                  setShowForwardPopup(false)}}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="scrutiny-content">
+              <h2>Application Details</h2>
+
+              <p>
+                Application ID :-
+                {selectedForwardApplication?.ApplicationIdNo ??
+                  selectedForwardApplication?.applicationIdNo}
+              </p>
+
+              <div className="remarks-modal-body">
+                {/* Remarks Textarea */}
+                <div className="remarks-container">
+                  <textarea
+                    rows="10"
+                    placeholder="Type your message here..."
+                    value={remarks}
+                    onChange={(e) => setRemarks(e.target.value)}
+                  />
+                </div>
+
+                <div className="forward-button-container">
+                  <button
+                    type="button"
+                    className="forward-btn"
+                    onClick={handleForwardAction}
+                  >
+                    Forward Application
+                  </button>
+                </div>
               </div>
             </div>
           </div>
