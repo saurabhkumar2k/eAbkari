@@ -288,13 +288,15 @@ const RetailBasicFields = ({
         )}
       </div>
 
-      <br></br>
 
       <div>
         <h1 className="section-title">
           Measurement of Carpet Area of Premises in feet
         </h1>
       </div>
+
+      <br/>
+
 
       {/* Length */}
       <div className="reg-field">

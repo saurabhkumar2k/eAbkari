@@ -40,7 +40,7 @@ export default function PremiseAdditionalDetails({
   console.log("RestaurantAdditionalDetails - errors  ", errors);
   /* */
   // /* */ 02,11,25,26,39,40,41,46,83,88
-  const HCRBasicFieldsCategories = [
+  const RetailBasicFieldsCategories = [
     "11",
     "25",
     "26",
@@ -58,7 +58,7 @@ export default function PremiseAdditionalDetails({
         <form onSubmit={onSubmit} className="hcr-premises-form">
           <div className="hcr-form-grid">
             {/* Retail Premise Details */}
-            {HCRBasicFieldsCategories.includes(CatCode) && (
+            {RetailBasicFieldsCategories.includes(CatCode) && (
               <RetailBasicFields
                 additionalFrom={additionalFrom}
                 onChange={onChange}
@@ -90,7 +90,7 @@ export default function PremiseAdditionalDetails({
             {/* Retail Question List */}
             <div className="form-group full-width">
               <RetailQuestionList
-                questions={questions}
+                questions={additionalFrom?.questions || []}
                 onChange={onQuestionsChange}
                 error={errors?.answer}
               />
@@ -139,7 +139,7 @@ export default function PremiseAdditionalDetails({
             )}
 
             <div className="form-group full-width">
-              {HCRBasicFieldsCategories.includes(CatCode) && (
+              {RetailBasicFieldsCategories.includes(CatCode) && ( 
                 <RetailDirectorDetails
                   RetailPropDetails={additionalFrom?.RetailPropDetails || []}
                   ConstitutionType={constitutionType}

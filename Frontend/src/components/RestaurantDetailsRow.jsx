@@ -1,7 +1,7 @@
 import React from "react";
 
 import "../Style/ApplyLicense.css";
-import {allowOnlyNumbers} from '../areas/applicant/HCR/validation'
+import {allowOnlyNumbers} from '../areas/applicant/validation'; // Import the allowOnlyNumbers function
 
 import {
   User,

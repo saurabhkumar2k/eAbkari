@@ -1,7 +1,7 @@
 import React from "react";
 // import RestaurantAdditionalDetails from "../../../components/RestaurantAdditionalDetails";
 import PremiseAdditionalDetails from "../Retail/PremiseAdditionalDetails"
-import { Cat_Label } from "../HCR/validation";
+import { Cat_Label } from "../validation";
 
 export default function RetailAdditionalStep({
   additionalFrom,

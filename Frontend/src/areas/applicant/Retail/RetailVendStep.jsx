@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import RestaurantDetails from "../../../components/RestaurantDetails";
 import TrainDetails from "../../../components/TrainDetails";
 import "../HCR/HcrRestaurantStep.css";
-import { Cat_Label } from "../HCR/validation";
+import { Cat_Label } from "../validation";
 import VendDetails from "../Retail/VendDetails"
 
 export default function RetailVendStep({

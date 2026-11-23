@@ -21,7 +21,7 @@ import {
   validateAdditionalSiteData,
   validateSiteData,
   validateApplicantData,
-  validateAdditionalPremiseData,
+  // validateAdditionalPremiseData,
   validateUploadedDocuments,
 } from "../HCR/HcrApplicationValidation";
 
@@ -31,7 +31,7 @@ import {
   validateClubDetails,
   Cat_Label,
   validateRetailPartnerDetails,
-} from "../HCR/validation";
+} from "../validation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -86,9 +86,9 @@ export default function RetailLicensee({
 
   const [retailPremisePoliceStations, setRetailPremisePoliceStations] = useState([]);
 
-  console.log('retailPremiseDistricts',retailPremiseDistricts)
-  console.log('retailPremiseSubDivisions',retailPremiseSubDivisions)
-  console.log('retailPremisePoliceStations',retailPremisePoliceStations)
+  console.log('retailPremiseDistricts', retailPremiseDistricts)
+  console.log('retailPremiseSubDivisions', retailPremiseSubDivisions)
+  console.log('retailPremisePoliceStations', retailPremisePoliceStations)
 
   const [constitutionTypes, setConstitutionTypes] = useState([]);
 
@@ -107,6 +107,9 @@ export default function RetailLicensee({
   // =========================================================
 
   const [documents, setDocuments] = useState([]);
+
+  const [appUploadedFiles, setAppUploadedFiles] = useState({});
+  const [siteUploadedFiles, setSiteUploadedFiles] = useState({});
 
   const [uploadedFiles, setUploadedFiles] = useState({});
 
@@ -140,7 +143,7 @@ export default function RetailLicensee({
   });
 
 
-  
+
   const handleDeclarationChange = (field, value) => {
     console.log("handleDeclarationChange field:", field, "value:", value, declarationFrom);
     setDeclarationFrom((prev) => ({
@@ -280,7 +283,7 @@ export default function RetailLicensee({
   };
 
   const validateApplicant = () => {
-    debugger;
+    // debugger;
     const errors = validateApplicantData(applicantForm);
 
     // Update state and trigger toast notifications
@@ -322,7 +325,7 @@ export default function RetailLicensee({
   };
 
   const validateRestaurant = () => {
-    debugger;
+    // debugger;
 
     // Check required text & code dropdown fields using your generic check
     const errors = validateSiteData(siteForm);
@@ -377,7 +380,7 @@ export default function RetailLicensee({
   };
 
   const validateAdditionalSiteDetails = () => {
-    debugger;
+    // debugger;
 
     console.log(additionalFrom);
     const AdditionalRestaurantFrom = additionalFrom;
@@ -477,7 +480,7 @@ export default function RetailLicensee({
   // =========================================================
 
   const fetchDistricts = async (stateCode, type) => {
-    debugger;
+    // debugger;
     if (!stateCode) return;
 
     try {
@@ -556,11 +559,11 @@ export default function RetailLicensee({
       //   setRestaurantPoliceStations(data || []);
       // }
 
-       setRestaurantPoliceStations(data || []);
+      setRestaurantPoliceStations(data || []);
 
-      
-        setRetailPremisePoliceStations(data || []);
-      
+
+      setRetailPremisePoliceStations(data || []);
+
 
     } catch (error) {
       console.error("Police Station API Error:", error);
@@ -600,7 +603,7 @@ export default function RetailLicensee({
     }
   }, [siteForm.DistrictCode]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (additionalFrom.OwnerPremiseState) {
       fetchDistricts(additionalFrom.OwnerPremiseState, "additionalFrom");
     }
@@ -618,7 +621,7 @@ export default function RetailLicensee({
   // =========================================================
 
   useEffect(() => {
-    debugger;
+    // debugger;
     console.log("Previous application check");
     if (!regId) return;
 
@@ -636,7 +639,7 @@ export default function RetailLicensee({
   }, [regId]);
 
   const loadApplicantData = async (registrationId) => {
-    debugger;
+    // debugger;
     try {
       const response = await fetch(
         `http://localhost:5214/api/LicenseApplication/GetApplicantByRegId/${registrationId}`,
@@ -705,7 +708,7 @@ export default function RetailLicensee({
     //   regID: regId,
     // };
     try {
-      debugger;
+      // debugger;
       const getAppId = await fetch(
         `http://localhost:5214/api/CommonLicense/GetPendingApplicationIds?catCode=${selectedLicenseCode}&regID=${regId}`,
         {
@@ -734,15 +737,38 @@ export default function RetailLicensee({
 
       localStorage.setItem("applicationIdNo", applicationIdNo);
 
+      /* Bind Applicant Data using Application Id */
       BindPendingAppData(applicationIdNo);
+
+      /* Bind Site Data using Application Id */
+      BindPendingSiteData(applicationIdNo);
+
+      // debugger;
+
+      let questions = await fetchQuestions(selectedLicenseCode);
+
+      BindAdditionSiteData(applicationIdNo, questions);
+
+      /* Bind Applicant document data */
+      BindDocumentData(applicationIdNo, "A", selectedLicenseCode);
+
+      /* Bind site document data */
+      BindDocumentData(applicationIdNo, "S", selectedLicenseCode);
+
+
       return true;
     } catch (error) {
       return false;
     }
   };
 
+  /**
+  * Binds pending application data to the applicant form
+  * @param {string} applicationIdNo - The application ID number
+  */
+
   const BindPendingAppData = async (applicationIdNo) => {
-    debugger;
+    // debugger;
     try {
       /*  Set Applicant Data using Application Id */
       const response = await fetch(
@@ -797,7 +823,202 @@ export default function RetailLicensee({
         ownerType,
         catCode: selectedLicenseCode,
       }));
-    } catch (error) {}
+    } catch (error) { }
+  };
+
+  /**
+  * Binds pending site data to the site form 
+ * @param {string} applicationIdNo - The application ID number
+  * 
+ */
+  const BindPendingSiteData = async (applicationIdNo) => {
+    try {
+
+      const response = await fetch(
+        `http://localhost:5214/api/CommonHCR/GetSiteDetails/${applicationIdNo}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load site details");
+      }
+
+      const data = await response.json();
+
+      if (data.state) {
+        await fetchDistricts(data.state, "siteForm");
+      }
+
+      // Map the lowercase API keys to your uppercase state keys
+      setSiteForm((prev) => ({
+        ...prev,
+        SiteName: data.siteName || "",
+        SiteAddress: data.siteAddress || "",
+        SiteAddress2: data.siteAddress2 || "",
+
+        State: data.state ? String(data.state).trim() : "",
+
+        DistrictCode: data.districtCode ? String(data.districtCode).trim() : "",
+
+        SubDivisionCode: data.subDivisionCode ? String(data.subDivisionCode).trim() : "",
+
+        PoliceStationCode: data.policeStationCode ? String(data.policeStationCode).trim() : "",
+
+        SitePin: data.sitePin || "",
+
+        SiteAssembly: data.siteAssembly || "",
+
+        SiteWard: data.siteWard || "",
+
+        SiteEmail: data.siteEmail || "",
+
+        SiteMobile: data.siteMobile || "",
+
+        SiteLandline: data.siteLandline || "",
+
+        SiteFax: data.siteFax || "",
+
+        SitePan: data.sitePan || "",
+      }));
+    } catch (error) {
+
+    }
+
+  }
+
+
+  /**
+  * Bind pending application additional Site data for the Site` form
+  * @param {string} applicationIdNo - The application ID number
+  * @param {Array} questions - The list of questions to map answers to
+  */
+  const BindAdditionSiteData = async (applicationIdNo, masterQuestions) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/CommonRetail/GetAdditionalRetailCompleteDetails?applicationIdNo=${applicationIdNo}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      debugger;
+
+      const data = await response.json();
+
+      // Helper to convert null or undefined into empty strings (keeps 0 as 0 or "0")
+      const clearNull = (val) => (val === null || val === undefined ? "" : val);
+
+      // Helper for numeric dropdowns/radios where 0 should be treated as unselected ("") or stringified
+      const mapNumericField = (val) => (val === null || val === undefined || val === 0 ? "" : String(val));
+
+      const retailDetails = data.retailDetails || {};
+
+      // 1. Map answers from API response onto your masterQuestions array
+      const mappedQuestions = (masterQuestions || []).map((masterQ) => {
+        const apiMatch = (data.applicantAnswers || []).find(
+          (ans) => String(ans.questionId) === String(masterQ.questionId)
+        );
+
+        return {
+          applicationIdNo: apiMatch ? applicationIdNo || "" : "",
+          questionId: masterQ.questionId,
+          questionDesc: masterQ.questionDesc,
+          answerGiven: clearNull(apiMatch?.answerGiven),
+        };
+      });
+
+      // 2. Construct the form state matching your exact additionalFrom structure
+      const mappedFormState = {
+        ApplicationIdNo: clearNull(retailDetails.applicationIdNo || applicationIdNo),
+        ProposedPremiseType: mapNumericField(retailDetails.proposedPremiseType),
+        ProposedPremiseLength: clearNull(retailDetails.proposedPremiseLength),
+        ProposedPremiseBreath: clearNull(retailDetails.proposedPremiseBreath),
+        ProposedPremiseHeight: clearNull(retailDetails.proposedPremiseHeight),
+        ProposedPremiseTotalArea: clearNull(retailDetails.proposedPremiseTotalArea),
+        PropPremiseAppComArea: mapNumericField(retailDetails.propPremiseAppComArea),
+        PropPremiseAppComAreaAdInfo: clearNull(retailDetails.propPremiseAppComAreaAdInfo),
+        LandLordPhyPossession: mapNumericField(retailDetails.landLordPhyPossession),
+        PropPremiseCondition: mapNumericField(retailDetails.propPremiseCondition),
+        PropPremiseLocalBody: mapNumericField(retailDetails.propPremiseLocalBody),
+        PropPremiseLiquorLicenceRule: mapNumericField(retailDetails.propPremiseLiquorLicenceRule),
+        PropPremisePuccaBuild: mapNumericField(retailDetails.propPremisePuccaBuild),
+        PropPremisePuccaBuildAdInfo: clearNull(retailDetails.propPremisePuccaBuildAdInfo),
+        PropPremisePresentUse: mapNumericField(retailDetails.propPremisePresentUse),
+        PropPremisePresentUseAdInfo: clearNull(retailDetails.propPremisePresentUseAdInfo),
+        PropPremiseSuitPending: mapNumericField(retailDetails.propPremiseSuitPending),
+        PropPremiseWaterConn: mapNumericField(retailDetails.propPremiseWaterConn),
+        PropPremiseJoint: mapNumericField(retailDetails.propPremiseJoint),
+        PropPremiseNOC: mapNumericField(retailDetails.propPremiseNOC),
+        PropPremiseShopMap: mapNumericField(retailDetails.propPremiseShopMap),
+        OwnerPremiseAddress1: clearNull(retailDetails.ownerPremiseAddress1),
+        OwnerPremiseAddress2: clearNull(retailDetails.ownerPremiseAddress2),
+        OwnerPremiseState: clearNull(retailDetails.ownerPremiseState),
+        OwnerPremiseDistrict: clearNull(retailDetails.ownerPremiseDistrict),
+        OwnerPremisePin: clearNull(retailDetails.ownerPremisePin),
+        OwnerPremiseMobile: clearNull(retailDetails.ownerPremiseMobile),
+        OwnerPremiseSubDivisionCode: clearNull(retailDetails.ownerPremiseSubDivisionCode),
+        OwnerPremisePSCode: clearNull(retailDetails.ownerPremisePSCode),
+
+        // Mapped questions array
+        questions: mappedQuestions,
+
+        // Include retailPropDetails if needed in state
+        RetailPropDetails: data.retailPropDetails || [],
+      };
+
+      // Update React state
+      setAdditionalFrom(mappedFormState);
+      console.log("set mappedFormState:", mappedFormState);
+    } catch (error) {
+      console.error("Error executing BindAdditionSiteData mapping layer:", error);
+    }
+  };
+
+
+  /**
+ * Bind pending application document data for the site 
+ * @param {string} applicationIdNo - The application ID number
+ * @param {string} DocType - The type of document to bind
+ * @param {string} CatCode - The code of the category
+ */
+  const BindDocumentData = async (applicationIdNo, DocType, CatCode) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5214/api/CommonLicense/GetDocDescriptionCatWise?applicationIdNo=${applicationIdNo}&CatCode=${CatCode}&DocType=${DocType}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to load applicant");
+      }
+
+      const result = await response.json();
+      const apiList = result.data || [];
+
+      // Convert the API array into the key-value document object structure
+      const transformedDocs = apiList.reduce((acc, currentItem) => {
+        if (currentItem.docID) {
+          acc[currentItem.docID] = {
+            file: {}, // Default empty file object
+            previewUrl: currentItem.docUrl || "", // Maps your API URL to the preview URL field
+            validityDate: currentItem.vallidUpto || "",
+            isValid: currentItem.isValid || false,
+            isMandatory: currentItem.isMandatory || false,
+
+          };
+        }
+        return acc;
+      }, {});
+
+      // Update the state based on DocType
+      if (DocType === "A") {
+        setAppUploadedFiles(transformedDocs);
+      } else if (DocType === "S") {
+        setSiteUploadedFiles(transformedDocs);
+      }
+
+    } catch (error) {
+      console.error("Error binding document data:", error);
+    }
   };
 
   // =========================================================
@@ -822,28 +1043,46 @@ export default function RetailLicensee({
       }
 
       const data = await response.json();
+
+      console.log("Fetched Questions API Response:", data);
+
+      // 1. Process and normalize your incoming list of master questions
       const normalizedQuestions = (data || []).map((question) => ({
-        ...question,
         questionId: question.questionId ?? question.QuestionId,
         questionDesc: question.questionDesc ?? question.QuestionDesc,
       }));
 
-      setQuestions(
-        normalizedQuestions.map((question) => {
-          const savedAnswer = questionsAnswers.find(
-            (answer) =>
-              answer.questionId ===
-              (question.questionId ?? question.QuestionId),
-          );
+      // 2. Map questions against known answers with structured fallback states
+      const mappedQuestions = normalizedQuestions.map((question) => {
+        // Added standard array protection safeguard using || []
+        const savedAnswer = (additionalFrom.questions || []).find(
+          (answer) => answer.questionId === question.questionId
+        );
 
-          return savedAnswer
-            ? {
-                ...question,
-                answer: savedAnswer.answerGiven,
-              }
-            : question;
-        }),
-      );
+        return {
+          applicationIdNo: savedAnswer ? (savedAnswer.applicationIdNo || applicationIdNo || "") : "",
+          questionId: question.questionId,
+          questionDesc: question.questionDesc,
+          // Maps the actual answer ("Y"/"N") from your payload, or defaults to "" if not found
+          answerGiven: savedAnswer ? (savedAnswer.answerGiven || "") : "",
+        };
+      });
+
+      // Update independent states
+      setQuestions(normalizedQuestions);
+
+      setAdditionalFrom((prev) => ({
+        ...prev,
+        questions: mappedQuestions,
+      }));
+      // console.log("2",normalizedQuestions,questions);
+
+      // CORRECT LOGGING: To see the true state output, construct the preview log manually
+      // console.log("Fetched Questions:", mappedQuestions);
+      // console.log("Future Additional Form State Preview:", { ...additionalFrom, questions: mappedQuestions });
+
+      return mappedQuestions; // Return the mapped questions for any further processing if needed
+
     } catch (error) {
       console.error("Question API Error:", error);
       setQuestions([]);
@@ -855,9 +1094,9 @@ export default function RetailLicensee({
       prev.map((question) =>
         question.questionId === questionId
           ? {
-              ...question,
-              answer,
-            }
+            ...question,
+            answer,
+          }
           : question,
       ),
     );
@@ -873,11 +1112,11 @@ export default function RetailLicensee({
         return prev.map((item) =>
           item.questionId === questionId
             ? {
-                ...item,
-                applicationIdNo: applicationIdNo || "",
-                answerGiven: answer,
-                slNo: index + 1,
-              }
+              ...item,
+              applicationIdNo: applicationIdNo || "",
+              answerGiven: answer,
+              slNo: index + 1,
+            }
             : item,
         );
       }
@@ -891,6 +1130,28 @@ export default function RetailLicensee({
           slNo: index + 1,
         },
       ];
+    });
+
+    setAdditionalFrom((prev) => {
+      // Safely fallback to an empty array if questions doesn't exist yet
+      const currentQuestions = prev.questions || [];
+
+      // Map through the existing questions array to find and update the target question
+      const updatedQuestions = currentQuestions.map((q) => {
+        if (q.questionId === questionId) {
+          return {
+            ...q,
+            answerGiven: answer, // Update the answer field matching your structure
+          };
+        }
+        return q; // Leave other questions unchanged
+      });
+
+      // Return the new state object with the updated questions array
+      return {
+        ...prev,
+        questions: updatedQuestions,
+      };
     });
   };
 
@@ -911,7 +1172,7 @@ export default function RetailLicensee({
   };
 
   const addRestaurantDetail = () => {
-    debugger;
+    // debugger;
     const errors = {};
     let additionalUpdateErrors = { ...additionalFormErrors };
 
@@ -1000,7 +1261,7 @@ export default function RetailLicensee({
   };
 
   const addClubDetail = () => {
-    debugger;
+    // debugger;
     const errors = {};
     let additionalUpdateErrors = { ...additionalFormErrors };
 
@@ -1127,7 +1388,7 @@ export default function RetailLicensee({
   };
 
   const addDirector = () => {
-    debugger;
+    // debugger;
     const errors = {};
     // const additionalUpdateErrors = additionalFormErrors // Clear the errors array if no errors are found
     let additionalUpdateErrors = { ...additionalFormErrors };
@@ -1219,20 +1480,36 @@ export default function RetailLicensee({
   }, [currentStep, selectedLicensee]);
 
   const handleFileChange = (key, file) => {
-    debugger;
-    console.log("handleDocumentFileChange", key, file);
+
+    // console.log("applicantForm  ------ 12121212", applicantForm);
+
+    // console.log("handleDocumentFileChange", key, file);
     if (!file) return;
 
-    setUploadedFiles((prev) => ({
-      ...prev,
-      [key]: {
-        file,
-        previewUrl: URL.createObjectURL(file),
-      },
-    }));
+    const objectUrl = URL.createObjectURL(file);
+    setDocuments((prevDocuments) =>
+      prevDocuments.map((doc) =>
+        doc.docID === key
+          ? {
+            ...doc,
+            docUrl: objectUrl,
+            // isValid: true, // Optional: mark as valid once uploaded
+            file: file,    // Optional: keep the File object if you need to upload it via FormData later
+          }
+          : doc
+      )
+    );
 
     // Clear errors for this specific key inside the nested errors object
     if (currentStep === 4) {
+      setAppUploadedFiles((prev) => ({
+        ...prev,
+        [key]: {
+          file,
+          previewUrl: URL.createObjectURL(file),
+        },
+      }));
+
       setPersonalDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1240,9 +1517,12 @@ export default function RetailLicensee({
           [key]: null,
         },
       }));
+
+
     }
 
     if (currentStep === 5) {
+
       setSiteDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1250,19 +1530,41 @@ export default function RetailLicensee({
           [key]: null,
         },
       }));
+
+      setSiteUploadedFiles((prev) => ({
+        ...prev,
+        [key]: {
+          file,
+          previewUrl: URL.createObjectURL(file),
+        },
+      }));
+
+
     }
   };
 
   const handleValidityDateChange = (docId, validityDate) => {
-    setUploadedFiles((prev) => ({
-      ...prev,
-      [docId]: {
-        ...prev[docId],
-        validityDate,
-      },
-    }));
+    // Clear errors for this specific docId inside the nested errors object
+
+    setDocuments((prevDocuments) =>
+      prevDocuments.map((doc) =>
+        doc.docID === docId
+          ? {
+            ...doc,
+            vallidUpto: validityDate,
+          }
+          : doc
+      )
+    );
 
     if (currentStep === 4) {
+      setAppUploadedFiles((prev) => ({
+        ...prev,
+        [docId]: {
+          ...prev[docId],
+          validityDate,
+        },
+      }));
       setPersonalDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1273,6 +1575,13 @@ export default function RetailLicensee({
     }
 
     if (currentStep === 5) {
+      setSiteUploadedFiles((prev) => ({
+        ...prev,
+        [docId]: {
+          ...prev[docId],
+          validityDate,
+        },
+      }));
       setSiteDocumentsErrors((prev) => ({
         ...prev,
         errors: {
@@ -1284,15 +1593,28 @@ export default function RetailLicensee({
   };
 
   const handleDeleteFile = (key) => {
-    setUploadedFiles((prev) => {
-      const updated = {
-        ...prev,
-      };
+    if (currentStep === 4) {
+      setAppUploadedFiles((prev) => {
+        const updated = {
+          ...prev,
+        };
 
-      delete updated[key];
+        delete updated[key];
 
-      return updated;
-    });
+        return updated;
+      });
+    }
+    if (currentStep === 5) {
+      setSiteUploadedFiles((prev) => {
+        const updated = {
+          ...prev,
+        };
+
+        delete updated[key];
+
+        return updated;
+      });
+    }
   };
 
   // =========================================================
@@ -1444,9 +1766,9 @@ export default function RetailLicensee({
   const saveAdditional = async () => {
     const applicationIdNo = localStorage.getItem("applicationIdNo");
 
-    if (!validateAdditionalSiteDetails()) {
-      return false;
-    }
+    // if (!validateAdditionalSiteDetails()) {
+    //   return false;
+    // }
 
     try {
       // const formData = new FormData();
@@ -1586,12 +1908,12 @@ export default function RetailLicensee({
           String(applicationIdNo ?? ""),
         );
 
-        formData.append(`RetailPropDetails[${index}].Name`, partner.Name ?? "");
+        formData.append(`RetailPropDetails[${index}].Name`, partner.name ?? "");
 
         // React NameOfthe dropdown maps to backend AddtionalDesigTypeValue
         formData.append(
           `RetailPropDetails[${index}].AddtionalDesigTypeValue`,
-          String(partner.NameOfthe ?? ""),
+          String(partner.addtionalDesigTypeValue ?? ""),
         );
 
         formData.append(`RetailPropDetails[${index}].SlNo`, String(index + 1));
@@ -1831,10 +2153,11 @@ export default function RetailLicensee({
   // STEP 7/8 - Upload Documents
   // =========================================================
 
-  const uploadDocuments = async () => {
+  const uploadDocuments = async (uploadedFiles) => {
     try {
-      debugger;
-      console.log("uploadDocuments", uploadDocuments);
+      //debugger;
+      // console.log("uploadDocuments", uploadDocuments);
+
       const filesToUpload = documents.filter(
         (doc) => uploadedFiles[doc.docID]?.file,
       );
@@ -1873,6 +2196,8 @@ export default function RetailLicensee({
         index++;
       });
 
+      console.table(Array.from(formData.entries()));
+
       const response = await fetch(
         "http://localhost:5214/api/CommonLicense/SaveAndUpdateApplicantDocuments",
         {
@@ -1881,10 +2206,11 @@ export default function RetailLicensee({
         },
       );
 
-      console.log("response", response);
+      // console.log("response", response);
 
       if (!response.ok) {
-        throw new Error(await response.text());
+        return false;
+        // throw new Error(await response.text());
       }
 
       return true;
@@ -1971,23 +2297,25 @@ export default function RetailLicensee({
   // };
 
   const goToSiteDocuments = async () => {
-    if (!validateApplicationDocuments(documents, uploadedFiles, "P")) {
+    console.log("goToSiteDocuments documents", appUploadedFiles);
+    if (!validateApplicationDocuments(documents, appUploadedFiles, "P")) {
       return false;
     }
-    const result = await uploadDocuments();
+    console.log("goToSiteDocuments appUploadedFiles", appUploadedFiles);
+    const result = await uploadDocuments(appUploadedFiles);
     return result;
   };
 
   const goToDeclaration = async () => {
-    if (!validateApplicationDocuments(documents, uploadedFiles, "S")) {
+    if (!validateApplicationDocuments(documents, siteUploadedFiles, "S")) {
       return false;
     }
-    const result = await uploadDocuments();
+    const result = await uploadDocuments(siteUploadedFiles);
     return result;
   };
 
   const handleNext = async () => {
-    debugger;
+    // debugger;
     if (currentStep === 1) {
       const success = await saveApplicant();
 
@@ -2034,7 +2362,7 @@ export default function RetailLicensee({
     // }
 
     if (currentStep === 4) {
-      debugger;
+      // debugger;
       const success = await goToSiteDocuments();
       // console.log("goToSiteDocuments success", success);
 
@@ -2113,9 +2441,8 @@ export default function RetailLicensee({
             <div
               className="h-full bg-blue-600 transition-all"
               style={{
-                width: `${
-                  ((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
-                }%`,
+                width: `${((currentStep - 1) / (currentLicenseSteps.length - 1)) * 100
+                  }%`,
               }}
             />
           </div>
@@ -2135,13 +2462,12 @@ export default function RetailLicensee({
                       w-11 h-11 rounded-full
                       flex items-center justify-center
                       font-black text-sm border-2
-                      ${
-                        isCompleted
-                          ? "bg-emerald-600 border-emerald-600 text-white"
-                          : isActive
-                            ? "bg-blue-600 border-blue-600 text-white scale-110"
-                            : "bg-white border-slate-200 text-slate-400"
-                      }
+                      ${isCompleted
+                      ? "bg-emerald-600 border-emerald-600 text-white"
+                      : isActive
+                        ? "bg-blue-600 border-blue-600 text-white scale-110"
+                        : "bg-white border-slate-200 text-slate-400"
+                    }
                     `}
                 >
                   {isCompleted ? <Check className="w-4 h-4" /> : step.num}
@@ -2150,13 +2476,12 @@ export default function RetailLicensee({
                 <span
                   className={`
                       text-[11px] font-extrabold mt-2
-                      ${
-                        isActive
-                          ? "text-blue-600"
-                          : isCompleted
-                            ? "text-emerald-700"
-                            : "text-slate-500"
-                      }
+                      ${isActive
+                      ? "text-blue-600"
+                      : isCompleted
+                        ? "text-emerald-700"
+                        : "text-slate-500"
+                    }
                     `}
                 >
                   {step.label}
@@ -2247,7 +2572,7 @@ export default function RetailLicensee({
         {currentStep === 4 && (
           <HcrPersonalDocumentsStep
             documents={documents}
-            uploadedFiles={uploadedFiles}
+            uploadedFiles={appUploadedFiles}
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
@@ -2261,7 +2586,7 @@ export default function RetailLicensee({
         {currentStep === 5 && (
           <HcrSiteDocumentsStep
             documents={documents}
-            uploadedFiles={uploadedFiles}
+            uploadedFiles={siteUploadedFiles}
             handleDocumentFileChange={handleFileChange}
             handleValidityDateChange={handleValidityDateChange}
             handleDeleteFile={handleDeleteFile}
