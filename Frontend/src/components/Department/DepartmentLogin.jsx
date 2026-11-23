@@ -84,6 +84,12 @@ console.log("LOGIN RESPONSE:", data);
         } else {
           window.location.href = '/dadashboard';
         }
+      }else if (data.userRole.toUpperCase() === 'DC') {
+        if (onLoginSuccess) {
+          onLoginSuccess('DC');
+        } else {
+          window.location.href = '/dadashboard';
+        }
       } else if (data.userRole.toUpperCase() === 'ADMIN') {
         if (onLoginSuccess) {
           onLoginSuccess('Admin');
@@ -91,7 +97,7 @@ console.log("LOGIN RESPONSE:", data);
           window.location.href = '/departmentdashboard';
         }
       } else {
-        setError("Invalid Officer ID. Enter 'DA' Or 'SO' Or 'AC' for DADashboard or 'Admin' for DepartmentDashboard.");
+        setError("Invalid Officer ID. Enter 'DA' Or 'SO' Or 'AC' Or 'DC' for DADashboard or 'Admin' for DepartmentDashboard.");
       }
     } catch (error) {
       console.error(error);

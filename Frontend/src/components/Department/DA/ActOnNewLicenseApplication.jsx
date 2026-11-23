@@ -33,7 +33,23 @@ const ActOnNewLicenseApplication = () => {
   const [forwardLoading, setForwardLoading] = useState(false);
   const [forwardError, setForwardError] = useState("");
   const [remarks, setRemarks] = useState("");
-  // const [previousMessages, setPreviousMessages] = useState([]);
+
+  const [showSendBackdPopup, setShowSendBackPopup] = useState(false);
+  const [selectedSendBackApplication, setSelectedSendBackApplication] =
+    useState(null);
+  const [sendBackLoading, setSendBackLoading] = useState(false);
+  const [sendBackError, setSendBackError] = useState("");
+  const [sendBackRemarks, setSendBackRemarks] = useState("");
+
+
+  const [showRejectdPopup, setShowRejectPopup] = useState(false);
+  const [selectedRejectApplication, setSelectedRejectApplication] =
+    useState(null);
+  const [rejectLoading, setRejectLoading] = useState(false);
+  const [rejectError, setRejectError] = useState("");
+  const [rejectRemarks, setRejectRemarks] = useState("");
+
+
 
   const remarksInputRefs = useRef({});
   const [applicationComplete, setApplicationComplete] = useState("");
@@ -281,7 +297,10 @@ const ActOnNewLicenseApplication = () => {
         return;
       }
 
-      console.log("Selected Application:", selectedForwardApplication.applicationIdNo);
+      console.log(
+        "Selected Application:",
+        selectedForwardApplication.applicationIdNo,
+      );
 
       const applicationIdNo = selectedForwardApplication.applicationIdNo;
       //application.ApplicationIdNo ?? application.applicationIdNo;
@@ -388,6 +407,26 @@ const ActOnNewLicenseApplication = () => {
     setForwardError("");
     setForwardLoading(true);
     setRemarks("");
+  };
+
+  const handleSendBackApplication = async (application) => {
+    console.log("Selected Application:", application);
+
+    setSelectedSendBackApplication(application);
+    setShowSendBackPopup(true);
+    setSendBackError("");
+    setSendBackLoading(true);
+    setSendBackRemarks("");
+  };
+
+  const handleRejectApplication = async (application) => {
+    console.log("Selected Application:", application);
+
+    setSelectedRejectApplication(application);
+    setShowRejectPopup(true);
+    setRejectError("");
+    setRejectLoading(true);
+    setRejectRemarks("");
   };
 
   return (
@@ -589,9 +628,7 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleAction("Send Back Application", application)
-                      }
+                      onClick={() => handleSendBackApplication(application)}
                     >
                       Send Back Application
                     </button>
@@ -600,7 +637,7 @@ const ActOnNewLicenseApplication = () => {
                       type="button"
                       className="table-link"
                       onClick={() =>
-                        handleAction("Reject Application", application)
+                        handleRejectApplication(application)
                       }
                     >
                       Reject Application
@@ -861,8 +898,9 @@ const ActOnNewLicenseApplication = () => {
                 type="button"
                 className="modal-close"
                 onClick={() => {
-                  setRemarks(""); 
-                  setShowForwardPopup(false)}}
+                  setRemarks("");
+                  setShowForwardPopup(false);
+                }}
               >
                 X
               </button>
@@ -902,6 +940,114 @@ const ActOnNewLicenseApplication = () => {
           </div>
         </div>
       )}
+
+      {showSendBackdPopup && (
+        <div className="modal-overlay">
+          <div className="remarks-modal">
+            <div className="remarks-modal-header">
+              <span>SendBack Application</span>
+
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => {
+                  setSendBackRemarks("");
+                  setShowSendBackPopup(false);
+                }}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="scrutiny-content">
+              <h2>Application Details</h2>
+
+              <p>
+                Application ID :-
+                {selectedSendBackApplication?.ApplicationIdNo ??
+                  selectedSendBackApplication?.applicationIdNo}
+              </p>
+
+              <div className="remarks-modal-body">
+                {/* Remarks Textarea */}
+                <div className="remarks-container">
+                  <textarea
+                    rows="10"
+                    placeholder="Type your message here..."
+                    value={sendBackRemarks}
+                    onChange={(e) => setSendBackRemarks(e.target.value)}
+                  />
+                </div>
+
+                <div className="forward-button-container">
+                  <button
+                    type="button"
+                    className="forward-btn"
+                    onClick={handleForwardAction}
+                  >
+                    SendBack Application
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRejectdPopup && (
+        <div className="modal-overlay">
+          <div className="remarks-modal">
+            <div className="remarks-modal-header">
+              <span>Reject Application</span>
+
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => {
+                  setRejectRemarks("");
+                  setShowRejectPopup(false);
+                }}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="scrutiny-content">
+              <h2>Application Details</h2>
+
+              <p>
+                Application ID :-
+                {selectedRejectApplication?.ApplicationIdNo ??
+                  selectedRejectApplication?.applicationIdNo}
+              </p>
+
+              <div className="remarks-modal-body">
+                {/* Remarks Textarea */}
+                <div className="remarks-container">
+                  <textarea
+                    rows="10"
+                    placeholder="Type your message here..."
+                    value={rejectRemarks}
+                    onChange={(e) => setRejectRemarks(e.target.value)}
+                  />
+                </div>
+
+                <div className="forward-button-container">
+                  <button
+                    type="button"
+                    className="forward-btn"
+                    onClick={handleRejectApplication}
+                  >
+                    Reject Application
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 };
