@@ -19,45 +19,112 @@ import {
 } from "../validation";
 
 export const validateAdditionalPremiseData = (additionalFrom, CatCode) => {
-  debugger;
   const errors = {};
 
-  console.log("RetailLicensee - validateAdditionalPremiseData additionalFrom  ", additionalFrom)
-  // console.log("HcrLicensee - validateAdditionalRestaurant questionsAnswers  ", questions)
-
-  //additionalFrom
-
-  const HCRBasicFieldsCategories = [
-    "02",
-    "11",
-    "25",
-    "39",
-    "40",
-    "41",
-    "46",
-    "83",
-    "34",
+  const RetailBasicFieldsCategories = [
+    "02", "11", "25", "39", "40", "41", "46", "83", "34",
   ];
 
+  // Validate Retail Partner Details
+  if (["11", "25", "39", "40"].includes(CatCode)) {
+    const retailDetailsErr = validateRetailPartnerDetails(
+      additionalFrom.RetailPropDetails
+    );
 
-  if (CatCode === "11" || CatCode === "25" || CatCode === "39" || CatCode === "40") {
-    // const NameOftheErr = requiredCheck(
-    //   additionalFrom.NameOfthe,
-    //   "Number Of The",
-    // );
-    // if (NameOftheErr) errors.NameOfthe = NameOftheErr;
+    if (retailDetailsErr) {
+      errors.RetailPropDetails = retailDetailsErr;
+    }
+  }
 
-    // const NameErr = nameCheck(
-    //   additionalFrom.Name,
-    //   "Name",
-    // );
-    // if (NameErr) errors.Name = NameErr;
+  // Validate Proposed Premise Dimensions
+  if (RetailBasicFieldsCategories.includes(CatCode)) {
 
-    const clubDetailsErr = validateRetailPartnerDetails(additionalFrom.RetailPropDetails);
-    if (clubDetailsErr) errors.RetailPropDetails = clubDetailsErr;
+    const premiseLengthErr = validateSiteNum(
+      additionalFrom.ProposedPremiseLength,
+      "Premise Length"
+    );
+
+    if (premiseLengthErr) {
+      errors.ProposedPremiseLength = premiseLengthErr;
+    }
+
+    const premiseBreadthErr = validateSiteNum(
+      additionalFrom.ProposedPremiseBreath,
+      "Premise Breadth"
+    );
+
+    if (premiseBreadthErr) {
+      errors.ProposedPremiseBreath = premiseBreadthErr;
+    }
+
+    const premiseHeightErr = validateSiteNum(
+      additionalFrom.ProposedPremiseHeight,
+      "Premise Height"
+    );
+
+    if (premiseHeightErr) {
+      errors.ProposedPremiseHeight = premiseHeightErr;
+    }
+
+    const totalAreaErr = validateSiteNum(
+      additionalFrom.ProposedPremiseTotalArea,
+      "Premise Total Area"
+    );
+
+    if (totalAreaErr) {
+      errors.ProposedPremiseTotalArea = totalAreaErr;
+    }
+
+    if (CatCode === "02") {
+      // Proposed Premise Type
+      const premiseTypeErr = requiredCheck(
+        additionalFrom.ProposedPremiseType,
+        "Proposed Premise Type"
+      );
+
+      if (premiseTypeErr) {
+        errors.ProposedPremiseType = premiseTypeErr;
+      }
+    }
+
+    // Owner Premise Address
+    const addressErr = requiredCheck(
+      additionalFrom.OwnerPremiseAddress1,
+      "Owner Premise Address"
+    );
+
+    if (addressErr) {
+      errors.OwnerPremiseAddress1 = addressErr;
+    }
+
+    // Owner Premise PIN
+    const pinErr = delhiPinCheck(
+      additionalFrom.OwnerPremisePin,
+      "Owner Premise PIN"
+    );
+
+    if (pinErr) {
+      errors.OwnerPremisePin = pinErr;
+    }
+
+    // Owner Mobile
+    const mobileErr = mobileCheck(
+      additionalFrom.OwnerPremiseMobile,
+      "Owner Premise Mobile"
+    );
+
+    if (mobileErr) {
+      errors.OwnerPremiseMobile = mobileErr;
+    }
+
+    // Validate Premise Questions
+    const answerErr = checkAnswersRequired(
+      additionalFrom.questions,
+      // additionalFrom.questionsAnswers,
+    );
+    if (answerErr) errors.answer = answerErr;
 
   }
 
   return errors;
-
 };

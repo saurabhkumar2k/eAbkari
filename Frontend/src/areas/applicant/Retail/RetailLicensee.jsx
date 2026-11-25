@@ -21,7 +21,6 @@ import {
   validateAdditionalSiteData,
   validateSiteData,
   validateApplicantData,
-  // validateAdditionalPremiseData,
   validateUploadedDocuments,
 } from "../HCR/HcrApplicationValidation";
 
@@ -32,6 +31,8 @@ import {
   Cat_Label,
   validateRetailPartnerDetails,
 } from "../validation";
+
+import {validateAdditionalPremiseData} from "../Retail/RetailApplicationValidation";
 
 import ReceiptSuccessHCR from "../../../components/ReceiptSuccessHCR";
 
@@ -380,12 +381,14 @@ export default function RetailLicensee({
   };
 
   const validateAdditionalSiteDetails = () => {
-    // debugger;
+    debugger;
 
     console.log(additionalFrom);
     const AdditionalRestaurantFrom = additionalFrom;
-    AdditionalRestaurantFrom.questions = questions;
-    AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
+    // AdditionalRestaurantFrom.questions = questions;
+    // AdditionalRestaurantFrom.questionsAnswers = questionsAnswers;
+
+    console.log("RetailLicensee - validateAdditionalPremiseData AdditionalRestaurantFrom  ", AdditionalRestaurantFrom)
     const errors = validateAdditionalPremiseData(
       AdditionalRestaurantFrom,
       selectedLicenseCode,
@@ -1766,9 +1769,9 @@ export default function RetailLicensee({
   const saveAdditional = async () => {
     const applicationIdNo = localStorage.getItem("applicationIdNo");
 
-    // if (!validateAdditionalSiteDetails()) {
-    //   return false;
-    // }
+    if (!validateAdditionalSiteDetails()) {
+      return false;
+    }
 
     try {
       // const formData = new FormData();
