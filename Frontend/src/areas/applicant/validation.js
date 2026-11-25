@@ -551,18 +551,18 @@ export const validateRetailPartnerDetails = (RetailPropDetails) => {
 
     // Validate NameOfAdditionalRestaurant
     const nameErr = requiredCheck(
-      club.NameOfthe,
+      club.name,
       "Name of the",
     );
-    if (nameErr) rowErrors.NameOfthe = nameErr;
+    if (nameErr) rowErrors.name = nameErr;
 
 
     // Validate NumberOfCounter (Number Validation)
-    const counterErr = nameCheck(
-      club.Name,
-      "Name",
+    const addtionalDesigTypeValueErr = requiredCheck(
+      club.addtionalDesigTypeValue,
+      "addtionalDesigTypeValue",
     );
-    if (counterErr) rowErrors.Name = counterErr;
+    if (addtionalDesigTypeValueErr) rowErrors.addtionalDesigTypeValue = addtionalDesigTypeValueErr;
 
 
     // If this specific index has errors, collect them
