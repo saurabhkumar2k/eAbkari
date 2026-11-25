@@ -45,55 +45,63 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
             var endDate = toDate.AddDays(1).ToDateTime(TimeOnly.MinValue).Date;
 
             var history = await (
-                from h in _context.PlaAccessPermissionHistory
+         from a in _context.LicenseApplications
 
-                join a in _context.LicenseApplications
-                    on h.ApplicationIdNo equals a.ApplicationIdNo
+         where a.ApplicationDate >= startDate
+               && a.ApplicationDate < endDate
 
-                join s in _context.LicenseSiteDetails
-                    on a.ApplicationIdNo equals s.ApplicationIdNo
-                    into siteDetails
+         // Get only the latest transaction for each application
+         from h in _context.PlaAccessPermissionHistory
+             .Where(x => x.ApplicationIdNo == a.ApplicationIdNo)
+             .OrderByDescending(x => x.TransactionSiNo)
+             .Take(1)
 
-                from s in siteDetails.DefaultIfEmpty()
+             // Compare ReceiverUserID against the latest transaction only
+         where h.ReceiverUserID == userId
 
-                join c in _context.MstLicenseeCategory
-                    on a.CatCode equals c.LicenseeCatCode
-                    into licenseeCategories
+         // LEFT JOIN Site Details
+         join s1 in _context.LicenseSiteDetails
+             on a.ApplicationIdNo equals s1.ApplicationIdNo
+             into siteDetails
 
-                from c in licenseeCategories.DefaultIfEmpty()
+         from s in siteDetails.DefaultIfEmpty()
 
-                where h.ReceiverUserID == userId
-                      && a.ApplicationDate >= startDate
-                      && a.ApplicationDate < endDate
+             // LEFT JOIN Licensee Category
+         join c1 in _context.MstLicenseeCategory
+             on a.CatCode equals c1.LicenseeCatCode
+             into licenseeCategories
 
-                select new ApplicationsPermissionHistoryDto
-                {
-                    ApplicationIdNo = h.ApplicationIdNo,
+         from c in licenseeCategories.DefaultIfEmpty()
 
-                    SiteName = s != null ? s.SiteName : null,
+         select new ApplicationsPermissionHistoryDto
+         {
+             ApplicationIdNo = h.ApplicationIdNo,
 
-                    LicenseeCatDesc = c != null ? c.LicenseeCatDesc : null,
+             SiteName = s != null ? s.SiteName : null,
 
-                    FlowUpto = h.FlowUpto,
-                    TransactionSiNo = h.TransactionSiNo,
-                    TransactionDate = h.TransactionDate,
+             LicenseeCatDesc = c != null ? c.LicenseeCatDesc : null,
 
-                    SenderUserTypeCode = h.SenderUserTypeCode,
-                    SenderUserID = h.SenderUserID,
-                    SenderForwardingLevel = h.SenderForwardingLevel,
+             FlowUpto = h.FlowUpto,
+             TransactionSiNo = h.TransactionSiNo,
+             TransactionDate = h.TransactionDate,
 
-                    ReceiverUserTypeCode = h.ReceiverUserTypeCode,
-                    ReceiverUserID = h.ReceiverUserID,
-                    ReceiverForwardingLevel = h.ReceiverForwardingLevel,
+             SenderUserTypeCode = h.SenderUserTypeCode,
+             SenderUserID = h.SenderUserID,
+             SenderForwardingLevel = h.SenderForwardingLevel,
 
-                    PreScrutinyStatus = h.PreScrutinyStatus,
-                    FixDateEnquiry = h.FixDateEnquiry,
-                    TransactionRemarks = h.TransactionRemarks,
-                    TransactionStatusCode = h.TransactionStatusCode,
-                    OprDate = h.OprDate,
-                    ApplicationDate = a.ApplicationDate
-                })
-                .ToListAsync();
+             ReceiverUserTypeCode = h.ReceiverUserTypeCode,
+             ReceiverUserID = h.ReceiverUserID,
+             ReceiverForwardingLevel = h.ReceiverForwardingLevel,
+
+             PreScrutinyStatus = h.PreScrutinyStatus,
+             FixDateEnquiry = h.FixDateEnquiry,
+             TransactionRemarks = h.TransactionRemarks,
+             TransactionStatusCode = h.TransactionStatusCode,
+             OprDate = h.OprDate,
+
+             ApplicationDate = a.ApplicationDate
+         })
+         .ToListAsync();
 
             return history;
         }
