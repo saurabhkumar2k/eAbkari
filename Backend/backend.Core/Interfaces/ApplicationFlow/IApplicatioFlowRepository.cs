@@ -11,5 +11,8 @@ namespace backend.Core.Interfaces.ApplicationFlow
         Task<FlowHierarchyMapping?> GetNextReceiver(string flowUpto, string senderUserTypeCode);
 
         Task<PlaAccessPermissionHistory?> GetLastAccessPermissionHistory(string applicationIdNo);
+
+        Task<string> RejectApplication(PlaAccessPermissionHistory RejectApplicationAction);
+
     }
 }

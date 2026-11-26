@@ -131,7 +131,7 @@ namespace backend.Application.Services.ApplicationFlow
 
                 ReceiverUserTypeCode = nextReceiver.UserTypeCode.ToString(),
                 ReceiverUserID = nextReceiver.UserID,
-                ReceiverForwardingLevel = receiverForwardingLevel.ToString(),
+                ReceiverForwardingLevel = receiverForwardingLevel,
 
                 PreScrutinyStatus = dto.PreScrutinyStatus,
                 FixDateEnquiry = dto.FixDateEnquiry,
@@ -157,6 +157,63 @@ namespace backend.Application.Services.ApplicationFlow
         public async Task<ApplicationFlowUserResult?> GetApplicationFlowUser(string applicationIdNo)
         {
             return await _applicationFlowRepository.GetApplicationFlowUser(applicationIdNo);
+        }
+
+        public async Task<string> RejectApplication(PlaAccessPermissionHistoryDto dto)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            // STEP 1: Get the latest forwarding record
+            var getpreviousHistory =
+                await _applicationFlowRepository.GetLastAccessPermissionHistory(
+                    dto.ApplicationIdNo
+                );
+
+            string senderUserTypeCode;
+            string senderUserID;
+            int senderForwardingLevel;
+
+            // Previous receiver becomes the current sender
+            senderUserTypeCode = getpreviousHistory.ReceiverUserTypeCode;
+            senderUserID = getpreviousHistory.ReceiverUserID;
+            senderForwardingLevel = Convert.ToInt32(getpreviousHistory.ReceiverForwardingLevel);
+
+            // STEP 4: Create a new history record
+            var accessPermissionHistory = new PlaAccessPermissionHistory
+            {
+                ApplicationIdNo = dto.ApplicationIdNo,
+                FlowUpto = "00",
+
+                // Repository generates this
+                TransactionSiNo = 0,
+
+                TransactionDate = dto.TransactionDate,
+
+                SenderUserTypeCode = senderUserTypeCode,
+                SenderUserID = senderUserID,
+                SenderForwardingLevel = senderForwardingLevel,
+
+                ReceiverUserTypeCode = senderUserTypeCode,
+                ReceiverUserID = "Rejected",
+                ReceiverForwardingLevel = senderForwardingLevel,
+
+                PreScrutinyStatus = dto.PreScrutinyStatus,
+                FixDateEnquiry = dto.FixDateEnquiry,
+                TransactionRemarks = dto.TransactionRemarks,
+                TransactionStatusCode = dto.TransactionStatusCode,
+                OprDate = dto.OprDate
+            };
+
+            await _applicationFlowRepository.SaveAccessPermissionHistory(
+                accessPermissionHistory
+            );
+
+            return accessPermissionHistory.ApplicationIdNo;
+
+
         }
 
 

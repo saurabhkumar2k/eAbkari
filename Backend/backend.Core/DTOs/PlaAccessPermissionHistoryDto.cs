@@ -24,7 +24,7 @@ namespace backend.Core.DTOs
 
         public string? ReceiverUserID { get; set; } = string.Empty;
 
-        public string? ReceiverForwardingLevel { get; set; } = string.Empty;
+        public long ReceiverForwardingLevel { get; set; } 
 
         public string? PreScrutinyStatus { get; set; } = string.Empty;
 
@@ -59,7 +59,7 @@ namespace backend.Core.DTOs
 
         public string? ReceiverUserID { get; set; }
 
-        public string? ReceiverForwardingLevel { get; set; }
+        public long? ReceiverForwardingLevel { get; set; }
 
         public string? PreScrutinyStatus { get; set; }
 
