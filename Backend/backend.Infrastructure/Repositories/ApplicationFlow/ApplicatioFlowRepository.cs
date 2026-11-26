@@ -91,7 +91,7 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
 
              ReceiverUserTypeCode = h.ReceiverUserTypeCode,
              ReceiverUserID = h.ReceiverUserID,
-             ReceiverForwardingLevel = h.ReceiverForwardingLevel,
+             ReceiverForwardingLevel = h.ReceiverForwardingLevel.ToString(),
 
              PreScrutinyStatus = h.PreScrutinyStatus,
              FixDateEnquiry = h.FixDateEnquiry,
