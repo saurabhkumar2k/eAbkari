@@ -169,7 +169,33 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
 
 
 
+        public async Task<string> RejectApplication(PlaAccessPermissionHistory RejectApplicationAction)
+        {
+            if (RejectApplicationAction == null)
+                throw new ArgumentNullException(nameof(RejectApplicationAction));
 
+            var lastSiNo = await _context.PlaAccessPermissionHistory
+                .Where(x => x.ApplicationIdNo == RejectApplicationAction.ApplicationIdNo)
+                .Select(x => (int?)x.TransactionSiNo)
+                .MaxAsync();
+
+            RejectApplicationAction.TransactionSiNo = (lastSiNo ?? 0) + 1;
+                      
+            _context.PlaAccessPermissionHistory.Add(RejectApplicationAction);
+
+            // STEP 3: Update ApplicationStatus in LicenseApplication
+            var application = await _context.LicenseApplications
+                .FirstOrDefaultAsync(x => x.ApplicationIdNo == RejectApplicationAction.ApplicationIdNo);
+
+            if (application == null)
+                throw new Exception("Application not found.");
+
+            application.ApplicationStatus = "72";
+
+            await _context.SaveChangesAsync();
+
+            return RejectApplicationAction.ApplicationIdNo;
+        }
 
 
     }

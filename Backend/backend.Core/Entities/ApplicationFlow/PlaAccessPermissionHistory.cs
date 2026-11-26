@@ -41,7 +41,7 @@ namespace backend.Core.Entities.ApplicationFlow
         public string? ReceiverUserID { get; set; } = string.Empty;
 
         [StringLength(2)]
-        public string? ReceiverForwardingLevel { get; set; } = string.Empty;
+        public long ReceiverForwardingLevel { get; set; } 
 
         [StringLength(1)]
         public string? PreScrutinyStatus { get; set; } = string.Empty;

@@ -119,6 +119,40 @@ namespace backend.API.ApplicationFlow.Controllers
             return Ok(result);
         }
 
+        [HttpPost("RejectApplication")]
+        public async Task<IActionResult> RejectApplication([FromBody] PlaAccessPermissionHistoryDto Dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (Dto == null)
+            {
+                return BadRequest("Invalid Action.");
+            }
+           
+            try
+            {
+                var user = await _applicationFlowService.RejectApplication(Dto);
+                return Ok(new
+                {
+                    success = true,
+                    applicationId = user,
+                    //message = "Access Permission History Saved Successfully"
+                    message = "Application Rejected Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
 
     }
 }
