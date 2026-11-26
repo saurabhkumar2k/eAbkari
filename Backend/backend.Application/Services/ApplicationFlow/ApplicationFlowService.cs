@@ -131,7 +131,7 @@ namespace backend.Application.Services.ApplicationFlow
 
                 ReceiverUserTypeCode = nextReceiver.UserTypeCode.ToString(),
                 ReceiverUserID = nextReceiver.UserID,
-                ReceiverForwardingLevel = receiverForwardingLevel,
+                ReceiverForwardingLevel = receiverForwardingLevel.ToString(),
 
                 PreScrutinyStatus = dto.PreScrutinyStatus,
                 FixDateEnquiry = dto.FixDateEnquiry,
@@ -198,7 +198,7 @@ namespace backend.Application.Services.ApplicationFlow
 
                 ReceiverUserTypeCode = senderUserTypeCode,
                 ReceiverUserID = "Rejected",
-                ReceiverForwardingLevel = senderForwardingLevel,
+                ReceiverForwardingLevel = senderForwardingLevel.ToString(),
 
                 PreScrutinyStatus = dto.PreScrutinyStatus,
                 FixDateEnquiry = dto.FixDateEnquiry,
