@@ -14,5 +14,7 @@ namespace backend.Core.Interfaces.ApplicationFlow
 
         Task<string> RejectApplication(PlaAccessPermissionHistory RejectApplicationAction);
 
+        Task<string> SendBackApplication(SendBackApplicationDto dto);
+
     }
 }

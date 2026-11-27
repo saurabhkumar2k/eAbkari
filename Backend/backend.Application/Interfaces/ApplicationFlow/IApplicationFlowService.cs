@@ -8,6 +8,8 @@ namespace backend.Application.Interfaces.ApplicationFlow
         Task<string> SaveAccessPermissionHistory(PlaAccessPermissionHistoryDto dto);
         Task<string> RejectApplication(PlaAccessPermissionHistoryDto dto);
 
+        Task<string> SendBackApplication(SendBackApplicationDto dto);
+
 
         Task<List<ApplicationsPermissionHistoryDto>> GetAccessPermissionHistory(string userId, DateOnly fromDate, DateOnly toDate);
 

@@ -14,7 +14,7 @@ namespace backend.Core.DTOs
 
         public DateTime? TransactionDate { get; set; }
 
-        public string SenderUserTypeCode { get; set; } 
+        public string SenderUserTypeCode { get; set; }
 
         public string? SenderUserID { get; set; }
 
@@ -24,7 +24,7 @@ namespace backend.Core.DTOs
 
         public string? ReceiverUserID { get; set; } = string.Empty;
 
-        public string? ReceiverForwardingLevel { get; set; } 
+        public string? ReceiverForwardingLevel { get; set; }
 
         public string? PreScrutinyStatus { get; set; } = string.Empty;
 
@@ -59,11 +59,11 @@ namespace backend.Core.DTOs
 
         public string? ReceiverUserID { get; set; }
 
-        public string? ReceiverForwardingLevel { get; set; } 
+        public string? ReceiverForwardingLevel { get; set; }
 
-        public string? PreScrutinyStatus { get; set; } 
+        public string? PreScrutinyStatus { get; set; }
 
-        public string? FixDateEnquiry { get; set; } 
+        public string? FixDateEnquiry { get; set; }
 
         public string? TransactionRemarks { get; set; }
 
@@ -75,5 +75,13 @@ namespace backend.Core.DTOs
 
         public DateTime? ApplicationDate { get; set; }
 
+    }
+
+    public class SendBackApplicationDto
+    {
+        public string? ApplicationIdNo { get; set; }
+        public string? UserId { get; set; }
+        public string? Remarks { get; set; }
+        public string? SendBackType { get; set; }
     }
 }
