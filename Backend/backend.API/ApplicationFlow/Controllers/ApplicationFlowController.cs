@@ -131,7 +131,7 @@ namespace backend.API.ApplicationFlow.Controllers
             {
                 return BadRequest("Invalid Action.");
             }
-           
+
             try
             {
                 var user = await _applicationFlowService.RejectApplication(Dto);
@@ -153,6 +153,81 @@ namespace backend.API.ApplicationFlow.Controllers
             }
         }
 
+        [HttpPost("SendBackApplication")]
+        public async Task<IActionResult> SendBackApplication(
+    [FromBody] SendBackApplicationDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid request."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Application ID is required."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.UserId))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "User ID is required."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Remarks))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Remarks are required."
+                });
+            }
+
+            try
+            {
+                var result = await _applicationFlowService
+                    .SendBackApplication(dto);
+
+                if (result != "Application sent back successfully.")
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = result
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = result
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log complete exception in Visual Studio
+                Console.WriteLine("========== SEND BACK ERROR ==========");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=====================================");
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message,
+                    details = ex.InnerException?.Message
+                });
+            }
+        }
 
     }
 }

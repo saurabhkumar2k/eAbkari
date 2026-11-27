@@ -208,57 +208,83 @@
   background: transparent !important;
 }
 
-/* Body */
 .remarks-modal-body {
-  padding: 18px 26px;
-  flex: 1;
-  overflow-y: auto;
+  padding: 10px 15px;
 }
 
-.application-details {
-  font-size: 11px;
-  line-height: 17px;
-  margin-bottom: 10px;
-}
-
-/* Remarks */
 .remarks-container {
-  border: 1px solid #1684c5;
-  background: #e9fff5;
-  padding: 9px;
-  margin: 0 15px;
-}
-
-.remarks-container textarea {
-  display: block;
-  width: 100%;
-  height: 190px;
-  padding: 5px;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #eafff5;
+  border: 1px solid #0099ff;
   box-sizing: border-box;
-  resize: vertical;
-  border: 1px solid #888;
-  background: white;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  outline: none;
-}
 
-/* Button */
-.forward-button-container {
   display: flex;
-  justify-content: center;
-  margin-top: 3px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.forward-btn {
-  padding: 3px 10px;
-  font-size: 12px;
-  background: #f2f2f2;
-  border: 1px solid #888;
-  color: black;
+/* Dropdown */
+.remarks-select {
+  width: 180px;
+  height: 32px;
+  text-align: center;
+  text-align-last: center;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 13px;
   cursor: pointer;
 }
 
+/* Textarea */
+.remarks-textarea {
+  width: 100%;
+  min-height: 170px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  background-color: #ffffff !important;
+  color: #333;
+
+  border: 1px solid #999;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  resize: vertical;
+  outline: none;
+}
+
+.remarks-textarea:focus {
+  background-color: #ffffff !important;
+  border-color: #168ac5;
+  box-shadow: 0 0 3px rgba(22, 138, 197, 0.3);
+}
+
+.remarks-textarea::placeholder {
+  color: #888;
+}
+
+/* Submit button */
+.forward-button-container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.forward-btn {
+  padding: 6px 18px;
+  background-color: #fff;
+  border: 1px solid #888;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .forward-btn:hover {
-  background: #ddd;
+  background-color: #e6f3ff;
+  border-color: #168ac5;
 }

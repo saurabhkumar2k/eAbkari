@@ -20,6 +20,7 @@ const ActOnNewLicenseApplication = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [sendBackType, setSendBackType] = useState("0");
 
   const [showScrutinyPopup, setShowScrutinyPopup] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -40,7 +41,7 @@ const ActOnNewLicenseApplication = () => {
   const [sendBackLoading, setSendBackLoading] = useState(false);
   const [sendBackError, setSendBackError] = useState("");
   const [sendBackRemarks, setSendBackRemarks] = useState("");
-
+  const [isSendingBack, setIsSendingBack] = useState(false);
 
   const [showRejectdPopup, setShowRejectPopup] = useState(false);
   const [selectedRejectApplication, setSelectedRejectApplication] =
@@ -48,8 +49,6 @@ const ActOnNewLicenseApplication = () => {
   const [rejectLoading, setRejectLoading] = useState(false);
   const [rejectError, setRejectError] = useState("");
   const [rejectRemarks, setRejectRemarks] = useState("");
-
-
 
   const remarksInputRefs = useRef({});
   const [applicationComplete, setApplicationComplete] = useState("");
@@ -290,6 +289,108 @@ const ActOnNewLicenseApplication = () => {
   };
 
   const handleSendBackSubmit = async () => {
+    // 1. Validate remarks
+    if (!sendBackRemarks.trim()) {
+      alert("Please enter remarks.");
+      return;
+    }
+
+    // 2. Get Application ID
+    const applicationId =
+      selectedSendBackApplication?.ApplicationIdNo ??
+      selectedSendBackApplication?.applicationIdNo;
+
+    if (!applicationId) {
+      alert("Application ID not found.");
+      return;
+    }
+
+    // 3. Validate Send Back Type
+    if (sendBackType !== "0" && sendBackType !== "1") {
+      alert("Please select a valid Send Back Type.");
+      return;
+    }
+
+    // 4. Prevent multiple submissions
+    if (isSendingBack) return;
+
+    setIsSendingBack(true);
+
+    try {
+      // 5. Prepare payload
+      const payload = {
+        applicationIdNo: applicationId,
+        userId: localStorage.getItem("userId"),
+        remarks: sendBackRemarks.trim(),
+        sendBackType: sendBackType,
+      };
+
+      // Validate User ID
+      if (!payload.userId) {
+        throw new Error("Logged-in User ID not found.");
+      }
+
+      console.log("Send Back Payload:", payload);
+
+      // 6. Call ASP.NET Core API
+      const response = await fetch("/api/ApplicationFlow/SendBackApplication", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // 7. Read response safely
+      const responseText = await response.text();
+
+      let data = {};
+
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          console.error("Invalid API response:", responseText);
+          throw new Error(
+            "API returned an invalid response. Check backend logs.",
+          );
+        }
+      }
+
+      // 8. Handle HTTP errors
+      if (!response.ok) {
+        console.error("Backend error:", data);
+
+        throw new Error(
+          data.details ||
+            data.message ||
+            `Server error. HTTP Status: ${response.status}`,
+        );
+      }
+
+      // 9. Handle successful response
+      if (data.success) {
+        alert(data.message || "Application sent back successfully.");
+
+        setSendBackRemarks("");
+        setSendBackType("0");
+        setShowSendBackPopup(false);
+
+        // Refresh your application list here if required
+      } else {
+        alert(data.message || "Unable to send back application.");
+      }
+    } catch (error) {
+      console.error("Send Back Error:", error);
+
+      alert(error.message || "Something went wrong.");
+    } finally {
+      // 10. Reset button loading state
+      setIsSendingBack(false);
+    }
+  };
+
+  const handleRejectSubmit = async () => {
     try {
       debugger;
       if (!remarks.trim()) {
@@ -395,117 +496,7 @@ const ActOnNewLicenseApplication = () => {
       console.error("Forward Application Error:", error);
       alert(error.message || "Unable to forward application.");
     }
-
-  }
-
-   const handleRejectSubmit = async () => {
-    try {
-      debugger;
-      if (!remarks.trim()) {
-        alert("Please enter remarks.");
-        return;
-      }
-
-      console.log(
-        "Selected Application:",
-        selectedForwardApplication.applicationIdNo,
-      );
-
-      const applicationIdNo = selectedForwardApplication.applicationIdNo;
-      //application.ApplicationIdNo ?? application.applicationIdNo;
-
-      if (!applicationIdNo) {
-        throw new Error("Application ID not found.");
-      }
-
-      const regId = localStorage.getItem("regId");
-
-      if (!regId) {
-        throw new Error("Applicant ID not found. Please login again.");
-      }
-
-      // STEP 1: Get FlowUpto dynamically
-      const flowResponse = await fetch(
-        `http://localhost:5214/api/ApplicationFlow/GetApplicationFlowUser?applicationIdNo=${encodeURIComponent(applicationIdNo)}`,
-      );
-
-      if (!flowResponse.ok) {
-        throw new Error(
-          `Unable to get application flow details: ${await flowResponse.text()}`,
-        );
-      }
-
-      const flowData = await flowResponse.json();
-
-      const flowUpto = String(flowData.flowUpto);
-
-      console.log("FlowUpto:", flowUpto);
-
-      // STEP 2: Prepare all PlaAccessPermissionHistory columns
-      const currentDate = new Date().toISOString();
-
-      const obj = {
-        applicationIdNo: applicationIdNo,
-        flowUpto: flowUpto,
-
-        transactionSiNo: 0, // Generated by backend
-        transactionDate: currentDate,
-
-        senderUserTypeCode: "00",
-        senderUserID: regId,
-        senderForwardingLevel: 0,
-
-        receiverUserTypeCode: "",
-        receiverUserID: null,
-        receiverForwardingLevel: null,
-
-        preScrutinyStatus: null,
-        fixDateEnquiry: null,
-
-        transactionRemarks: "Application forwarded by applicant",
-        transactionStatusCode: "F",
-
-        oprDate: currentDate,
-      };
-
-      console.log("Forwarding Object:", obj);
-
-      // STEP 3: Save forwarding history
-      const response = await fetch(
-        "http://localhost:5214/api/ApplicationFlow/AccessPermissionHistory",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(obj),
-        },
-      );
-
-      const responseText = await response.text();
-
-      console.log("HTTP Status:", response.status);
-      console.log("API Response:", responseText);
-
-      if (!response.ok) {
-        throw new Error(responseText);
-      }
-
-      const data = JSON.parse(responseText);
-
-      if (!data.success) {
-        throw new Error(data.message || "Application forwarding failed.");
-      }
-
-      console.log("Saved History:", data);
-
-      alert(data.message);
-    } catch (error) {
-      console.error("Forward Application Error:", error);
-      alert(error.message || "Unable to forward application.");
-    }
-    
-  }
+  };
 
   const handleForwardAction = async () => {
     try {
@@ -854,9 +845,7 @@ const ActOnNewLicenseApplication = () => {
                     <button
                       type="button"
                       className="table-link"
-                      onClick={() =>
-                        handleRejectApplication(application)
-                      }
+                      onClick={() => handleRejectApplication(application)}
                     >
                       Reject Application
                     </button>
@@ -1170,6 +1159,7 @@ const ActOnNewLicenseApplication = () => {
                 className="modal-close"
                 onClick={() => {
                   setSendBackRemarks("");
+                  setSendBackType("0");
                   setShowSendBackPopup(false);
                 }}
               >
@@ -1181,15 +1171,24 @@ const ActOnNewLicenseApplication = () => {
               <h2>Application Details</h2>
 
               <p>
-                Application ID :-
+                Application ID :-{" "}
                 {selectedSendBackApplication?.ApplicationIdNo ??
                   selectedSendBackApplication?.applicationIdNo}
               </p>
 
               <div className="remarks-modal-body">
-                {/* Remarks Textarea */}
                 <div className="remarks-container">
+                  <select
+                    className="remarks-select"
+                    value={sendBackType}
+                    onChange={(e) => setSendBackType(e.target.value)}
+                  >
+                    <option value="0">Default</option>
+                    <option value="1">Applicant</option>
+                  </select>
+
                   <textarea
+                    className="remarks-textarea"
                     rows="10"
                     placeholder="Type your message here..."
                     value={sendBackRemarks}
@@ -1202,8 +1201,9 @@ const ActOnNewLicenseApplication = () => {
                     type="button"
                     className="forward-btn"
                     onClick={handleSendBackSubmit}
+                    disabled={isSendingBack}
                   >
-                    SendBack Application
+                    {isSendingBack ? "Sending..." : "SendBack Application"}
                   </button>
                 </div>
               </div>
@@ -1264,8 +1264,6 @@ const ActOnNewLicenseApplication = () => {
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

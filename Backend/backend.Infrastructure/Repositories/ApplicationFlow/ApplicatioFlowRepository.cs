@@ -180,7 +180,7 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
                 .MaxAsync();
 
             RejectApplicationAction.TransactionSiNo = (lastSiNo ?? 0) + 1;
-                      
+
             _context.PlaAccessPermissionHistory.Add(RejectApplicationAction);
 
             // STEP 3: Update ApplicationStatus in LicenseApplication
@@ -198,6 +198,151 @@ namespace backend.Infrastructure.Repositories.ApplicationFlow
         }
 
 
+
+        public async Task<string> SendBackApplication(SendBackApplicationDto dto)
+        {
+            if (dto == null)
+                return "Invalid request.";
+
+            if (string.IsNullOrWhiteSpace(dto.ApplicationIdNo))
+                return "Application ID is required.";
+
+            if (string.IsNullOrWhiteSpace(dto.UserId))
+                return "User ID is required.";
+
+            if (string.IsNullOrWhiteSpace(dto.Remarks))
+                return "Please enter remarks.";
+
+            if (dto.SendBackType != "0" && dto.SendBackType != "1")
+                return "Invalid send back type.";
+
+            using var transaction = await _context.Database.BeginTransactionAsync(
+                System.Data.IsolationLevel.Serializable);
+
+            try
+            {
+                // 1. Get latest application history
+                var lastTransaction = await _context.PlaAccessPermissionHistory
+                    .Where(x => x.ApplicationIdNo == dto.ApplicationIdNo)
+                    .OrderByDescending(x => x.TransactionSiNo)
+                    .FirstOrDefaultAsync();
+
+                if (lastTransaction == null)
+                    return "Application history not found.";
+
+                // 2. Verify current receiver
+                if (lastTransaction.ReceiverUserID != dto.UserId)
+                    return "You are not authorized to send back this application.";
+
+                // 3. Declare receiver variables
+                string? receiverUserID;
+                string? receiverUserTypeCode;
+                long receiverForwardingLevel;
+
+                if (dto.SendBackType == "0")
+                {
+                    // DEFAULT: Send to immediate previous sender
+
+                    receiverUserID = lastTransaction.SenderUserID;
+                    receiverUserTypeCode = lastTransaction.SenderUserTypeCode;
+                    receiverForwardingLevel = lastTransaction.SenderForwardingLevel;
+                }
+                else
+                {
+                    // APPLICANT: Send directly to original applicant
+
+                    receiverUserTypeCode = "00";
+
+
+                    // Step 1: Get RegId
+                    var applicant = await _context.LicenseApplications
+                        .Where(x => x.ApplicationIdNo == dto.ApplicationIdNo)
+                        .Select(x => new
+                        {
+                            x.RegId
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (applicant == null)
+                        return "Original applicant details not found.";
+
+                    // Step 2: Get applicant UserId and UserTypeCode
+                    // IMPORTANT: Replace LicenseRegistration with your actual
+                    // registration entity and property names.
+
+                    var applicantDetails = await _context.MstUsReg
+                        .Where(x => x.RegId == applicant.RegId)
+                        .Select(x => new
+                        {
+                            x.UserId,
+                            //x.UserTypeCode
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (applicantDetails == null)
+                        return "Applicant user details not found.";
+
+                    receiverUserID = applicantDetails.UserId;
+                    // receiverUserTypeCode = 00;
+                    receiverForwardingLevel = 0;
+                }
+
+                // 4. Create new transaction history
+                // Convert current receiver forwarding level from string to long
+                if (!long.TryParse(
+                    lastTransaction.ReceiverForwardingLevel,
+                    out var senderLevel))
+                {
+                    return "Invalid receiver forwarding level.";
+                }
+
+                // Create new Send Back history
+                var sendBackHistory = new PlaAccessPermissionHistory
+                {
+                    ApplicationIdNo = lastTransaction.ApplicationIdNo,
+
+                    FlowUpto = lastTransaction.FlowUpto,
+
+                    TransactionSiNo = lastTransaction.TransactionSiNo + 1,
+
+                    TransactionDate = DateTime.Now,
+
+                    // Current receiver becomes sender
+                    SenderUserTypeCode = lastTransaction.ReceiverUserTypeCode,
+                    SenderUserID = lastTransaction.ReceiverUserID,
+                    SenderForwardingLevel = senderLevel,
+
+                    // Selected receiver becomes new receiver
+                    ReceiverUserTypeCode = receiverUserTypeCode,
+                    ReceiverUserID = receiverUserID,
+                    ReceiverForwardingLevel = receiverForwardingLevel.ToString(),
+
+                    // Remarks
+                    TransactionRemarks = dto.Remarks
+                };
+
+                // 5. Insert history into database
+                await _context.PlaAccessPermissionHistory.AddAsync(sendBackHistory);
+
+                await _context.SaveChangesAsync();
+
+                // 6. Commit transaction
+                await transaction.CommitAsync();
+
+                return "Application sent back successfully.";
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+
+
+
     }
+
+
 
 }
